@@ -1,9 +1,3 @@
-function App() {
-  return (
-    <div>
-      <p></p>
-    </div>
-  );
+export default function App() {
+  return <div>App</div>;
 }
-
-export default App;
