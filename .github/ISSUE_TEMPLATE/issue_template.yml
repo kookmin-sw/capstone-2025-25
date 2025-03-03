@@ -1,0 +1,19 @@
+name: Issue Template
+description: 이슈 추가할 때 쓰는 템플릿
+title: "Issue Title"
+labels: ["issue"]
+body:
+  - type: textarea
+    id: issue-contents
+    attributes:
+      label: Issue 설명
+      description: 작업할 Issue에 대한 설명을 적어주세요.
+      placeholder: ex. 프로젝트 세팅
+    validations:
+      required: true
+  - type: textarea
+    id: task-details
+    attributes:
+      label: 작업 상세 내용
+      description: 이슈 해결을 위해 필요한 세부 작업 항목들을 작성해주세요.
+      placeholder: "- [ ] 작업 항목 1\n- [ ] 작업 항목 2"
