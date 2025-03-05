@@ -31,7 +31,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private static final String[] SWAGGER_ENDPOINTS = { "/swagger", "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**" };
-    private static final String[] PUBLIC_ENDPOINTS = { "/", "/api/auth/**" };
+    private static final String[] PUBLIC_ENDPOINTS = { "/" };
 
 
     @Bean

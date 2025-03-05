@@ -20,9 +20,7 @@ public class RedisConfig {
 
     @Bean
     LettuceConnectionFactory connectionFactory() {
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(host, port);
-        lettuceConnectionFactory.setPassword(password);
-        return lettuceConnectionFactory;
+        return new LettuceConnectionFactory(host, port);
     }
 
     // redis template
