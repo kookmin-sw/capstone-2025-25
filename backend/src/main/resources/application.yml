@@ -1,10 +1,4 @@
 spring:
-  application:
-    name: capstone-2025-25
-  servlet:
-    multipart:
-      max-file-size: 500MB
-      max-request-size: 500MB
   config:
     import:
       - application-db.yml
