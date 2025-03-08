@@ -1,0 +1,9 @@
+spring:
+  config:
+    import:
+      - application-db.yml
+      - application-jwt.yml
+      - application-swagger.yml
+      - application-oauth.yml
+      - application-config.yml
+      - application-actuator.yml
