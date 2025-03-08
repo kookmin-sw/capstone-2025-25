@@ -1,0 +1,42 @@
+# 🛑 Python 관련
+__pycache__/
+*.py[cod]
+*.so
+*.pyo
+.Python
+*.pyd
+
+# 🛑 가상환경 (venv, virtualenv, conda)
+.venv/
+venv/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+pyvenv.cfg
+
+# 🛑 환경 변수 및 API 키 파일
+.env
+.env.local
+*.secret
+config.py  # API 키가 들어간 설정 파일 제외
+
+# 🛑 MacOS 관련
+.DS_Store
+
+# 🛑 VSCode 설정
+.vscode/
+
+# 🛑 JetBrains (PyCharm 등) 설정
+.idea/
+/.idea
+
+# 🛑 Log 파일 & Debug 파일
+logs/
+*.log
+nohup.out
+
+# 🛑 FastAPI + Uvicorn 관련
+*.db
+instance/
+uvicorn.log
+
