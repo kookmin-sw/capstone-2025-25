@@ -1,6 +1,7 @@
 package capstone.backend.global.security.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -19,14 +20,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(
+            @Nonnull HttpServletRequest request,
+            @Nonnull HttpServletResponse response,
+            @Nonnull FilterChain filterChain) throws IOException, ServletException {
         try {
             String jwt = getToken(request);
             if (jwt != null && jwtProvider.validateToken(jwt)) {
-                String email = jwtProvider.getEmailFromToken(jwt);
+                String memberId = jwtProvider.extractToken(jwt);
 
-                Authentication authentication = getAuthentication(email);
+                Authentication authentication = getAuthentication(memberId);
                 // 인증 정보 설정
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
@@ -46,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private Authentication getAuthentication(String email) {
+    private Authentication getAuthentication(String memberId) {
 
         return null;
     }
