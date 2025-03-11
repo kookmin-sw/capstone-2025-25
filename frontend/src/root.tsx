@@ -1,5 +1,6 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import '@/styles/index.css';
+import '@/styles/shadcn-global.css';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

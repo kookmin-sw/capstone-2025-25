@@ -1,1 +1,7 @@
 @import 'tailwindcss';
+
+@theme {
+  /* 버튼 색상 */
+  --color-button-primary: #ffe277;
+  --color-button-disabled: #e7e7e7;
+}
