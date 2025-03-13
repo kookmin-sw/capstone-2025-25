@@ -1,5 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/gFPznrUY)
-
 ![header](https://capsule-render.vercel.app/api?type=blur&height=300&color=FFEA9F&text=Tium&textBg=false&fontColor=2D2D2D)
 
 ### 1. 프로젝트 소개
@@ -15,10 +13,11 @@
 <div>
   
 |<img src="https://avatars.githubusercontent.com/u/84188904?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/66055587?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/105338882?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/65989284?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/100904133?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/87667113?v=4" width="150" height="150">|
-| :---: | :---: | :---: | :---: | :---: | :---: |
+| --- | --- | --- | --- | --- | --- |
 | **이보현** | **최유찬** | **조다운** | **류건** | **유다영** | **김도훈** |
 | frontend | frontend | frontend | backend | backend | backend |
 | ****3038 | ****2000 | ****3139 | ****3103 | ****3027 | ****2208 |
+
 </div>
 
 <br/> 
