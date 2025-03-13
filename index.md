@@ -12,9 +12,8 @@
 
 <div>
   
-|<img src="https://avatars.githubusercontent.com/u/84188904?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/66055587?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/105338882?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/65989284?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/100904133?v=4" width="150" height="150">|<img src="https://avatars.githubusercontent.com/u/87667113?v=4" width="150" height="150">|
+| 이보현 | 최유찬 | 조다운 | 류건 | 유다영 | 김도훈 |
 | --- | --- | --- | --- | --- | --- |
-| **이보현** | **최유찬** | **조다운** | **류건** | **유다영** | **김도훈** |
 | frontend | frontend | frontend | backend | backend | backend |
 | ****3038 | ****2000 | ****3139 | ****3103 | ****3027 | ****2208 |
 
