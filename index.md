@@ -16,12 +16,12 @@
   
 <table>
   <tr>
-    <td><img src="https://avatars.githubusercontent.com/u/84188904?v=4" width="150"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/66055587?v=4" width="150"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/105338882?v=4" width="150"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/65989284?v=4" width="150"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/100904133?v=4" width="150"></td>
-    <td><img src="https://avatars.githubusercontent.com/u/87667113?v=4" width="150"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/84188904?v=4" width="100"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/66055587?v=4" width="100"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/105338882?v=4" width="100"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/65989284?v=4" width="100"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/100904133?v=4" width="100"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/87667113?v=4" width="100"></td>
   </tr>
   <tr>
     <td><strong>이보현</strong></td>
