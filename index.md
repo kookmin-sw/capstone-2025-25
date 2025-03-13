@@ -1,3 +1,5 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/gFPznrUY)
+
 ![header](https://capsule-render.vercel.app/api?type=blur&height=300&color=FFEA9F&text=Tium&textBg=false&fontColor=2D2D2D)
 
 ### 1. 프로젝트 소개
@@ -12,23 +14,42 @@
 
 <div>
   
-| 이보현 | 최유찬 | 조다운 | 류건 | 유다영 | 김도훈 |
-| --- | --- | --- | --- | --- | --- |
-| frontend | frontend | frontend | backend | backend | backend |
-| ****3038 | ****2000 | ****3139 | ****3103 | ****3027 | ****2208 |
+<table>
+  <tr>
+    <td><img src="https://avatars.githubusercontent.com/u/84188904?v=4" width="150"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/66055587?v=4" width="150"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/105338882?v=4" width="150"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/65989284?v=4" width="150"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/100904133?v=4" width="150"></td>
+    <td><img src="https://avatars.githubusercontent.com/u/87667113?v=4" width="150"></td>
+  </tr>
+  <tr>
+    <td><strong>이보현</strong></td>
+    <td><strong>최유찬</strong></td>
+    <td><strong>조다운</strong></td>
+    <td><strong>류건</strong></td>
+    <td><strong>유다영</strong></td>
+    <td><strong>김도훈</strong></td>
+  </tr>
+  <tr>
+    <td>frontend</td>
+    <td>frontend</td>
+    <td>frontend</td>
+    <td>backend</td>
+    <td>backend</td>
+    <td>backend</td>
+  </tr>
+    <tr>
+        <td>****3038</td>
+        <td>****2000</td>
+        <td>****3139</td>
+        <td>****3103</td>
+        <td>****3027</td>
+        <td>****2208</td>
+    </tr>
+</table>
 
 </div>
 
 <br/> 
-
-### 3. 사용법
-
-```bash
-git clone https://github.com/kookmin-sw/capstone-2025-25.git
-```
-```bash
-cd frontend
-npm install
-npm run dev
-```
 
