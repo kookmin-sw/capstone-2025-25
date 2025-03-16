@@ -4,13 +4,10 @@ on:
   push:
     branches:
       - deploy-gpt
-    paths:
-      - 'gpt/**'
   pull_request:
     branches:
       - deploy-gpt
-    paths:
-      - 'gpt/**'
+
 
 jobs:
   build-docker-image:
