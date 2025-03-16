@@ -1,4 +1,4 @@
-name: GPT CI / CD with Docker (No Compose)
+name: GPT CI / CD with Docker
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
           docker build -t ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:${{ github.sha }} .
 
       - name: Docker Hub Push
-        run: docker push ${{ secrets.GPT_DOCKER_PASSWORD }}/fastapi-gpt:${{ github.sha }}
+        run: docker push ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:${{ github.sha }}
 
   deploy-to-ec2:
     needs: build-docker-image
