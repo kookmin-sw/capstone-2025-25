@@ -3,12 +3,12 @@ name: GPT CI / CD with Docker
 on:
   push:
     branches:
-      - master
+      - deploy-gpt
     paths:
       - 'gpt/**'
   pull_request:
     branches:
-      - master
+      - deploy-gpt
     paths:
       - 'gpt/**'
 
