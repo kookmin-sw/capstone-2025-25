@@ -22,7 +22,6 @@ import java.io.IOException;
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final String SIGN_UP_URL;
     private final String CALLBACK_URL;
     private final JwtProvider jwtProvider;
     private final MemberRepository memberRepository;
@@ -30,10 +29,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public OAuth2AuthenticationSuccessHandler(
             @Value("${url.base.client}") String clientDomain,
             @Value("${url.path.client.callback}") String callbackEndpoint,
-            @Value("${url.path.client.signup}") String signupEndpoint,
             JwtProvider jwtProvider,
             MemberRepository memberRepository) {
-                this.SIGN_UP_URL = clientDomain + signupEndpoint;
                 this.CALLBACK_URL = clientDomain + callbackEndpoint;
                 this.jwtProvider = jwtProvider;
                 this.memberRepository = memberRepository;
