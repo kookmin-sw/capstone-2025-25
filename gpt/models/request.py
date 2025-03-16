@@ -1,14 +1,22 @@
+from typing import Optional, List
 from pydantic import BaseModel
-from typing import List, Dict, Optional, Any
 
-
+class NodeSummaryData(BaseModel):
+    summary: Optional[str] = None
 class GPTRequest(BaseModel):
-    nodePath: List[Dict[str, Optional[str]]]  # 루트부터 선택 노드까지의 데이터 (제목, 답변 포함)
+    mainNode: NodeSummaryData
+    parentNode: Optional[NodeSummaryData] = None
+    selectedNode: Optional[NodeSummaryData] = None
 
-class Node(BaseModel):
-    question: str
-    answer: Optional[str] = None
-    children: List["Node"] = []
+class NodeData(BaseModel):
+    id: Optional[str] = None
+    type: Optional[str] = None
+    parentId: Optional[str] = None
+    summary: Optional[str] = None
 
 class MindMapRequest(BaseModel):
-    mindmapData: Dict[str, Any]  # 전체 마인드맵 데이터를 JSON 형태로 받음
+    nodes: List[NodeData]
+
+class NodeSummaryRequest(BaseModel):
+    question: str
+    answer: str
