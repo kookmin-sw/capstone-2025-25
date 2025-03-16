@@ -53,7 +53,7 @@ jobs:
             cd ~/fastapi-app
 
             # Docker Hub 로그인 (Private 레포지토리 Pull을 위해)
-            echo "${{ secrets.GPT_DOCKER_PASSWORD }}" | docker login -u "${{ secrets.GPT_DOCKER_USERNAME }}" --password-stdin
+            echo ${{ secrets.GPT_DOCKER_PASSWORD }} | docker login -u ${{ secrets.GPT_DOCKER_USERNAME }} --password-stdin
 
             # 최신 이미지 Pull
             sudo docker pull ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest
