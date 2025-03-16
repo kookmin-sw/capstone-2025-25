@@ -31,10 +31,10 @@ jobs:
       - name: Docker Image Build
         run: |
           cd gpt
-          docker build -t ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:${{ github.sha }} .
+          docker build -t ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest .
 
       - name: Docker Hub Push
-        run: docker push ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:${{ github.sha }}
+        run: docker push ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest
 
   deploy-to-ec2:
     needs: build-docker-image
@@ -56,14 +56,14 @@ jobs:
             echo "${{ secrets.GPT_DOCKER_PASSWORD }}" | docker login -u "${{ secrets.GPT_DOCKER_USERNAME }}" --password-stdin
 
             # 최신 이미지 Pull
-            sudo docker pull ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:${{ github.sha }}
+            sudo docker pull ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest
 
             # 기존 컨테이너 중지 및 삭제
             sudo docker stop fastapi-app || true
             sudo docker rm fastapi-app || true
 
             # 새 컨테이너 실행 (docker-compose 없이)
-            sudo docker run --name fastapi-app --rm -d -p 8000:8000 --env-file <(echo "${{ secrets.GPT_SERVER_ENV }}") ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:${{ github.sha }}
+            sudo docker run --name fastapi-app --rm -d -p 8000:8000 --env-file <(echo "${{ secrets.GPT_SERVER_ENV }}") ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest
 
             # 불필요한 이미지 삭제
             sudo docker image prune -f
