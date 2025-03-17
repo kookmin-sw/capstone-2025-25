@@ -16,7 +16,7 @@ import java.util.Map;
 public class CustomOAuth2User implements OAuth2User {
 
     private final Long memberId;
-    private final String providerId; // ex> google_1234
+    private final String provider; // ex> google
     private final String email;
     private final String name; // username
     private final Role role;
@@ -25,7 +25,7 @@ public class CustomOAuth2User implements OAuth2User {
     // OAuth2 로그인용 생성자
     public CustomOAuth2User(Member member, OAuth2UserInfo oAuth2UserInfo) {
         this.memberId = member.getId();
-        this.providerId = oAuth2UserInfo.getId();
+        this.provider = member.getProvider();
         this.email = oAuth2UserInfo.getEmail();
         this.role = member.getRole();
         this.name = oAuth2UserInfo.getName();
@@ -35,7 +35,7 @@ public class CustomOAuth2User implements OAuth2User {
     // Jwt Token으로 OAuth2User 생성
     public CustomOAuth2User(Member member, Claims claims) {
         this.memberId = member.getId();
-        this.providerId = member.getProvider();
+        this.provider = claims.get("provider", String.class);
         this.email = member.getEmail();
         this.role = member.getRole();
         this.name = member.getUsername();

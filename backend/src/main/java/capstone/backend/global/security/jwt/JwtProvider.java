@@ -1,10 +1,8 @@
 package capstone.backend.global.security.jwt;
 
-import capstone.backend.domain.auth.exception.TokenNotFoundException;
 import capstone.backend.domain.auth.repository.RefreshTokenRepository;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.auth.scheme.RefreshToken;
-import capstone.backend.global.api.exception.ApiException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +39,8 @@ public class JwtProvider {
         return Jwts.builder()
                 .claim("email", member.getEmail())
                 .claim("username", member.getUsername())
-                .claim("role", member.getRole().name())
+                .claim("role", member.getRole().toString())
+                .claim("provider", member.getProvider())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(signingKey, SignatureAlgorithm.HS512)
@@ -52,7 +51,8 @@ public class JwtProvider {
         String refreshToken = Jwts.builder()
                 .claim("email", member.getEmail())
                 .claim("username", member.getUsername())
-                .claim("role", member.getRole().name())
+                .claim("role", member.getRole().toString())
+                .claim("provider", member.getProvider())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(signingKey, SignatureAlgorithm.HS512)
