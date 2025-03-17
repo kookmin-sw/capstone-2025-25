@@ -41,8 +41,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (accessToken != null && jwtProvider.validateToken(accessToken)) {
                 Claims claimsByToken = jwtProvider.getClaimsByToken(accessToken);
+
                 Authentication authentication = getAuthentication(claimsByToken);
                 authentication.setAuthenticated(true);
+
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (ExpiredJwtException e) {
@@ -59,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Member member = memberRepository.findByEmail(claims.get("email", String.class))
                 .orElseThrow(MemberNotFoundException::new);
         CustomOAuth2User user = new CustomOAuth2User(member, claims);
-        return new OAuth2AuthenticationToken(user, user.getAuthorities(), user.getProviderId());
+        return new OAuth2AuthenticationToken(user, user.getAuthorities(), user.getProvider());
     }
 
     private void handleException(HttpServletResponse response, ApiException e) throws IOException {
