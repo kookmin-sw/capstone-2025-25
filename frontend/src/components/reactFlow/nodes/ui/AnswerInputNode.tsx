@@ -1,25 +1,25 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
+import useStore from '@/store/mindmapStore';
+import { MindMapNodeData } from '@/types/mindMap';
+import { Handle, NodeProps, Position } from '@xyflow/react';
 import { Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
-interface AnswerInputProps {
-  title: string;
-  initialAnswer?: string;
-  onSubmit: (answer: string) => void;
-  onCancel?: () => void;
-}
-
 export default function AnswerInputNode({
-  title,
-  initialAnswer = '',
-  onSubmit,
-}: AnswerInputProps) {
+  id,
+  data,
+}: NodeProps<MindMapNodeData>) {
+  const initialAnswer = data.answer || '';
+
   const [answer, setAnswer] = useState(initialAnswer);
   const [isInputFilled, setIsInputFilled] = useState(
     initialAnswer.trim() !== '',
   );
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
+  const setNode = useStore((state) => state.setNode);
+  const nodes = useStore((state) => state.nodes);
 
   useEffect(() => {
     setIsInputFilled(answer.trim() !== '');
@@ -31,18 +31,38 @@ export default function AnswerInputNode({
 
   const handleSubmit = async () => {
     if (isInputFilled) {
-      setIsSubmitLoading(true);
-      try {
-        await onSubmit(answer);
-      } finally {
-        setIsSubmitLoading(false);
+      setIsSubmitLoading(false);
+
+      const currentNode = nodes.find((node) => node.id === id);
+
+      /* 
+      TODO: 추후에 GPT 한줄 요약으로 수정해야함. 지금은 로직의 흐름을 위해 답변을 summary로 처리
+      */
+      if (currentNode) {
+        setNode(id, {
+          ...currentNode,
+          type: 'summary',
+          data: {
+            ...currentNode.data,
+            summary: answer,
+          },
+        });
       }
+
+      /* TODO: 추후에 API 연동시 처리하기! */
+      // setIsSubmitLoading(true);
+
+      // try {
+      //   await onSubmit(answer);
+      // } finally {
+      //   setIsSubmitLoading(false);
+      // }
     }
   };
 
   return (
     <div className="px-8 py-[30px] border-4 border-[#b3cbfa] rounded-lg">
-      <p className="text-[20px] font-semibold mb-[26px]">{title}</p>
+      <p className="text-[20px] font-semibold mb-[26px]">{data.label}</p>
 
       <div className="mb-6">
         <Input
@@ -70,6 +90,9 @@ export default function AnswerInputNode({
           )}
         </Button>
       </div>
+
+      <Handle type="target" position={Position.Top} />
+      <Handle type="source" position={Position.Top} />
     </div>
   );
 }

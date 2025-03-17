@@ -1,12 +1,14 @@
-import AnswerInputNode from '@/components/reactFlow/nodes/ui/AnswerInputNode';
+import useStore from '@/store/mindmapStore';
+import { MindMapNodeData } from '@/types/mindMap';
+import { Handle, NodeProps, Position } from '@xyflow/react';
 import { X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
-type QuestionListNodeProps = {
-  questions: string[];
-};
-
-export default function QuestionListNode({ questions }: QuestionListNodeProps) {
+export default function QuestionListNode({
+  id,
+  data,
+}: NodeProps<MindMapNodeData>) {
+  const questions = data.recommendedQuestions;
   const [displayedQuestions, setDisplayedQuestions] = useState<
     Array<{
       id: number;
@@ -15,7 +17,24 @@ export default function QuestionListNode({ questions }: QuestionListNodeProps) {
     }>
   >([]);
   const [questionQueue, setQuestionQueue] = useState<string[]>([]);
-  const [isDirectInputMode, setIsDirectInputMode] = useState(false);
+
+  const setNode = useStore((state) => state.setNode);
+  const nodes = useStore((state) => state.nodes);
+
+  const handleQuestionClick = (selectedQuestion: string) => {
+    const currentNode = nodes.find((node) => node.id === id);
+
+    if (currentNode) {
+      setNode(id, {
+        ...currentNode,
+        type: 'answer',
+        data: {
+          ...currentNode.data,
+          label: selectedQuestion,
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     if (questions.length > 0) {
@@ -30,6 +49,7 @@ export default function QuestionListNode({ questions }: QuestionListNodeProps) {
   }, [questions]);
 
   const handleRemoveQuestion = (id: number) => {
+    console.log('handleRemove');
     setDisplayedQuestions((prev) =>
       prev.map((q) => (q.id === id ? { ...q, animating: true } : q)),
     );
@@ -61,55 +81,61 @@ export default function QuestionListNode({ questions }: QuestionListNodeProps) {
   };
 
   const activateDirectInputMode = () => {
-    setIsDirectInputMode(true);
-  };
+    const currentNode = nodes.find((node) => node.id === id);
 
-  const handleSubmitDirectAnswer = async () => {
-    setIsDirectInputMode(false);
+    if (currentNode) {
+      setNode(id, {
+        ...currentNode,
+        type: 'answer',
+        data: {
+          ...currentNode.data,
+          label: '질문을 직접 입력해주세요',
+        },
+      });
+    }
   };
 
   return (
     <>
-      {isDirectInputMode ? (
-        <AnswerInputNode
-          title="질문을 직접 입력해주세요"
-          initialAnswer=""
-          onSubmit={handleSubmitDirectAnswer}
-        />
-      ) : (
-        <div className="px-8 py-[30px] border border-border-gray rounded-lg">
-          <h3 className="text-[20px] font-semibold mb-5">
-            다음 질문을 선택해주세요
-          </h3>
-          <ul className="flex flex-col gap-[10px]">
-            {displayedQuestions.map((question) => (
-              <li
-                key={question.id}
-                className={`p-4 border border-border-gray rounded-lg flex justify-between items-center transition-all duration-300 hover:bg-question-input-hover active:bg-question-input-active ${
-                  question.animating
-                    ? 'opacity-0 transform -translate-x-2'
-                    : 'opacity-100'
-                }`}
-              >
-                <span>{question.text}</span>
-                <button
-                  onClick={() => handleRemoveQuestion(question.id)}
-                  className="cursor-pointer"
-                  disabled={question.animating}
-                >
-                  <X size={24} color="#B9B9B7" />
-                </button>
-              </li>
-            ))}
+      <div className="px-8 py-[30px] border border-border-gray rounded-lg">
+        <h3 className="text-[20px] font-semibold mb-5">
+          다음 질문을 선택해주세요
+        </h3>
+        <ul className="flex flex-col gap-[10px]">
+          {displayedQuestions.map((question) => (
             <li
-              onClick={activateDirectInputMode}
-              className="p-4 border border-border-gray rounded-lg flex justify-between items-center"
+              key={question.id}
+              className={`w-[576px] p-4 border border-border-gray rounded-lg flex justify-between items-center transition-all duration-300 hover:bg-question-input-hover active:bg-question-input-active ${
+                question.animating
+                  ? 'opacity-0 transform -translate-x-2'
+                  : 'opacity-100'
+              }`}
+              onClick={() => handleQuestionClick(question.text)}
             >
-              <span>직접 입력하기</span>
+              <span>{question.text}</span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveQuestion(question.id);
+                }}
+                className="cursor-pointer"
+                disabled={question.animating}
+              >
+                <X size={24} color="#B9B9B7" />
+              </button>
             </li>
-          </ul>
-        </div>
-      )}
+          ))}
+          <li
+            onClick={activateDirectInputMode}
+            className="p-4 border border-border-gray rounded-lg flex justify-between items-center"
+          >
+            <span>직접 입력하기</span>
+          </li>
+        </ul>
+
+        <Handle type="target" position={Position.Top} />
+        <Handle type="source" position={Position.Top} />
+      </div>
     </>
   );
 }

@@ -2,16 +2,17 @@ import { Node as ReactFlowNode, Edge as ReactFlowEdge } from '@xyflow/react';
 
 export type TodoType = 'TODO' | 'THINKING';
 
+export type MindMapNodeType = 'root' | 'question' | 'answer' | 'summary';
+
 export type MindMapNodeData = {
   label: string;
   answer?: string | null;
   summary?: string | null;
-};
-
-export type MindMapNode = ReactFlowNode<MindMapNodeData> & {
   depth: number;
   recommendedQuestions?: string[];
 };
+
+export type MindMapNode = ReactFlowNode<MindMapNodeData>;
 
 export type MindMapEdge = ReactFlowEdge;
 
