@@ -48,8 +48,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String accessToken = jwtProvider.generateAccessToken(member);
         String refreshToken = jwtProvider.generateRefreshToken(member);
         String redirectUrl = UriComponentsBuilder.fromUriString(CALLBACK_URL)
-                .queryParam("access_token", accessToken)
-                .queryParam("refresh_token", refreshToken)
+                .queryParam("accessToken", accessToken)
+                .queryParam("refreshToken", refreshToken)
                 .build().toUriString();
 
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
