@@ -11,9 +11,9 @@ function MindMapEdge({
 }: EdgeProps) {
   const [edgePath] = getSimpleBezierPath({
     sourceX,
-    sourceY: sourceY + 18,
+    sourceY: sourceY + 36,
     targetX,
-    targetY,
+    targetY: targetY + 36,
     sourcePosition,
     targetPosition,
   });

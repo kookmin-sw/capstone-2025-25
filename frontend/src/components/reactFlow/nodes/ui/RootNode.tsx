@@ -1,7 +1,8 @@
-import { Handle, NodeProps, Position } from '@xyflow/react';
+import { NodeProps } from '@xyflow/react';
 import { ListCheck } from 'lucide-react';
 import DragIcon from '@/components/reactFlow/nodes/ui/DragIcon';
 import { MindMapNodeData } from '@/types/mindMap';
+import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 
 export default function RootNode({
   data,
@@ -25,28 +26,7 @@ export default function RootNode({
 
       <p className="text-[30px] font-semibold">{data.label}</p>
 
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="target"
-        style={{ opacity: 0, pointerEvents: 'none' }}
-      />
-      <Handle
-        type="source"
-        position={Position.Top}
-        className="source"
-        style={{
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          background: 'transparent',
-          border: 'none',
-          borderRadius: 0,
-          transform: 'none',
-          zIndex: 10,
-        }}
-      />
+      <NodeHandles type="full" />
     </div>
   );
 }

@@ -1,6 +1,7 @@
+import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 import useStore from '@/store/mindmapStore';
 import { MindMapNodeData } from '@/types/mindMap';
-import { Handle, NodeProps, Position } from '@xyflow/react';
+import { NodeProps } from '@xyflow/react';
 import { Pencil, X } from 'lucide-react';
 
 export default function SummaryNode({ id, data }: NodeProps<MindMapNodeData>) {
@@ -40,23 +41,7 @@ export default function SummaryNode({ id, data }: NodeProps<MindMapNodeData>) {
           className="cursor-pointer hover:text-black transition-colors"
         />
       </div>
-      <Handle type="target" position={Position.Top} />
-      <Handle
-        type="source"
-        position={Position.Top}
-        className="source"
-        style={{
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          background: 'transparent',
-          border: 'none',
-          borderRadius: 0,
-          transform: 'none',
-          zIndex: 10,
-        }}
-      />
+      <NodeHandles type="full" />
     </div>
   );
 }

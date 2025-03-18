@@ -1,6 +1,7 @@
+import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 import useStore from '@/store/mindmapStore';
 import { MindMapNodeData } from '@/types/mindMap';
-import { Handle, NodeProps, Position } from '@xyflow/react';
+import { NodeProps } from '@xyflow/react';
 import { X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -133,8 +134,7 @@ export default function QuestionListNode({
           </li>
         </ul>
 
-        <Handle type="target" position={Position.Top} />
-        <Handle type="source" position={Position.Top} />
+        <NodeHandles />
       </div>
     </>
   );

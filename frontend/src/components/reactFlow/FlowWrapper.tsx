@@ -21,7 +21,7 @@ import {
 } from '@/store/mindmapStore';
 import MindMapEdge from '@/components/reactFlow/edges';
 import SummaryNode from '@/components/reactFlow/nodes/ui/SummaryNode';
-import RootNode from '@/components/reactFlow/nodes/rootNode';
+import RootNode from '@/components/reactFlow/nodes/ui/RootNode';
 import AnswerInputNode from '@/components/reactFlow/nodes/ui/AnswerInputNode';
 import QuestionListNode from '@/components/reactFlow/nodes/ui/QuestionListNode';
 

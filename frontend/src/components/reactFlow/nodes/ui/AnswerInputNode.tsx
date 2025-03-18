@@ -1,8 +1,9 @@
+import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import useStore from '@/store/mindmapStore';
 import { MindMapNodeData } from '@/types/mindMap';
-import { Handle, NodeProps, Position } from '@xyflow/react';
+import { NodeProps } from '@xyflow/react';
 import { Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -61,7 +62,7 @@ export default function AnswerInputNode({
   };
 
   return (
-    <div className="px-8 py-[30px] border-4 border-[#b3cbfa] rounded-lg">
+    <div className="w-[538px] bg-white px-8 py-[30px] border-4 border-[#b3cbfa] rounded-lg">
       <p className="text-[20px] font-semibold mb-[26px]">{data.label}</p>
 
       <div className="mb-6">
@@ -91,8 +92,7 @@ export default function AnswerInputNode({
         </Button>
       </div>
 
-      <Handle type="target" position={Position.Top} />
-      <Handle type="source" position={Position.Top} />
+      <NodeHandles />
     </div>
   );
 }
