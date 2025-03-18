@@ -98,7 +98,7 @@ export default function QuestionListNode({
 
   return (
     <>
-      <div className="px-8 py-[30px] border border-border-gray rounded-lg">
+      <div className="bg-white px-8 py-[30px] border border-border-gray rounded-lg">
         <h3 className="text-[20px] font-semibold mb-5">
           다음 질문을 선택해주세요
         </h3>
