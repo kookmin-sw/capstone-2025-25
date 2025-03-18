@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -25,19 +24,16 @@ public class JwtProvider {
     private final Long accessTokenExpiration;
     private final Long refreshTokenExpiration;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     public JwtProvider(@Value("${jwt.secret-key}") String secretKey,
                        @Value("${jwt.access-token.expiration}") Long accessTokenExpiration,
                        @Value("${jwt.refresh-token.expiration}") Long refreshTokenExpiration,
-                       RefreshTokenRepository refreshTokenRepository,
-                       BCryptPasswordEncoder passwordEncoder
+                       RefreshTokenRepository refreshTokenRepository
     ) {
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
         this.refreshTokenRepository = refreshTokenRepository;
         this.signingKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
-        this.passwordEncoder = passwordEncoder;
     }
 
     public String generateAccessToken(Member member) {
@@ -63,19 +59,16 @@ public class JwtProvider {
                 .signWith(signingKey, SignatureAlgorithm.HS512)
                 .compact();
 
-        // 암호화된 refresh Token
-        String encryptedRefreshToken = passwordEncoder.encode(refreshToken);
-
         // 기존에 토큰이 있다면 업데이트, 없으면 생성.
         refreshTokenRepository.findByMember(member)
                 .ifPresentOrElse(
                         existingToken -> {
-                            existingToken.setToken(encryptedRefreshToken);
+                            existingToken.setToken(refreshToken);
                             existingToken.setExpiryDate(Instant.now().plusMillis(refreshTokenExpiration));
                             refreshTokenRepository.save(existingToken);
                         },
                         () -> refreshTokenRepository.save(
-                                RefreshToken.create(member, encryptedRefreshToken, Instant.now().plusMillis(refreshTokenExpiration))
+                                RefreshToken.create(member, refreshToken, Instant.now().plusMillis(refreshTokenExpiration))
                         )
                 );
 
@@ -92,17 +85,10 @@ public class JwtProvider {
     }
 
     // Access Token 재발급
-    public Optional<String> refreshAccessToken(String rawRefreshToken) {
-        return refreshTokenRepository.findByToken(rawRefreshToken)
-                .map(token -> {
-                    if (token.isExpired()) {
-                        refreshTokenRepository.delete(token);
-                        return null; // null 반환 시 Optional.empty() 리턴
-                    }
-                    return passwordEncoder.matches(rawRefreshToken, token.getToken())
-                            ? generateAccessToken(token.getMember())
-                            : null;
-                });
+    public Optional<String> refreshAccessToken(String refreshToken) {
+        return refreshTokenRepository.findByToken(refreshToken)
+                .filter(token -> !token.isExpired())
+                .map(token -> generateAccessToken(token.getMember()));
     }
 
 
