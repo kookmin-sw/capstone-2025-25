@@ -1,14 +1,21 @@
-import { BaseEdge, EdgeProps, getSimpleBezierPath } from '@xyflow/react';
+import {
+  BaseEdge,
+  getSimpleBezierPath,
+  type EdgeProps,
+  type Edge,
+} from '@xyflow/react';
+
+type MindMapEdgeType = Edge<Record<string, never>, 'mindmapEdge'>;
 
 function MindMapEdge({
+  id,
   sourceX,
   sourceY,
   targetX,
   targetY,
   sourcePosition,
   targetPosition,
-  ...props
-}: EdgeProps) {
+}: EdgeProps<MindMapEdgeType>) {
   const [edgePath] = getSimpleBezierPath({
     sourceX,
     sourceY: sourceY + 36,
@@ -18,7 +25,7 @@ function MindMapEdge({
     targetPosition,
   });
 
-  return <BaseEdge path={edgePath} {...props} />;
+  return <BaseEdge id={id} path={edgePath} />;
 }
 
 export default MindMapEdge;
