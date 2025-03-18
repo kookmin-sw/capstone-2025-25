@@ -79,7 +79,14 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # deploy 디렉터리가 없으면 생성
+            mkdir -p ~/deploy 
             cd ~/deploy
+            
+            # 기존 컨테이너 중지 및 제거 (docker-compose.yml이 있을 경우만)
+            if [ -f "docker-compose.yml" ]; then
+              sudo docker-compose down
+            fi
 
             # 기존 docker-compose 중지 및 제거
             sudo docker-compose down || true
