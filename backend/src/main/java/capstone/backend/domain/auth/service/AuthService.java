@@ -17,6 +17,7 @@ public class AuthService {
 
     private final JwtProvider jwtProvider;
 
+    @Transactional
     public RefreshAccessTokenResponse refreshAccessToken(RefreshAccessTokenRequest request) {
         Optional<String> newAccessToken = jwtProvider.refreshAccessToken(request.token());
 
