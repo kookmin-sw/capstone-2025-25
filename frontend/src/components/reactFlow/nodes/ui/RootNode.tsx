@@ -1,13 +1,10 @@
 import { NodeProps } from '@xyflow/react';
 import { ListCheck } from 'lucide-react';
 import DragIcon from '@/components/reactFlow/nodes/ui/DragIcon';
-import { MindMapNodeData } from '@/types/mindMap';
+import { RootNodeType } from '@/types/mindMap';
 import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 
-export default function RootNode({
-  data,
-  selected,
-}: NodeProps<MindMapNodeData>) {
+export default function RootNode({ data, selected }: NodeProps<RootNodeType>) {
   return (
     <div
       className={`w-[267px] h-[146px] border border-black bg-white flex flex-col justify-center items-center rounded-lg relative group ${

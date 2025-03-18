@@ -12,7 +12,16 @@ export type MindMapNodeData = {
   recommendedQuestions?: string[];
 };
 
-export type MindMapNode = ReactFlowNode<MindMapNodeData>;
+export type RootNodeType = ReactFlowNode<MindMapNodeData, 'root'>;
+export type QuestionNodeType = ReactFlowNode<MindMapNodeData, 'question'>;
+export type AnswerNodeType = ReactFlowNode<MindMapNodeData, 'answer'>;
+export type SummaryNodeType = ReactFlowNode<MindMapNodeData, 'summary'>;
+
+export type MindMapNode =
+  | RootNodeType
+  | QuestionNodeType
+  | AnswerNodeType
+  | SummaryNodeType;
 
 export type MindMapEdge = ReactFlowEdge;
 

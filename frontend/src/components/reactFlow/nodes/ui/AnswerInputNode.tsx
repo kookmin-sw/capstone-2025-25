@@ -1,16 +1,16 @@
 import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
-import useStore from '@/store/mindmapStore';
-import { MindMapNodeData } from '@/types/mindMap';
+import useStore from '@/store/mindMapStore';
+import { AnswerNodeType } from '@/types/mindMap';
 import { NodeProps } from '@xyflow/react';
 import { Loader2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 
 export default function AnswerInputNode({
   id,
   data,
-}: NodeProps<MindMapNodeData>) {
+}: NodeProps<AnswerNodeType>) {
   const initialAnswer = data.answer || '';
 
   const [answer, setAnswer] = useState(initialAnswer);
@@ -26,7 +26,7 @@ export default function AnswerInputNode({
     setIsInputFilled(answer.trim() !== '');
   }, [answer]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
   };
 

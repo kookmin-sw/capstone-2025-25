@@ -1,10 +1,10 @@
 import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
-import useStore from '@/store/mindmapStore';
-import { MindMapNodeData } from '@/types/mindMap';
+import useStore from '@/store/mindMapStore';
+import { SummaryNodeType } from '@/types/mindMap';
 import { NodeProps } from '@xyflow/react';
 import { Pencil, X } from 'lucide-react';
 
-export default function SummaryNode({ id, data }: NodeProps<MindMapNodeData>) {
+export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
   const setNode = useStore((state) => state.setNode);
   const nodes = useStore((state) => state.nodes);
 

@@ -11,19 +11,18 @@ import {
 } from '@xyflow/react';
 import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
-import { shallow } from 'zustand/shallow';
-import { MindMapNodeData } from '@/types/mindMap';
+import { MindMapNode, MindMapNodeData } from '@/types/mindMap';
 
 export type RFState = {
-  nodes: Node<MindMapNodeData>[];
+  nodes: MindMapNode[];
   edges: Edge[];
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   addChildNode: (parentNode: Node, position: XYPosition) => void;
-  setNode: (nodeId: string, node: Node<MindMapNodeData>) => void;
+  setNode: (nodeId: string, node: MindMapNode) => void;
 };
 
-const initialNodes: Node<MindMapNodeData>[] = [
+const initialNodes: MindMapNode[] = [
   {
     id: '1',
     type: 'root',
@@ -65,7 +64,7 @@ const useStore = create<RFState>((set, get) => ({
 
   onNodesChange: (changes: NodeChange[]) => {
     set({
-      nodes: applyNodeChanges(changes, get().nodes),
+      nodes: applyNodeChanges(changes, get().nodes) as MindMapNode[],
     });
   },
 
@@ -76,11 +75,9 @@ const useStore = create<RFState>((set, get) => ({
   },
 
   addChildNode: (parentNode: Node, position: XYPosition) => {
-    console.log('Adding child node at position:', position);
+    const parentDepth = (parentNode.data as MindMapNodeData)?.depth || 0;
 
-    const parentDepth = parentNode.data?.depth || 0;
-
-    const newNode: Node<MindMapNodeData> = {
+    const newNode: MindMapNode = {
       id: nanoid(),
       type: 'question',
       data: {
@@ -97,8 +94,6 @@ const useStore = create<RFState>((set, get) => ({
       },
       position,
     };
-
-    console.log('Created new node:', newNode);
 
     const newEdge: Edge = {
       id: nanoid(),
@@ -124,8 +119,8 @@ const useStore = create<RFState>((set, get) => ({
   },
 }));
 
-export const useNodes = () => useStore((state) => state.nodes, shallow);
-export const useEdges = () => useStore((state) => state.edges, shallow);
+export const useNodes = () => useStore((state) => state.nodes);
+export const useEdges = () => useStore((state) => state.edges);
 export const useNodesChange = () => useStore((state) => state.onNodesChange);
 export const useEdgesChange = () => useStore((state) => state.onEdgesChange);
 export const useAddChildNode = () => useStore((state) => state.addChildNode);

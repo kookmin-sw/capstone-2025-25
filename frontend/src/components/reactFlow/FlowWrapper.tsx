@@ -15,10 +15,10 @@ import { useCallback, useRef } from 'react';
 import {
   useNodes,
   useEdges,
-  useNodesChange,
   useEdgesChange,
   useAddChildNode,
-} from '@/store/mindmapStore';
+  useNodesChange,
+} from '@/store/mindMapStore';
 import MindMapEdge from '@/components/reactFlow/edges';
 import SummaryNode from '@/components/reactFlow/nodes/ui/SummaryNode';
 import RootNode from '@/components/reactFlow/nodes/ui/RootNode';

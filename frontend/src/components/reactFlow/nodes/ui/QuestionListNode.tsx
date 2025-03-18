@@ -1,6 +1,6 @@
 import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
-import useStore from '@/store/mindmapStore';
-import { MindMapNodeData } from '@/types/mindMap';
+import useStore from '@/store/mindMapStore';
+import { QuestionNodeType } from '@/types/mindMap';
 import { NodeProps } from '@xyflow/react';
 import { X } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 export default function QuestionListNode({
   id,
   data,
-}: NodeProps<MindMapNodeData>) {
+}: NodeProps<QuestionNodeType>) {
   const questions = data.recommendedQuestions;
   const [displayedQuestions, setDisplayedQuestions] = useState<
     Array<{
@@ -38,7 +38,7 @@ export default function QuestionListNode({
   };
 
   useEffect(() => {
-    if (questions.length > 0) {
+    if (questions && questions.length > 0) {
       const initial = questions.slice(0, 3).map((text, index) => ({
         id: index,
         text,
