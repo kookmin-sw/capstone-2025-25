@@ -6,11 +6,13 @@ import capstone.backend.domain.auth.scheme.RefreshToken;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
@@ -22,6 +24,7 @@ public class JwtProvider {
 
     private final Key signingKey;
     private final Long accessTokenExpiration;
+    @Getter
     private final Long refreshTokenExpiration;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -30,8 +33,8 @@ public class JwtProvider {
                        @Value("${jwt.refresh-token.expiration}") Long refreshTokenExpiration,
                        RefreshTokenRepository refreshTokenRepository
     ) {
-        this.accessTokenExpiration = accessTokenExpiration;
-        this.refreshTokenExpiration = refreshTokenExpiration;
+        this.accessTokenExpiration = Duration.ofHours(accessTokenExpiration).toMillis();
+        this.refreshTokenExpiration = Duration.ofHours(refreshTokenExpiration).toMillis();
         this.refreshTokenRepository = refreshTokenRepository;
         this.signingKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
     }

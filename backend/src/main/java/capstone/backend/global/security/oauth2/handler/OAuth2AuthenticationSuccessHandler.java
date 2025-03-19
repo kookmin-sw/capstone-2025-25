@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
@@ -55,7 +54,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setSecure(true);  // HTTPS에서만 사용
         refreshTokenCookie.setPath("/");  // 모든 경로에서 쿠키 접근 가능
-        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 7일간 유효
+        refreshTokenCookie.setMaxAge((int) (jwtProvider.getRefreshTokenExpiration() / 1000)); // 초 단위
 
         response.addCookie(refreshTokenCookie);
 
