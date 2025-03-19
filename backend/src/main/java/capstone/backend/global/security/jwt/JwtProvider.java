@@ -1,85 +1,112 @@
 package capstone.backend.global.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import capstone.backend.domain.auth.repository.RefreshTokenRepository;
+import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.auth.scheme.RefreshToken;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Base64;
 import java.util.Date;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 
 @Slf4j
 @Component
 public class JwtProvider {
 
-    @Value("${jwt.secret-key}")
-    private String secretKey;
+    private final Key signingKey;
+    private final Long accessTokenExpiration;
+    @Getter
+    private final Long refreshTokenExpiration;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    @Value("${jwt.access-token.expiration}")
-    private long tokenValidityInHours;
-
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    public JwtProvider(@Value("${jwt.secret-key}") String secretKey,
+                       @Value("${jwt.access-token.expiration}") Long accessTokenExpiration,
+                       @Value("${jwt.refresh-token.expiration}") Long refreshTokenExpiration,
+                       RefreshTokenRepository refreshTokenRepository
+    ) {
+        this.accessTokenExpiration = Duration.ofHours(accessTokenExpiration).toMillis();
+        this.refreshTokenExpiration = Duration.ofHours(refreshTokenExpiration).toMillis();
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.signingKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
     }
 
-    // JWT 토큰 생성
-    // Claims 추가 필요
-    // userId를 Claims에 포함하여 JWT 생성
-    public String generateToken(String memberId) {
-        Date now = new Date();
-        long jwtExpirationMs = TimeUnit.HOURS.toMillis(tokenValidityInHours); // 만료 시간(밀리초 변환)
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
-
-        // Claims 객체 생성
-        Claims claims = Jwts.claims().setSubject(memberId);
-        claims.put("memberId", memberId);
-
+    public String generateAccessToken(Member member) {
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                .claim("email", member.getEmail())
+                .claim("username", member.getUsername())
+                .claim("role", member.getRole().toString())
+                .claim("provider", member.getProvider())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
+                .signWith(signingKey, SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    // userId 추출
-    public String extractToken(String token) {
-        return parseClaims(token).get("memberId", String.class);
+    public String generateRefreshToken(Member member) {
+        String refreshToken = Jwts.builder()
+                .claim("email", member.getEmail())
+                .claim("username", member.getUsername())
+                .claim("role", member.getRole().toString())
+                .claim("provider", member.getProvider())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .signWith(signingKey, SignatureAlgorithm.HS512)
+                .compact();
+
+        // 기존에 토큰이 있다면 업데이트, 없으면 생성.
+        refreshTokenRepository.findByMember(member)
+                .ifPresentOrElse(
+                        existingToken -> {
+                            existingToken.setToken(refreshToken);
+                            existingToken.setExpiryDate(Instant.now().plusMillis(refreshTokenExpiration));
+                            refreshTokenRepository.save(existingToken);
+                        },
+                        () -> refreshTokenRepository.save(
+                                RefreshToken.create(member, refreshToken, Instant.now().plusMillis(refreshTokenExpiration))
+                        )
+                );
+
+        return refreshToken;
     }
 
-    // 토큰에서 Claims 추출
-    private Claims parseClaims(String token) {
+    // token 내 정보 추출
+    public Claims getClaimsByToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    // 토큰 유효성 검증
+    // Access Token 재발급
+    public Optional<String> refreshAccessToken(String refreshToken) {
+        return refreshTokenRepository.findByToken(refreshToken)
+                .filter(token -> !token.isExpired())
+                .map(token -> generateAccessToken(token.getMember()));
+    }
+
+
     public boolean validateToken(String token) {
-        if (Objects.isNull(token) || token.trim().isEmpty()) {
-            log.error("JWT token is null or empty");
-            return false;
-        }
-
         try {
-            Claims claims = parseClaims(token);
-
-            if (claims.getExpiration().before(new Date())) {
-                log.error("JWT token has expired");
-                return false;
-            }
-
+            Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
+        } catch (JwtException e) {
             log.error("Invalid JWT token: ", e);
             return false;
         }
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        return (bearerToken != null && bearerToken.startsWith("Bearer ")) ? bearerToken.substring(7) : null;
     }
 }

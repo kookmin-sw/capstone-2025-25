@@ -14,12 +14,17 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    @Value("${baseUrl.client}")
-    private String clientUrl;
+    private final String ERROR_URL;
+
+    public OAuth2AuthenticationFailureHandler(
+            @Value("${url.base.client}") String clientDomain,
+            @Value("${url.path.client.callback}") String errorEndpoint
+    ) {
+        this.ERROR_URL = clientDomain + errorEndpoint;
+    }
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -32,7 +37,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
         log.error("error : {}", errorMessage);
 
         // 인코딩된 메세지를 queryParam 에 추가
-        String targetUrl = UriComponentsBuilder.fromUriString(clientUrl + "/login/callback")
+        String targetUrl = UriComponentsBuilder.fromUriString(ERROR_URL)
                 .queryParam("error", errorMessage)
                 .build().toUriString();
 
