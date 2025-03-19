@@ -4,4 +4,39 @@
   /* 버튼 색상 */
   --color-button-primary: #ffe277;
   --color-button-disabled: #e7e7e7;
+
+  /* Gray Colors */
+  --color-gray-100: #fafafa;
+  --color-gray-200: #fafafa;
+  --color-gray-300: #e5e5e5;
+  --color-gray-400: #cecfcd;
+  --color-gray-500: #c8c8c8;
+  --color-gray-600: #aaaaaa;
+  --color-gray-700: #6e726e;
+  --color-gray-800: #3b3d3b;
+
+  /* Primary Colors */
+  --color-primary-10: #fff7921a; /* opacity 10 */
+  --color-primary-20: #fff79233; /* opacity 20 */
+  --color-primary-50: #fff79280; /* opacity 50 */
+  --color-primary-70: #fff792b3; /* opacity 70 */
+  --color-primary-100: #fff792;
+
+  /* Secondary Colors */
+  --color-secondary-80: #ff9718cc; /* opacity 80 */
+  --color-secondary-100: #ff9718;
+
+  /* Font Sizes */
+  --font-heading-1: 32px;
+  --font-heading-2: 28px;
+  --font-heading-3: 22px;
+  --font-heading-4: 18px;
+  --font-heading-5: 16px;
+  --font-heading-6: 14px;
+  --font-body-1: 16px;
+  --font-body-2: 14px;
+  --font-body-3: 12px;
+
+  /* Font Family */
+  --font-primary: 'Inter', sans-serif;
 }
