@@ -1,16 +1,16 @@
 package capstone.backend.global.security.oauth2.handler;
 
+import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
-import capstone.backend.global.api.exception.ApiException;
 import capstone.backend.global.security.jwt.JwtProvider;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -43,16 +43,22 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         log.info("OAuth2 로그인 성공");
 
-        Member member = memberRepository.findByEmail(oAuth2User.getEmail()).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "유저 정보를 찾을 수 없습니다."));
+        Member member = memberRepository.findByEmail(oAuth2User.getEmail()).orElseThrow(MemberNotFoundException::new);
 
         String accessToken = jwtProvider.generateAccessToken(member);
         String refreshToken = jwtProvider.generateRefreshToken(member);
-        String redirectUrl = UriComponentsBuilder.fromUriString(CALLBACK_URL)
-                .queryParam("accessToken", accessToken)
-                .queryParam("refreshToken", refreshToken)
-                .build().toUriString();
 
-        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+        response.setHeader("Authorization", "Bearer " + accessToken);
+
+        // HTTP Only & Secure 쿠키에 리프레시 토큰 추가
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);  // HTTPS에서만 사용
+        refreshTokenCookie.setPath("/");  // 모든 경로에서 쿠키 접근 가능
+        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 7일간 유효
+
+        response.addCookie(refreshTokenCookie);
+
+        getRedirectStrategy().sendRedirect(request, response, CALLBACK_URL);
     }
-
 }
