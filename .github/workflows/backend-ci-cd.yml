@@ -75,30 +75,30 @@ jobs:
       - name: SSH into EC2 and deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}  # 개발 환경 EC2
+          host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # deploy 디렉터리가 없으면 생성
+            # deploy 디렉터리 생성
             mkdir -p ~/deploy 
             cd ~/deploy
-            
+
+            # EC2에서 Docker Hub 로그인 (Private Repo 접근)
+            echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
             # 기존 컨테이너 중지 및 제거 (docker-compose.yml이 있을 경우만)
             if [ -f "docker-compose.yml" ]; then
               sudo docker-compose down
             fi
 
-            # 기존 docker-compose 중지 및 제거
-            sudo docker-compose down || true
-
-            # 최신 docker-compose.yml 다운로드 (필요하면 수정)
+            # 최신 docker-compose.yml 다운로드
             curl -O https://raw.githubusercontent.com/${{ github.repository }}/develop/backend/docker-compose.yml
 
-            # 최신 이미지 pull
+            # 최신 Docker 이미지 가져오기
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/iambohyun:${{ github.sha }}
 
-            # docker-compose 실행
-            sudo docker-compose up -d --force-recreate --remove-orphans
-
-            # 불필요한 Docker 이미지 정리
+            # 기존의 오래된 이미지 제거
             sudo docker image prune -f
+
+            # docker-compose 실행 (최신 이미지 반영)
+            sudo docker-compose up -d --force-recreate --remove-orphans
