@@ -1,5 +1,6 @@
 package capstone.backend.global.redis.cache;
 
+import capstone.backend.mindmap.repository.MindMapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -13,18 +14,18 @@ public class MindMapCacheService {
 
     private final MindMapRepository mindMapRepository;
 
-    @Cacheable(value = "mindmap", key = "#userId")
-    public Optional<MindMap> getMindMap(String userId) {
-        return mindMapRepository.findByUserId(userId);
-    }
-
-    @CachePut(value = "mindmap", key = "#mindMap.userId")
-    public MindMap saveOrUpdateMindMap(MindMap mindMap) {
-        return mindMapRepository.save(mindMap);
-    }
-
-    @CacheEvict(value = "mindmap", key = "#userId")
-    public void deleteMindMap(String userId) {
-        mindMapRepository.deleteByUserId(userId);
-    }
+//    @Cacheable(value = "mindmap", key = "#userId")
+//    public Optional<MindMap> getMindMap(String userId) {
+//        return mindMapRepository.findByUserId(userId);
+//    }
+//
+//    @CachePut(value = "mindmap", key = "#mindMap.userId")
+//    public MindMap saveOrUpdateMindMap(MindMap mindMap) {
+//        return mindMapRepository.save(mindMap);
+//    }
+//
+//    @CacheEvict(value = "mindmap", key = "#userId")
+//    public void deleteMindMap(String userId) {
+//        mindMapRepository.deleteByUserId(userId);
+//    }
 }
