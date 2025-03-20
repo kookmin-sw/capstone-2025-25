@@ -1,21 +1,16 @@
-import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
+from config import CORS_ORIGINS
 from routes import gpt
 from utils.logging import setup_logging
 
 app = FastAPI()
-# 허용할 도메인 설정
-origins = [
-    "http://localhost:3000",  # 프론트엔드 (React 개발 서버)
-    "http://127.0.0.1:3000"   # 다른 로컬 접근 방식도 고려
-]
 
 # CORS 설정 적용
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # 허용할 출처 리스트
+    allow_origins=CORS_ORIGINS,  # 허용할 출처 리스트
     allow_credentials=True,  # 쿠키 포함 허용 (JWT 인증 사용 시 필요)
     allow_methods=["*"],  # 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
     allow_headers=["*"],  # 모든 헤더 허용
