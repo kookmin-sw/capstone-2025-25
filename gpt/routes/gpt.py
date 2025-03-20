@@ -4,6 +4,8 @@ from config import OPENAI_API_KEY
 from models.request import GPTRequest, MindMapRequest, NodeSummaryRequest
 import json
 
+from utils.mindmap import build_mindmap_tree, format_tree_for_gpt
+
 router = APIRouter()
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
@@ -59,7 +61,7 @@ async def generate_schedule_node(request: GPTRequest):
         return {"generated_questions": clean_questions}
 
     except HTTPException as e:
-        raise e  # 명시적으로 정의한 400 에러 반환
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -113,34 +115,6 @@ async def generate_thought_node(request: GPTRequest):
         raise e  # 명시적으로 정의한 400 에러 반환
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-# 마인드맵 데이터를 GPT 요청용 문자열로 변환하는 함수
-
-# 노드 리스트를 부모-자식 관계로 변환하는 함수
-def build_mindmap_tree(nodes):
-    """ 노드 리스트를 트리 구조로 변환 """
-    node_dict = {node.id: {"summary": node.summary, "children": []} for node in nodes}
-
-    root_node = None
-
-    for node in nodes:
-        if node.parentId is None:
-            root_node = node_dict[node.id]  # 루트 노드 찾기
-        else:
-            node_dict[node.parentId]["children"].append(node_dict[node.id])  # 부모-자식 연결
-
-    return root_node
-
-
-# 트리 구조를 GPT 입력용 계층형 텍스트로 변환
-def format_tree_for_gpt(node, depth=0):
-    indent = "  " * depth  # 들여쓰기 설정
-    text = f"{indent}- {node['summary']}\n"
-
-    for child in node["children"]:
-        text += format_tree_for_gpt(child, depth + 1)
-
-    return text
 
 
 # 일정 마인드맵을 TODO 리스트로 변환
