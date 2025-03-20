@@ -1,5 +1,4 @@
 import {
-  Edge,
   EdgeChange,
   Node,
   NodeChange,
@@ -11,11 +10,11 @@ import {
 } from '@xyflow/react';
 import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
-import { MindMapNode, MindMapNodeData } from '@/types/mindMap';
+import { MindMapEdge, MindMapNode, MindMapNodeData } from '@/types/mindMap';
 
 export type RFState = {
   nodes: MindMapNode[];
-  edges: Edge[];
+  edges: MindMapEdge[];
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   addChildNode: (parentNode: Node, position: XYPosition) => void;
@@ -43,7 +42,7 @@ const initialNodes: MindMapNode[] = [
   },
 ];
 
-const initialEdges: Edge[] = [
+const initialEdges: MindMapEdge[] = [
   {
     id: 'e1-2',
     source: '1',
@@ -95,7 +94,7 @@ const useStore = create<RFState>((set, get) => ({
       position,
     };
 
-    const newEdge: Edge = {
+    const newEdge: MindMapEdge = {
       id: nanoid(),
       source: parentNode.id,
       target: newNode.id,
