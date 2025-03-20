@@ -1,18 +1,17 @@
 import logging
-
 from fastapi import FastAPI, Request
 from routes import gpt
+from utils.logging import setup_logging
 
 app = FastAPI()
+
+# 로깅 설정
+logger = setup_logging()
 
 # 엔드포인트 등록
 app.include_router(gpt.router)
 
-# 로그 설정
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# ✅ 요청 실행 시간 로깅 미들웨어
+# 요청 실행 시간 로깅 미들웨어
 @app.middleware("http")
 async def log_request_time(request: Request, call_next):
     import time
