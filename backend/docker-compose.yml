@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: spring-app
+    image: ${{ secrets.DOCKER_USERNAME }}/iambohyun:${{ github.sha }}
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${{ secrets.RDS_ENDPOINT }}:5432/your_database
+      SPRING_DATASOURCE_USERNAME: ${{ secrets.RDS_USERNAME }}
+      SPRING_DATASOURCE_PASSWORD: ${{ secrets.RDS_PASSWORD }}
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    depends_on:
+      - redis
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
