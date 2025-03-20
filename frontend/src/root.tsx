@@ -2,6 +2,11 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import '@/styles/index.css';
 import '@/styles/shadcn-global.css';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+const queryClient = new QueryClient();
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -22,5 +27,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function Root() {
-  return <Outlet />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={false} />
+      <Outlet />;
+    </QueryClientProvider>
+  );
 }
