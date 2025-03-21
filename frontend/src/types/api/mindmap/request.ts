@@ -1,3 +1,5 @@
+import { MindMapNode } from '@/types/mindMap';
+
 export type GeneratedScheduleReq = {
   mainNode?: {
     summary: string;
@@ -22,14 +24,8 @@ export type GeneratedThoughtReq = {
   };
 };
 
-/* TODO: 마인드맵 UI PR 머지되면 MindMapNode Type으로 변경 필요 */
 export type ConvertedScheduleTodoReq = {
-  nodes: {
-    id: string;
-    parentId: string;
-    type: string;
-    summary: string;
-  }[];
+  nodes: MindMapNode[];
 };
 
 export type ConvertedThoughtListReq = {
