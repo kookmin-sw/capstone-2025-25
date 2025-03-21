@@ -65,14 +65,22 @@ public class JwtProvider {
     }
 
     public String refreshAccessToken(String refreshToken) {
-        String id = getClaimsByToken(refreshToken).get("id").toString();
-        String storedToken = redisService.getRefreshToken(id);
+        try {
+            String id = getClaimsByToken(refreshToken).get("id", String.class);
+            String storedToken = redisService.getRefreshToken(id);
 
-        if (storedToken != null && storedToken.equals(refreshToken)) {
-            return generateAccessToken(id);
+            if (storedToken != null && storedToken.equals(refreshToken)) {
+                return generateAccessToken(id);
+            }
+
+            return null;
+        } catch (ExpiredJwtException e) {
+            log.error("Refresh token expired");
+            return null;
+        } catch (JwtException e) {
+            log.error("잘못된 JWT 서명: ", e);
+            return null;
         }
-
-        return null;
     }
 
     public boolean validateToken(String token) {
