@@ -3,7 +3,7 @@ version: "3.8"
 services:
   app:
     container_name: spring-app
-    image: ${{ secrets.DOCKER_USERNAME }}/iambohyun:${{ github.sha }}
+    image: "${DOCKER_USERNAME}/iambohyun:${GITHUB_SHA}"
     restart: always
     ports:
       - "8080:8080"
