@@ -1,10 +1,12 @@
 package capstone.backend.mindmap.service;
 
+import capstone.backend.global.api.exception.ApiException;
 import capstone.backend.mindmap.dto.request.MindMapRequest;
 import capstone.backend.mindmap.dto.response.MindMapResponse;
 import capstone.backend.mindmap.entity.*;
 import capstone.backend.mindmap.repository.MindMapRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +29,7 @@ public class MindMapService {
                 .id(mindMap.getMindmapId())
                 .title(mindMap.getTitle())
                 .build())
-            .orElseThrow(() -> new IllegalArgumentException("MindMap을 찾을 수 없습니다. ID: " + id));
+            .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "MindMap을 찾을 수 없습니다. ID: " + id));
     }
 
 }
