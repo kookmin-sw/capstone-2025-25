@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MindMapService {
     private final MindMapRepository mindMapRepository;
 
@@ -22,7 +23,6 @@ public class MindMapService {
         return mindMap.getMindmapId();
     }
 
-    @Transactional(readOnly = true)
     public MindMapResponse getMindMapById(Long id){
         return mindMapRepository.findById(id)
             .map(mindMap -> MindMapResponse.builder()
