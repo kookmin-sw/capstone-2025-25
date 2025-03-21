@@ -43,11 +43,11 @@ public class MindMap {
     private MindMapType type; // TODO / THINKING
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb", nullable = false, name = "nodes") //string으로 바꾸기
+    @Column(columnDefinition = "text", nullable = false, name = "nodes") //string으로 바꾸기
     private List<Node> nodes;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb", name = "edges")
+    @Column(columnDefinition = "text", name = "edges")
     private List<Edge> edges;
 
     public static MindMap createMindMap(MindMapRequest mindMapRequest) {
