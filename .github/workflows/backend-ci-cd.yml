@@ -43,7 +43,7 @@ jobs:
       - name: Docker Image Build
         run: |
           cd backend
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/iambohyun:${{ github.sha }} .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/iambohyun:latest .
 
       - name: DockerHub 로그인
         uses: docker/login-action@v3
@@ -52,7 +52,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Docker Hub Push
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/iambohyun:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/iambohyun:latest
 
   deploy-to-ec2:
     needs: build-docker-image
@@ -89,7 +89,7 @@ jobs:
             curl -O https://raw.githubusercontent.com/${{ github.repository }}/develop/backend/docker-compose.yml
 
             # 최신 Docker 이미지 가져오기
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/iambohyun:${{ github.sha }}
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/iambohyun:latest
 
             # 오래된 이미지 제거
             sudo docker image prune -f
