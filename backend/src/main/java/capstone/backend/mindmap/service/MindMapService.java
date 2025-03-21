@@ -21,16 +21,16 @@ public class MindMapService {
     @Transactional
     public Long createMindMap(MindMapRequest mindMapRequest) {
         MindMap mindMap = new MindMap();
-        mindMap.setOrderIndex(mindMapRequest.getOrderIndex());
-        mindMap.setType(mindMapRequest.getType());
-        mindMap.setToDoDate(mindMapRequest.getToDoDate());
-        mindMap.setTitle(mindMapRequest.getTitle());
+        mindMap.setOrderIndex(mindMapRequest.orderIndex());
+        mindMap.setType(mindMapRequest.type());
+        mindMap.setToDoDate(mindMapRequest.toDoDate());
+        mindMap.setTitle(mindMapRequest.title());
         mindMap.setLastModifiedAt(LocalDateTime.now());
-        mindMap.setMemberId(mindMapRequest.getMemberId());
+        mindMap.setMemberId(mindMapRequest.memberId());
 
         // 노드 리스트가 있다면 추가
-        if (mindMapRequest.getNodes() != null) {
-            mindMap.setNodes(mindMapRequest.getNodes());
+        if (mindMapRequest.nodes() != null) {
+            mindMap.setNodes(mindMapRequest.nodes());
         }
 
         MindMap savedMindMap = mindMapRepository.save(mindMap);

@@ -2,18 +2,17 @@ package capstone.backend.mindmap.dto.request;
 
 import capstone.backend.mindmap.entity.MindMapType;
 import capstone.backend.mindmap.entity.Node;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
 
-@Getter
-@Setter
-public class MindMapRequest {
-    private int orderIndex;
-    private MindMapType type;
-    private LocalDate toDoDate;
-    private String title;
-    private Long memberId;
-    private List<Node> nodes;
-}
+@Builder
+public record MindMapRequest(
+    int orderIndex,
+    @NotNull MindMapType type,
+    @NotNull LocalDate toDoDate,
+    @NotNull String title,
+    @NotNull Long memberId,
+    List<Node> nodes
+) {}
