@@ -1,4 +1,4 @@
-package capstone.backend.mindmap.exception;
+package capstone.backend.domain.mindmap.exception;
 
 import capstone.backend.global.api.exception.ApiException;
 import org.springframework.http.HttpStatus;

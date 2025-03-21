@@ -1,4 +1,4 @@
-package capstone.backend.mindmap.entity;
+package capstone.backend.domain.mindmap.entity;
 
 public enum NodeType {
     ROOT,

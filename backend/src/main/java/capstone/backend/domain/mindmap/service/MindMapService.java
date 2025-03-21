@@ -1,10 +1,10 @@
-package capstone.backend.mindmap.service;
+package capstone.backend.domain.mindmap.service;
 
-import capstone.backend.mindmap.dto.request.MindMapRequest;
-import capstone.backend.mindmap.dto.response.MindMapResponse;
-import capstone.backend.mindmap.entity.*;
-import capstone.backend.mindmap.exception.MindMapNotFoundException;
-import capstone.backend.mindmap.repository.MindMapRepository;
+import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
+import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
+import capstone.backend.domain.mindmap.entity.MindMap;
+import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
+import capstone.backend.domain.mindmap.repository.MindMapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

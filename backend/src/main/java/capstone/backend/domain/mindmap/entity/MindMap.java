@@ -1,6 +1,6 @@
-package capstone.backend.mindmap.entity;
+package capstone.backend.domain.mindmap.entity;
 
-import capstone.backend.mindmap.dto.request.MindMapRequest;
+import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;

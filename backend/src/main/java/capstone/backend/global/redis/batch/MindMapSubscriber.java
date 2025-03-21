@@ -1,7 +1,7 @@
 package capstone.backend.global.redis.batch;
 
-import capstone.backend.mindmap.entity.MindMap;
-import capstone.backend.mindmap.repository.MindMapRepository;
+import capstone.backend.domain.mindmap.entity.MindMap;
+import capstone.backend.domain.mindmap.repository.MindMapRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;

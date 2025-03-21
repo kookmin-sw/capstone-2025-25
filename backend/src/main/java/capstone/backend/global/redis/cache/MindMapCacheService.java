@@ -1,10 +1,7 @@
 package capstone.backend.global.redis.cache;
 
-import capstone.backend.mindmap.repository.MindMapRepository;
+import capstone.backend.domain.mindmap.repository.MindMapRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 

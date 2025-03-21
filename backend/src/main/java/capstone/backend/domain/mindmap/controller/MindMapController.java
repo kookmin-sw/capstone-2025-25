@@ -1,9 +1,9 @@
-package capstone.backend.mindmap.controller;
+package capstone.backend.domain.mindmap.controller;
 
 import capstone.backend.global.api.dto.ApiResponse;
-import capstone.backend.mindmap.dto.request.MindMapRequest;
-import capstone.backend.mindmap.dto.response.MindMapResponse;
-import capstone.backend.mindmap.service.MindMapService;
+import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
+import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
+import capstone.backend.domain.mindmap.service.MindMapService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
