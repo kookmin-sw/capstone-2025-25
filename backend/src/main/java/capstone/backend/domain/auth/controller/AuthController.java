@@ -23,5 +23,4 @@ public class AuthController {
     ) {
         return ApiResponse.ok(authService.refreshAccessToken(refreshToken));
     }
-
 }
