@@ -4,13 +4,13 @@ import capstone.backend.mindmap.dto.request.MindMapRequest;
 import capstone.backend.mindmap.dto.response.MindMapResponse;
 import capstone.backend.mindmap.entity.*;
 import capstone.backend.mindmap.repository.MindMapRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class MindMapService {
-    @Autowired
     private MindMapRepository mindMapRepository;
 
     public MindMapService(MindMapRepository mindMapRepository) {
@@ -24,6 +24,7 @@ public class MindMapService {
         return mindMap.getMindmapId();
     }
 
+    @Transactional(readOnly = true)
     public MindMapResponse getMindMapById(Long id){
         return mindMapRepository.findById(id)
             .map(mindMap -> MindMapResponse.builder()
