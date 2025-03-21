@@ -11,11 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MindMapService {
-    private MindMapRepository mindMapRepository;
-
-    public MindMapService(MindMapRepository mindMapRepository) {
-        this.mindMapRepository = mindMapRepository;
-    }
+    private final MindMapRepository mindMapRepository;
 
     @Transactional
     public Long createMindMap(MindMapRequest mindMapRequest) {
