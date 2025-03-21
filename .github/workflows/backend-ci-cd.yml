@@ -93,4 +93,4 @@ jobs:
             sudo docker image prune -f
 
             # docker-compose 실행 (최신 이미지 반영)
-            sudo -E docker-compose up -d --force-recreate --remove-orphans
+            sudo -E docker-compose up -d --force-recreate --remove-orphans 
