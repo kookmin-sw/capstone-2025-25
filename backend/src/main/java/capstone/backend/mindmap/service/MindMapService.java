@@ -4,7 +4,6 @@ import capstone.backend.mindmap.dto.request.MindMapRequest;
 import capstone.backend.mindmap.dto.response.MindMapResponse;
 import capstone.backend.mindmap.entity.*;
 import capstone.backend.mindmap.repository.MindMapRepository;
-import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,21 +19,9 @@ public class MindMapService {
 
     @Transactional
     public Long createMindMap(MindMapRequest mindMapRequest) {
-        MindMap mindMap = new MindMap();
-        mindMap.setOrderIndex(mindMapRequest.orderIndex());
-        mindMap.setType(mindMapRequest.type());
-        mindMap.setToDoDate(mindMapRequest.toDoDate());
-        mindMap.setTitle(mindMapRequest.title());
-        mindMap.setLastModifiedAt(LocalDateTime.now());
-        mindMap.setMemberId(mindMapRequest.memberId());
-
-        // 노드 리스트가 있다면 추가
-        if (mindMapRequest.nodes() != null) {
-            mindMap.setNodes(mindMapRequest.nodes());
-        }
-
-        MindMap savedMindMap = mindMapRepository.save(mindMap);
-        return savedMindMap.getMindmapId();
+        MindMap mindMap = MindMap.createMindMap(mindMapRequest);
+        mindMapRepository.save(mindMap);
+        return mindMap.getMindmapId();
     }
 
     public MindMapResponse getMindMapById(Long id){
