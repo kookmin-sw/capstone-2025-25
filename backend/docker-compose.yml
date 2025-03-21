@@ -3,7 +3,7 @@ version: "3.8"
 services:
   app:
     container_name: spring-app
-    image: "${DOCKER_USERNAME}/iambohyun:${GITHUB_SHA}"
+    image: "${DOCKER_USERNAME}/iambohyun:latest"
     restart: always
     ports:
       - "8080:8080"
