@@ -74,6 +74,10 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            
+            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
+            export GITHUB_SHA="${{ github.sha }}"
+            
             # deploy 디렉터리 생성
             mkdir -p ~/deploy 
             cd ~/deploy
