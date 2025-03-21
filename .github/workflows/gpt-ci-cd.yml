@@ -6,11 +6,6 @@ on:
       - develop
     paths:
       - 'gpt/**'
-  pull_request:
-    branches:
-      - develop
-    paths:
-      - 'gpt/**'
   workflow_dispatch:
 
 jobs:

@@ -1,6 +1,6 @@
-package capstone.backend.mindmap.repository;
+package capstone.backend.domain.mindmap.repository;
 
-import capstone.backend.mindmap.entity.MindMap;
+import capstone.backend.domain.mindmap.entity.MindMap;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

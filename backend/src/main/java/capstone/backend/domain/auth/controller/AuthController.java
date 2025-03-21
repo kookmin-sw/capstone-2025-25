@@ -19,9 +19,9 @@ public class AuthController {
     @PostMapping("/refresh-token")
     @Operation(summary = "Access Token 재발급")
     public ApiResponse<RefreshAccessTokenResponse> refreshToken(
-            @RequestBody @Valid RefreshAccessTokenRequest request
+            @CookieValue(value = "refreshToken", required = false) String refreshToken
     ) {
-        return ApiResponse.ok(authService.refreshAccessToken(request));
+        return ApiResponse.ok(authService.refreshAccessToken(refreshToken));
     }
 
 }

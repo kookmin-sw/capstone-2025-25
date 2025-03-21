@@ -44,8 +44,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         Member member = memberRepository.findByEmail(oAuth2User.getEmail()).orElseThrow(MemberNotFoundException::new);
 
-        String accessToken = jwtProvider.generateAccessToken(member);
-        String refreshToken = jwtProvider.generateRefreshToken(member);
+        String memberId = member.getId().toString();
+
+        String accessToken = jwtProvider.generateAccessToken(memberId);
+        String refreshToken = jwtProvider.generateRefreshToken(memberId);
 
         response.setHeader("Authorization", "Bearer " + accessToken);
 

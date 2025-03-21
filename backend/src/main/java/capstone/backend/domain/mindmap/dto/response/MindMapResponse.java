@@ -1,4 +1,4 @@
-package capstone.backend.mindmap.dto.response;
+package capstone.backend.domain.mindmap.dto.response;
 
 import lombok.Builder;
 import java.time.LocalDate;

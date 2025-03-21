@@ -1,4 +1,4 @@
-package capstone.backend.mindmap.entity;
+package capstone.backend.domain.mindmap.entity;
 
 import java.util.List;
 import lombok.Getter;
