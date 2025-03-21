@@ -65,10 +65,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          envs: DOCKER_USERNAME, GITHUB_SHA, RDS_ENDPOINT, RDS_USERNAME, RDS_PASSWORD
           script: |
             export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
-            export GITHUB_SHA="${{ github.sha }}"
             export RDS_ENDPOINT="${{ secrets.RDS_ENDPOINT }}"
             export RDS_USERNAME="${{ secrets.RDS_USERNAME }}"
             export RDS_PASSWORD="${{ secrets.RDS_PASSWORD }}"
@@ -95,4 +93,4 @@ jobs:
             sudo docker image prune -f
 
             # docker-compose 실행 (최신 이미지 반영)
-            sudo docker-compose up -d --force-recreate --remove-orphans
+            sudo -E docker-compose up -d --force-recreate --remove-orphans
