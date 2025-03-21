@@ -1,103 +1,83 @@
 package capstone.backend.global.security.jwt;
 
-import capstone.backend.domain.auth.repository.RefreshTokenRepository;
-import capstone.backend.domain.member.scheme.Member;
-import capstone.backend.domain.auth.scheme.RefreshToken;
+import capstone.backend.global.property.JwtProperty;
+import capstone.backend.global.redis.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Optional;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
 
-    private final Key signingKey;
-    private final Long accessTokenExpiration;
-    @Getter
-    private final Long refreshTokenExpiration;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtProperty jwtProperty;
+    private final RedisService redisService;
 
-    public JwtProvider(@Value("${jwt.secret-key}") String secretKey,
-                       @Value("${jwt.access-token.expiration}") Long accessTokenExpiration,
-                       @Value("${jwt.refresh-token.expiration}") Long refreshTokenExpiration,
-                       RefreshTokenRepository refreshTokenRepository
-    ) {
-        this.accessTokenExpiration = Duration.ofHours(accessTokenExpiration).toMillis();
-        this.refreshTokenExpiration = Duration.ofHours(refreshTokenExpiration).toMillis();
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.signingKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtProperty.getSecretKey()));
     }
 
-    public String generateAccessToken(Member member) {
+    private Long getAccessTokenExpiration() {
+        return jwtProperty.getAccessToken().getExpiration() * 3600 * 1000; // milliSecond
+    }
+
+    public Long getRefreshTokenExpiration() {
+        return jwtProperty.getRefreshToken().getExpiration() * 3600 * 1000; // milliSecond
+    }
+
+    public String generateAccessToken(String memberId) {
         return Jwts.builder()
-                .claim("email", member.getEmail())
-                .claim("username", member.getUsername())
-                .claim("role", member.getRole().toString())
-                .claim("provider", member.getProvider())
+                .claim("id", memberId)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
-                .signWith(signingKey, SignatureAlgorithm.HS512)
+                .setExpiration(new Date(System.currentTimeMillis() + getAccessTokenExpiration()))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    public String generateRefreshToken(Member member) {
+    public String generateRefreshToken(String memberId) {
         String refreshToken = Jwts.builder()
-                .claim("email", member.getEmail())
-                .claim("username", member.getUsername())
-                .claim("role", member.getRole().toString())
-                .claim("provider", member.getProvider())
+                .claim("id", memberId)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
-                .signWith(signingKey, SignatureAlgorithm.HS512)
+                .setExpiration(new Date(System.currentTimeMillis() + getRefreshTokenExpiration()))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
 
-        // 기존에 토큰이 있다면 업데이트, 없으면 생성.
-        refreshTokenRepository.findByMember(member)
-                .ifPresentOrElse(
-                        existingToken -> {
-                            existingToken.setToken(refreshToken);
-                            existingToken.setExpiryDate(Instant.now().plusMillis(refreshTokenExpiration));
-                            refreshTokenRepository.save(existingToken);
-                        },
-                        () -> refreshTokenRepository.save(
-                                RefreshToken.create(member, refreshToken, Instant.now().plusMillis(refreshTokenExpiration))
-                        )
-                );
+        // Redis에 저장 (key: memberId, value: refreshToken, 만료시간 설정)
+        redisService.saveRefreshToken(memberId, refreshToken);
 
         return refreshToken;
     }
 
-    // token 내 정보 추출
     public Claims getClaimsByToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(signingKey)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    // Access Token 재발급
-    public Optional<String> refreshAccessToken(String refreshToken) {
-        return refreshTokenRepository.findByToken(refreshToken)
-                .filter(token -> !token.isExpired())
-                .map(token -> generateAccessToken(token.getMember()));
-    }
+    public String refreshAccessToken(String refreshToken) {
+        String id = getClaimsByToken(refreshToken).get("id").toString();
+        String storedToken = redisService.getRefreshToken(id);
 
+        if (storedToken != null && storedToken.equals(refreshToken)) {
+            return generateAccessToken(id);
+        }
+
+        return null;
+    }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
             return true;
         } catch (JwtException e) {
             log.error("Invalid JWT token: ", e);
