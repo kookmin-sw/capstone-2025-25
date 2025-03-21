@@ -6,11 +6,6 @@ on:
       - develop  # develop 브랜치 기준으로 실행
     paths:
       - 'backend/**'  # 백엔드 폴더 내부 파일이 변경될 때만 실행
-  pull_request:
-    branches:
-      - develop
-    paths:
-      - 'backend/**'
 
 jobs:
   build-docker-image:
