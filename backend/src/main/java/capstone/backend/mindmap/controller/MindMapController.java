@@ -5,7 +5,6 @@ import capstone.backend.mindmap.dto.request.MindMapRequest;
 import capstone.backend.mindmap.dto.response.MindMapResponse;
 import capstone.backend.mindmap.service.MindMapService;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,15 +22,15 @@ public class MindMapController {
     }
 
     @PostMapping("/root")
-    public ResponseEntity<ApiResponse<String>> createRootNode(@Valid @RequestBody MindMapRequest mindMapRequest) {
+    public ApiResponse<String> createRootNode(@Valid @RequestBody MindMapRequest mindMapRequest) {
         Long mindMapId = mindMapService.createMindMap(mindMapRequest);
-        return ResponseEntity.ok(ApiResponse.ok("MindMap이 생성되었습니다. ID: " + mindMapId));
+        return ApiResponse.ok("MindMap이 생성되었습니다. ID: " + mindMapId);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<MindMapResponse>> getMindMap(@PathVariable Long id) {
+    public ApiResponse<MindMapResponse> getMindMap(@PathVariable Long id) {
         MindMapResponse response = mindMapService.getMindMapById(id);
-        return ResponseEntity.ok(ApiResponse.ok(response));
+        return ApiResponse.ok(response);
     }
 
 }
