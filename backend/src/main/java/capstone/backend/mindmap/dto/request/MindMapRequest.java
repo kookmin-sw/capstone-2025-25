@@ -2,6 +2,7 @@ package capstone.backend.mindmap.dto.request;
 
 import capstone.backend.mindmap.entity.MindMapType;
 import capstone.backend.mindmap.entity.Node;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,7 +13,7 @@ public record MindMapRequest(
     int orderIndex,
     @NotNull MindMapType type,
     @NotNull LocalDate toDoDate,
-    @NotNull String title,
+    @NotBlank String title,
     @NotNull Long memberId,
     List<Node> nodes
 ) {}
