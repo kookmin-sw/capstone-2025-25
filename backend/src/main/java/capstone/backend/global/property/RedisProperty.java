@@ -1,9 +1,12 @@
 package capstone.backend.global.property;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import java.time.Duration;
 
 @Data
 @Component
@@ -13,16 +16,16 @@ public class RedisProperty {
     @NotBlank
     private String host;
 
-    @NotBlank
+    @NotNull
     private int port;
 
     @NotBlank
     private String password;
 
-    @NotBlank
-    private String connectTimeout;
+    @NotNull
+    private Duration connectTimeout;
 
-    @NotBlank
-    private String timeout;
+    @NotNull
+    private Duration timeout;
 
 }

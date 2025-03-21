@@ -29,10 +29,10 @@ public class RedisConfig {
 
         // Lettuce 클라이언트 설정 (Timeout 적용)
         LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .commandTimeout(Duration.parse(redisProperty.getTimeout())) // Read Timeout 적용
+                .commandTimeout(redisProperty.getTimeout())
                 .clientOptions(ClientOptions.builder()
                         .socketOptions(SocketOptions.builder()
-                                .connectTimeout(Duration.parse(redisProperty.getConnectTimeout())) // Connection Timeout 적용
+                                .connectTimeout(redisProperty.getConnectTimeout())
                                 .build())
                         .build())
                 .clientResources(DefaultClientResources.create())
