@@ -1,4 +1,4 @@
-name: BE CI / CD with Docker Compose
+name: BE CI/CD with Docker Compose
 
 on:
   push:
@@ -23,21 +23,13 @@ jobs:
 
       - name: Setup application.yml
         run: |
-          cd ./backend/src/main/resources
-          
-          touch application-actuator.yml
-          touch application-config.yml
-          touch application-jwt.yml
-          touch application-swagger.yml
-          touch application-oauth.yml
-          touch application-db.yml
-          
-          echo "${{ secrets.APPLICATION_DB }}" >> ./application-db.yml
-          echo "${{ secrets.APPLICATION_CONFIG }}" >> ./application-config.yml
-          echo "${{ secrets.APPLICATION_JWT }}" >> ./application-jwt.yml
-          echo "${{ secrets.APPLICATION_SWAGGER }}" >> ./application-swagger.yml
-          echo "${{ secrets.APPLICATION_ACTUATOR }}" >> ./application-actuator.yml
-          echo "${{ secrets.APPLICATION_OAUTH }}" >> ./application-oauth.yml
+          cd backend/src/main/resources
+          echo "${{ secrets.APPLICATION_DB }}" > application-db.yml
+          echo "${{ secrets.APPLICATION_CONFIG }}" > application-config.yml
+          echo "${{ secrets.APPLICATION_JWT }}" > application-jwt.yml
+          echo "${{ secrets.APPLICATION_SWAGGER }}" > application-swagger.yml
+          echo "${{ secrets.APPLICATION_ACTUATOR }}" > application-actuator.yml
+          echo "${{ secrets.APPLICATION_OAUTH }}" > application-oauth.yml
         shell: bash
 
       - name: Setup Gradle
@@ -73,19 +65,22 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          envs: DOCKER_USERNAME, GITHUB_SHA, RDS_ENDPOINT, RDS_USERNAME, RDS_PASSWORD
           script: |
-            
             export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
             export GITHUB_SHA="${{ github.sha }}"
-            
-            # deploy 디렉터리 생성
+            export RDS_ENDPOINT="${{ secrets.RDS_ENDPOINT }}"
+            export RDS_USERNAME="${{ secrets.RDS_USERNAME }}"
+            export RDS_PASSWORD="${{ secrets.RDS_PASSWORD }}"
+
+            # deploy 디렉터리 생성 및 이동
             mkdir -p ~/deploy 
             cd ~/deploy
 
-            # EC2에서 Docker Hub 로그인 (Private Repo 접근)
+            # Docker Hub 로그인
             echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-            # 기존 컨테이너 중지 및 제거 (docker-compose.yml이 있을 경우만)
+            # 기존 컨테이너 중지 및 제거
             if [ -f "docker-compose.yml" ]; then
               sudo docker-compose down
             fi
@@ -96,7 +91,7 @@ jobs:
             # 최신 Docker 이미지 가져오기
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/iambohyun:${{ github.sha }}
 
-            # 기존의 오래된 이미지 제거
+            # 오래된 이미지 제거
             sudo docker image prune -f
 
             # docker-compose 실행 (최신 이미지 반영)
