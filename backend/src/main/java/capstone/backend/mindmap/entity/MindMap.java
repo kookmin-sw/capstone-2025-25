@@ -13,7 +13,7 @@ import org.hibernate.type.SqlTypes;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Table(name = "mindmap")
 public class MindMap {
