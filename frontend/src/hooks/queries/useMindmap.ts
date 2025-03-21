@@ -6,7 +6,7 @@ import {
   ConvertedScheduleTodoReq,
   ConvertedThoughtListReq,
   SummarizedNodeReq,
-} from '../../types/api/mindmap';
+} from '@/types/api/mindmap';
 
 export const useGenerateSchedule = () => {
   return useMutation({
