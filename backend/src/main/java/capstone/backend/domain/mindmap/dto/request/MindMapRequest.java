@@ -12,6 +12,7 @@ public record MindMapRequest(
     @NotNull MindMapType type,
     @NotNull LocalDate toDoDate,
     @NotBlank String title,
+    String description,
     @NotNull Long memberId,
     List<Node> nodes
 ) {}

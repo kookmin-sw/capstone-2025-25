@@ -13,6 +13,7 @@ public record MindMapResponse(
     Long memberId,
     LocalDate toDoDate,
     String title,
+    String description,
     int maxDepth,
     LocalDateTime lastModifiedAt,
     String type,
@@ -45,6 +46,7 @@ public record MindMapResponse(
         return MindMapResponse.builder()
             .id(mindMap.getMindmapId())
             .title(mindMap.getTitle())
+            .description(mindMap.getDescription())
             .order_index(mindMap.getOrderIndex())
             .memberId(mindMap.getMemberId())
             .toDoDate(mindMap.getToDoDate())

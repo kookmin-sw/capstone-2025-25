@@ -35,6 +35,9 @@ public class MindMap {
     @Column(nullable = false, name="title")
     private String title;
 
+    @Column(name="description")
+    private String description;
+
     @Column(nullable = false, name="last_modified_at")
     private LocalDateTime lastModifiedAt;
 
@@ -56,6 +59,7 @@ public class MindMap {
             .memberId(mindMapRequest.memberId())
             .toDoDate(mindMapRequest.toDoDate())
             .title(mindMapRequest.title())
+            .description(mindMapRequest.description())
             .lastModifiedAt(LocalDateTime.now())
             .type(mindMapRequest.type())
             .nodes(mindMapRequest.nodes())
@@ -64,6 +68,7 @@ public class MindMap {
 
     public void update(MindMapRequest mindMapRequest) {
         this.title = mindMapRequest.title();
+        this.description = mindMapRequest.description();
         this.toDoDate = mindMapRequest.toDoDate();
         this.type = mindMapRequest.type();
         this.orderIndex = mindMapRequest.orderIndex();
