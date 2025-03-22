@@ -1,5 +1,6 @@
 package capstone.backend.domain.mindmap.dto.response;
 
+import capstone.backend.domain.mindmap.entity.MindMap;
 import lombok.Builder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,4 +39,17 @@ public record MindMapResponse(
         String source,
         String target
     ) {}
+
+    @Builder
+    public static MindMapResponse fromEntity(MindMap mindMap) {
+        return MindMapResponse.builder()
+            .id(mindMap.getMindmapId())
+            .title(mindMap.getTitle())
+            .order_index(mindMap.getOrderIndex())
+            .memberId(mindMap.getMemberId())
+            .toDoDate(mindMap.getToDoDate())
+            .type(mindMap.getType().name())
+            .lastModifiedAt(mindMap.getLastModifiedAt())
+            .build();
+    }
 }

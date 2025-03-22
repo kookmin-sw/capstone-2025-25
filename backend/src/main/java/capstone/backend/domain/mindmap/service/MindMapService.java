@@ -27,10 +27,7 @@ public class MindMapService {
 
     public MindMapResponse getMindMapById(Long id){
         return mindMapRepository.findById(id)
-            .map(mindMap -> MindMapResponse.builder()
-                .id(mindMap.getMindmapId())
-                .title(mindMap.getTitle())
-                .build())
+            .map(MindMapResponse::fromEntity)
             .orElseThrow(MindMapNotFoundException::new);
     }
 
@@ -44,17 +41,14 @@ public class MindMapService {
     }
 
     public List<MindMapResponse> getMindMaps(LocalDate date, MindMapType type) {
-        return mindMapRepository.findAllByToDoDateAndTypeOrderByOrderIndexAsc(date, type)
-            .stream()
-            .map(mindMap -> MindMapResponse.builder()
-                .id(mindMap.getMindmapId())
-                .title(mindMap.getTitle())
-                .order_index(mindMap.getOrderIndex())
-                .memberId(mindMap.getMemberId())
-                .toDoDate(mindMap.getToDoDate())
-                .type(mindMap.getType().name())
-                .lastModifiedAt(mindMap.getLastModifiedAt())
-                .build())
+        List<MindMap> mindMaps = mindMapRepository.findAllByToDoDateAndTypeOrderByOrderIndexAsc(date, type);
+
+        if (mindMaps.isEmpty()) {
+            throw new MindMapNotFoundException();
+        }
+
+        return mindMaps.stream()
+            .map(MindMapResponse::fromEntity)
             .toList();
     }
 }
