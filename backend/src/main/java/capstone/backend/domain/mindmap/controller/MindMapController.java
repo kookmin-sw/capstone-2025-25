@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,4 +42,13 @@ public class MindMapController {
         return ApiResponse.ok(mindMapService.getMindMapById(id));
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "마인드맵 전체 삭제")
+    public ApiResponse<String> deleteMindMap(
+        @Parameter(required = true, description = "마인드맵 ID", in = ParameterIn.PATH)
+        @PathVariable Long id
+    ) {
+        mindMapService.deleteMindMap(id);
+        return ApiResponse.ok("마인드맵이 성공적으로 삭제되었습니다.");
+    }
 }

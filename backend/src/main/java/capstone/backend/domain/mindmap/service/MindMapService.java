@@ -31,4 +31,12 @@ public class MindMapService {
             .orElseThrow(MindMapNotFoundException::new);
     }
 
+    @Transactional
+    public void deleteMindMap(Long id) {
+        if (!mindMapRepository.existsById(id)) {
+            throw new MindMapNotFoundException(id);
+        }
+
+        mindMapRepository.deleteById(id);
+    }
 }
