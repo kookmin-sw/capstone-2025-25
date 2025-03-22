@@ -1,5 +1,6 @@
 package capstone.backend.domain.mindmap.controller;
 
+import capstone.backend.domain.mindmap.dto.request.UpdateMindMapOrderRequest;
 import capstone.backend.domain.mindmap.entity.MindMapType;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -77,4 +79,14 @@ public class MindMapController {
         mindMapService.updateMindMap(id, mindMapRequest);
         return ApiResponse.ok("마인드맵이 수정되었습니다. ID: " + id);
     }
+
+    @PatchMapping("/order")
+    @Operation(summary = "마인드맵 순서 변경")
+    public ApiResponse<String> updateMindMapOrder(
+        @Valid @RequestBody UpdateMindMapOrderRequest updateMindMapOrderRequest
+    ){
+        mindMapService.updateMindMapOrder(updateMindMapOrderRequest);
+        return ApiResponse.ok(("마인드맵 순서가 변경되었습니다."));
+    }
+
 }

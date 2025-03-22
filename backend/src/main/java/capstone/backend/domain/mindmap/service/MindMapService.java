@@ -1,13 +1,19 @@
 package capstone.backend.domain.mindmap.service;
 
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
+import capstone.backend.domain.mindmap.dto.request.UpdateMindMapOrderRequest;
+import capstone.backend.domain.mindmap.dto.request.UpdateMindMapOrderRequest.MindMapOrder;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
 import capstone.backend.domain.mindmap.entity.MindMapType;
+import capstone.backend.domain.mindmap.exception.InvalidMindMapDateException;
 import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
 import capstone.backend.domain.mindmap.repository.MindMapRepository;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,4 +65,40 @@ public class MindMapService {
 
         mindMap.update(mindMapRequest);
     }
+
+    @Transactional
+    public void updateMindMapOrder(UpdateMindMapOrderRequest updateMindMapOrderRequest){
+        Map<Long, MindMap> mindMapMap = fetchMindMapsAsMap(updateMindMapOrderRequest);
+
+        for (UpdateMindMapOrderRequest.MindMapOrder order : updateMindMapOrderRequest.orderList()) {
+            MindMap mindMap = mindMapMap.get(order.mindMapId());
+
+            validateMindMapExists(mindMap, order.mindMapId());
+            validateToDoDateMatch(mindMap, updateMindMapOrderRequest.toDoDate());
+
+            mindMap.setOrderIndex(order.orderIndex());
+        }
+    }
+
+    private Map<Long, MindMap> fetchMindMapsAsMap(UpdateMindMapOrderRequest updateMindMapOrderRequest) {
+        List<Long> ids = updateMindMapOrderRequest.orderList().stream()
+            .map(UpdateMindMapOrderRequest.MindMapOrder::mindMapId)
+            .toList();
+
+        return mindMapRepository.findAllById(ids).stream()
+            .collect(Collectors.toMap(MindMap::getMindmapId, Function.identity()));
+    }
+
+    private void validateMindMapExists(MindMap mindMap, Long mindMapId) {
+        if (mindMap == null) {
+            throw new MindMapNotFoundException(mindMapId);
+        }
+    }
+
+    private void validateToDoDateMatch(MindMap mindMap, LocalDate expectedDate) {
+        if (!mindMap.getToDoDate().equals(expectedDate)) {
+            throw new InvalidMindMapDateException(mindMap.getMindmapId(), expectedDate);
+        }
+    }
+
 }
