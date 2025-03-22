@@ -10,7 +10,7 @@ import java.time.Duration;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "spring.data.redis")
+@ConfigurationProperties(prefix = "spring.redis")
 public class RedisProperty {
 
     @NotBlank
