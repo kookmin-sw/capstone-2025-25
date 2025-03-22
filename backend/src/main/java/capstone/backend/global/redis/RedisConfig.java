@@ -13,8 +13,6 @@ import org.springframework.data.redis.connection.lettuce.LettuceClientConfigurat
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-import java.time.Duration;
-
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {

@@ -1,11 +1,9 @@
 package capstone.backend.domain.auth.controller;
 
-import capstone.backend.domain.auth.dto.request.RefreshAccessTokenRequest;
 import capstone.backend.domain.auth.dto.response.RefreshAccessTokenResponse;
 import capstone.backend.domain.auth.service.AuthService;
 import capstone.backend.global.api.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
