@@ -3,8 +3,11 @@ package capstone.backend.domain.mindmap.service;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
+import capstone.backend.domain.mindmap.entity.MindMapType;
 import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
 import capstone.backend.domain.mindmap.repository.MindMapRepository;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,5 +41,20 @@ public class MindMapService {
         }
 
         mindMapRepository.deleteById(id);
+    }
+
+    public List<MindMapResponse> getMindMaps(LocalDate date, MindMapType type) {
+        return mindMapRepository.findAllByToDoDateAndTypeOrderByOrderIndexAsc(date, type)
+            .stream()
+            .map(mindMap -> MindMapResponse.builder()
+                .id(mindMap.getMindmapId())
+                .title(mindMap.getTitle())
+                .order_index(mindMap.getOrderIndex())
+                .memberId(mindMap.getMemberId())
+                .toDoDate(mindMap.getToDoDate())
+                .type(mindMap.getType().name())
+                .lastModifiedAt(mindMap.getLastModifiedAt())
+                .build())
+            .toList();
     }
 }

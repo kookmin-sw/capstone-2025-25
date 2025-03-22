@@ -1,5 +1,6 @@
 package capstone.backend.domain.mindmap.controller;
 
+import capstone.backend.domain.mindmap.entity.MindMapType;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
@@ -8,13 +9,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -50,5 +55,15 @@ public class MindMapController {
     ) {
         mindMapService.deleteMindMap(id);
         return ApiResponse.ok("마인드맵이 성공적으로 삭제되었습니다.");
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "날짜별, 타입별 마인드맵 전체 조회")
+    public ApiResponse<List<MindMapResponse>> getMindMaps(
+        @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+        @RequestParam(value = "type") MindMapType type
+    )  {
+        List<MindMapResponse> mindMaps = mindMapService.getMindMaps(date, type);
+        return ApiResponse.ok(mindMaps);
     }
 }
