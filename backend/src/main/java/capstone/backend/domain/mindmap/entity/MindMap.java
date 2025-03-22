@@ -61,4 +61,12 @@ public class MindMap {
             .nodes(mindMapRequest.nodes())
             .build();
     }
+
+    public void update(MindMapRequest mindMapRequest) {
+        this.title = mindMapRequest.title();
+        this.toDoDate = mindMapRequest.toDoDate();
+        this.type = mindMapRequest.type();
+        this.orderIndex = mindMapRequest.orderIndex();
+        this.lastModifiedAt = LocalDateTime.now();
+    }
 }

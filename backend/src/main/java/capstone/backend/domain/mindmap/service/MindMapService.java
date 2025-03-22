@@ -51,4 +51,12 @@ public class MindMapService {
             .map(MindMapResponse::fromEntity)
             .toList();
     }
+
+    @Transactional
+    public void updateMindMap(Long id, MindMapRequest mindMapRequest) {
+        MindMap mindMap = mindMapRepository.findById(id)
+            .orElseThrow(() -> new MindMapNotFoundException(id));
+
+        mindMap.update(mindMapRequest);
+    }
 }
