@@ -2,7 +2,6 @@ package capstone.backend.domain.mindmap.service;
 
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapOrderRequest;
-import capstone.backend.domain.mindmap.dto.request.UpdateMindMapOrderRequest.MindMapOrder;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
 import capstone.backend.domain.mindmap.entity.MindMapType;
