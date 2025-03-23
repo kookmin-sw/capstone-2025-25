@@ -1,6 +1,5 @@
 import {
   EdgeChange,
-  Node,
   NodeChange,
   OnNodesChange,
   OnEdgesChange,
@@ -17,7 +16,11 @@ export type RFState = {
   edges: MindMapEdge[];
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
-  addChildNode: (parentNode: Node, position: XYPosition) => void;
+  addChildNode: (
+    questions: string[],
+    selectedNode: MindMapNode,
+    position: XYPosition,
+  ) => void;
   setNode: (nodeId: string, node: MindMapNode) => void;
 };
 
@@ -25,20 +28,29 @@ const initialNodes: MindMapNode[] = [
   {
     id: '1',
     type: 'root',
-    data: { label: '프로젝트 계획', depth: 0 },
+    data: { label: '운동', depth: 0 },
     position: { x: 0, y: 0 },
   },
   {
     id: '2',
     type: 'summary',
-    data: { label: '디자인', depth: 1, summary: '요약말' },
+    data: { label: '디자인', depth: 1, summary: '최근에 하체 운동을 했다' },
     position: { x: -300, y: 300 },
+    parentId: '1',
   },
   {
     id: '3',
     type: 'summary',
-    data: { label: '개발', depth: 1, summary: '요약말' },
+    data: { label: '개발', depth: 1, summary: '등 운동을 할 계획이다' },
     position: { x: 500, y: 500 },
+    parentId: '1',
+  },
+  {
+    id: '4',
+    type: 'summary',
+    data: { label: '개발', depth: 1, summary: '1시간 정도 할 생각이다' },
+    position: { x: 500, y: 500 },
+    parentId: '3',
   },
 ];
 
@@ -53,6 +65,12 @@ const initialEdges: MindMapEdge[] = [
     id: 'e1-3',
     source: '1',
     target: '3',
+    type: 'mindmapEdge',
+  },
+  {
+    id: 'e3-4',
+    source: '3',
+    target: '4',
     type: 'mindmapEdge',
   },
 ];
@@ -73,8 +91,12 @@ const useStore = create<RFState>((set, get) => ({
     });
   },
 
-  addChildNode: (parentNode: Node, position: XYPosition) => {
-    const parentDepth = (parentNode.data as MindMapNodeData)?.depth || 0;
+  addChildNode: (
+    questions: string[],
+    selectedNode: MindMapNode,
+    position: XYPosition,
+  ) => {
+    const parentDepth = (selectedNode.data as MindMapNodeData)?.depth || 0;
 
     const newNode: MindMapNode = {
       id: nanoid(),
@@ -82,26 +104,17 @@ const useStore = create<RFState>((set, get) => ({
       data: {
         label: '다음 질문을 선택해주세요',
         depth: parentDepth + 1,
-        recommendedQuestions: [
-          '질문1',
-          '질문2',
-          '질문3',
-          '질문4',
-          '질문5',
-          '질문6',
-        ],
+        recommendedQuestions: questions,
       },
       position,
     };
 
     const newEdge: MindMapEdge = {
       id: nanoid(),
-      source: parentNode.id,
+      source: selectedNode.id,
       target: newNode.id,
       type: 'mindmapEdge',
     };
-
-    console.log('Created new edge:', newEdge);
 
     set((state) => ({
       nodes: [...state.nodes, newNode],

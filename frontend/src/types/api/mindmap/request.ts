@@ -1,15 +1,15 @@
 import { MindMapNode } from '@/types/mindMap';
 
 export type GeneratedScheduleReq = {
-  mainNode?: {
+  mainNode: {
     summary: string;
-  };
-  parentNode?: {
+  } | null;
+  parentNode: {
     summary: string;
-  };
+  } | null;
   selectedNode: {
     summary: string;
-  };
+  } | null;
 };
 
 export type GeneratedThoughtReq = {
