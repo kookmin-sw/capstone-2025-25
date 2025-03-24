@@ -24,8 +24,8 @@ import SummaryNode from '@/components/reactFlow/nodes/ui/SummaryNode';
 import RootNode from '@/components/reactFlow/nodes/ui/RootNode';
 import AnswerInputNode from '@/components/reactFlow/nodes/ui/AnswerInputNode';
 import QuestionListNode from '@/components/reactFlow/nodes/ui/QuestionListNode';
-import { useGenerateSchedule } from '@/hooks/queries/useMindmap';
 import { GeneratedScheduleReq } from '@/types/api/mindmap';
+import useGenerateSchedule from '@/hooks/queries/mindmap/useGenerateSchedule';
 
 const nodeTypes = {
   root: RootNode,
@@ -47,7 +47,7 @@ function FlowContent() {
   const onEdgesChange = useEdgesChange();
   const addChildNode = useAddChildNode();
 
-  const generateScheduleMutation = useGenerateSchedule();
+  const { generateScheduleMutation } = useGenerateSchedule();
 
   const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
@@ -112,7 +112,7 @@ function FlowContent() {
               : null,
           };
 
-          generateScheduleMutation.mutate(requestData, {
+          generateScheduleMutation(requestData, {
             onSuccess: (data) => {
               addChildNode(
                 data.generated_questions,
