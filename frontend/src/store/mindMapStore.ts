@@ -20,8 +20,14 @@ export type RFState = {
     questions: string[],
     selectedNode: MindMapNode,
     position: XYPosition,
-  ) => void;
+    isPending?: boolean,
+  ) => string;
   setNode: (nodeId: string, node: MindMapNode) => void;
+  updateNodeQuestions: (
+    nodeId: string,
+    questions: string[],
+    isPending: boolean,
+  ) => void;
 };
 
 const initialNodes: MindMapNode[] = [
@@ -42,7 +48,7 @@ const initialNodes: MindMapNode[] = [
     id: '3',
     type: 'summary',
     data: { label: '개발', depth: 1, summary: '등 운동을 할 계획이다' },
-    position: { x: 500, y: 500 },
+    position: { x: 300, y: 300 },
     parentId: '1',
   },
   {
@@ -95,24 +101,29 @@ const useStore = create<RFState>((set, get) => ({
     questions: string[],
     selectedNode: MindMapNode,
     position: XYPosition,
+    isPending = false,
   ) => {
     const parentDepth = (selectedNode.data as MindMapNodeData)?.depth || 0;
+    const newNodeId = nanoid();
 
     const newNode: MindMapNode = {
-      id: nanoid(),
+      id: newNodeId,
       type: 'question',
       data: {
         label: '다음 질문을 선택해주세요',
         depth: parentDepth + 1,
         recommendedQuestions: questions,
+        isPending,
       },
       position,
+      parentId: selectedNode.id,
+      origin: [0.5, 0.5],
     };
 
     const newEdge: MindMapEdge = {
-      id: nanoid(),
+      id: `e${selectedNode.id}-${newNodeId}}`,
       source: selectedNode.id,
-      target: newNode.id,
+      target: newNodeId,
       type: 'mindmapEdge',
     };
 
@@ -120,6 +131,8 @@ const useStore = create<RFState>((set, get) => ({
       nodes: [...state.nodes, newNode],
       edges: [...state.edges, newEdge],
     }));
+
+    return newNodeId;
   },
 
   setNode: (nodeId, updatedNode) => {
@@ -127,6 +140,24 @@ const useStore = create<RFState>((set, get) => ({
       nodes: get().nodes.map((node) =>
         node.id === nodeId ? updatedNode : node,
       ),
+    });
+  },
+
+  updateNodeQuestions: (nodeId, questions, isPending) => {
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              recommendedQuestions: questions,
+              isPending,
+            },
+          };
+        }
+        return node;
+      }),
     });
   },
 }));
@@ -137,5 +168,7 @@ export const useNodesChange = () => useStore((state) => state.onNodesChange);
 export const useEdgesChange = () => useStore((state) => state.onEdgesChange);
 export const useAddChildNode = () => useStore((state) => state.addChildNode);
 export const useSetNode = () => useStore((state) => state.setNode);
+export const useUpdateNodeQuestions = () =>
+  useStore((state) => state.updateNodeQuestions);
 
 export default useStore;

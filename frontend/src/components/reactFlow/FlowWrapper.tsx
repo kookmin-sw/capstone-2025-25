@@ -18,6 +18,7 @@ import {
   useEdgesChange,
   useAddChildNode,
   useNodesChange,
+  useUpdateNodeQuestions,
 } from '@/store/mindMapStore';
 import MindMapEdge from '@/components/reactFlow/edges';
 import SummaryNode from '@/components/reactFlow/nodes/ui/SummaryNode';
@@ -46,6 +47,7 @@ function FlowContent() {
   const onNodesChange = useNodesChange();
   const onEdgesChange = useEdgesChange();
   const addChildNode = useAddChildNode();
+  const updateNodeQuestions = useUpdateNodeQuestions();
 
   const { generateScheduleMutation } = useGenerateSchedule();
 
@@ -112,13 +114,16 @@ function FlowContent() {
               : null,
           };
 
+          const newNodeId = addChildNode(
+            [],
+            selectedNode,
+            childNodePosition,
+            true,
+          );
+
           generateScheduleMutation(requestData, {
             onSuccess: (data) => {
-              addChildNode(
-                data.generated_questions,
-                selectedNode,
-                childNodePosition,
-              );
+              updateNodeQuestions(newNodeId, data.generated_questions, false);
             },
             onError: (error) => {
               console.error('요약 생성 중 오류가 발생했습니다:', error);
@@ -127,7 +132,13 @@ function FlowContent() {
         }
       }
     },
-    [nodes, getChildNodePosition, addChildNode],
+    [
+      nodes,
+      getChildNodePosition,
+      addChildNode,
+      generateScheduleMutation,
+      updateNodeQuestions,
+    ],
   );
 
   return (

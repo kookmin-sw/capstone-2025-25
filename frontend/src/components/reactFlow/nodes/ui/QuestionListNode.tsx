@@ -1,4 +1,5 @@
 import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
+import { Skeleton } from '@/components/ui/skeleton';
 import useStore from '@/store/mindMapStore';
 import { QuestionNodeType } from '@/types/mindMap';
 import { NodeProps } from '@xyflow/react';
@@ -10,6 +11,7 @@ export default function QuestionListNode({
   data,
 }: NodeProps<QuestionNodeType>) {
   const questions = data.recommendedQuestions;
+  const isPending = data.isPending;
   const [displayedQuestions, setDisplayedQuestions] = useState<
     Array<{
       id: number;
@@ -95,6 +97,29 @@ export default function QuestionListNode({
       });
     }
   };
+
+  if (isPending) {
+    return (
+      <div className="bg-white px-8 py-[30px] border border-border-gray rounded-lg">
+        <h3 className="text-[20px] font-semibold mb-5">질문 생성 중...</h3>
+        <ul className="flex flex-col gap-[10px]">
+          {[1, 2, 3].map((index) => (
+            <li
+              key={index}
+              className="w-[576px] p-4 border border-border-gray rounded-lg flex justify-between items-center"
+            >
+              <Skeleton className="w-full h-6" />
+            </li>
+          ))}
+          <li className="p-4 border border-border-gray rounded-lg flex justify-between items-center opacity-50">
+            <span>직접 입력하기</span>
+          </li>
+        </ul>
+
+        <NodeHandles />
+      </div>
+    );
+  }
 
   return (
     <>
