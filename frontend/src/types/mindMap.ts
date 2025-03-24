@@ -10,6 +10,7 @@ export type MindMapNodeData = {
   summary?: string | null;
   depth: number;
   recommendedQuestions?: string[];
+  isPending?: boolean;
 };
 
 export type RootNodeType = ReactFlowNode<MindMapNodeData, 'root'>;
