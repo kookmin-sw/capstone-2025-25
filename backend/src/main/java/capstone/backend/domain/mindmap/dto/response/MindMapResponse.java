@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Builder
 public record MindMapResponse(
     Long id,
     int order_index,
@@ -14,13 +13,11 @@ public record MindMapResponse(
     LocalDate toDoDate,
     String title,
     String description,
-    int maxDepth,
     LocalDateTime lastModifiedAt,
     String type,
     List<NodeResponse> nodes,
     List<EdgeResponse> edges
 ) {
-    @Builder
     public record NodeResponse(
         String id,
         String parentId,
@@ -34,7 +31,6 @@ public record MindMapResponse(
         int y
     ) {}
 
-    @Builder
     public record EdgeResponse(
         String id,
         String source,
@@ -43,15 +39,17 @@ public record MindMapResponse(
 
     @Builder
     public static MindMapResponse fromEntity(MindMap mindMap) {
-        return MindMapResponse.builder()
-            .id(mindMap.getMindmapId())
-            .title(mindMap.getTitle())
-            .description(mindMap.getDescription())
-            .order_index(mindMap.getOrderIndex())
-            .memberId(mindMap.getMemberId())
-            .toDoDate(mindMap.getToDoDate())
-            .type(mindMap.getType().name())
-            .lastModifiedAt(mindMap.getLastModifiedAt())
-            .build();
+        return new MindMapResponse(
+            mindMap.getMindmapId(),
+            mindMap.getOrderIndex(),
+            mindMap.getMemberId(),
+            mindMap.getToDoDate(),
+            mindMap.getTitle(),
+            mindMap.getDescription(),
+            mindMap.getLastModifiedAt(),
+            mindMap.getType().name(),
+            null,
+            null
+        );
     }
 }
