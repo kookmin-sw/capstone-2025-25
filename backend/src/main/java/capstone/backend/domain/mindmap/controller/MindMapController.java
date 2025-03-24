@@ -44,7 +44,7 @@ public class MindMapController {
     @GetMapping("/{id}")
     @Operation(summary = "특정 마인드맵 조회")
     public ApiResponse<MindMapResponse> getMindMap(
-            @Parameter(required = true, description = "마인드맵 ID", in = ParameterIn.PATH)
+            @Parameter(name="id", description = "조회 마인드맵 ID", required = true, in = ParameterIn.PATH)
             @PathVariable Long id
     ) {
         return ApiResponse.ok(mindMapService.getMindMapById(id));
@@ -53,7 +53,7 @@ public class MindMapController {
     @DeleteMapping("/{id}")
     @Operation(summary = "마인드맵 전체 삭제")
     public ApiResponse<String> deleteMindMap(
-        @Parameter(required = true, description = "마인드맵 ID", in = ParameterIn.PATH)
+        @Parameter(name = "id", description = "삭제 마인드맵 ID", required = true, in = ParameterIn.PATH)
         @PathVariable Long id
     ) {
         mindMapService.deleteMindMap(id);
@@ -63,7 +63,10 @@ public class MindMapController {
     @GetMapping("/search")
     @Operation(summary = "날짜별, 타입별 마인드맵 전체 조회")
     public ApiResponse<List<MindMapResponse>> getMindMaps(
+        @Parameter(name = "date", description = "조회할 날짜 (ex. 2025-03-23)", required = true, in = ParameterIn.QUERY)
         @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+
+        @Parameter(name = "type", description = "마인드맵 타입 (TODO 또는 THINKING)", required = true, in = ParameterIn.QUERY)
         @RequestParam(value = "type") MindMapType type
     )  {
         List<MindMapResponse> mindMaps = mindMapService.getMindMaps(date, type);
@@ -73,6 +76,7 @@ public class MindMapController {
     @PutMapping("/{id}")
     @Operation(summary = "마인드맵 루트 노드 수정")
     public ApiResponse<String> updateMindMap(
+        @Parameter(name = "id", description = "수정 마인드맵 ID", required = true, in = ParameterIn.PATH)
         @PathVariable Long id,
         @Valid @RequestBody MindMapRequest mindMapRequest
     ){
