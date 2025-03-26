@@ -28,6 +28,7 @@ export type RFState = {
     questions: string[],
     isPending: boolean,
   ) => void;
+  deleteNode: (nodeId: string) => void;
 };
 
 const initialNodes: MindMapNode[] = [
@@ -160,6 +161,39 @@ const useStore = create<RFState>((set, get) => ({
       }),
     });
   },
+
+  deleteNode: (nodeId: string) => {
+    const { nodes, edges } = get();
+
+    const nodesToDelete = new Set<string>();
+
+    const findChildrenRecursively = (id: string) => {
+      nodesToDelete.add(id);
+
+      const childNodes = nodes.filter((node) => node.parentId === id);
+
+      childNodes.forEach((child) => {
+        findChildrenRecursively(child.id);
+      });
+    };
+
+    findChildrenRecursively(nodeId);
+
+    const nodeIdsToDelete = Array.from(nodesToDelete);
+
+    const edgesToKeep = edges.filter(
+      (edge) =>
+        !nodeIdsToDelete.includes(edge.source) &&
+        !nodeIdsToDelete.includes(edge.target),
+    );
+
+    const nodesToKeep = nodes.filter((node) => !nodesToDelete.has(node.id));
+
+    set({
+      nodes: nodesToKeep,
+      edges: edgesToKeep,
+    });
+  },
 }));
 
 export const useNodes = () => useStore((state) => state.nodes);
@@ -170,5 +204,6 @@ export const useAddChildNode = () => useStore((state) => state.addChildNode);
 export const useSetNode = () => useStore((state) => state.setNode);
 export const useUpdateNodeQuestions = () =>
   useStore((state) => state.updateNodeQuestions);
+export const useDeleteNode = () => useStore((state) => state.deleteNode);
 
 export default useStore;

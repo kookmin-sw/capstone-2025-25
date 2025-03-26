@@ -75,12 +75,8 @@ function FlowContent() {
   }, []);
 
   const onConnectEnd: OnConnectEnd = useCallback(
-    (event) => {
-      const targetIsPane = (event.target as Element).classList.contains(
-        'react-flow__pane',
-      );
-
-      if (!targetIsPane) {
+    (event, connectionState) => {
+      if (connectionState.isValid) {
         return;
       }
 
