@@ -2,7 +2,7 @@ import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 import useStore from '@/store/mindMapStore';
 import { SummaryNodeType } from '@/types/mindMap';
 import { NodeProps } from '@xyflow/react';
-import { Pencil, X } from 'lucide-react';
+import { GripVertical, Pencil, X } from 'lucide-react';
 
 export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
   const setNode = useStore((state) => state.setNode);
@@ -24,10 +24,7 @@ export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
       <div className="flex-1">
         <p className="text-[20px] font-semibold">{data.summary}</p>
       </div>
-      {/* <div className="dragHandle z-20">
-        <DragIcon />
-      </div> */}
-      <div className="opacity-0 group-hover:opacity-100 flex items-center gap-8 transition-opacity duration-300 ease-in-out">
+      <div className="opacity-0 group-hover:opacity-100 flex items-center gap-4 transition-opacity duration-300 ease-in-out">
         <Pencil
           size={20}
           color="#B9B9B7"
@@ -38,8 +35,15 @@ export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
         <X
           size={20}
           color="#B9B9B7"
-          className="cursor-pointer hover:text-black transition-colors"
+          className="cursor-pointer hover:text-black transition-colors z-20"
         />
+        <div className="dragHandle cursor-grab z-20">
+          <GripVertical
+            size={20}
+            color="#B9B9B7"
+            className="cursor-pointer hover:text-black transition-colors"
+          />
+        </div>
       </div>
       <NodeHandles type="full" />
     </div>
