@@ -1,7 +1,9 @@
 import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
+import useSummarizeNode from '@/hooks/queries/mindmap/useSummarizeNode';
 import useStore from '@/store/mindMapStore';
+import { SummarizedNodeReq } from '@/types/api/mindmap';
 import { AnswerNodeType } from '@/types/mindMap';
 import { NodeProps } from '@xyflow/react';
 import { Loader2 } from 'lucide-react';
@@ -17,10 +19,11 @@ export default function AnswerInputNode({
   const [isInputFilled, setIsInputFilled] = useState(
     initialAnswer.trim() !== '',
   );
-  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const setNode = useStore((state) => state.setNode);
   const nodes = useStore((state) => state.nodes);
+
+  const { summarizeNodeMutation, isPending } = useSummarizeNode();
 
   useEffect(() => {
     setIsInputFilled(answer.trim() !== '');
@@ -32,32 +35,28 @@ export default function AnswerInputNode({
 
   const handleSubmit = async () => {
     if (isInputFilled) {
-      setIsSubmitLoading(false);
-
       const currentNode = nodes.find((node) => node.id === id);
-
-      /* 
-      TODO: 추후에 GPT 한줄 요약으로 수정해야함. 지금은 로직의 흐름을 위해 답변을 summary로 처리
-      */
       if (currentNode) {
-        setNode(id, {
-          ...currentNode,
-          type: 'summary',
-          data: {
-            ...currentNode.data,
-            summary: answer,
+        const requestData: SummarizedNodeReq = {
+          question: data.label,
+          answer,
+        };
+        summarizeNodeMutation(requestData, {
+          onSuccess: (data) => {
+            setNode(id, {
+              ...currentNode,
+              type: 'summary',
+              data: {
+                ...currentNode.data,
+                summary: data.summary,
+              },
+            });
+          },
+          onError: (error) => {
+            console.error('요약 생성 중 오류가 발생했습니다:', error);
           },
         });
       }
-
-      /* TODO: 추후에 API 연동시 처리하기! */
-      // setIsSubmitLoading(true);
-
-      // try {
-      //   await onSubmit(answer);
-      // } finally {
-      //   setIsSubmitLoading(false);
-      // }
     }
   };
 
@@ -79,9 +78,9 @@ export default function AnswerInputNode({
           variant={isInputFilled ? 'black' : 'disabled'}
           onClick={handleSubmit}
           className="w-[180px] h-12"
-          disabled={!isInputFilled || isSubmitLoading}
+          disabled={!isInputFilled || isPending}
         >
-          {isSubmitLoading ? (
+          {isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               생성 중...
