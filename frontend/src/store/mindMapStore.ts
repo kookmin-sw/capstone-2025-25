@@ -10,6 +10,7 @@ import {
 import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
 import { MindMapEdge, MindMapNode, MindMapNodeData } from '@/types/mindMap';
+import { filterNodesAndEdges, findChildNodes } from '@/lib/mindMap';
 
 export type RFState = {
   nodes: MindMapNode[];
@@ -29,6 +30,7 @@ export type RFState = {
     isPending: boolean,
   ) => void;
   deleteNode: (nodeId: string) => void;
+  updateNode: (nodeId: string, answer: string, summary: string) => void;
 };
 
 const initialNodes: MindMapNode[] = [
@@ -162,36 +164,51 @@ const useStore = create<RFState>((set, get) => ({
     });
   },
 
-  deleteNode: (nodeId: string) => {
+  deleteNode: (nodeId) => {
     const { nodes, edges } = get();
 
-    const nodesToDelete = new Set<string>();
+    const nodesToDelete = findChildNodes(nodes, nodeId, true);
 
-    const findChildrenRecursively = (id: string) => {
-      nodesToDelete.add(id);
-
-      const childNodes = nodes.filter((node) => node.parentId === id);
-
-      childNodes.forEach((child) => {
-        findChildrenRecursively(child.id);
-      });
-    };
-
-    findChildrenRecursively(nodeId);
-
-    const nodeIdsToDelete = Array.from(nodesToDelete);
-
-    const edgesToKeep = edges.filter(
-      (edge) =>
-        !nodeIdsToDelete.includes(edge.source) &&
-        !nodeIdsToDelete.includes(edge.target),
+    const { filteredNodes, filteredEdges } = filterNodesAndEdges(
+      nodes,
+      edges,
+      nodesToDelete,
     );
 
-    const nodesToKeep = nodes.filter((node) => !nodesToDelete.has(node.id));
+    set({
+      nodes: filteredNodes,
+      edges: filteredEdges,
+    });
+  },
+
+  updateNode: (nodeId, answer, summary) => {
+    const { nodes, edges } = get();
+    const nodesToDelete = findChildNodes(nodes, nodeId, false);
+
+    const { filteredNodes, filteredEdges } = filterNodesAndEdges(
+      nodes,
+      edges,
+      nodesToDelete,
+    );
+
+    const updatedNodes = filteredNodes.map((node) => {
+      if (node.id === nodeId) {
+        return {
+          ...node,
+          type: 'summary',
+          data: {
+            ...node.data,
+            answer,
+            summary,
+          },
+        };
+      }
+      return node;
+    });
 
     set({
-      nodes: nodesToKeep,
-      edges: edgesToKeep,
+      nodes: updatedNodes,
+      edges: filteredEdges,
     });
   },
 }));
@@ -205,5 +222,6 @@ export const useSetNode = () => useStore((state) => state.setNode);
 export const useUpdateNodeQuestions = () =>
   useStore((state) => state.updateNodeQuestions);
 export const useDeleteNode = () => useStore((state) => state.deleteNode);
+export const useUpdateNode = () => useStore((state) => state.updateNode);
 
 export default useStore;

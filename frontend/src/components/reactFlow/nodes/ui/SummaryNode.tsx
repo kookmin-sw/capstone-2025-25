@@ -19,6 +19,10 @@ export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
       setNode(id, {
         ...currentNode,
         type: 'answer',
+        data: {
+          ...currentNode.data,
+          isEditing: true,
+        },
       });
     }
   };
