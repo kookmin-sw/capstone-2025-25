@@ -8,18 +8,19 @@ import { MindMapNode, MindMapEdge } from '@/types/mindMap';
  * @returns 하위 노드 ID Set (선택적으로 루트 노드 포함)
  */
 export const findChildNodes = (
-  nodes: MindMapNode[],
+  edges: MindMapEdge[],
   rootId: string,
   includeRoot: boolean = true,
 ): Set<string> => {
   const nodesToProcess = new Set<string>(includeRoot ? [rootId] : []);
 
   const findChildrenRecursively = (id: string) => {
-    const childNodes = nodes.filter((node) => node.parentId === id);
+    const childEdges = edges.filter((edge) => edge.source === id);
 
-    childNodes.forEach((child) => {
-      nodesToProcess.add(child.id);
-      findChildrenRecursively(child.id);
+    childEdges.forEach((edge) => {
+      const childId = edge.target;
+      nodesToProcess.add(childId);
+      findChildrenRecursively(childId);
     });
   };
 
@@ -47,4 +48,18 @@ export const filterNodesAndEdges = (
   );
 
   return { filteredNodes, filteredEdges };
+};
+
+export const findParentNode = (
+  nodes: MindMapNode[],
+  edges: MindMapEdge[],
+  childId: string,
+): MindMapNode | undefined => {
+  // 자식 노드를 타겟으로 하는 엣지 찾기
+  const parentEdge = edges.find((edge) => edge.target === childId);
+
+  if (!parentEdge) return undefined;
+
+  // 부모 노드 ID로 노드 찾기
+  return nodes.find((node) => node.id === parentEdge.source);
 };

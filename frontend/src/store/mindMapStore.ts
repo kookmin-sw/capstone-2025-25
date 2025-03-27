@@ -45,21 +45,18 @@ const initialNodes: MindMapNode[] = [
     type: 'summary',
     data: { label: '디자인', depth: 1, summary: '최근에 하체 운동을 했다' },
     position: { x: -300, y: 300 },
-    parentId: '1',
   },
   {
     id: '3',
     type: 'summary',
     data: { label: '개발', depth: 1, summary: '등 운동을 할 계획이다' },
     position: { x: 300, y: 300 },
-    parentId: '1',
   },
   {
     id: '4',
     type: 'summary',
     data: { label: '개발', depth: 1, summary: '1시간 정도 할 생각이다' },
     position: { x: 500, y: 500 },
-    parentId: '3',
   },
 ];
 
@@ -119,12 +116,10 @@ const useStore = create<RFState>((set, get) => ({
         isPending,
       },
       position,
-      parentId: selectedNode.id,
-      origin: [0.5, 0.5],
     };
 
     const newEdge: MindMapEdge = {
-      id: `e${selectedNode.id}-${newNodeId}}`,
+      id: `e${selectedNode.id}-${newNodeId}`,
       source: selectedNode.id,
       target: newNodeId,
       type: 'mindmapEdge',
@@ -167,7 +162,7 @@ const useStore = create<RFState>((set, get) => ({
   deleteNode: (nodeId) => {
     const { nodes, edges } = get();
 
-    const nodesToDelete = findChildNodes(nodes, nodeId, true);
+    const nodesToDelete = findChildNodes(edges, nodeId, true);
 
     const { filteredNodes, filteredEdges } = filterNodesAndEdges(
       nodes,
@@ -183,7 +178,7 @@ const useStore = create<RFState>((set, get) => ({
 
   updateNode: (nodeId, answer, summary) => {
     const { nodes, edges } = get();
-    const nodesToDelete = findChildNodes(nodes, nodeId, false);
+    const nodesToDelete = findChildNodes(edges, nodeId, false);
 
     const { filteredNodes, filteredEdges } = filterNodesAndEdges(
       nodes,

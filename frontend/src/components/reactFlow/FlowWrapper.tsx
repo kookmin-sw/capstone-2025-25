@@ -27,6 +27,7 @@ import AnswerInputNode from '@/components/reactFlow/nodes/ui/AnswerInputNode';
 import QuestionListNode from '@/components/reactFlow/nodes/ui/QuestionListNode';
 import { GeneratedScheduleReq } from '@/types/api/mindmap';
 import useGenerateSchedule from '@/hooks/queries/mindmap/useGenerateSchedule';
+import { findParentNode } from '@/lib/mindMap';
 
 const nodeTypes = {
   root: RootNode,
@@ -87,10 +88,9 @@ function FlowContent() {
         const selectedNode = nodes.find(
           (node) => node.id === connectingNodeId.current,
         );
-        const parentNode = nodes.find(
-          (node) => node.id === selectedNode?.parentId,
-        );
-
+        const parentNode = selectedNode
+          ? findParentNode(nodes, edges, selectedNode.id)
+          : undefined;
         if (selectedNode) {
           /*
           루트 노드일때는, mainNode만 보내기
@@ -130,6 +130,7 @@ function FlowContent() {
     },
     [
       nodes,
+      edges,
       getChildNodePosition,
       addChildNode,
       generateScheduleMutation,
