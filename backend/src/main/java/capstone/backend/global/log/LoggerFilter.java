@@ -76,7 +76,17 @@ public class LoggerFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return "/api/actuator/prometheus".equals(request.getRequestURI());
+        return isSwaggerRequest(request) || isActuatorRequest(request);
+    }
+
+    private boolean isSwaggerRequest(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return uri.startsWith("/swagger-ui/") || uri.startsWith("/v3/api-docs");
+    }
+
+    private boolean isActuatorRequest(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return uri.startsWith("/api/actuator/");
     }
 
     private record ResponseInfo(int statusCode, String error) {}
