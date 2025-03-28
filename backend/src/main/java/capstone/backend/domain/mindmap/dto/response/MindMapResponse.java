@@ -3,7 +3,6 @@ package capstone.backend.domain.mindmap.dto.response;
 import capstone.backend.domain.mindmap.entity.Edge;
 import capstone.backend.domain.mindmap.entity.MindMap;
 import capstone.backend.domain.mindmap.entity.Node;
-import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
 import capstone.backend.domain.mindmap.exception.NodeNotFoundException;
 import java.util.Optional;
 import lombok.Builder;
