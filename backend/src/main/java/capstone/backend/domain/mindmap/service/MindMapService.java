@@ -2,6 +2,7 @@ package capstone.backend.domain.mindmap.service;
 
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapOrderRequest;
+import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
 import capstone.backend.domain.mindmap.entity.MindMapType;
@@ -79,6 +80,13 @@ public class MindMapService {
         }
     }
 
+    @Transactional
+    public void updateMindMapTitle(Long id, UpdateMindMapTitleRequest request){
+        MindMap mindMap = mindMapRepository.findById(id)
+            .orElseThrow(() -> new MindMapNotFoundException(id));
+        mindMap.updateTitle(request.title());
+    }
+
     private Map<Long, MindMap> fetchMindMapsAsMap(UpdateMindMapOrderRequest updateMindMapOrderRequest) {
         List<Long> ids = updateMindMapOrderRequest.orderList().stream()
             .map(UpdateMindMapOrderRequest.MindMapOrder::mindMapId)
@@ -99,5 +107,4 @@ public class MindMapService {
             throw new InvalidMindMapDateException(mindMap.getMindmapId(), expectedDate);
         }
     }
-
 }

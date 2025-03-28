@@ -1,6 +1,7 @@
 package capstone.backend.domain.mindmap.controller;
 
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapOrderRequest;
+import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
 import capstone.backend.domain.mindmap.entity.MindMapType;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
@@ -93,4 +94,14 @@ public class MindMapController {
         return ApiResponse.ok(("마인드맵 순서가 변경되었습니다."));
     }
 
+    @PatchMapping("/title/{id}")
+    @Operation(summary = "마인드맵 제목 수정")
+    public ApiResponse<String> updateMindMapTitle(
+        @Parameter(description = "마인드맵 ID", required = true, in = ParameterIn.PATH)
+        @PathVariable Long id,
+        @Valid @RequestBody UpdateMindMapTitleRequest updateMindMapTitleRequest
+    ){
+        mindMapService.updateMindMapTitle(id, updateMindMapTitleRequest);
+        return ApiResponse.ok("마인드맨 제목이 변경되었습니다.");
+    }
 }

@@ -77,4 +77,8 @@ public class MindMap {
         this.nodes = mindMapRequest.nodes() != null ? new ArrayList<>(mindMapRequest.nodes()) : null;
         this.edges = mindMapRequest.edges() != null ? new ArrayList<>(mindMapRequest.edges()) : null;
     }
+
+    public void updateTitle(String newTitle){
+        this.title = newTitle;
+    }
 }
