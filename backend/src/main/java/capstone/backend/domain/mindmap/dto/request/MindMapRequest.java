@@ -1,5 +1,6 @@
 package capstone.backend.domain.mindmap.dto.request;
 
+import capstone.backend.domain.mindmap.entity.Edge;
 import capstone.backend.domain.mindmap.entity.MindMapType;
 import capstone.backend.domain.mindmap.entity.Node;
 import jakarta.validation.constraints.NotBlank;
@@ -14,5 +15,6 @@ public record MindMapRequest(
     @NotBlank String title,
     String description,
     @NotNull Long memberId,
-    List<Node> nodes
+    @NotNull List<Node> nodes,
+    List<Edge> edges
 ) {}
