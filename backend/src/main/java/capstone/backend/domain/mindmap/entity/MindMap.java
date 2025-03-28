@@ -2,6 +2,7 @@ package capstone.backend.domain.mindmap.entity;
 
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -73,5 +74,7 @@ public class MindMap {
         this.type = mindMapRequest.type();
         this.orderIndex = mindMapRequest.orderIndex();
         this.lastModifiedAt = LocalDateTime.now();
+        this.nodes = mindMapRequest.nodes() != null ? new ArrayList<>(mindMapRequest.nodes()) : null;
+        this.edges = mindMapRequest.edges() != null ? new ArrayList<>(mindMapRequest.edges()) : null;
     }
 }
