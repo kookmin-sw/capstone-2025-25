@@ -2,10 +2,13 @@ package capstone.backend.domain.mindmap.service;
 
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
+import capstone.backend.domain.mindmap.dto.response.MindMapGroupListResponse;
+import capstone.backend.domain.mindmap.dto.response.MindMapListResponse;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
 import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
 import capstone.backend.domain.mindmap.repository.MindMapRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,5 +54,20 @@ public class MindMapService {
         MindMap mindMap = mindMapRepository.findById(id)
             .orElseThrow(() -> new MindMapNotFoundException(id));
         mindMap.updateTitle(request.title());
+    }
+
+    public MindMapGroupListResponse getMindMapList(){
+        List<MindMap> connected = mindMapRepository.findByEisenhowerIdIsNotNullOrderByLastModifiedAtDesc();
+        List<MindMap> unconnected = mindMapRepository.findByEisenhowerIdIsNullOrderByLastModifiedAtDesc();
+
+        List<MindMapListResponse> connectedList = connected.stream()
+            .map(MindMapListResponse::fromEntity)
+            .toList();
+
+        List<MindMapListResponse> unconnectedList = unconnected.stream()
+            .map(MindMapListResponse::fromEntity)
+            .toList();
+
+        return new MindMapGroupListResponse(connectedList, unconnectedList);
     }
 }
