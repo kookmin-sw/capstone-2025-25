@@ -1,10 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from openai import AsyncOpenAI
 from config import OPENAI_API_KEY
-from models.request import GPTRequest, MindMapRequest, NodeSummaryRequest
-import json
-
-from utils.mindmap import build_mindmap_tree, format_tree_for_gpt
+from models.request import GPTRequest, NodeSummaryRequest, ConvertToTaskRequest
 
 router = APIRouter()
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
@@ -116,8 +113,44 @@ async def generate_thought_node(request: GPTRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/convert_to_task")
+async def convert_mindmap_nodes_to_task(request: ConvertToTaskRequest):
+    try:
+        # Step 1: 노드 요약 텍스트 생성 (간단하게 연결)
+        summaries = [node.summary for node in request.selectedNodes if node.summary.strip()]
+        if not summaries:
+            raise HTTPException(status_code=400, detail="요약할 노드가 없습니다.")
+
+        node_text = "\n".join(f"- {s}" for s in summaries)
+
+        prompt = f"""
+        다음은 사용자가 마인드맵에서 선택한 노드들입니다:
+
+        {node_text}
+
+        이 노드들을 기반으로 하나의 할 일(Task)로 만들고자 합니다.
+        이 내용을 바탕으로 **간결하고 핵심적인 하나의 작업 제목**을 생성해주세요.
+        """
+
+        response = await client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "당신은 여러 마인드맵 노드를 하나의 작업으로 변환하는 도우미입니다."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+
+        task_title = response.choices[0].message.content.strip()
 
 
+        new_task = {
+            "title": task_title
+        }
+
+        return {"task": new_task}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # 노드 요약 API
 @router.post("/summarize_node")
