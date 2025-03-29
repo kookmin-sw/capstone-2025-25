@@ -66,10 +66,11 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
-            export RDS_ENDPOINT="${{ secrets.RDS_ENDPOINT }}"
-            export RDS_USERNAME="${{ secrets.RDS_USERNAME }}"
-            export RDS_PASSWORD="${{ secrets.RDS_PASSWORD }}"
+            # 환경 변수 .env 파일로 설정
+            echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > ~/deploy/.env
+            echo "RDS_ENDPOINT=${{ secrets.RDS_ENDPOINT }}" >> ~/deploy/.env
+            echo "RDS_USERNAME=${{ secrets.RDS_USERNAME }}" >> ~/deploy/.env
+            echo "RDS_PASSWORD=${{ secrets.RDS_PASSWORD }}" >> ~/deploy/.env
 
             # deploy 디렉터리 생성 및 이동
             mkdir -p ~/deploy 
