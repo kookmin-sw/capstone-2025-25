@@ -4,6 +4,7 @@ import capstone.backend.global.property.RedisProperty;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;
 import io.lettuce.core.resource.DefaultClientResources;
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,5 +48,13 @@ public class RedisConfig {
     @Bean
     public StringRedisTemplate refreshTokenRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         return new StringRedisTemplate(redisConnectionFactory);
+    }
+
+    /**
+     * Lettuce 클라이언트 종료 시 리소스를 정리하여 메모리 누수를 방지
+     */
+    @PreDestroy
+    public void cleanup() {
+        redisConnectionFactory().destroy();
     }
 }
