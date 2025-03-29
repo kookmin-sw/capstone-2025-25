@@ -3,7 +3,14 @@ import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import useSummarizeNode from '@/hooks/queries/mindmap/useSummarizeNode';
-import { useNodes, useSetNode, useUpdateNode } from '@/store/mindMapStore';
+import { findParentNode } from '@/lib/mindMap';
+import {
+  useEdges,
+  useNodes,
+  useSetNode,
+  useUpdateNode,
+  useUpdateNodeQuestions,
+} from '@/store/mindMapStore';
 import { SummarizedNodeReq } from '@/types/api/mindmap';
 import { AnswerNodeType } from '@/types/mindMap';
 import { DialogClose } from '@radix-ui/react-dialog';
@@ -25,9 +32,11 @@ export default function AnswerInputNode({
 
   const setNode = useSetNode();
   const nodes = useNodes();
+  const edges = useEdges();
   const updateNode = useUpdateNode();
 
   const { summarizeNodeMutation, isPending } = useSummarizeNode();
+  const updateNodeQuestions = useUpdateNodeQuestions();
 
   useEffect(() => {
     setIsInputFilled(answer.trim() !== '');
@@ -55,6 +64,18 @@ export default function AnswerInputNode({
                 summary: data.summary,
               },
             });
+
+            const parentNode = findParentNode(nodes, edges, id);
+
+            if (parentNode) {
+              const filteredQuestions = parentNode.data.recommendedQuestions
+                ? parentNode.data.recommendedQuestions.filter(
+                    (q) => q !== currentNode.data.label,
+                  )
+                : [];
+
+              updateNodeQuestions(parentNode.id, filteredQuestions);
+            }
           },
           onError: (error) => {
             console.error('요약 생성 중 오류가 발생했습니다:', error);

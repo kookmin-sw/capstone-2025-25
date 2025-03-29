@@ -1,6 +1,7 @@
 import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 import { Skeleton } from '@/components/ui/skeleton';
-import useStore from '@/store/mindMapStore';
+import { findParentNode } from '@/lib/mindMap';
+import { useEdges, useNodes, useSetNode } from '@/store/mindMapStore';
 import { QuestionNodeType } from '@/types/mindMap';
 import { NodeProps } from '@xyflow/react';
 import { X } from 'lucide-react';
@@ -10,8 +11,14 @@ export default function QuestionListNode({
   id,
   data,
 }: NodeProps<QuestionNodeType>) {
-  const questions = data.recommendedQuestions;
+  const nodes = useNodes();
+  const edges = useEdges();
+  const setNode = useSetNode();
+
+  const parentNode = findParentNode(nodes, edges, id);
+  const questions = parentNode?.data.recommendedQuestions;
   const isPending = data.isPending;
+
   const [displayedQuestions, setDisplayedQuestions] = useState<
     Array<{
       id: number;
@@ -20,9 +27,6 @@ export default function QuestionListNode({
     }>
   >([]);
   const [questionQueue, setQuestionQueue] = useState<string[]>([]);
-
-  const setNode = useStore((state) => state.setNode);
-  const nodes = useStore((state) => state.nodes);
 
   const handleQuestionClick = (selectedQuestion: string) => {
     const currentNode = nodes.find((node) => node.id === id);

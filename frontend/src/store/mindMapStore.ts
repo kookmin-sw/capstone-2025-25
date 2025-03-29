@@ -10,7 +10,11 @@ import {
 import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
 import { MindMapEdge, MindMapNode, MindMapNodeData } from '@/types/mindMap';
-import { filterNodesAndEdges, findChildNodes } from '@/lib/mindMap';
+import {
+  filterNodesAndEdges,
+  findChildNodes,
+  findParentNode,
+} from '@/lib/mindMap';
 
 export type RFState = {
   nodes: MindMapNode[];
@@ -18,17 +22,13 @@ export type RFState = {
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   addChildNode: (
-    questions: string[],
     selectedNode: MindMapNode,
     position: XYPosition,
     isPending?: boolean,
   ) => string;
   setNode: (nodeId: string, node: MindMapNode) => void;
-  updateNodeQuestions: (
-    nodeId: string,
-    questions: string[],
-    isPending: boolean,
-  ) => void;
+  updateNodeQuestions: (nodeId: string, questions: string[]) => void;
+  updateNodePending: (nodeId: string, isPending: boolean) => void;
   deleteNode: (nodeId: string) => void;
   updateNode: (nodeId: string, answer: string, summary: string) => void;
 };
@@ -40,46 +40,9 @@ const initialNodes: MindMapNode[] = [
     data: { label: '운동', depth: 0 },
     position: { x: 0, y: 0 },
   },
-  {
-    id: '2',
-    type: 'summary',
-    data: { label: '디자인', depth: 1, summary: '최근에 하체 운동을 했다' },
-    position: { x: -300, y: 300 },
-  },
-  {
-    id: '3',
-    type: 'summary',
-    data: { label: '개발', depth: 1, summary: '등 운동을 할 계획이다' },
-    position: { x: 300, y: 300 },
-  },
-  {
-    id: '4',
-    type: 'summary',
-    data: { label: '개발', depth: 1, summary: '1시간 정도 할 생각이다' },
-    position: { x: 500, y: 500 },
-  },
 ];
 
-const initialEdges: MindMapEdge[] = [
-  {
-    id: 'e1-2',
-    source: '1',
-    target: '2',
-    type: 'mindmapEdge',
-  },
-  {
-    id: 'e1-3',
-    source: '1',
-    target: '3',
-    type: 'mindmapEdge',
-  },
-  {
-    id: 'e3-4',
-    source: '3',
-    target: '4',
-    type: 'mindmapEdge',
-  },
-];
+const initialEdges: MindMapEdge[] = [];
 
 const useStore = create<RFState>((set, get) => ({
   nodes: initialNodes,
@@ -98,7 +61,6 @@ const useStore = create<RFState>((set, get) => ({
   },
 
   addChildNode: (
-    questions: string[],
     selectedNode: MindMapNode,
     position: XYPosition,
     isPending = false,
@@ -112,7 +74,7 @@ const useStore = create<RFState>((set, get) => ({
       data: {
         label: '다음 질문을 선택해주세요',
         depth: parentDepth + 1,
-        recommendedQuestions: questions,
+        recommendedQuestions: [],
         isPending,
       },
       position,
@@ -141,7 +103,7 @@ const useStore = create<RFState>((set, get) => ({
     });
   },
 
-  updateNodeQuestions: (nodeId, questions, isPending) => {
+  updateNodeQuestions: (nodeId, questions) => {
     set({
       nodes: get().nodes.map((node) => {
         if (node.id === nodeId) {
@@ -150,7 +112,6 @@ const useStore = create<RFState>((set, get) => ({
             data: {
               ...node.data,
               recommendedQuestions: questions,
-              isPending,
             },
           };
         }
@@ -159,6 +120,22 @@ const useStore = create<RFState>((set, get) => ({
     });
   },
 
+  updateNodePending: (nodeId, isPending) => {
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              isPending,
+            },
+          };
+        }
+        return node;
+      }),
+    });
+  },
   deleteNode: (nodeId) => {
     const { nodes, edges } = get();
 
@@ -216,6 +193,8 @@ export const useAddChildNode = () => useStore((state) => state.addChildNode);
 export const useSetNode = () => useStore((state) => state.setNode);
 export const useUpdateNodeQuestions = () =>
   useStore((state) => state.updateNodeQuestions);
+export const useUpdateNodePending = () =>
+  useStore((state) => state.updateNodePending);
 export const useDeleteNode = () => useStore((state) => state.deleteNode);
 export const useUpdateNode = () => useStore((state) => state.updateNode);
 

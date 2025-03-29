@@ -19,6 +19,7 @@ import {
   useAddChildNode,
   useNodesChange,
   useUpdateNodeQuestions,
+  useUpdateNodePending,
 } from '@/store/mindMapStore';
 import MindMapEdge from '@/components/reactFlow/edges';
 import SummaryNode from '@/components/reactFlow/nodes/ui/SummaryNode';
@@ -49,6 +50,7 @@ function FlowContent() {
   const onEdgesChange = useEdgesChange();
   const addChildNode = useAddChildNode();
   const updateNodeQuestions = useUpdateNodeQuestions();
+  const updateNodePending = useUpdateNodePending();
 
   const { generateScheduleMutation } = useGenerateSchedule();
 
@@ -80,6 +82,13 @@ function FlowContent() {
       if (connectionState.isValid) {
         return;
       }
+      const targetIsPane = (event.target as Element).classList.contains(
+        'react-flow__pane',
+      );
+
+      if (!targetIsPane) {
+        return;
+      }
 
       const childNodePosition = getChildNodePosition(event as MouseEvent);
 
@@ -91,7 +100,22 @@ function FlowContent() {
         const parentNode = selectedNode
           ? findParentNode(nodes, edges, selectedNode.id)
           : undefined;
-        if (selectedNode) {
+
+        if (!selectedNode) {
+          return;
+        }
+
+        if (
+          selectedNode?.data.recommendedQuestions &&
+          selectedNode.data.recommendedQuestions.length > 0
+        ) {
+          addChildNode(selectedNode, childNodePosition, false);
+        }
+
+        if (
+          !selectedNode?.data.recommendedQuestions ||
+          selectedNode.data.recommendedQuestions.length === 0
+        ) {
           /*
           루트 노드일때는, mainNode만 보내기
           parentNode가 rootNode일때는 mainNode + selectedNode만 보내기
@@ -110,16 +134,13 @@ function FlowContent() {
               : null,
           };
 
-          const newNodeId = addChildNode(
-            [],
-            selectedNode,
-            childNodePosition,
-            true,
-          );
+          const newNodeId = addChildNode(selectedNode, childNodePosition, true);
 
           generateScheduleMutation(requestData, {
             onSuccess: (data) => {
-              updateNodeQuestions(newNodeId, data.generated_questions, false);
+              updateNodeQuestions(selectedNode.id, data.generated_questions);
+
+              updateNodePending(newNodeId, false);
             },
             onError: (error) => {
               console.error('요약 생성 중 오류가 발생했습니다:', error);
@@ -135,6 +156,7 @@ function FlowContent() {
       addChildNode,
       generateScheduleMutation,
       updateNodeQuestions,
+      updateNodePending,
     ],
   );
 
