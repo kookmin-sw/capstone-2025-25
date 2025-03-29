@@ -6,25 +6,21 @@ import capstone.backend.domain.mindmap.entity.Node;
 import capstone.backend.domain.mindmap.exception.NodeNotFoundException;
 import java.util.Optional;
 import lombok.Builder;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record MindMapResponse(
     Long id,
-    int order_index,
     Long memberId,
-    LocalDate toDoDate,
+    Long eisenhowerId,
     String title,
-    String description,
-    LocalDateTime lastModifiedAt,
     String type,
+    LocalDateTime lastModifiedAt,
     List<NodeResponse> nodes,
     List<EdgeResponse> edges
 ) {
     public record NodeResponse(
         String id,
-        String parentId,
         String type,
         String question,
         String answer,
@@ -32,12 +28,13 @@ public record MindMapResponse(
         int depth,
         List<String> recommendedQuestions,
         int x,
-        int y
+        int y,
+        int width,
+        int height
     ) {
         public static NodeResponse fromEntity(Node node){
             return new NodeResponse(
                 node.getId(),
-                node.getParentId(),
                 node.getType().name(),
                 node.getData().getQuestion(),
                 node.getData().getAnswer(),
@@ -45,7 +42,9 @@ public record MindMapResponse(
                 node.getData().getDepth(),
                 node.getData().getRecommendedQuestions(),
                 node.getPosition().getX(),
-                node.getPosition().getY()
+                node.getPosition().getY(),
+                node.getMeasured().getWidth(),
+                node.getMeasured().getHeight()
             );
         }
     }
@@ -68,7 +67,7 @@ public record MindMapResponse(
     public static MindMapResponse fromEntity(MindMap mindMap) {
         List<NodeResponse> nodeResponses = Optional.ofNullable(mindMap.getNodes())
             .filter(list -> !list.isEmpty())
-            .orElseThrow(() -> new NodeNotFoundException(mindMap.getMindmapId())) //node 없는 예외 만들기
+            .orElseThrow(() -> new NodeNotFoundException(mindMap.getId())) //node 없는 예외 만들기
             .stream()
             .map(NodeResponse::fromEntity)
             .toList();
@@ -80,14 +79,12 @@ public record MindMapResponse(
             .toList();
 
         return new MindMapResponse(
-            mindMap.getMindmapId(),
-            mindMap.getOrderIndex(),
+            mindMap.getId(),
             mindMap.getMemberId(),
-            mindMap.getToDoDate(),
+            mindMap.getEisenhowerId(),
             mindMap.getTitle(),
-            mindMap.getDescription(),
-            mindMap.getLastModifiedAt(),
             mindMap.getType().name(),
+            mindMap.getLastModifiedAt(),
             nodeResponses,
             edgeResponses
         );
