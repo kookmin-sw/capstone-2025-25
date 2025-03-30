@@ -24,11 +24,14 @@ export default function AnswerInputNode({
 }: NodeProps<AnswerNodeType>) {
   const initialAnswer = data.answer || '';
   const isEditing = data.isEditing || false;
+  const isDirectQuestion = data.label === '직접 입력하기';
 
   const [answer, setAnswer] = useState(initialAnswer);
+  const [customQuestion, setCustomQuestion] = useState('');
   const [isInputFilled, setIsInputFilled] = useState(
     initialAnswer.trim() !== '',
   );
+  const [isQuestionFilled, setIsQuestionFilled] = useState(false);
 
   const setNode = useSetNode();
   const nodes = useNodes();
@@ -42,18 +45,30 @@ export default function AnswerInputNode({
     setIsInputFilled(answer.trim() !== '');
   }, [answer]);
 
+  useEffect(() => {
+    setIsQuestionFilled(customQuestion.trim() !== '');
+  }, [customQuestion]);
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAnswer(e.target.value);
   };
 
+  const handleQuestionChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCustomQuestion(e.target.value);
+  };
+
   const handleSubmit = async () => {
-    if (isInputFilled) {
+    if (isInputFilled && (!isDirectQuestion || isQuestionFilled)) {
       const currentNode = nodes.find((node) => node.id === id);
       if (currentNode) {
+        // 직접 입력 모드일 때는 사용자가 입력한 질문을, 아닐 때는 원래 레이블을 사용
+        const questionText = isDirectQuestion ? customQuestion : data.label;
+
         const requestData: SummarizedNodeReq = {
-          question: data.label,
+          question: questionText,
           answer,
         };
+
         summarizeNodeMutation(requestData, {
           onSuccess: (data) => {
             setNode(id, {
@@ -61,6 +76,7 @@ export default function AnswerInputNode({
               type: 'summary',
               data: {
                 ...currentNode.data,
+                label: questionText,
                 summary: data.summary,
               },
             });
@@ -86,16 +102,32 @@ export default function AnswerInputNode({
   };
 
   const handleEdit = () => {
-    if (isInputFilled) {
+    if (isInputFilled && (!isDirectQuestion || isQuestionFilled)) {
       const currentNode = nodes.find((node) => node.id === id);
       if (currentNode) {
+        // 직접 입력 모드일 때는 사용자가 입력한 질문을, 아닐 때는 원래 레이블을 사용
+        const questionText = isDirectQuestion ? customQuestion : data.label;
+
         const requestData: SummarizedNodeReq = {
-          question: data.label,
+          question: questionText,
           answer,
         };
+
         summarizeNodeMutation(requestData, {
           onSuccess: (data) => {
-            updateNode(id, answer, data.summary);
+            if (isDirectQuestion) {
+              setNode(id, {
+                ...currentNode,
+                data: {
+                  ...currentNode.data,
+                  label: questionText,
+                  answer: answer,
+                  summary: data.summary,
+                },
+              });
+            } else {
+              updateNode(id, answer, data.summary);
+            }
           },
           onError: (error) => {
             console.error('요약 생성 중 오류가 발생했습니다:', error);
@@ -105,9 +137,24 @@ export default function AnswerInputNode({
     }
   };
 
+  // 버튼 활성화 조건: 직접 입력 모드면 질문과 답변 모두 있어야 함, 아니면 답변만 있으면 됨
+  const isButtonDisabled =
+    isPending || !isInputFilled || (isDirectQuestion && !isQuestionFilled);
+
   return (
     <div className="w-[538px] bg-white px-8 py-[30px] border-4 border-[#b3cbfa] rounded-lg">
-      <p className="text-[20px] font-semibold mb-[26px]">{data.label}</p>
+      {isDirectQuestion ? (
+        <div className="mb-[26px]">
+          <Input
+            placeholder="질문을 직접 입력해주세요..."
+            className="!text-[20px] font-semibold h-[48px] border-none px-0 shadow-none focus:border-none focus:border-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+            value={customQuestion}
+            onChange={handleQuestionChange}
+          />
+        </div>
+      ) : (
+        <p className="text-[20px] font-semibold mb-[26px]">{data.label}</p>
+      )}
 
       <div className="mb-6">
         <Input
@@ -123,9 +170,9 @@ export default function AnswerInputNode({
           <Modal
             trigger={
               <Button
-                variant={isInputFilled ? 'black' : 'disabled'}
+                variant={isButtonDisabled ? 'disabled' : 'black'}
                 className="w-[180px] h-12"
-                disabled={!isInputFilled || isPending}
+                disabled={isButtonDisabled}
               >
                 {isPending ? (
                   <>
@@ -154,17 +201,19 @@ export default function AnswerInputNode({
               </div>
             }
           >
-            <div className="rounded-xl px-6 py-4  border-2 border-border-gray">
-              <p className="font-bold mb-4">{data.label}</p>
+            <div className="rounded-xl px-6 py-4 border-2 border-border-gray">
+              <p className="font-bold mb-4">
+                {isDirectQuestion ? customQuestion : data.label}
+              </p>
               <p>{answer}</p>
             </div>
           </Modal>
         ) : (
           <Button
-            variant={isInputFilled ? 'black' : 'disabled'}
+            variant={isButtonDisabled ? 'disabled' : 'black'}
             onClick={handleSubmit}
             className="w-[180px] h-12"
-            disabled={!isInputFilled || isPending}
+            disabled={isButtonDisabled}
           >
             {isPending ? (
               <>

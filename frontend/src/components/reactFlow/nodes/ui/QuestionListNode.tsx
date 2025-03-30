@@ -96,7 +96,7 @@ export default function QuestionListNode({
         type: 'answer',
         data: {
           ...currentNode.data,
-          label: '질문을 직접 입력해주세요',
+          label: '직접 입력하기',
         },
       });
     }
