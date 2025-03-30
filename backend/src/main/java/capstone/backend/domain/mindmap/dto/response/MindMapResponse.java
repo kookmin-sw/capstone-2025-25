@@ -67,7 +67,7 @@ public record MindMapResponse(
     public static MindMapResponse fromEntity(MindMap mindMap) {
         List<NodeResponse> nodeResponses = Optional.ofNullable(mindMap.getNodes())
             .filter(list -> !list.isEmpty())
-            .orElseThrow(() -> new NodeNotFoundException(mindMap.getId())) //node 없는 예외 만들기
+            .orElseThrow(NodeNotFoundException::new)
             .stream()
             .map(NodeResponse::fromEntity)
             .toList();
