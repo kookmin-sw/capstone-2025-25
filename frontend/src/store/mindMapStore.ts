@@ -10,11 +10,7 @@ import {
 import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
 import { MindMapEdge, MindMapNode, MindMapNodeData } from '@/types/mindMap';
-import {
-  filterNodesAndEdges,
-  findChildNodes,
-  findParentNode,
-} from '@/lib/mindMap';
+import { filterNodesAndEdges, findChildNodes } from '@/lib/mindMap';
 
 export type RFState = {
   nodes: MindMapNode[];
@@ -167,7 +163,7 @@ const useStore = create<RFState>((set, get) => ({
       if (node.id === nodeId) {
         return {
           ...node,
-          type: 'summary',
+          type: 'summary' as const,
           data: {
             ...node.data,
             answer,
