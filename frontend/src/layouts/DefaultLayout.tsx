@@ -1,12 +1,12 @@
 import { Outlet } from 'react-router';
-import PriorityMatrix from '@/components/PriorityMatrix/PriorityMatrix.tsx';
+import Sidebar from '@/components/ui/Sidebar.tsx';
 
 export default function DefaultLayout() {
   return (
     <div>
       <header>Default header</header>
+        <Sidebar />
       <Outlet />
-      <PriorityMatrix />
     </div>
   );
 }
