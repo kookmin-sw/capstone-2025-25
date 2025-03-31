@@ -7,6 +7,7 @@ from utils.logging import setup_logging
 
 app = FastAPI()
 
+
 # CORS 설정 적용
 app.add_middleware(
     CORSMiddleware,
@@ -19,8 +20,7 @@ app.add_middleware(
 # 로깅 설정
 logger = setup_logging()
 
-# 엔드포인트 등록
-app.include_router(gpt.router)
+app.include_router(gpt.router, prefix="/api/gpt")
 
 # 요청 실행 시간 로깅 미들웨어
 @app.middleware("http")
