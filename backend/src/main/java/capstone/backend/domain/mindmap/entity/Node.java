@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class Node {
     private String id;
-    private String parentId;
     private NodeType type;
     private NodeData data;
     private Position position;
+    private Measured measured;
 }

@@ -1,18 +1,14 @@
 package capstone.backend.domain.mindmap.service;
 
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
-import capstone.backend.domain.mindmap.dto.request.UpdateMindMapOrderRequest;
+import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
+import capstone.backend.domain.mindmap.dto.response.MindMapGroupListResponse;
+import capstone.backend.domain.mindmap.dto.response.MindMapListResponse;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
-import capstone.backend.domain.mindmap.entity.MindMapType;
-import capstone.backend.domain.mindmap.exception.InvalidMindMapDateException;
 import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
 import capstone.backend.domain.mindmap.repository.MindMapRepository;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +23,7 @@ public class MindMapService {
     public Long createMindMap(MindMapRequest mindMapRequest) {
         MindMap mindMap = MindMap.createMindMap(mindMapRequest);
         mindMapRepository.save(mindMap);
-        return mindMap.getMindmapId();
+        return mindMap.getId();
     }
 
     public MindMapResponse getMindMapById(Long id){
@@ -45,18 +41,6 @@ public class MindMapService {
         mindMapRepository.deleteById(id);
     }
 
-    public List<MindMapResponse> getMindMaps(LocalDate date, MindMapType type) {
-        List<MindMap> mindMaps = mindMapRepository.findAllByToDoDateAndTypeOrderByOrderIndexAsc(date, type);
-
-        if (mindMaps.isEmpty()) {
-            throw new MindMapNotFoundException();
-        }
-
-        return mindMaps.stream()
-            .map(MindMapResponse::fromEntity)
-            .toList();
-    }
-
     @Transactional
     public void updateMindMap(Long id, MindMapRequest mindMapRequest) {
         MindMap mindMap = mindMapRepository.findById(id)
@@ -66,38 +50,24 @@ public class MindMapService {
     }
 
     @Transactional
-    public void updateMindMapOrder(UpdateMindMapOrderRequest updateMindMapOrderRequest){
-        Map<Long, MindMap> mindMapMap = fetchMindMapsAsMap(updateMindMapOrderRequest);
-
-        for (UpdateMindMapOrderRequest.MindMapOrder order : updateMindMapOrderRequest.orderList()) {
-            MindMap mindMap = mindMapMap.get(order.mindMapId());
-
-            validateMindMapExists(mindMap, order.mindMapId());
-            validateToDoDateMatch(mindMap, updateMindMapOrderRequest.toDoDate());
-
-            mindMap.setOrderIndex(order.orderIndex());
-        }
+    public void updateMindMapTitle(Long id, UpdateMindMapTitleRequest request){
+        MindMap mindMap = mindMapRepository.findById(id)
+            .orElseThrow(() -> new MindMapNotFoundException(id));
+        mindMap.updateTitle(request.title());
     }
 
-    private Map<Long, MindMap> fetchMindMapsAsMap(UpdateMindMapOrderRequest updateMindMapOrderRequest) {
-        List<Long> ids = updateMindMapOrderRequest.orderList().stream()
-            .map(UpdateMindMapOrderRequest.MindMapOrder::mindMapId)
+    public MindMapGroupListResponse getMindMapList(){
+        List<MindMap> connected = mindMapRepository.findByEisenhowerIdIsNotNullOrderByLastModifiedAtDesc();
+        List<MindMap> unconnected = mindMapRepository.findByEisenhowerIdIsNullOrderByLastModifiedAtDesc();
+
+        List<MindMapListResponse> connectedList = connected.stream()
+            .map(MindMapListResponse::fromEntity)
             .toList();
 
-        return mindMapRepository.findAllById(ids).stream()
-            .collect(Collectors.toMap(MindMap::getMindmapId, Function.identity()));
-    }
+        List<MindMapListResponse> unconnectedList = unconnected.stream()
+            .map(MindMapListResponse::fromEntity)
+            .toList();
 
-    private void validateMindMapExists(MindMap mindMap, Long mindMapId) {
-        if (mindMap == null) {
-            throw new MindMapNotFoundException(mindMapId);
-        }
+        return new MindMapGroupListResponse(connectedList, unconnectedList);
     }
-
-    private void validateToDoDateMatch(MindMap mindMap, LocalDate expectedDate) {
-        if (!mindMap.getToDoDate().equals(expectedDate)) {
-            throw new InvalidMindMapDateException(mindMap.getMindmapId(), expectedDate);
-        }
-    }
-
 }
