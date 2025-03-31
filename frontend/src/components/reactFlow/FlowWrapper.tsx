@@ -7,10 +7,11 @@ import {
   OnConnectStart,
   OnConnectEnd,
   NodeOrigin,
+  Panel,
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import {
   useNodes,
@@ -29,6 +30,12 @@ import QuestionListNode from '@/components/reactFlow/nodes/ui/QuestionListNode';
 import { GeneratedScheduleReq } from '@/types/api/mindmap';
 import useGenerateSchedule from '@/hooks/queries/mindmap/useGenerateSchedule';
 import { findParentNode } from '@/lib/mindMap';
+import { Modal } from '@/components/common/Modal';
+import { Plus } from 'lucide-react';
+import { DialogClose } from '@/components/ui/Dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/Input';
+import { cn } from '@/lib/utils';
 
 const nodeTypes = {
   root: RootNode,
@@ -160,6 +167,90 @@ function FlowContent() {
     ],
   );
 
+  /* 
+  임시로 마인드맵 생성하는 버튼을 생성해놓음
+  추후에 사이드바 디자인 나오면 해당 로직 옮길 예정임
+   */
+
+  const AddButton = () => {
+    const [selectedType, setSelectedType] = useState('');
+    const [subject, setSubject] = useState('');
+
+    const handleCreateClick = () => {
+      console.log('생성', selectedType, subject);
+    };
+
+    const handleInputChange = (e) => {
+      setSubject(e.target.value);
+    };
+
+    return (
+      <Modal
+        trigger={<Plus size={20} />}
+        title="마인드맵 생성하기"
+        description={`해야 할 일이나 생각이 떠올랐다면 여기 적어보세요! 
+        질문을 통해 더 깊이 고민할 수 있도록 도와줄게요`}
+        footer={
+          <DialogClose asChild>
+            <Button className="px-8" onClick={handleCreateClick}>
+              생성하기
+            </Button>
+          </DialogClose>
+        }
+      >
+        <div
+          className="flex flex-col space-y-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div>
+            <label className="text-[14px] block mb-2">마인드맵 주제</label>
+            <Input
+              placeholder="주제를 입력하세요"
+              value={subject}
+              onChange={handleInputChange}
+              onClick={(e) => e.stopPropagation()}
+              className="h-12"
+            />
+          </div>
+
+          <div>
+            <label className="text-[14px] block mb-2">마인드맵 타입</label>
+            <div
+              className="w-full flex gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Button
+                variant="white"
+                className={cn(
+                  'flex-1 border-1 font-normal',
+                  selectedType === 'Todo'
+                    ? 'border-[#8D5CF6]'
+                    : 'border-gray-200',
+                )}
+                onClick={() => setSelectedType('Todo')}
+              >
+                Todo
+              </Button>
+
+              <Button
+                variant="white"
+                className={cn(
+                  'flex-1 border-1 font-normal',
+                  selectedType === 'Thinking'
+                    ? 'border-[#8D5CF6]'
+                    : 'border-gray-200',
+                )}
+                onClick={() => setSelectedType('Thinking')}
+              >
+                Thinking
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
   return (
     <div className="w-full h-full">
       <ReactFlow
@@ -175,6 +266,9 @@ function FlowContent() {
         connectionLineType={ConnectionLineType.Straight}
         fitView
       >
+        <Panel>
+          <AddButton />
+        </Panel>
         <Controls showInteractive={false} />
       </ReactFlow>
     </div>
