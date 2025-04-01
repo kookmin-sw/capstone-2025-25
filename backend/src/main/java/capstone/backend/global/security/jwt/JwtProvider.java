@@ -1,7 +1,6 @@
 package capstone.backend.global.security.jwt;
 
 import capstone.backend.global.property.JwtProperty;
-import capstone.backend.global.redis.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +18,6 @@ import java.util.Date;
 public class JwtProvider {
 
     private final JwtProperty jwtProperty;
-    private final RedisService redisService;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtProperty.getSecretKey()));
@@ -43,17 +41,12 @@ public class JwtProvider {
     }
 
     public String generateRefreshToken(String memberId) {
-        String refreshToken = Jwts.builder()
+        return Jwts.builder()
                 .claim("id", memberId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + getRefreshTokenExpiration()))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
-
-        // Redis에 저장 (key: memberId, value: refreshToken, 만료시간 설정)
-        redisService.saveRefreshToken(memberId, refreshToken);
-
-        return refreshToken;
     }
 
     public Claims getClaimsByToken(String token) {
@@ -66,14 +59,9 @@ public class JwtProvider {
 
     public String refreshAccessToken(String refreshToken) {
         try {
-            String id = getClaimsByToken(refreshToken).get("id", String.class);
-            String storedToken = redisService.getRefreshToken(id);
+            String memberId = getClaimsByToken(refreshToken).get("id", String.class);
+            return generateAccessToken(memberId);
 
-            if (storedToken != null && storedToken.equals(refreshToken)) {
-                return generateAccessToken(id);
-            }
-
-            return null;
         } catch (ExpiredJwtException e) {
             log.error("Refresh token expired");
             return null;
