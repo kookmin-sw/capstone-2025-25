@@ -10,7 +10,7 @@ import {
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import {
   useNodes,
@@ -20,6 +20,7 @@ import {
   useNodesChange,
   useUpdateNodeQuestions,
   useUpdateNodePending,
+  useSetInitialData,
 } from '@/store/mindMapStore';
 import MindMapEdge from '@/components/reactFlow/edges';
 import SummaryNode from '@/components/reactFlow/nodes/ui/SummaryNode';
@@ -29,6 +30,10 @@ import QuestionListNode from '@/components/reactFlow/nodes/ui/QuestionListNode';
 import { GeneratedScheduleReq } from '@/types/api/mindmap';
 import useGenerateSchedule from '@/hooks/queries/mindmap/useGenerateSchedule';
 import { findParentNode } from '@/lib/mindMap';
+import {
+  useLoadMindMapData,
+  useSaveMindMapData,
+} from '@/store/mindmapListStore';
 
 const nodeTypes = {
   root: RootNode,
@@ -55,11 +60,39 @@ function FlowContent({ mindmapId }: FlowContentProps) {
   const addChildNode = useAddChildNode();
   const updateNodeQuestions = useUpdateNodeQuestions();
   const updateNodePending = useUpdateNodePending();
+  const setInitialData = useSetInitialData();
+
+  const loadMindMapData = useLoadMindMapData();
+  const saveMindMapData = useSaveMindMapData();
 
   const { generateScheduleMutation } = useGenerateSchedule();
 
   const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (mindmapId) {
+      const mindMapData = loadMindMapData(mindmapId);
+
+      if (mindMapData) {
+        if (mindMapData.nodes && mindMapData.edges) {
+          setInitialData(mindMapData.nodes, mindMapData.edges);
+        }
+      }
+
+      if (!mindMapData) {
+        console.error(
+          `마인드맵 ID ${mindmapId}에 해당하는 데이터를 찾을 수 없습니다.`,
+        );
+      }
+    }
+  }, [mindmapId, loadMindMapData, setInitialData]);
+
+  useEffect(() => {
+    if (mindmapId && nodes.length > 0) {
+      saveMindMapData(mindmapId, nodes, edges);
+    }
+  }, [nodes, edges, mindmapId, saveMindMapData]);
 
   const getChildNodePosition = useCallback(
     (event: MouseEvent) => {

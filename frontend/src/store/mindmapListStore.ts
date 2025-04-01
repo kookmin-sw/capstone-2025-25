@@ -1,17 +1,19 @@
 import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
-import { MindMapNode, MindMap, TodoType } from '@/types/mindMap';
+import { MindMapNode, MindMap, TodoType, MindMapEdge } from '@/types/mindMap';
 
 export type MindMapListState = {
   mindMaps: MindMap[];
   activeMindMapId: string | null;
 
-  createMindMap: (
-    title: string,
-    type: TodoType,
-    isConnected?: boolean,
-  ) => string;
+  createMindMap: (title: string, type: TodoType) => string;
   loadMindMapData: (id: string) => MindMap | null;
+  setActiveMindMap: (id: string | null) => void;
+  saveMindMapData: (
+    id: string,
+    nodes: MindMapNode[],
+    edges: MindMapEdge[],
+  ) => void;
 };
 
 const useStore = create<MindMapListState>((set, get) => ({
@@ -21,10 +23,21 @@ const useStore = create<MindMapListState>((set, get) => ({
   createMindMap: (title, type) => {
     const id = nanoid();
 
+    const initialNodes: MindMapNode[] = [
+      {
+        id: '1',
+        type: 'root',
+        data: { label: title, depth: 0 },
+        position: { x: 0, y: 0 },
+      },
+    ];
+
     const newMindMap: MindMap = {
       id,
       title,
       type,
+      nodes: initialNodes,
+      edges: [],
     };
 
     set((state) => ({
@@ -36,11 +49,27 @@ const useStore = create<MindMapListState>((set, get) => ({
   },
 
   loadMindMapData: (id) => {
-    const storedData = localStorage.getItem(`mindmap-data-${id}`);
-    if (storedData) {
-      return JSON.parse(storedData) as MindMap;
+    const mindMap = get().mindMaps.find((m) => m.id === id);
+    return mindMap || null;
+  },
+
+  setActiveMindMap: (id) => {
+    set({ activeMindMapId: id });
+  },
+
+  saveMindMapData: (id, nodes, edges) => {
+    const mindMapIndex = get().mindMaps.findIndex((m) => m.id === id);
+
+    if (mindMapIndex !== -1) {
+      const updatedMindMaps = [...get().mindMaps];
+      updatedMindMaps[mindMapIndex] = {
+        ...updatedMindMaps[mindMapIndex],
+        nodes,
+        edges,
+      };
+
+      set({ mindMaps: updatedMindMaps });
     }
-    return null;
   },
 }));
 
@@ -50,5 +79,9 @@ export const useActiveMindMapId = () =>
 export const useCreateMindMap = () => useStore((state) => state.createMindMap);
 export const useLoadMindMapData = () =>
   useStore((state) => state.loadMindMapData);
+export const useSetActiveMindMap = () =>
+  useStore((state) => state.setActiveMindMap);
+export const useSaveMindMapData = () =>
+  useStore((state) => state.saveMindMapData);
 
 export default useStore;

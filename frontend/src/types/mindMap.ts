@@ -32,4 +32,6 @@ export type MindMap = {
   order?: number;
   type: TodoType;
   title: string;
+  nodes: MindMapNode[];
+  edges: MindMapEdge[];
 };
