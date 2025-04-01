@@ -1,3 +1,10 @@
+import PriorityMatrix from '@/components/PriorityMatrix/PriorityMatrix.tsx';
+import DefaultPriorityMatrix from '@/components/PriorityMatrix/DefaultPriorityMatrix.tsx';
 export default function MatrixPage() {
-  return <h1>아이젠하워매트릭스페이지</h1>;
+  return (
+    <div>
+      <PriorityMatrix />
+      <DefaultPriorityMatrix />
+    </div>
+  );
 }

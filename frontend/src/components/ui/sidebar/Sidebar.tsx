@@ -65,7 +65,7 @@ export default function Sidebar() {
       case 'today-list':
         return <TodayListPanel onClose={onClose} />;
       case 'matrix':
-        return <MatrixPanel onClose={onClose} />;
+        return;
       case 'pomodoro':
         return <PomodoroPanel onClose={onClose} />;
       default:
