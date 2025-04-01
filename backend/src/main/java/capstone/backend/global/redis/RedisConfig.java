@@ -1,58 +1,60 @@
 package capstone.backend.global.redis;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import capstone.backend.global.property.RedisProperty;
+import io.lettuce.core.ClientOptions;
+import io.lettuce.core.SocketOptions;
+import io.lettuce.core.resource.DefaultClientResources;
+import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    @Value("${spring.data.redis.host}")
-    private String host;
+    private final RedisProperty redisProperty;
 
-    @Value("${spring.data.redis.password}")
-    private String password;
-
-    @Value("${spring.data.redis.port}")
-    private int port;
-
-    private final ObjectMapper objectMapper;
-
-    // 기본 Redis ConnectionFactory 설정
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(host, port);
-        config.setPassword(password);
-        return new LettuceConnectionFactory(config);
+        // Redis Standalone 설정
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisProperty.getHost(), redisProperty.getPort());
+        config.setPassword(redisProperty.getPassword());
+
+        // Lettuce 클라이언트 설정 (Timeout 적용)
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+                .commandTimeout(redisProperty.getTimeout())
+                .clientOptions(ClientOptions.builder()
+                        .socketOptions(SocketOptions.builder()
+                                .connectTimeout(redisProperty.getConnectTimeout())
+                                .build())
+                        .build())
+                .clientResources(DefaultClientResources.create())
+                .build();
+
+        return new LettuceConnectionFactory(config, clientConfig);
     }
 
+    /**
+     * Refresh Token 저장을 위한 StringRedisTemplate
+     * Key: userId
+     * Value: Refresh Token (String)
+     */
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
-
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
-        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
-
-        template.afterPropertiesSet();
-        return template;
-    }
-
-    @Bean
-    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public StringRedisTemplate refreshTokenRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         return new StringRedisTemplate(redisConnectionFactory);
+    }
+
+    /**
+     * Lettuce 클라이언트 종료 시 리소스를 정리하여 메모리 누수를 방지
+     */
+    @PreDestroy
+    public void cleanup() {
+        redisConnectionFactory().destroy();
     }
 }

@@ -1,7 +1,10 @@
 @import 'tailwindcss';
 
 @theme {
-  /* 버튼 색상 */
+  /* 공통 색상 */
+  --color-border-gray: #e3e3e3;
+
+  /* button 색상 */
   --color-button-primary: #ffe277;
   --color-button-disabled: #e7e7e7;
 
@@ -39,4 +42,9 @@
 
   /* Font Family */
   --font-primary: 'Inter', sans-serif;
+}
+  /* mindmap 관련 색상 */
+  --color-root-icon: #ffea9f;
+  --color-question-input-hover: rgba(0, 0, 0, 0.02);
+  --color-question-input-active: rgba(0, 0, 0, 0.05);
 }

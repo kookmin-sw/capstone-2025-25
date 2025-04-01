@@ -1,18 +1,28 @@
-import logging
-
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+
+from config import CORS_ORIGINS
 from routes import gpt
+from utils.logging import setup_logging
 
 app = FastAPI()
 
-# 엔드포인트 등록
-app.include_router(gpt.router)
 
-# 로그 설정
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# CORS 설정 적용
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ORIGINS,  # 허용할 출처 리스트
+    allow_credentials=True,  # 쿠키 포함 허용 (JWT 인증 사용 시 필요)
+    allow_methods=["*"],  # 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
+    allow_headers=["*"],  # 모든 헤더 허용
+)
 
-# ✅ 요청 실행 시간 로깅 미들웨어
+# 로깅 설정
+logger = setup_logging()
+
+app.include_router(gpt.router, prefix="/api/gpt")
+
+# 요청 실행 시간 로깅 미들웨어
 @app.middleware("http")
 async def log_request_time(request: Request, call_next):
     import time
