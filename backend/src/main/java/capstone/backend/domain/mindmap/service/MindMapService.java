@@ -35,7 +35,7 @@ public class MindMapService {
     @Transactional
     public void deleteMindMap(Long id) {
         if (!mindMapRepository.existsById(id)) {
-            throw new MindMapNotFoundException(id);
+            throw new MindMapNotFoundException();
         }
 
         mindMapRepository.deleteById(id);
@@ -44,7 +44,7 @@ public class MindMapService {
     @Transactional
     public void updateMindMap(Long id, MindMapRequest mindMapRequest) {
         MindMap mindMap = mindMapRepository.findById(id)
-            .orElseThrow(() -> new MindMapNotFoundException(id));
+            .orElseThrow(MindMapNotFoundException::new);
 
         mindMap.update(mindMapRequest);
     }
@@ -52,7 +52,7 @@ public class MindMapService {
     @Transactional
     public void updateMindMapTitle(Long id, UpdateMindMapTitleRequest request){
         MindMap mindMap = mindMapRepository.findById(id)
-            .orElseThrow(() -> new MindMapNotFoundException(id));
+            .orElseThrow(MindMapNotFoundException::new);
         mindMap.updateTitle(request.title());
     }
 
