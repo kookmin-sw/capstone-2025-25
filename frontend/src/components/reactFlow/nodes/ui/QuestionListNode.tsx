@@ -135,7 +135,7 @@ export default function QuestionListNode({
           {displayedQuestions.map((question) => (
             <li
               key={question.id}
-              className={`w-[576px] p-4 border border-border-gray rounded-lg flex justify-between items-center transition-all duration-300 hover:bg-question-input-hover active:bg-question-input-active ${
+              className={`w-[576px] p-4 border border-border-gray rounded-lg flex justify-between items-center transition-all duration-300 hover:bg-question-input-hover active:bg-question-input-active cursor-pointer ${
                 question.animating
                   ? 'opacity-0 transform -translate-x-2'
                   : 'opacity-100'
@@ -157,7 +157,7 @@ export default function QuestionListNode({
           ))}
           <li
             onClick={activateDirectInputMode}
-            className="p-4 border border-border-gray rounded-lg flex justify-between items-center"
+            className="p-4 border border-border-gray rounded-lg flex justify-between items-center cursor-pointer"
           >
             <span>직접 입력하기</span>
           </li>
