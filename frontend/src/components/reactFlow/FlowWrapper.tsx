@@ -18,12 +18,17 @@ import {
   useEdgesChange,
   useAddChildNode,
   useNodesChange,
+  useUpdateNodeQuestions,
+  useUpdateNodePending,
 } from '@/store/mindMapStore';
 import MindMapEdge from '@/components/reactFlow/edges';
 import SummaryNode from '@/components/reactFlow/nodes/ui/SummaryNode';
 import RootNode from '@/components/reactFlow/nodes/ui/RootNode';
 import AnswerInputNode from '@/components/reactFlow/nodes/ui/AnswerInputNode';
 import QuestionListNode from '@/components/reactFlow/nodes/ui/QuestionListNode';
+import { GeneratedScheduleReq } from '@/types/api/mindmap';
+import useGenerateSchedule from '@/hooks/queries/mindmap/useGenerateSchedule';
+import { findParentNode } from '@/lib/mindMap';
 
 const nodeTypes = {
   root: RootNode,
@@ -44,6 +49,10 @@ function FlowContent() {
   const onNodesChange = useNodesChange();
   const onEdgesChange = useEdgesChange();
   const addChildNode = useAddChildNode();
+  const updateNodeQuestions = useUpdateNodeQuestions();
+  const updateNodePending = useUpdateNodePending();
+
+  const { generateScheduleMutation } = useGenerateSchedule();
 
   const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
@@ -69,7 +78,10 @@ function FlowContent() {
   }, []);
 
   const onConnectEnd: OnConnectEnd = useCallback(
-    (event) => {
+    (event, connectionState) => {
+      if (connectionState.isValid) {
+        return;
+      }
       const targetIsPane = (event.target as Element).classList.contains(
         'react-flow__pane',
       );
@@ -81,15 +93,71 @@ function FlowContent() {
       const childNodePosition = getChildNodePosition(event as MouseEvent);
 
       if (childNodePosition && connectingNodeId.current) {
-        const parentNode = nodes.find(
+        const mainNode = nodes.find((node) => node.type === 'root');
+        const selectedNode = nodes.find(
           (node) => node.id === connectingNodeId.current,
         );
-        if (parentNode) {
-          addChildNode(parentNode, childNodePosition);
+        const parentNode = selectedNode
+          ? findParentNode(nodes, edges, selectedNode.id)
+          : undefined;
+
+        if (!selectedNode) {
+          return;
+        }
+
+        if (
+          selectedNode?.data.recommendedQuestions &&
+          selectedNode.data.recommendedQuestions.length > 0
+        ) {
+          addChildNode(selectedNode, childNodePosition, false);
+        }
+
+        if (
+          !selectedNode?.data.recommendedQuestions ||
+          selectedNode.data.recommendedQuestions.length === 0
+        ) {
+          /*
+          루트 노드일때는, mainNode만 보내기
+          parentNode가 rootNode일때는 mainNode + selectedNode만 보내기
+          -> null로 처리
+          */
+          const requestData: GeneratedScheduleReq = {
+            mainNode: mainNode?.data?.label
+              ? { summary: mainNode.data.label }
+              : null,
+            parentNode:
+              parentNode?.id !== mainNode?.id && parentNode?.data?.summary
+                ? { summary: parentNode.data.summary }
+                : null,
+            selectedNode: selectedNode?.data?.summary
+              ? { summary: selectedNode.data.summary }
+              : null,
+          };
+
+          const newNodeId = addChildNode(selectedNode, childNodePosition, true);
+
+          generateScheduleMutation(requestData, {
+            onSuccess: (data) => {
+              updateNodeQuestions(selectedNode.id, data.generated_questions);
+
+              updateNodePending(newNodeId, false);
+            },
+            onError: (error) => {
+              console.error('요약 생성 중 오류가 발생했습니다:', error);
+            },
+          });
         }
       }
     },
-    [nodes, getChildNodePosition, addChildNode],
+    [
+      nodes,
+      edges,
+      getChildNodePosition,
+      addChildNode,
+      generateScheduleMutation,
+      updateNodeQuestions,
+      updateNodePending,
+    ],
   );
 
   return (

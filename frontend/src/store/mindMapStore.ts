@@ -1,6 +1,5 @@
 import {
   EdgeChange,
-  Node,
   NodeChange,
   OnNodesChange,
   OnEdgesChange,
@@ -11,51 +10,35 @@ import {
 import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
 import { MindMapEdge, MindMapNode, MindMapNodeData } from '@/types/mindMap';
+import { filterNodesAndEdges, findChildNodes } from '@/lib/mindMap';
 
 export type RFState = {
   nodes: MindMapNode[];
   edges: MindMapEdge[];
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
-  addChildNode: (parentNode: Node, position: XYPosition) => void;
+  addChildNode: (
+    selectedNode: MindMapNode,
+    position: XYPosition,
+    isPending?: boolean,
+  ) => string;
   setNode: (nodeId: string, node: MindMapNode) => void;
+  updateNodeQuestions: (nodeId: string, questions: string[]) => void;
+  updateNodePending: (nodeId: string, isPending: boolean) => void;
+  deleteNode: (nodeId: string) => void;
+  updateNode: (nodeId: string, answer: string, summary: string) => void;
 };
 
 const initialNodes: MindMapNode[] = [
   {
     id: '1',
     type: 'root',
-    data: { label: '프로젝트 계획', depth: 0 },
+    data: { label: '운동', depth: 0 },
     position: { x: 0, y: 0 },
-  },
-  {
-    id: '2',
-    type: 'summary',
-    data: { label: '디자인', depth: 1, summary: '요약말' },
-    position: { x: -300, y: 300 },
-  },
-  {
-    id: '3',
-    type: 'summary',
-    data: { label: '개발', depth: 1, summary: '요약말' },
-    position: { x: 500, y: 500 },
   },
 ];
 
-const initialEdges: MindMapEdge[] = [
-  {
-    id: 'e1-2',
-    source: '1',
-    target: '2',
-    type: 'mindmapEdge',
-  },
-  {
-    id: 'e1-3',
-    source: '1',
-    target: '3',
-    type: 'mindmapEdge',
-  },
-];
+const initialEdges: MindMapEdge[] = [];
 
 const useStore = create<RFState>((set, get) => ({
   nodes: initialNodes,
@@ -73,40 +56,39 @@ const useStore = create<RFState>((set, get) => ({
     });
   },
 
-  addChildNode: (parentNode: Node, position: XYPosition) => {
-    const parentDepth = (parentNode.data as MindMapNodeData)?.depth || 0;
+  addChildNode: (
+    selectedNode: MindMapNode,
+    position: XYPosition,
+    isPending = false,
+  ) => {
+    const parentDepth = (selectedNode.data as MindMapNodeData)?.depth || 0;
+    const newNodeId = nanoid();
 
     const newNode: MindMapNode = {
-      id: nanoid(),
+      id: newNodeId,
       type: 'question',
       data: {
         label: '다음 질문을 선택해주세요',
         depth: parentDepth + 1,
-        recommendedQuestions: [
-          '질문1',
-          '질문2',
-          '질문3',
-          '질문4',
-          '질문5',
-          '질문6',
-        ],
+        recommendedQuestions: [],
+        isPending,
       },
       position,
     };
 
     const newEdge: MindMapEdge = {
-      id: nanoid(),
-      source: parentNode.id,
-      target: newNode.id,
+      id: `e${selectedNode.id}-${newNodeId}`,
+      source: selectedNode.id,
+      target: newNodeId,
       type: 'mindmapEdge',
     };
-
-    console.log('Created new edge:', newEdge);
 
     set((state) => ({
       nodes: [...state.nodes, newNode],
       edges: [...state.edges, newEdge],
     }));
+
+    return newNodeId;
   },
 
   setNode: (nodeId, updatedNode) => {
@@ -114,6 +96,87 @@ const useStore = create<RFState>((set, get) => ({
       nodes: get().nodes.map((node) =>
         node.id === nodeId ? updatedNode : node,
       ),
+    });
+  },
+
+  updateNodeQuestions: (nodeId, questions) => {
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              recommendedQuestions: questions,
+            },
+          };
+        }
+        return node;
+      }),
+    });
+  },
+
+  updateNodePending: (nodeId, isPending) => {
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              isPending,
+            },
+          };
+        }
+        return node;
+      }),
+    });
+  },
+  deleteNode: (nodeId) => {
+    const { nodes, edges } = get();
+
+    const nodesToDelete = findChildNodes(edges, nodeId, true);
+
+    const { filteredNodes, filteredEdges } = filterNodesAndEdges(
+      nodes,
+      edges,
+      nodesToDelete,
+    );
+
+    set({
+      nodes: filteredNodes,
+      edges: filteredEdges,
+    });
+  },
+
+  updateNode: (nodeId, answer, summary) => {
+    const { nodes, edges } = get();
+    const nodesToDelete = findChildNodes(edges, nodeId, false);
+
+    const { filteredNodes, filteredEdges } = filterNodesAndEdges(
+      nodes,
+      edges,
+      nodesToDelete,
+    );
+
+    const updatedNodes = filteredNodes.map((node) => {
+      if (node.id === nodeId) {
+        return {
+          ...node,
+          type: 'summary' as const,
+          data: {
+            ...node.data,
+            answer,
+            summary,
+          },
+        };
+      }
+      return node;
+    });
+
+    set({
+      nodes: updatedNodes,
+      edges: filteredEdges,
     });
   },
 }));
@@ -124,5 +187,11 @@ export const useNodesChange = () => useStore((state) => state.onNodesChange);
 export const useEdgesChange = () => useStore((state) => state.onEdgesChange);
 export const useAddChildNode = () => useStore((state) => state.addChildNode);
 export const useSetNode = () => useStore((state) => state.setNode);
+export const useUpdateNodeQuestions = () =>
+  useStore((state) => state.updateNodeQuestions);
+export const useUpdateNodePending = () =>
+  useStore((state) => state.updateNodePending);
+export const useDeleteNode = () => useStore((state) => state.deleteNode);
+export const useUpdateNode = () => useStore((state) => state.updateNode);
 
 export default useStore;
