@@ -7,12 +7,10 @@ import {
   OnConnectStart,
   OnConnectEnd,
   NodeOrigin,
-  Panel,
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useRef } from 'react';
-import { useCallback, useRef, useEffect, useState } from 'react';
 
 import {
   useNodes,
@@ -97,16 +95,13 @@ function FlowContent({ mindmapId }: FlowContentProps) {
   }, [nodes, edges, mindmapId, saveMindMapData]);
 
   const getChildNodePosition = useCallback(
-    (event: MouseEvent) => {
-      const rect = (event.target as Element)
-        .closest('.react-flow')
-        ?.getBoundingClientRect();
-
-      if (!rect) return;
+    (event: MouseEvent | TouchEvent) => {
+      const { clientX, clientY } =
+        'changedTouches' in event ? event.changedTouches[0] : event;
 
       return screenToFlowPosition({
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top,
+        x: clientX,
+        y: clientY,
       });
     },
     [screenToFlowPosition],
