@@ -7,7 +7,6 @@ import { useNavigate, useLocation } from 'react-router';
 
 import MindmapPanel from '@/components/ui/sidebar/panel/MindmapPanel.tsx';
 import TodayListPanel from '@/components/ui/sidebar/panel/TodayListPanel.tsx';
-import MatrixPanel from '@/components/ui/sidebar/panel/MatrixPanel.tsx';
 import PomodoroPanel from '@/components/ui/sidebar/panel/PomodoroPanel.tsx';
 
 const navItems = [
@@ -107,7 +106,7 @@ export default function Sidebar() {
       {renderPanel()}
 
       {/* 콘텐츠 영역 */}
-      <div className="flex-1 bg-gray-50 p-8"></div>
+      <div className="flex-1 bg-gray-50"></div>
     </div>
   );
 }
