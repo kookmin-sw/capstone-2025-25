@@ -11,6 +11,9 @@ type Params = {
   "/login": {};
   "/register": {};
   "/mindmap": {};
+  "/today-list": {};
+  "/matrix": {};
+  "/pomodoro": {};
   "/list": {};
   "/dashboard": {};
 };
