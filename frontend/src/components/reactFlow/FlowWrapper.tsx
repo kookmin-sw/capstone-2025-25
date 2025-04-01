@@ -7,10 +7,12 @@ import {
   OnConnectStart,
   OnConnectEnd,
   NodeOrigin,
+  Panel,
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
 import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef, useEffect, useState } from 'react';
 
 import {
   useNodes,
@@ -196,6 +198,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
       updateNodePending,
     ],
   );
+
   return (
     <div className="w-full h-full">
       <ReactFlow
