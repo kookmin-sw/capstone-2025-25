@@ -2,6 +2,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { TaskCardType } from './data';
 import { CalendarIcon } from 'lucide-react';
+
 // import { CalendarIcon } from '@heroicons/react/solid';
 
 interface Props {
@@ -26,7 +27,6 @@ export default function TaskCard({ task, onDelete }: Props) {
     zIndex: isDragging ? 1000 : 'auto',
   };
 
-  // 태그 색상 스타일 정의 (필요 시 더 추가 가능)
   const categoryColor = {
     default: 'bg-neutral-200 text-neutral-800',
     red: 'bg-red-100 text-red-600',
