@@ -1,5 +1,6 @@
 package capstone.backend.global.security.oauth2.handler;
 
+import capstone.backend.domain.auth.service.AuthService;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
@@ -24,15 +25,18 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final String CALLBACK_URL;
     private final JwtProvider jwtProvider;
     private final MemberRepository memberRepository;
+    private final AuthService authService;
 
     public OAuth2AuthenticationSuccessHandler(
             @Value("${url.base.client}") String clientDomain,
             @Value("${url.path.client.callback}") String callbackEndpoint,
             JwtProvider jwtProvider,
-            MemberRepository memberRepository) {
+            MemberRepository memberRepository,
+            AuthService authService) {
                 this.CALLBACK_URL = clientDomain + callbackEndpoint;
                 this.jwtProvider = jwtProvider;
                 this.memberRepository = memberRepository;
+                this.authService = authService;
     }
 
 
@@ -48,6 +52,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String accessToken = jwtProvider.generateAccessToken(memberId);
         String refreshToken = jwtProvider.generateRefreshToken(memberId);
+
+        // redis에 RT 저장
+        authService.saveRefreshToken(member.getId(), refreshToken, jwtProvider.getRefreshTokenExpiration());
 
         response.setHeader("Authorization", "Bearer " + accessToken);
 

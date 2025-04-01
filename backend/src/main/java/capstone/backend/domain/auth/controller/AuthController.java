@@ -4,6 +4,7 @@ import capstone.backend.domain.auth.dto.response.RefreshAccessTokenResponse;
 import capstone.backend.domain.auth.service.AuthService;
 import capstone.backend.global.api.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,4 +22,17 @@ public class AuthController {
     ) {
         return ApiResponse.ok(authService.refreshAccessToken(refreshToken));
     }
+
+
+    @PostMapping("/logout")
+    @Operation(summary = "로그아웃 (Refresh Token 삭제)")
+    public ApiResponse<Void> logout(
+            @CookieValue(value = "refreshToken", required = false) String refreshToken,
+            HttpServletResponse response
+    ) {
+        authService.logout(refreshToken, response);
+
+        return ApiResponse.ok();
+    }
+
 }
