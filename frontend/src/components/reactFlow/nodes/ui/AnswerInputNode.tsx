@@ -16,7 +16,7 @@ import { AnswerNodeType } from '@/types/mindMap';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { NodeProps } from '@xyflow/react';
 import { Loader2 } from 'lucide-react';
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent, KeyboardEvent } from 'react';
 
 export default function AnswerInputNode({
   id,
@@ -57,6 +57,16 @@ export default function AnswerInputNode({
     setCustomQuestion(e.target.value);
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !isButtonDisabled) {
+      if (isEditing) {
+        handleEdit();
+      } else {
+        handleSubmit();
+      }
+    }
+  };
+
   const handleSubmit = async () => {
     if (isInputFilled && (!isDirectQuestion || isQuestionFilled)) {
       const currentNode = nodes.find((node) => node.id === id);
@@ -77,6 +87,7 @@ export default function AnswerInputNode({
               data: {
                 ...currentNode.data,
                 label: questionText,
+                answer,
                 summary: data.summary,
               },
             });
@@ -121,7 +132,7 @@ export default function AnswerInputNode({
                 data: {
                   ...currentNode.data,
                   label: questionText,
-                  answer: answer,
+                  answer,
                   summary: data.summary,
                 },
               });
@@ -162,6 +173,8 @@ export default function AnswerInputNode({
           className="h-[48px]"
           value={answer}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          autoFocus
         />
       </div>
 
