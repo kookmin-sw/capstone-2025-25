@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import useSummarizeNode from '@/hooks/queries/mindmap/useSummarizeNode';
 import { findParentNode } from '@/lib/mindMap';
+import { cn } from '@/lib/utils';
 import {
+  useDeleteNode,
   useEdges,
   useNodes,
   useSetNode,
@@ -37,6 +39,7 @@ export default function AnswerInputNode({
   const nodes = useNodes();
   const edges = useEdges();
   const updateNode = useUpdateNode();
+  const deleteNode = useDeleteNode();
 
   const { summarizeNodeMutation, isPending } = useSummarizeNode();
   const updateNodeQuestions = useUpdateNodeQuestions();
@@ -178,49 +181,89 @@ export default function AnswerInputNode({
         />
       </div>
 
-      <div className="flex justify-end space-x-3">
+      <div
+        className={cn(
+          'flex space-x-3',
+          isEditing ? 'justify-between' : 'justify-end',
+        )}
+      >
+        {' '}
         {isEditing ? (
-          <Modal
-            trigger={
-              <Button
-                variant={isButtonDisabled ? 'disabled' : 'black'}
-                className="w-[180px] h-12"
-                disabled={isButtonDisabled}
-              >
-                {isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    수정 중...
-                  </>
-                ) : (
-                  '수정하기'
-                )}
-              </Button>
-            }
-            title="이 답변을 수정할까요?"
-            description="답변 수정 시, 해당 노드와 모든 하위노드가 함께 삭제돼요"
-            footer={
-              <div className="w-full flex items-center justify-between">
-                <DialogClose asChild>
-                  <Button className="px-8" variant="white">
-                    취소하기
-                  </Button>
-                </DialogClose>
-                <DialogClose asChild>
-                  <Button className="px-8" onClick={handleEdit}>
-                    수정하기
-                  </Button>
-                </DialogClose>
+          <>
+            <Modal
+              trigger={
+                <Button variant="white" className="flex-1 h-12">
+                  삭제하기
+                </Button>
+              }
+              title="이 노드를 삭제할까요?"
+              description="해당 노드와 모든 하위노드가 함께 삭제돼요"
+              footer={
+                <div className="w-full flex items-center justify-between">
+                  <DialogClose asChild>
+                    <Button className="px-8" variant="white">
+                      취소하기
+                    </Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button
+                      className="px-8"
+                      onClick={() => {
+                        deleteNode(id);
+                      }}
+                    >
+                      삭제하기
+                    </Button>
+                  </DialogClose>
+                </div>
+              }
+            >
+              <div className="rounded-xl px-6 py-4 font-bold border-2 border-border-gray">
+                {data.summary}
               </div>
-            }
-          >
-            <div className="rounded-xl px-6 py-4 border-2 border-border-gray">
-              <p className="font-bold mb-4">
-                {isDirectQuestion ? customQuestion : data.label}
-              </p>
-              <p>{answer}</p>
-            </div>
-          </Modal>
+            </Modal>
+            <Modal
+              trigger={
+                <Button
+                  variant={isButtonDisabled ? 'disabled' : 'black'}
+                  className="flex-1 h-12"
+                  disabled={isButtonDisabled}
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      수정 중...
+                    </>
+                  ) : (
+                    '수정하기'
+                  )}
+                </Button>
+              }
+              title="이 답변을 수정할까요?"
+              description="답변 수정 시, 해당 노드와 모든 하위노드가 함께 삭제돼요"
+              footer={
+                <div className="w-full flex items-center justify-between">
+                  <DialogClose asChild>
+                    <Button className="px-8" variant="white">
+                      취소하기
+                    </Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button className="px-8" onClick={handleEdit}>
+                      수정하기
+                    </Button>
+                  </DialogClose>
+                </div>
+              }
+            >
+              <div className="rounded-xl px-6 py-4 border-2 border-border-gray">
+                <p className="font-bold mb-4">
+                  {isDirectQuestion ? customQuestion : data.label}
+                </p>
+                <p>{answer}</p>
+              </div>
+            </Modal>
+          </>
         ) : (
           <Button
             variant={isButtonDisabled ? 'disabled' : 'black'}
