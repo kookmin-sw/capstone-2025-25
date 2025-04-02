@@ -27,13 +27,14 @@ import SummaryNode from '@/components/reactFlow/nodes/ui/SummaryNode';
 import RootNode from '@/components/reactFlow/nodes/ui/RootNode';
 import AnswerInputNode from '@/components/reactFlow/nodes/ui/AnswerInputNode';
 import QuestionListNode from '@/components/reactFlow/nodes/ui/QuestionListNode';
-import { GeneratedScheduleReq } from '@/types/api/mindmap';
+import { GenerateReq } from '@/types/api/mindmap';
 import useGenerateSchedule from '@/hooks/queries/mindmap/useGenerateSchedule';
 import { findParentNode } from '@/lib/mindMap';
 import {
   useLoadMindMapData,
   useSaveMindMapData,
 } from '@/store/mindmapListStore';
+import useGenerateThought from '@/hooks/queries/mindmap/useGenerateThought';
 
 const nodeTypes = {
   root: RootNode,
@@ -66,6 +67,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
   const saveMindMapData = useSaveMindMapData();
 
   const { generateScheduleMutation } = useGenerateSchedule();
+  const { generateThoughtMutation } = useGenerateThought();
 
   const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
@@ -155,7 +157,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
           parentNode가 rootNode일때는 mainNode + selectedNode만 보내기
           -> null로 처리
           */
-          const requestData: GeneratedScheduleReq = {
+          const requestData: GenerateReq = {
             mainNode: mainNode?.data?.label
               ? { summary: mainNode.data.label }
               : null,
@@ -170,16 +172,41 @@ function FlowContent({ mindmapId }: FlowContentProps) {
 
           const newNodeId = addChildNode(selectedNode, childNodePosition, true);
 
-          generateScheduleMutation(requestData, {
-            onSuccess: (data) => {
-              updateNodeQuestions(selectedNode.id, data.generated_questions);
+          if (mindmapId) {
+            const mindMapData = loadMindMapData(mindmapId);
 
-              updateNodePending(newNodeId, false);
-            },
-            onError: (error) => {
-              console.error('요약 생성 중 오류가 발생했습니다:', error);
-            },
-          });
+            if (mindMapData?.type === 'TODO') {
+              generateScheduleMutation(requestData, {
+                onSuccess: (data) => {
+                  updateNodeQuestions(
+                    selectedNode.id,
+                    data.generated_questions,
+                  );
+
+                  updateNodePending(newNodeId, false);
+                },
+                onError: (error) => {
+                  console.error('요약 생성 중 오류가 발생했습니다:', error);
+                },
+              });
+            }
+
+            if (mindMapData?.type === 'THINKING') {
+              generateThoughtMutation(requestData, {
+                onSuccess: (data) => {
+                  updateNodeQuestions(
+                    selectedNode.id,
+                    data.generated_questions,
+                  );
+
+                  updateNodePending(newNodeId, false);
+                },
+                onError: (error) => {
+                  console.error('요약 생성 중 오류가 발생했습니다:', error);
+                },
+              });
+            }
+          }
         }
       }
     },
