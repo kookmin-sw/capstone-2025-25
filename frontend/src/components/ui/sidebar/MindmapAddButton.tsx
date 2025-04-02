@@ -7,14 +7,17 @@ import { TodoType } from '@/types/mindMap';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 export default function MindmapAddButton() {
-  const [selectedType, setSelectedType] = useState<TodoType>();
+  const [selectedType, setSelectedType] = useState<TodoType>('TODO');
   const [subject, setSubject] = useState('');
   const createMindmap = useCreateMindMap();
+  const navigate = useNavigate();
 
   const handleCreateClick = () => {
-    createMindmap(subject, selectedType);
+    const newMindmapId = createMindmap(subject, selectedType);
+    navigate(`/mindmap/${newMindmapId}`);
   };
 
   const handleInputChange = (e) => {
@@ -60,11 +63,11 @@ export default function MindmapAddButton() {
               variant="white"
               className={cn(
                 'flex-1 border-1 font-normal',
-                selectedType === 'Todo'
+                selectedType === 'TODO'
                   ? 'border-[#8D5CF6]'
                   : 'border-gray-200',
               )}
-              onClick={() => setSelectedType('Todo')}
+              onClick={() => setSelectedType('TODO')}
             >
               Todo
             </Button>
@@ -73,11 +76,11 @@ export default function MindmapAddButton() {
               variant="white"
               className={cn(
                 'flex-1 border-1 font-normal',
-                selectedType === 'Thinking'
+                selectedType === 'THINKING'
                   ? 'border-[#8D5CF6]'
                   : 'border-gray-200',
               )}
-              onClick={() => setSelectedType('Thinking')}
+              onClick={() => setSelectedType('THINKING')}
             >
               Thinking
             </Button>
