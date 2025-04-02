@@ -1,11 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import { mindmapService } from '@/services/mindmapService';
-import { GeneratedScheduleReq } from '@/types/api/mindmap';
+import { GenerateReq } from '@/types/api/mindmap';
 
 const useGenerateSchedule = () => {
   const { mutate, isPending, isError, error, data, reset } = useMutation({
-    mutationFn: (data: GeneratedScheduleReq) =>
-      mindmapService.generateSchedule(data),
+    mutationFn: (data: GenerateReq) => mindmapService.generateSchedule(data),
   });
 
   return {

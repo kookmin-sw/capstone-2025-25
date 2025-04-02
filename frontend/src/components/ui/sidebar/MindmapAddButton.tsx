@@ -6,7 +6,7 @@ import { useCreateMindMap } from '@/store/mindmapListStore';
 import { TodoType } from '@/types/mindMap';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 export default function MindmapAddButton() {
@@ -20,7 +20,7 @@ export default function MindmapAddButton() {
     navigate(`/mindmap/${newMindmapId}`);
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSubject(e.target.value);
   };
 
