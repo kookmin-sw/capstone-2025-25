@@ -1,7 +1,7 @@
 package capstone.backend.domain.eisenhower.entity;
 
 import capstone.backend.domain.common.entity.TaskType;
-import capstone.backend.domain.eisenhower.dto.response.EisenhowerUpdateRequest;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.mindmap.entity.MindMap;

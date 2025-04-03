@@ -1,6 +1,6 @@
 package capstone.backend.domain.eisenhower.controller;
 
-import capstone.backend.domain.eisenhower.dto.response.EisenhowerUpdateRequest;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
 import capstone.backend.domain.eisenhower.dto.response.EisenhowerItemResponse;
 import capstone.backend.domain.eisenhower.service.EisenhowerService;
