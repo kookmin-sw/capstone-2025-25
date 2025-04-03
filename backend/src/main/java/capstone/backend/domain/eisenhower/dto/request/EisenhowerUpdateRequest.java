@@ -1,4 +1,4 @@
-package capstone.backend.domain.eisenhower.dto.response;
+package capstone.backend.domain.eisenhower.dto.request;
 
 import capstone.backend.domain.common.entity.TaskType;
 import java.time.LocalDate;
