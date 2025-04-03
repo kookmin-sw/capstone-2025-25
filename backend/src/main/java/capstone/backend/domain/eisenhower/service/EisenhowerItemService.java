@@ -2,7 +2,7 @@ package capstone.backend.domain.eisenhower.service;
 
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemOrderUpdateRequest;
-import capstone.backend.domain.eisenhower.dto.request.EisenhowerUpdateRequest;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.response.EisenhowerItemResponse;
 import capstone.backend.domain.eisenhower.entity.EisenhowerCategory;
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class EisenhowerService {
+public class EisenhowerItemService {
 
     private final EisenhowerItemRepository eisenhowerItemRepository;
     private final EisenhowerCategoryRepository eisenhowerCategoryRepository;
@@ -55,7 +55,7 @@ public class EisenhowerService {
     }
 
     @Transactional
-    public EisenhowerItemResponse updateItem(Long memberId, Long itemId, EisenhowerUpdateRequest request) {
+    public EisenhowerItemResponse updateItem(Long memberId, Long itemId, EisenhowerItemUpdateRequest request) {
         EisenhowerItem item = eisenhowerItemRepository.findByIdAndMemberId(itemId, memberId)
                 .orElseThrow(EisenhowerItemNotFoundException::new);
 
