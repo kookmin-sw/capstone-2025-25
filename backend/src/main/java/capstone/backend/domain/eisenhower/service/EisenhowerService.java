@@ -31,7 +31,7 @@ public class EisenhowerService {
         EisenhowerCategory category = null;
 
         if (request.categoryId() != null) {
-            category = eisenhowerCategoryRepository.findById(request.categoryId())
+            category = eisenhowerCategoryRepository.findByIdAndMemberId(request.categoryId(), memberId)
                     .orElseThrow(CategoryNotFoundException::new);
         }
 
