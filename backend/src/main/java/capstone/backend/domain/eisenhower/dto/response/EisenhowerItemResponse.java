@@ -5,6 +5,7 @@ import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.entity.EisenhowerQuadrant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record EisenhowerItemResponse(
         Long id,
@@ -17,7 +18,9 @@ public record EisenhowerItemResponse(
         LocalDate dueDate,
         Long order,
         Boolean isCompleted,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        Long mindMapId
+//        Long pomodoroId
 ) {
     public static EisenhowerItemResponse from(EisenhowerItem item) {
         return new EisenhowerItemResponse(
@@ -31,8 +34,15 @@ public record EisenhowerItemResponse(
                 item.getDueDate(),
                 item.getOrder(),
                 item.getIsCompleted(),
-                item.getCreatedAt()
+                item.getCreatedAt(),
+                item.getMindMap() != null ? item.getMindMap().getId() : null
+//                item.getPomodoro() != null ? item.getPomodoro().getId() : null
         );
     }
 
+    public static List<EisenhowerItemResponse> listFrom(List<EisenhowerItem> items) {
+        return items.stream()
+                .map(EisenhowerItemResponse::from)
+                .toList();
+    }
 }
