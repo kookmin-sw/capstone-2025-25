@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Authentication getAuthentication(Claims claims) {
-        Member member = memberRepository.findByEmail(claims.get("email", String.class))
+        Member member = memberRepository.findById(Long.parseLong(claims.get("id", String.class)))
                 .orElseThrow(MemberNotFoundException::new);
         CustomOAuth2User user = new CustomOAuth2User(member, claims);
         return new OAuth2AuthenticationToken(user, user.getAuthorities(), user.getProvider());
