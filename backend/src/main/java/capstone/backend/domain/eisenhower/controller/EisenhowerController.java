@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,5 +55,14 @@ public class EisenhowerController {
             @PathVariable Long itemId
     ) {
         return ApiResponse.ok(eisenhowerService.updateItem(customOAuth2User.getMemberId(), itemId, request));
+    }
+
+    @DeleteMapping("/{itemId}")
+    public ApiResponse<String> deleteItem(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable Long itemId
+    ) {
+        eisenhowerService.deleteItem(customOAuth2User.getMemberId(), itemId);
+        return ApiResponse.ok("아이젠하워 작업이 삭제되었습니다.");
     }
 }
