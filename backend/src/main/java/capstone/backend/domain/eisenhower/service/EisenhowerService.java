@@ -70,4 +70,12 @@ public class EisenhowerService {
 
         return EisenhowerItemResponse.from(item);
     }
+
+    @Transactional
+    public void deleteItem(Long memberId, Long itemId) {
+        EisenhowerItem item = eisenhowerItemRepository.findByIdAndMemberId(itemId, memberId)
+                .orElseThrow(EisenhowerItemNotFoundException::new);
+
+        eisenhowerItemRepository.delete(item);
+    }
 }
