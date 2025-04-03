@@ -1,5 +1,7 @@
 package capstone.backend.domain.eisenhower.entity;
 
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryCreateRequest;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryUpdateRequest;
 import capstone.backend.domain.member.scheme.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,4 +28,20 @@ public class EisenhowerCategory {
     @Column(nullable = false)
     private String color;
 
+    public static EisenhowerCategory from(EisenhowerCategoryCreateRequest eisenhowerCategoryRequest, Member member) {
+        return EisenhowerCategory.builder()
+                .member(member)
+                .title(eisenhowerCategoryRequest.title())
+                .color(eisenhowerCategoryRequest.color())
+                .build();
+    }
+
+    public void update(EisenhowerCategoryUpdateRequest eisenhowerCategoryUpdateRequest) {
+        if (eisenhowerCategoryUpdateRequest.title() != null) {
+            this.title = eisenhowerCategoryUpdateRequest.title();
+        }
+        if (eisenhowerCategoryUpdateRequest.color() != null) {
+            this.color = eisenhowerCategoryUpdateRequest.color();
+        }
+    }
 }

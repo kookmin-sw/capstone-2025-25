@@ -2,7 +2,7 @@ package capstone.backend.domain.eisenhower.entity;
 
 import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
-import capstone.backend.domain.eisenhower.dto.request.EisenhowerUpdateRequest;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemUpdateRequest;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.mindmap.entity.MindMap;
 import jakarta.persistence.Column;
@@ -88,7 +88,7 @@ public class EisenhowerItem {
                 .build();
     }
 
-    public void update(EisenhowerUpdateRequest request, EisenhowerCategory category) {
+    public void update(EisenhowerItemUpdateRequest request, EisenhowerCategory category) {
         if (request.title() != null) this.title = request.title();
         if (request.memo() != null) this.memo = request.memo();
         if (request.type() != null) this.type = request.type();
