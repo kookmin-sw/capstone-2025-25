@@ -1,7 +1,8 @@
 package capstone.backend.domain.eisenhower.service;
 
-import capstone.backend.domain.eisenhower.dto.request.EisenhowerUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemOrderUpdateRequest;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.response.EisenhowerItemResponse;
 import capstone.backend.domain.eisenhower.entity.EisenhowerCategory;
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
@@ -77,5 +78,16 @@ public class EisenhowerService {
                 .orElseThrow(EisenhowerItemNotFoundException::new);
 
         eisenhowerItemRepository.delete(item);
+    }
+
+    @Transactional
+    public void updateItemsOrder(Long memberId, List<EisenhowerItemOrderUpdateRequest> requests) {
+        for (EisenhowerItemOrderUpdateRequest req : requests) {
+            EisenhowerItem item = eisenhowerItemRepository.findByIdAndMemberId(req.eisenhowerItemId(), memberId)
+                    .orElseThrow(EisenhowerItemNotFoundException::new);
+
+            item.updateOrderAndQuadrant(req.order(), req.quadrant());
+        }
+
     }
 }
