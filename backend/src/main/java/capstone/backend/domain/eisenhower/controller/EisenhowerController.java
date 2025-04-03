@@ -68,11 +68,11 @@ public class EisenhowerController {
     }
 
     @PatchMapping("/order")
-    public ApiResponse<Void> updateOrderAndQuadrant(
+    public ApiResponse<Void> updateItemOrderAndQuadrant(
             @RequestBody @Valid EisenhowerItemOrderUpdateRequests request,
             @AuthenticationPrincipal CustomOAuth2User user
     ) {
-        eisenhowerService.updateItemsOrder(user.getMemberId(), request.items());
+        eisenhowerService.updateItemOrderAndQuadrant(user.getMemberId(), request.items());
         return ApiResponse.ok();
     }
 }

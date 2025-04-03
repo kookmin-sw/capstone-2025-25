@@ -81,7 +81,7 @@ public class EisenhowerService {
     }
 
     @Transactional
-    public void updateItemsOrder(Long memberId, List<EisenhowerItemOrderUpdateRequest> requests) {
+    public void updateItemOrderAndQuadrant(Long memberId, List<EisenhowerItemOrderUpdateRequest> requests) {
         for (EisenhowerItemOrderUpdateRequest req : requests) {
             EisenhowerItem item = eisenhowerItemRepository.findByIdAndMemberId(req.eisenhowerItemId(), memberId)
                     .orElseThrow(EisenhowerItemNotFoundException::new);
