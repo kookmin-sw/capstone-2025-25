@@ -1,7 +1,7 @@
 package capstone.backend.domain.eisenhower.controller;
 
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryCreateRequest;
-import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryResponse;
+import capstone.backend.domain.eisenhower.dto.response.EisenhowerCategoryResponse;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryUpdateRequest;
 import capstone.backend.domain.eisenhower.service.EisenhowerCategoryService;
 import capstone.backend.global.api.dto.ApiResponse;

@@ -1,4 +1,4 @@
-package capstone.backend.domain.eisenhower.dto.request;
+package capstone.backend.domain.eisenhower.dto.response;
 
 import capstone.backend.domain.eisenhower.entity.EisenhowerCategory;
 

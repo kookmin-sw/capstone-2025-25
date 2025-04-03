@@ -1,7 +1,7 @@
 package capstone.backend.domain.eisenhower.service;
 
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryCreateRequest;
-import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryResponse;
+import capstone.backend.domain.eisenhower.dto.response.EisenhowerCategoryResponse;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryUpdateRequest;
 import capstone.backend.domain.eisenhower.entity.EisenhowerCategory;
 import capstone.backend.domain.eisenhower.exception.CategoryNotFoundException;
