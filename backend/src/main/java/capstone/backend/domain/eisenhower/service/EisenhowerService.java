@@ -1,10 +1,12 @@
 package capstone.backend.domain.eisenhower.service;
 
+import capstone.backend.domain.eisenhower.dto.response.EisenhowerUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
 import capstone.backend.domain.eisenhower.dto.response.EisenhowerItemResponse;
 import capstone.backend.domain.eisenhower.entity.EisenhowerCategory;
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.exception.CategoryNotFoundException;
+import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
 import capstone.backend.domain.eisenhower.repository.EisenhowerCategoryRepository;
 import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
@@ -49,5 +51,23 @@ public class EisenhowerService {
     public List<EisenhowerItemResponse> getItemsCompleted(Long memberId) {
         List<EisenhowerItem> items = eisenhowerItemRepository.findAllByMemberIdAndIsCompletedTrue(memberId);
         return EisenhowerItemResponse.listFrom(items);
+    }
+
+    @Transactional
+    public EisenhowerItemResponse updateItem(Long memberId, Long itemId, EisenhowerUpdateRequest request) {
+        EisenhowerItem item = eisenhowerItemRepository.findByIdAndMemberId(itemId, memberId)
+                .orElseThrow(EisenhowerItemNotFoundException::new);
+
+        EisenhowerCategory category = item.getCategory();
+        if (Boolean.TRUE.equals(request.categoryExplicitlyNull())) {
+            category = null;
+        } else if (request.categoryId() != null) {
+            category = eisenhowerCategoryRepository.findByIdAndMemberId(request.categoryId(), memberId)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+
+        item.update(request, category);
+
+        return EisenhowerItemResponse.from(item);
     }
 }
