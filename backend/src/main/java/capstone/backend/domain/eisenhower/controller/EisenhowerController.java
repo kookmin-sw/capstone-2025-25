@@ -1,7 +1,8 @@
 package capstone.backend.domain.eisenhower.controller;
 
-import capstone.backend.domain.eisenhower.dto.request.EisenhowerUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemOrderUpdateRequests;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.response.EisenhowerItemResponse;
 import capstone.backend.domain.eisenhower.service.EisenhowerService;
 import capstone.backend.global.api.dto.ApiResponse;
@@ -64,5 +65,14 @@ public class EisenhowerController {
     ) {
         eisenhowerService.deleteItem(customOAuth2User.getMemberId(), itemId);
         return ApiResponse.ok("아이젠하워 작업이 삭제되었습니다.");
+    }
+
+    @PatchMapping("/order")
+    public ApiResponse<Void> updateOrderAndQuadrant(
+            @RequestBody @Valid EisenhowerItemOrderUpdateRequests request,
+            @AuthenticationPrincipal CustomOAuth2User user
+    ) {
+        eisenhowerService.updateItemsOrder(user.getMemberId(), request.items());
+        return ApiResponse.ok();
     }
 }
