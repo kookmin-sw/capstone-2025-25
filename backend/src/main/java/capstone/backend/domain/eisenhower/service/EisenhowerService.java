@@ -10,6 +10,7 @@ import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,4 +40,14 @@ public class EisenhowerService {
         return EisenhowerItemResponse.from(eisenhowerItemRepository.save(item));
     }
 
+    public List<EisenhowerItemResponse> getItemsNotCompleted(Long memberId) {
+        List<EisenhowerItem> items = eisenhowerItemRepository.findAllByMemberIdAndIsCompletedFalse(memberId);
+        return EisenhowerItemResponse.listFrom(items);
+    }
+
+
+    public List<EisenhowerItemResponse> getItemsCompleted(Long memberId) {
+        List<EisenhowerItem> items = eisenhowerItemRepository.findAllByMemberIdAndIsCompletedTrue(memberId);
+        return EisenhowerItemResponse.listFrom(items);
+    }
 }
