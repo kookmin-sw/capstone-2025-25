@@ -2,6 +2,7 @@ package capstone.backend.domain.eisenhower.repository;
 
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +11,6 @@ public interface EisenhowerItemRepository extends JpaRepository<EisenhowerItem, 
     List<EisenhowerItem> findAllByMemberIdAndIsCompletedFalse(Long memberId);
 
     List<EisenhowerItem> findAllByMemberIdAndIsCompletedTrue(Long memberId);
+
+    Optional<EisenhowerItem> findByIdAndMemberId(Long itemId, Long memberId);
 }
