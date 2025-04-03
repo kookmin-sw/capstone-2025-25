@@ -53,7 +53,7 @@ public class EisenhowerItem {
     @Column(nullable = false)
     private TaskType type;
 
-    @Column(nullable = false, name = "task_order", unique = true)
+    @Column(nullable = false, name = "task_order")
     private Long order;
 
     @Column(nullable = false)
