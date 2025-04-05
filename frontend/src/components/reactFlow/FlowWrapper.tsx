@@ -22,6 +22,12 @@ import {
   useUpdateNodePending,
   useSetInitialData,
 } from '@/store/mindMapStore';
+import {
+  useLoadMindMapData,
+  useSaveMindMapData,
+} from '@/store/mindmapListStore';
+import { useIsNodeSelectionMode } from '@/store/nodeSelection';
+
 import MindMapEdge from '@/components/reactFlow/edges';
 import SummaryNode from '@/components/reactFlow/nodes/ui/SummaryNode';
 import RootNode from '@/components/reactFlow/nodes/ui/RootNode';
@@ -30,11 +36,10 @@ import QuestionListNode from '@/components/reactFlow/nodes/ui/QuestionListNode';
 import { GenerateReq } from '@/types/api/mindmap';
 import useGenerateSchedule from '@/hooks/queries/mindmap/useGenerateSchedule';
 import { findParentNode } from '@/lib/mindMap';
-import {
-  useLoadMindMapData,
-  useSaveMindMapData,
-} from '@/store/mindmapListStore';
+
 import useGenerateThought from '@/hooks/queries/mindmap/useGenerateThought';
+
+import { NodeSelectionPanel } from '@/components/reactFlow/ui/NodeSelectionPanel';
 
 const nodeTypes = {
   root: RootNode,
@@ -213,9 +218,12 @@ function FlowContent({ mindmapId }: FlowContentProps) {
     [
       nodes,
       edges,
+      mindmapId,
       getChildNodePosition,
       addChildNode,
+      loadMindMapData,
       generateScheduleMutation,
+      generateThoughtMutation,
       updateNodeQuestions,
       updateNodePending,
     ],
@@ -247,8 +255,19 @@ type FlowWrapperProps = {
 };
 
 function FlowWrapper({ mindmapId }: FlowWrapperProps) {
+  const isNodeSelectionMode = useIsNodeSelectionMode();
+
+  const handleScheduleCreated = () => {
+    // 추가적인 일정 생성 후 작업이 필요하면 여기에 구현
+    // 예: 성공 메시지 표시, 데이터 리로드 등
+  };
+
   return (
-    <div className="h-screen">
+    <div className="h-screen relative">
+      {isNodeSelectionMode && (
+        <NodeSelectionPanel onCreateSchedule={handleScheduleCreated} />
+      )}
+
       <ReactFlowProvider>
         <FlowContent mindmapId={mindmapId} />
       </ReactFlowProvider>
