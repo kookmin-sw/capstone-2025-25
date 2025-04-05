@@ -1,0 +1,141 @@
+package capstone.backend.domain.pomodoro.service;
+
+import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
+import capstone.backend.domain.eisenhower.schema.EisenhowerItem;
+import capstone.backend.domain.member.exception.MemberNotFoundException;
+import capstone.backend.domain.member.repository.MemberRepository;
+import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.pomodoro.dto.request.LinkedPomodoroRequest;
+import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
+import capstone.backend.domain.pomodoro.dto.request.UnlinkedPomodoroRequest;
+import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
+import capstone.backend.domain.pomodoro.dto.response.SidebarPomodoroResponse;
+import capstone.backend.domain.pomodoro.exception.PomodoroNotFoundException;
+import capstone.backend.domain.pomodoro.repository.PomodoroRepository;
+import capstone.backend.domain.pomodoro.schema.Pomodoro;
+import capstone.backend.domain.pomodoro.schema.PomodoroCycle;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class PomodoroService {
+
+    private final MemberRepository memberRepository;
+    private final PomodoroRepository pomodoroRepository;
+    private final EisenhowerItemRepository eisenhowerItemRepository;
+    private final DailyPomodoroSummaryService dailyPomodoroSummaryService;
+
+    // unLinked 뽀모도로 생성
+    @Transactional
+    public void createUnlinkedToDo(Long memberId, UnlinkedPomodoroRequest request) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+        Pomodoro pomodoro = Pomodoro.create(
+                member,
+                request.title(),
+                LocalTime.parse(request.totalPlannedTime()),
+                request.plannedCycles()
+        );
+
+        pomodoroRepository.save(pomodoro);
+    }
+
+    // linked 뽀모도로 생성
+    @Transactional
+    public void createLinkedToDo(Long memberId, LinkedPomodoroRequest request) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(request.eisenhowerId()).orElseThrow(IllegalArgumentException::new);
+
+        Pomodoro pomodoro = Pomodoro.create(
+                member,
+                eisenhowerItem,
+                eisenhowerItem.getTitle(),
+                LocalTime.parse(request.totalPlannedTime()),
+                request.plannedCycles()
+        );
+
+        pomodoroRepository.save(pomodoro);
+    }
+
+    // (언링크 + 링크) 뽀모도로 전체 조회
+    public SidebarResponse getAllPomodoros(Long memberId) {
+        Map<Boolean, List<SidebarPomodoroResponse>> partitionedPomodoros = pomodoroRepository.findAllByMemberId(memberId)
+                .stream()
+                .map(SidebarPomodoroResponse::new)
+                .collect(Collectors.partitioningBy(dto -> dto.eisenhower() != null));
+
+        return new SidebarResponse(partitionedPomodoros.get(false), partitionedPomodoros.get(true));
+    }
+
+    // 특정 뽀모도로 조회
+    public Pomodoro findById(Long memberId, Long eisenhowerId) {
+        return pomodoroRepository.findByIdAndMemberId(eisenhowerId, memberId).orElseThrow(PomodoroNotFoundException::new);
+    }
+
+    // 특정 뽀모도로 삭제
+    @Transactional
+    public void deletePomodoro(Long pomodoroId, Long memberId) {
+        // 도훈 피드백 (특정 사용자가 다른 사용자의 뽀모도로를 삭제시킬 수도 있음.)
+        Pomodoro pomodoro = pomodoroRepository.findByIdAndMemberId(pomodoroId, memberId).orElseThrow(PomodoroNotFoundException::new);
+
+        pomodoroRepository.delete(pomodoro);
+    }
+
+    // 뽀모도로 완료 기록
+    @Transactional
+    public void recordPomodoro(Long memberId, Long pomodoroId, RecordPomodoroRequest request) {
+        Pomodoro pomodoro = pomodoroRepository.findByIdAndMemberId(pomodoroId, memberId)
+                .orElseThrow(PomodoroNotFoundException::new);
+
+        List<PomodoroCycle> executedCycles = request.executedCycles();
+        pomodoro.recordCompletedAt(executedCycles);
+
+        // 최적화된 시간 계산
+        int[] times = calculateTotalTimeSummary(executedCycles);
+
+        // Pomodoro 객체 업데이트 (JPA Dirty Checking)
+        pomodoro.updateTotalWorkingTime(convertSecondsToLocalTime(times[0]));
+        pomodoro.updateTotalBreakTime(convertSecondsToLocalTime(times[1]));
+        pomodoro.updateTotalExecutedTime(convertSecondsToLocalTime(times[2]));
+
+        // 일일 뽀모도로 총 시간 업데이트
+        dailyPomodoroSummaryService.updateDailyPomodoroSummary(memberId, times[2]);
+
+    }
+
+
+    private int[] calculateTotalTimeSummary(List<PomodoroCycle> cycles) {
+        int totalWorkingSeconds = 0;
+        int totalBreakSeconds = 0;
+
+        for (PomodoroCycle cycle : cycles) {
+            totalWorkingSeconds += Optional.ofNullable(cycle.getWorkDuration()).orElse(0) * 60;
+            totalBreakSeconds += Optional.ofNullable(cycle.getBreakDuration()).orElse(0) * 60;
+        }
+
+        return new int[]{
+                totalWorkingSeconds,
+                totalBreakSeconds,
+                totalWorkingSeconds + totalBreakSeconds
+        };
+    }
+
+    private LocalTime convertSecondsToLocalTime(int totalSeconds) {
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+        return LocalTime.of(hours, minutes, seconds);
+    }
+
+}
