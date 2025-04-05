@@ -9,10 +9,9 @@ interface NodeSelectionState {
   addSelectedNode: (node: MindMapNode) => void;
   removeSelectedNode: (nodeId: string) => void;
   clearSelectedNodes: () => void;
-  isNodeSelected: (nodeId: string) => boolean;
 }
 
-const useNodeSelectionStore = create<NodeSelectionState>((set, get) => ({
+const useNodeSelectionStore = create<NodeSelectionState>((set) => ({
   isNodeSelectionMode: false,
   selectedNodes: [],
 
@@ -43,10 +42,6 @@ const useNodeSelectionStore = create<NodeSelectionState>((set, get) => ({
     })),
 
   clearSelectedNodes: () => set({ selectedNodes: [] }),
-
-  isNodeSelected: (nodeId) => {
-    return get().selectedNodes.some((node) => node.id === nodeId);
-  },
 }));
 
 export const useIsNodeSelectionMode = () =>
@@ -66,6 +61,3 @@ export const useRemoveSelectedNode = () =>
 
 export const useClearSelectedNodes = () =>
   useNodeSelectionStore((state) => state.clearSelectedNodes);
-
-export const useIsNodeSelected = () =>
-  useNodeSelectionStore((state) => state.isNodeSelected);

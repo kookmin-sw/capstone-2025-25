@@ -107,7 +107,7 @@ export default function Sidebar() {
       {renderPanel()}
 
       {/* 콘텐츠 영역 */}
-      <div className="flex-1 bg-gray-50 p-8"></div>
+      <div className="flex-1 bg-gray-50"></div>
     </div>
   );
 }
