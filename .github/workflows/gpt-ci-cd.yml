@@ -58,7 +58,7 @@ jobs:
             docker rm fastapi-gpt || true
 
             # 새 컨테이너 실행 (docker-compose 없이)
-            docker run --name fastapi-app --rm -d -p 8000:8000 --env-file <(echo "${{ secrets.GPT_SERVER_ENV }}") ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest
+            docker run --name fastapi-gpt -d -p 8000:8000 --env-file <(echo "${{ secrets.GPT_SERVER_ENV }}") ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest
 
             # 불필요한 이미지 삭제
             docker image prune -f
