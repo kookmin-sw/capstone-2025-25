@@ -5,44 +5,54 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { ChevronUp, X } from 'lucide-react';
+import { ChevronUp, Loader2, X } from 'lucide-react';
 import {
   useClearSelectedNodes,
   useRemoveSelectedNode,
   useSelectedNodes,
   useToggleNodeSelectionMode,
 } from '@/store/nodeSelection';
+import useConvertScheduleToTodo from '@/hooks/queries/mindmap/useConvertScheduleToTodo';
+import { ConvertedScheduleTodoReq } from '@/types/api/mindmap';
 
-interface NodeSelectionPanelProps {
-  onCreateSchedule?: () => void;
-}
-
-export function NodeSelectionPanel({
-  onCreateSchedule,
-}: NodeSelectionPanelProps) {
+export function NodeSelectionPanel() {
   const [isOpen, setIsOpen] = useState(true);
   const selectedNodes = useSelectedNodes();
   const removeSelectedNode = useRemoveSelectedNode();
   const clearSelectedNodes = useClearSelectedNodes();
   const toggleNodeSelectionMode = useToggleNodeSelectionMode();
 
+  const { convertScheduleToTodoMutation, isPending } =
+    useConvertScheduleToTodo();
+
   const handleCancelSelection = () => {
     clearSelectedNodes();
-    toggleNodeSelectionMode(); // 선택 모드 비활성화
+    toggleNodeSelectionMode();
   };
 
   const handleCreateSchedule = () => {
-    // 일정 생성 로직 구현 (API 호출 등)
     console.log('선택된 노드로 일정 생성:', selectedNodes);
 
-    // 커스텀 onCreateSchedule 함수가 있으면 호출
-    if (onCreateSchedule) {
-      onCreateSchedule();
-    }
+    const requestData: ConvertedScheduleTodoReq = {
+      nodes: selectedNodes.map((node) => ({
+        id: node.id,
+        type: node.type,
+        summary: node.data.summary || node.data.label,
+      })),
+    };
 
-    // 일정 생성 후 선택 모드 종료 및 선택 노드 초기화
-    clearSelectedNodes();
-    toggleNodeSelectionMode();
+    /* GPT API 수정되면 요청/응답 부분 처리 수정할 예정 */
+    convertScheduleToTodoMutation(requestData, {
+      onSuccess: (data) => {
+        console.log('data', data);
+
+        clearSelectedNodes();
+        toggleNodeSelectionMode();
+      },
+      onError: (error) => {
+        console.error('할 일 생성 중 오류가 발생했습니다:', error);
+      },
+    });
   };
 
   return (
@@ -99,9 +109,16 @@ export function NodeSelectionPanel({
             <Button
               className="flex-1"
               onClick={handleCreateSchedule}
-              disabled={selectedNodes.length === 0}
+              disabled={selectedNodes.length === 0 || isPending}
             >
-              생성하기
+              {isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />할 일 생성
+                  중...
+                </>
+              ) : (
+                '생성하기'
+              )}
             </Button>
           </div>
         </CollapsibleContent>
