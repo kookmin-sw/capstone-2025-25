@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -63,6 +64,12 @@ public class ApiExceptionHandler {
                 .findFirst()
                 .orElse("유효성 검사 오류가 발생했습니다.");
         return ApiResponse.error(HttpStatus.BAD_REQUEST, errorMessage);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ApiResponse<?> missingServletRequestParameterException(MissingServletRequestParameterException e) {
+        String name = e.getParameterName();
+        return ApiResponse.error(HttpStatus.BAD_REQUEST, name + " 파라미터는 필수입니다.");
     }
 
     @ExceptionHandler(ApiException.class)
