@@ -3,6 +3,7 @@ package capstone.backend.global.api.exception;
 import java.util.Objects;
 
 import capstone.backend.global.api.dto.ApiResponse;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -48,6 +49,19 @@ public class ApiExceptionHandler {
         String message = e.getBindingResult().getFieldError().getDefaultMessage();
         String errorMessage = String.format("%s은(는) %s", field, message);
 
+        return ApiResponse.error(HttpStatus.BAD_REQUEST, errorMessage);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ApiResponse<?> constraintViolationException(ConstraintViolationException e) {
+        String errorMessage = e.getConstraintViolations().stream()
+                .map(violation -> {
+                    String path = violation.getPropertyPath().toString();
+                    String field = path.contains(".") ? path.substring(path.lastIndexOf(".") + 1) : path;
+                    return String.format("%s은(는) %s", field, violation.getMessage());
+                })
+                .findFirst()
+                .orElse("유효성 검사 오류가 발생했습니다.");
         return ApiResponse.error(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
