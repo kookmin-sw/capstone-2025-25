@@ -27,7 +27,7 @@ public class Pomodoro {
     @Column(name = "pomodoro_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     @JsonIgnore
     private Member member;

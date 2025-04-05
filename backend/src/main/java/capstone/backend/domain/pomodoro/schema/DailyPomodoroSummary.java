@@ -22,7 +22,7 @@ public class DailyPomodoroSummary {
     @Column(name = "daily_pomodoro_summary_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
