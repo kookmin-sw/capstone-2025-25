@@ -22,6 +22,7 @@ public class EisenhowerCategory {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @Column(nullable = false, length = 10)
     private String title;
 
     @Column(nullable = false)
