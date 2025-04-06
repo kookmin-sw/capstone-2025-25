@@ -13,7 +13,7 @@ import {
   useToggleNodeSelectionMode,
 } from '@/store/nodeSelection';
 import useConvertScheduleToTodo from '@/hooks/queries/mindmap/useConvertScheduleToTodo';
-import { ConvertedScheduleTodoReq } from '@/types/api/mindmap';
+import { ConvertedToTaskReq } from '@/types/api/mindmap';
 
 export function NodeSelectionPanel() {
   const [isOpen, setIsOpen] = useState(true);
@@ -33,15 +33,13 @@ export function NodeSelectionPanel() {
   const handleCreateSchedule = () => {
     console.log('선택된 노드로 일정 생성:', selectedNodes);
 
-    const requestData: ConvertedScheduleTodoReq = {
-      nodes: selectedNodes.map((node) => ({
-        id: node.id,
-        type: node.type,
+    const requestData: ConvertedToTaskReq = {
+      selectedNodes: selectedNodes.map((node) => ({
         summary: node.data.summary || node.data.label,
       })),
     };
 
-    /* GPT API 수정되면 요청/응답 부분 처리 수정할 예정 */
+    /* 아이젠하워 개발 완료되면, 연결 시키는 부분 개발할 예정 */
     convertScheduleToTodoMutation(requestData, {
       onSuccess: (data) => {
         console.log('data', data);
