@@ -10,6 +10,7 @@ import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +59,9 @@ public class EisenhowerItemController {
     public ApiResponse<EisenhowerItemResponse> updateItem(
             @RequestBody @Valid EisenhowerItemUpdateRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
-            @PathVariable Long itemId
+            @Parameter(name = "itemId", description = "수정할 아이젠하워 항목 ID", example = "1", required = true, in = ParameterIn.PATH)
+            @PathVariable
+            Long itemId
     ) {
         return ApiResponse.ok(eisenhowerItemService.updateItem(customOAuth2User.getMemberId(), itemId, request));
     }
@@ -67,6 +70,7 @@ public class EisenhowerItemController {
     @DeleteMapping("/{itemId}")
     public ApiResponse<String> deleteItem(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @Parameter(name = "itemId", description = "삭제할 아이젠하워 항목 ID", example = "1", required = true, in = ParameterIn.PATH)
             @PathVariable Long itemId
     ) {
         eisenhowerItemService.deleteItem(customOAuth2User.getMemberId(), itemId);
@@ -77,7 +81,7 @@ public class EisenhowerItemController {
     @PatchMapping("/order")
     public ApiResponse<Void> updateItemOrderAndQuadrant(
             @RequestBody @Valid EisenhowerItemOrderUpdateRequests request,
-            @Parameter(hidden = true) @AuthenticationPrincipal CustomOAuth2User user
+            @AuthenticationPrincipal CustomOAuth2User user
     ) {
         eisenhowerItemService.updateItemOrderAndQuadrant(user.getMemberId(), request.items());
         return ApiResponse.ok();

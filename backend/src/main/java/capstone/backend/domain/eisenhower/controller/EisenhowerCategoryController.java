@@ -1,13 +1,14 @@
 package capstone.backend.domain.eisenhower.controller;
 
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryCreateRequest;
-import capstone.backend.domain.eisenhower.dto.response.EisenhowerCategoryResponse;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryUpdateRequest;
+import capstone.backend.domain.eisenhower.dto.response.EisenhowerCategoryResponse;
 import capstone.backend.domain.eisenhower.service.EisenhowerCategoryService;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -52,7 +53,7 @@ public class EisenhowerCategoryController {
     public ApiResponse<EisenhowerCategoryResponse> updateEisenhowerCategory(
             @RequestBody EisenhowerCategoryUpdateRequest eisenhowerCategoryUpdateRequest,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
-            @Parameter(description = "카테고리 ID", required = true) @PathVariable Long categoryId
+            @Parameter(description = "카테고리 ID", example = "1", required = true, in = ParameterIn.PATH) @PathVariable Long categoryId
     ) {
         return ApiResponse.ok(eisenhowerCategoryService.updateEisenhowerCategory(eisenhowerCategoryUpdateRequest, customOAuth2User.getMemberId(), categoryId));
     }
@@ -61,7 +62,7 @@ public class EisenhowerCategoryController {
     @DeleteMapping("/{categoryId}")
     public ApiResponse<String> updateEisenhowerCategory(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
-            @Parameter(description = "카테고리 ID", required = true) @PathVariable Long categoryId
+            @Parameter(description = "카테고리 ID", example = "1",  required = true, in = ParameterIn.PATH) @PathVariable Long categoryId
     ) {
         eisenhowerCategoryService.deleteEisenhowerCategory(customOAuth2User.getMemberId(), categoryId);
         return ApiResponse.ok("아이젠하워 카테고리가 삭제되었습니다.");
