@@ -1,5 +1,3 @@
-import { MindMapNode } from '@/types/mindMap';
-
 export type GenerateReq = {
   mainNode: {
     summary: string;
@@ -12,17 +10,8 @@ export type GenerateReq = {
   } | null;
 };
 
-export type ConvertedScheduleTodoReq = {
-  nodes: MindMapNode[];
-};
-
-export type ConvertedThoughtListReq = {
-  nodes: {
-    id: string;
-    parentId: string;
-    type: string;
-    summary: string;
-  }[];
+export type ConvertedToTaskReq = {
+  selectedNodes: { summary: string }[];
 };
 
 export type SummarizedNodeReq = {
