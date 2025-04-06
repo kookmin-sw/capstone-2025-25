@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class EisenhowerItem {
 
@@ -63,6 +63,7 @@ public class EisenhowerItem {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(columnDefinition = "TEXT")
     private String memo;
 
     private LocalDate dueDate;
