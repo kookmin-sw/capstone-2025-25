@@ -36,7 +36,7 @@ public class EisenhowerItemController {
     @PostMapping
     public ApiResponse<EisenhowerItemResponse> createItem(
             @RequestBody @Valid EisenhowerItemCreateRequest request,
-            @Parameter(hidden = true) @AuthenticationPrincipal CustomOAuth2User customOAuth2User
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User
     ) {
         return ApiResponse.ok(eisenhowerItemService.createItem(request, customOAuth2User.getMemberId()));
     }
@@ -44,7 +44,7 @@ public class EisenhowerItemController {
     @Operation(summary = "아이젠하워 작업 전체 조회", description = "완료된 작업과 미완료된 작업을 구분하여 조회할 수 있습니다.")
     @GetMapping
     public ApiResponse<List<EisenhowerItemResponse>> getItems(
-            @Parameter(hidden = true) @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @Parameter(description = "완료된 작업만 조회할지 여부", example = "false") @RequestParam(required = false) Boolean completed
     ) {
         if(Boolean.TRUE.equals(completed)) {
@@ -57,7 +57,7 @@ public class EisenhowerItemController {
     @PatchMapping("/{itemId}")
     public ApiResponse<EisenhowerItemResponse> updateItem(
             @RequestBody @Valid EisenhowerItemUpdateRequest request,
-            @Parameter(hidden = true) @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @PathVariable Long itemId
     ) {
         return ApiResponse.ok(eisenhowerItemService.updateItem(customOAuth2User.getMemberId(), itemId, request));
@@ -66,7 +66,7 @@ public class EisenhowerItemController {
     @Operation(summary = "아이젠하워 작업 삭제")
     @DeleteMapping("/{itemId}")
     public ApiResponse<String> deleteItem(
-            @Parameter(hidden = true) @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @PathVariable Long itemId
     ) {
         eisenhowerItemService.deleteItem(customOAuth2User.getMemberId(), itemId);

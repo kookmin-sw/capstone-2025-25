@@ -33,7 +33,7 @@ public class EisenhowerCategoryController {
     @Operation(summary = "아이젠하워 카테고리 전체 조회")
     @GetMapping
     public ApiResponse<List<EisenhowerCategoryResponse>> getEisenhowerCategories(
-            @Parameter(hidden = true) @AuthenticationPrincipal CustomOAuth2User customOAuth2User
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User
     ) {
         return ApiResponse.ok(eisenhowerCategoryService.getEisenhowerCategories(customOAuth2User.getMemberId()));
     }
@@ -42,7 +42,7 @@ public class EisenhowerCategoryController {
     @PostMapping
     public ApiResponse<EisenhowerCategoryResponse> createEisenhowerCategory(
             @RequestBody @Valid EisenhowerCategoryCreateRequest eisenhowerCategoryRequest,
-            @Parameter(hidden = true) @AuthenticationPrincipal CustomOAuth2User customOAuth2User
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User
     ) {
         return ApiResponse.ok(eisenhowerCategoryService.createEisenhowerCategory(eisenhowerCategoryRequest, customOAuth2User.getMemberId()));
     }
@@ -51,7 +51,7 @@ public class EisenhowerCategoryController {
     @PatchMapping("/{categoryId}")
     public ApiResponse<EisenhowerCategoryResponse> updateEisenhowerCategory(
             @RequestBody EisenhowerCategoryUpdateRequest eisenhowerCategoryUpdateRequest,
-            @Parameter(hidden = true) @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @Parameter(description = "카테고리 ID", required = true) @PathVariable Long categoryId
     ) {
         return ApiResponse.ok(eisenhowerCategoryService.updateEisenhowerCategory(eisenhowerCategoryUpdateRequest, customOAuth2User.getMemberId(), categoryId));
@@ -60,7 +60,7 @@ public class EisenhowerCategoryController {
     @Operation(summary = "아이젠하워 카테고리 삭제")
     @DeleteMapping("/{categoryId}")
     public ApiResponse<String> updateEisenhowerCategory(
-            @Parameter(hidden = true) @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @Parameter(description = "카테고리 ID", required = true) @PathVariable Long categoryId
     ) {
         eisenhowerCategoryService.deleteEisenhowerCategory(customOAuth2User.getMemberId(), categoryId);
