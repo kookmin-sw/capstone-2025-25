@@ -1,5 +1,7 @@
 package capstone.backend.domain.mindmap.service;
 
+import capstone.backend.domain.member.repository.MemberRepository;
+import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
 import capstone.backend.domain.mindmap.dto.response.MindMapGroupListResponse;
@@ -18,11 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MindMapService {
     private final MindMapRepository mindMapRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public Long createMindMap(MindMapRequest mindMapRequest) {
-        MindMap mindMap = MindMap.createMindMap(mindMapRequest);
+    public Long createMindMap(Long memberId, MindMapRequest mindMapRequest) {
+        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
+        MindMap mindMap = MindMap.createMindMap(mindMapRequest, member);
         mindMapRepository.save(mindMap);
+
         return mindMap.getId();
     }
 

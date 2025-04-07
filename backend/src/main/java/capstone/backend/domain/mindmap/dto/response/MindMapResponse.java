@@ -11,8 +11,6 @@ import java.util.List;
 
 public record MindMapResponse(
     Long id,
-    Long memberId,
-    Long eisenhowerId,
     String title,
     String type,
     LocalDateTime lastModifiedAt,
@@ -80,8 +78,6 @@ public record MindMapResponse(
 
         return new MindMapResponse(
             mindMap.getId(),
-            mindMap.getMemberId(),
-            mindMap.getEisenhowerId(),
             mindMap.getTitle(),
             mindMap.getType().name(),
             mindMap.getLastModifiedAt(),

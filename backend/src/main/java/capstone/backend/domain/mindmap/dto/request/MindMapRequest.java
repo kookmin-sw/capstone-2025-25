@@ -8,8 +8,6 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record MindMapRequest(
-    @NotNull Long memberId,
-    Long eisenhowerId,
     @NotBlank String title,
     @NotNull MindMapType type,
     @NotNull List<Node> nodes,
