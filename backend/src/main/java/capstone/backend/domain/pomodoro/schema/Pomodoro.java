@@ -1,6 +1,5 @@
 package capstone.backend.domain.pomodoro.schema;
 
-import capstone.backend.domain.eisenhower.schema.EisenhowerItem;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.pomodoro.exception.PomodoroDurationException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
