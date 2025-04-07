@@ -4,13 +4,11 @@ import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
-import capstone.backend.domain.mindmap.dto.response.MindMapGroupListResponse;
-import capstone.backend.domain.mindmap.dto.response.MindMapListResponse;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
 import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
 import capstone.backend.domain.mindmap.repository.MindMapRepository;
-import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +25,14 @@ public class MindMapService {
     public Long createMindMap(Long memberId, MindMapRequest mindMapRequest) {
         Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
         MindMap mindMap = MindMap.createMindMap(mindMapRequest, member);
+
+        Optional.ofNullable(mindMapRequest.eisenhowerId())
+            .ifPresent(eisenhowerId -> {
+                EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(eisenhowerId)
+                    .orElseThrow(EisenhowerNotFoundException::new);
+                eisenhowerItem.setMindMap(mindMap);
+                eisenhowerItemRepository.save(eisenhowerItem);
+            });
         mindMapRepository.save(mindMap);
 
         return mindMap.getId();
