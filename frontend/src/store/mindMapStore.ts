@@ -12,9 +12,18 @@ import { nanoid } from 'nanoid/non-secure';
 import { MindMapEdge, MindMapNode, MindMapNodeData } from '@/types/mindMap';
 import { filterNodesAndEdges, findChildNodes } from '@/lib/mindMap';
 
+type ActiveState = {
+  nodeId: string;
+  previousNodes: MindMapNode[];
+  previousEdges: MindMapEdge[];
+  previousActiveState: ActiveState | null;
+};
+
 export type RFState = {
   nodes: MindMapNode[];
   edges: MindMapEdge[];
+  activeState: ActiveState | null;
+
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   addChildNode: (
@@ -28,6 +37,7 @@ export type RFState = {
   deleteNode: (nodeId: string) => void;
   updateNode: (nodeId: string, answer: string, summary: string) => void;
   setInitialData: (nodes: MindMapNode[], edges: MindMapEdge[]) => void;
+  restoreActiveState: () => void;
 };
 
 const initialNodes: MindMapNode[] = [];
@@ -36,6 +46,7 @@ const initialEdges: MindMapEdge[] = [];
 const useStore = create<RFState>((set, get) => ({
   nodes: initialNodes,
   edges: initialEdges,
+  activeState: null,
 
   onNodesChange: (changes: NodeChange[]) => {
     set({
@@ -76,20 +87,38 @@ const useStore = create<RFState>((set, get) => ({
       type: 'mindmapEdge',
     };
 
+    const currentNodes = [...get().nodes];
+    const currentEdges = [...get().edges];
+
     set((state) => ({
       nodes: [...state.nodes, newNode],
       edges: [...state.edges, newEdge],
+      activeState: {
+        nodeId: newNodeId,
+        previousNodes: currentNodes,
+        previousEdges: currentEdges,
+        previousActiveState: state.activeState,
+      },
     }));
 
     return newNodeId;
   },
 
   setNode: (nodeId, updatedNode) => {
-    set({
-      nodes: get().nodes.map((node) =>
+    const currentNodes = [...get().nodes];
+    const currentEdges = [...get().edges];
+
+    set((state) => ({
+      nodes: state.nodes.map((node) =>
         node.id === nodeId ? updatedNode : node,
       ),
-    });
+      activeState: {
+        nodeId: nodeId,
+        previousNodes: currentNodes,
+        previousEdges: currentEdges,
+        previousActiveState: state.activeState,
+      },
+    }));
   },
 
   updateNodeQuestions: (nodeId, questions) => {
@@ -178,6 +207,17 @@ const useStore = create<RFState>((set, get) => ({
       edges: edges,
     });
   },
+
+  restoreActiveState: () => {
+    const { activeState } = get();
+    if (activeState) {
+      set({
+        nodes: activeState.previousNodes,
+        edges: activeState.previousEdges,
+        activeState: activeState.previousActiveState,
+      });
+    }
+  },
 }));
 
 export const useNodes = () => useStore((state) => state.nodes);
@@ -194,5 +234,8 @@ export const useDeleteNode = () => useStore((state) => state.deleteNode);
 export const useUpdateNode = () => useStore((state) => state.updateNode);
 export const useSetInitialData = () =>
   useStore((state) => state.setInitialData);
+export const useActiveState = () => useStore((state) => state.activeState);
+export const useRestoreActiveState = () =>
+  useStore((state) => state.restoreActiveState);
 
 export default useStore;

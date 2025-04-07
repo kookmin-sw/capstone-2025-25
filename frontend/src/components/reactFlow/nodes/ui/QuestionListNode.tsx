@@ -56,7 +56,6 @@ export default function QuestionListNode({
   }, [questions]);
 
   const handleRemoveQuestion = (id: number) => {
-    console.log('handleRemove');
     setDisplayedQuestions((prev) =>
       prev.map((q) => (q.id === id ? { ...q, animating: true } : q)),
     );
