@@ -4,9 +4,8 @@ import CommonPanelWrapper from './CommonPanelWrapper';
 import { PomodoroItem } from '@/components/ui/PomodoroItem';
 import type { PomodoroResponse } from '@/types/pomodoro';
 
-
 // 예시 데이터
-const response:PomodoroResponse = {
+const response: PomodoroResponse = {
   statusCode: 200,
   error: null,
   content: {
@@ -97,7 +96,6 @@ const response:PomodoroResponse = {
   },
 };
 
-
 export default function PomodoroSubSidebar({
   onClose,
 }: {
@@ -115,8 +113,8 @@ export default function PomodoroSubSidebar({
             <PomodoroItem
               key={item.pomodoro.id}
               title={item.pomodoro.title}
-              time={item.pomodoro.totalPlannedTime ?? '00:00:00'}
-              linkLabel={item.eisenhower?.title ?? '링크 없음'}
+              time={item.pomodoro.totalExecutedTime ?? '00:00:00'}
+              eisenhower={item.eisenhower}
             />
           ))}
         </SubSidebarAccordion>
@@ -131,7 +129,7 @@ export default function PomodoroSubSidebar({
               key={item.pomodoro.id}
               title={item.pomodoro.title}
               time={item.pomodoro.totalExecutedTime ?? '00:00:00'}
-              linkLabel="링크 없음"
+              eisenhower={item.eisenhower}
             />
           ))}
         </SubSidebarAccordion>
