@@ -114,6 +114,7 @@ export default function PomodoroSubSidebar({
               key={item.pomodoro.id}
               title={item.pomodoro.title}
               time={item.pomodoro.totalExecutedTime ?? '00:00:00'}
+              selected={true}
               eisenhower={item.eisenhower}
             />
           ))}
