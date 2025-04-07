@@ -8,7 +8,7 @@ import { useNavigate, useLocation } from 'react-router';
 import MindmapPanel from '@/components/ui/sidebar/panel/MindmapPanel.tsx';
 import TodayListPanel from '@/components/ui/sidebar/panel/TodayListPanel.tsx';
 import MatrixPanel from '@/components/ui/sidebar/panel/MatrixPanel.tsx';
-import PomodoroPanel from '@/components/ui/sidebar/panel/PomodoroPanel.tsx';
+import PomodoroSubSidebar from '@/components/ui/sidebar/panel/PomodoroSubSidebar.tsx';
 
 const navItems = [
   {
@@ -36,6 +36,8 @@ const navItems = [
     route: '/pomodoro',
   },
 ];
+
+
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -67,7 +69,7 @@ export default function Sidebar() {
       case 'matrix':
         return <MatrixPanel onClose={onClose} />;
       case 'pomodoro':
-        return <PomodoroPanel onClose={onClose} />;
+        return <PomodoroSubSidebar onClose={onClose} />;
       default:
         return null;
     }
