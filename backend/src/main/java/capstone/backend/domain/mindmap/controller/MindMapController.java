@@ -69,9 +69,10 @@ public class MindMapController {
     public ApiResponse<String> updateMindMapTitle(
         @Parameter(description = "마인드맵 ID", required = true, in = ParameterIn.PATH)
         @PathVariable Long id,
-        @Valid @RequestBody UpdateMindMapTitleRequest updateMindMapTitleRequest
+        @Valid @RequestBody UpdateMindMapTitleRequest updateMindMapTitleRequest,
+        @AuthenticationPrincipal CustomOAuth2User user
     ){
-        mindMapService.updateMindMapTitle(id, updateMindMapTitleRequest);
+        mindMapService.updateMindMapTitle(user.getMemberId(), id, updateMindMapTitleRequest);
         return ApiResponse.ok("마인드맨 제목이 변경되었습니다.");
     }
 

@@ -52,15 +52,17 @@ public class MindMapService {
     public void updateMindMap(Long memberId, Long mindMapId, MindMapRequest mindMapRequest) {
         Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
 
-        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, member.getId())
             .orElseThrow(MindMapNotFoundException::new);
 
         mindMap.update(mindMapRequest);
     }
 
     @Transactional
-    public void updateMindMapTitle(Long id, UpdateMindMapTitleRequest request){
-        MindMap mindMap = mindMapRepository.findById(id)
+    public void updateMindMapTitle(Long memberId, Long mindMapId, UpdateMindMapTitleRequest request){
+        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
+
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, member.getId())
             .orElseThrow(MindMapNotFoundException::new);
         mindMap.updateTitle(request.title());
     }
