@@ -42,6 +42,15 @@ public class EisenhowerItemController {
         return ApiResponse.ok(eisenhowerItemService.createItem(request, customOAuth2User.getMemberId()));
     }
 
+    @Operation(summary = "아이젠하워 작업 조회", description = "아이젠하워 작업을 조회합니다.")
+    @GetMapping("/{itemId}")
+    public ApiResponse<EisenhowerItemResponse> getItem(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @Parameter(name = "itemId", description = "조회할 아이젠하워 항목 ID", example = "1", required = true, in = ParameterIn.PATH)
+            @PathVariable Long itemId) {
+        return ApiResponse.ok(eisenhowerItemService.getItem(customOAuth2User.getMemberId(), itemId));
+    }
+
     @Operation(summary = "아이젠하워 작업 전체 조회", description = "완료된 작업과 미완료된 작업을 구분하여 조회할 수 있습니다.")
     @GetMapping
     public ApiResponse<List<EisenhowerItemResponse>> getItems(

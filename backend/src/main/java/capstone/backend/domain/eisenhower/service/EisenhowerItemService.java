@@ -43,11 +43,17 @@ public class EisenhowerItemService {
         return EisenhowerItemResponse.from(eisenhowerItemRepository.save(item));
     }
 
+    public EisenhowerItemResponse getItem(Long memberId, Long itemId) {
+        EisenhowerItem item = eisenhowerItemRepository.findByIdAndMemberId(itemId, memberId)
+                .orElseThrow(EisenhowerItemNotFoundException::new);
+
+        return EisenhowerItemResponse.from(item);
+    }
+
     public List<EisenhowerItemResponse> getItemsNotCompleted(Long memberId) {
         List<EisenhowerItem> items = eisenhowerItemRepository.findAllByMemberIdAndIsCompletedFalse(memberId);
         return EisenhowerItemResponse.listFrom(items);
     }
-
 
     public List<EisenhowerItemResponse> getItemsCompleted(Long memberId) {
         List<EisenhowerItem> items = eisenhowerItemRepository.findAllByMemberIdAndIsCompletedTrue(memberId);
