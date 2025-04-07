@@ -1,9 +1,8 @@
 package capstone.backend.domain.pomodoro.controller;
 
 
-import capstone.backend.domain.pomodoro.dto.request.LinkedPomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
-import capstone.backend.domain.pomodoro.dto.request.UnlinkedPomodoroRequest;
+import capstone.backend.domain.pomodoro.dto.request.CreatePomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
 import capstone.backend.domain.pomodoro.schema.Pomodoro;
 import capstone.backend.domain.pomodoro.service.PomodoroService;
@@ -24,23 +23,13 @@ public class PomodoroController {
 
     private final PomodoroService pomodoroService;
 
-    @PostMapping("/create/unlink")
-    @Operation(summary = "자유로운 뽀모도로 생성")
+    @PostMapping("/create")
+    @Operation(summary = "뽀모도로 생성")
     public ApiResponse<Void> createUnlink(
             @AuthenticationPrincipal CustomOAuth2User user,
-            @Valid @RequestBody UnlinkedPomodoroRequest request
+            @Valid @RequestBody CreatePomodoroRequest request
     ) {
-        pomodoroService.createUnlinkedToDo(user.getMemberId(), request);
-        return ApiResponse.ok();
-    }
-
-    @PostMapping("/create/link")
-    @Operation(summary = "링크된 뽀모도로 생성", description = "여기선 매핑할 아이젠하워 투두 id를 받아야 함")
-    public ApiResponse<Void> createLink(
-            @AuthenticationPrincipal CustomOAuth2User user,
-            @Valid @RequestBody LinkedPomodoroRequest request
-    ) {
-        pomodoroService.createLinkedToDo(user.getMemberId(), request);
+        pomodoroService.createPomodoro(user.getMemberId(), request);
         return ApiResponse.ok();
     }
 
@@ -84,5 +73,4 @@ public class PomodoroController {
         pomodoroService.deletePomodoro(user.getMemberId(), id);
         return ApiResponse.ok();
     }
-
 }

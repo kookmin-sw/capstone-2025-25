@@ -2,18 +2,24 @@ package capstone.backend.domain.pomodoro.dto.response;
 
 import capstone.backend.domain.eisenhower.schema.EisenhowerItem;
 import capstone.backend.domain.pomodoro.schema.Pomodoro;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public record SidebarPomodoroResponse(
-    Pomodoro pomodoro,
-    SidebarEisenhowerItemDTO eisenhower
+        Pomodoro pomodoro,
+        SidebarEisenhowerItemDTO eisenhower
 ) {
-    public SidebarPomodoroResponse(Pomodoro pomodoro) {
+    public SidebarPomodoroResponse(Pomodoro pomodoro, EisenhowerItem eisenhowerItem) {
         this(
-            pomodoro,
-            pomodoro.getEisenhowerItem() != null
-                ? new SidebarEisenhowerItemDTO(pomodoro.getEisenhowerItem())
-                : null
+                pomodoro,
+                eisenhowerItem != null ? new SidebarEisenhowerItemDTO(eisenhowerItem) : null
         );
+    }
+
+    // record가 isLinked() 메서드를 포함해서 JSON 직렬화될 때 linked라는 속성으로 자동 포함
+    // 따라서 제거
+    @JsonIgnore
+    public boolean isLinked() {
+        return eisenhower != null;
     }
 }
 

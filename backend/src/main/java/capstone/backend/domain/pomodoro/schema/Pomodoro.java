@@ -1,6 +1,5 @@
 package capstone.backend.domain.pomodoro.schema;
 
-import capstone.backend.domain.eisenhower.schema.EisenhowerItem;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.pomodoro.exception.PomodoroDurationException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,11 +31,6 @@ public class Pomodoro {
     @JsonIgnore
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "eisenhower_item_id")
-    @JsonIgnore
-    private EisenhowerItem eisenhowerItem;
-
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -65,22 +59,6 @@ public class Pomodoro {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb", name = "executed_cycles")
     private List<PomodoroCycle> executedCycles;
-
-    public static Pomodoro create(
-            Member member,
-            EisenhowerItem eisenhowerItem,
-            String title,
-            LocalTime totalPlannedTime,
-            List<PomodoroCycle> pomodoroCycles
-    ) {
-        return Pomodoro.builder()
-                .title(title)
-                .member(member)
-                .eisenhowerItem(eisenhowerItem)
-                .totalPlannedTime(totalPlannedTime)
-                .plannedCycles(pomodoroCycles)
-                .build();
-    }
 
     public static Pomodoro create(
             Member member,
