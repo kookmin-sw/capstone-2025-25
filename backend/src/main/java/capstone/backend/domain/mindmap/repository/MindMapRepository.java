@@ -2,6 +2,7 @@ package capstone.backend.domain.mindmap.repository;
 
 import capstone.backend.domain.mindmap.entity.MindMap;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface MindMapRepository extends JpaRepository<MindMap, Long> {
     List<MindMap> findByEisenhowerIdIsNotNullOrderByLastModifiedAtDesc();
     List<MindMap> findByEisenhowerIdIsNullOrderByLastModifiedAtDesc();
+    Optional<MindMap> findByIdAndMemberId(Long id, Long memberId);
 }

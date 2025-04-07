@@ -35,9 +35,10 @@ public class MindMapController {
     @Operation(summary = "특정 마인드맵 조회")
     public ApiResponse<MindMapResponse> getMindMap(
             @Parameter(name="id", description = "조회 마인드맵 ID", required = true, in = ParameterIn.PATH)
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomOAuth2User user
     ) {
-        return ApiResponse.ok(mindMapService.getMindMapById(id));
+        return ApiResponse.ok(mindMapService.getMindMapById(user.getMemberId(), id));
     }
 
     @DeleteMapping("/{id}")

@@ -31,8 +31,8 @@ public class MindMapService {
         return mindMap.getId();
     }
 
-    public MindMapResponse getMindMapById(Long id){
-        return mindMapRepository.findById(id)
+    public MindMapResponse getMindMapById(Long memberId, Long mindMapId){
+        return mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
             .map(MindMapResponse::fromEntity)
             .orElseThrow(MindMapNotFoundException::new);
     }
