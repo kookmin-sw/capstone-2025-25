@@ -45,9 +45,10 @@ public class MindMapController {
     @Operation(summary = "마인드맵 전체 삭제")
     public ApiResponse<String> deleteMindMap(
         @Parameter(name = "id", description = "삭제 마인드맵 ID", required = true, in = ParameterIn.PATH)
-        @PathVariable Long id
+        @PathVariable Long id,
+        @AuthenticationPrincipal CustomOAuth2User user
     ) {
-        mindMapService.deleteMindMap(id);
+        mindMapService.deleteMindMap(user.getMemberId(), id);
         return ApiResponse.ok("마인드맵이 성공적으로 삭제되었습니다.");
     }
 
@@ -73,11 +74,11 @@ public class MindMapController {
         return ApiResponse.ok("마인드맨 제목이 변경되었습니다.");
     }
 
-    @GetMapping("/list")
-    @Operation(summary = "아이젠하워 연결 별 마인드맵 리스트 조회")
-    public ApiResponse<MindMapGroupListResponse> getMindMapList(
-    ) {
-        MindMapGroupListResponse response = mindMapService.getMindMapList();
-        return ApiResponse.ok(response);
-    }
+//    @GetMapping("/list")
+//    @Operation(summary = "아이젠하워 연결 별 마인드맵 리스트 조회")
+//    public ApiResponse<MindMapGroupListResponse> getMindMapList(
+//    ) {
+//        MindMapGroupListResponse response = mindMapService.getMindMapList();
+//        return ApiResponse.ok(response);
+//    }
 }

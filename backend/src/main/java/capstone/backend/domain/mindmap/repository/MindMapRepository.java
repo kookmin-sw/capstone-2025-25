@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MindMapRepository extends JpaRepository<MindMap, Long> {
-    List<MindMap> findByEisenhowerIdIsNotNullOrderByLastModifiedAtDesc();
-    List<MindMap> findByEisenhowerIdIsNullOrderByLastModifiedAtDesc();
+//    List<MindMap> findByEisenhowerIdIsNotNullOrderByLastModifiedAtDesc();
+//    List<MindMap> findByEisenhowerIdIsNullOrderByLastModifiedAtDesc();
     Optional<MindMap> findByIdAndMemberId(Long id, Long memberId);
+    boolean existsByIdAndMemberId(Long mindMapId, Long memberId);
 }

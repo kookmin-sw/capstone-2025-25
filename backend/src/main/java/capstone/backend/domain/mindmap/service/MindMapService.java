@@ -38,12 +38,14 @@ public class MindMapService {
     }
 
     @Transactional
-    public void deleteMindMap(Long id) {
-        if (!mindMapRepository.existsById(id)) {
+    public void deleteMindMap(Long memberId, Long mindMapId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
+
+        if (!mindMapRepository.existsByIdAndMemberId(mindMapId, member.getId())) {
             throw new MindMapNotFoundException();
         }
 
-        mindMapRepository.deleteById(id);
+        mindMapRepository.deleteById(memberId);
     }
 
     @Transactional
@@ -61,18 +63,18 @@ public class MindMapService {
         mindMap.updateTitle(request.title());
     }
 
-    public MindMapGroupListResponse getMindMapList(){
-        List<MindMap> connected = mindMapRepository.findByEisenhowerIdIsNotNullOrderByLastModifiedAtDesc();
-        List<MindMap> unconnected = mindMapRepository.findByEisenhowerIdIsNullOrderByLastModifiedAtDesc();
-
-        List<MindMapListResponse> connectedList = connected.stream()
-            .map(MindMapListResponse::fromEntity)
-            .toList();
-
-        List<MindMapListResponse> unconnectedList = unconnected.stream()
-            .map(MindMapListResponse::fromEntity)
-            .toList();
-
-        return new MindMapGroupListResponse(connectedList, unconnectedList);
-    }
+//    public MindMapGroupListResponse getMindMapList(){
+//        List<MindMap> connected = mindMapRepository.findByEisenhowerIdIsNotNullOrderByLastModifiedAtDesc();
+//        List<MindMap> unconnected = mindMapRepository.findByEisenhowerIdIsNullOrderByLastModifiedAtDesc();
+//
+//        List<MindMapListResponse> connectedList = connected.stream()
+//            .map(MindMapListResponse::fromEntity)
+//            .toList();
+//
+//        List<MindMapListResponse> unconnectedList = unconnected.stream()
+//            .map(MindMapListResponse::fromEntity)
+//            .toList();
+//
+//        return new MindMapGroupListResponse(connectedList, unconnectedList);
+//    }
 }
