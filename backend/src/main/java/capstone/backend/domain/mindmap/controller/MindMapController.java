@@ -1,7 +1,7 @@
 package capstone.backend.domain.mindmap.controller;
 
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
-import capstone.backend.domain.mindmap.dto.response.MindMapGroupListResponse;
+import capstone.backend.domain.mindmap.dto.response.SidebarMindMapResponse;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
@@ -76,11 +76,12 @@ public class MindMapController {
         return ApiResponse.ok("마인드맨 제목이 변경되었습니다.");
     }
 
-//    @GetMapping("/list")
-//    @Operation(summary = "아이젠하워 연결 별 마인드맵 리스트 조회")
-//    public ApiResponse<MindMapGroupListResponse> getMindMapList(
-//    ) {
-//        MindMapGroupListResponse response = mindMapService.getMindMapList();
-//        return ApiResponse.ok(response);
-//    }
+    @GetMapping("/list")
+    @Operation(summary = "아이젠하워 연결 별 마인드맵 리스트 조회")
+    public ApiResponse<SidebarMindMapResponse> getMindMapList(
+        @AuthenticationPrincipal CustomOAuth2User user
+    ) {
+        SidebarMindMapResponse response = mindMapService.getMindMapList(user.getMemberId());
+        return ApiResponse.ok(response);
+    }
 }

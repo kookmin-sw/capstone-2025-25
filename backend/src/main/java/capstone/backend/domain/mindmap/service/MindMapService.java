@@ -6,9 +6,11 @@ import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
+import capstone.backend.domain.mindmap.dto.response.SidebarMindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
 import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
 import capstone.backend.domain.mindmap.repository.MindMapRepository;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -76,18 +78,14 @@ public class MindMapService {
 
 
     //마인드맵 리스트 조회
-//    public MindMapGroupListResponse getMindMapList(){
-//        List<MindMap> connected = mindMapRepository.findByEisenhowerIdIsNotNullOrderByLastModifiedAtDesc();
-//        List<MindMap> unconnected = mindMapRepository.findByEisenhowerIdIsNullOrderByLastModifiedAtDesc();
-//
-//        List<MindMapListResponse> connectedList = connected.stream()
-//            .map(MindMapListResponse::fromEntity)
-//            .toList();
-//
-//        List<MindMapListResponse> unconnectedList = unconnected.stream()
-//            .map(MindMapListResponse::fromEntity)
-//            .toList();
-//
-//        return new MindMapGroupListResponse(connectedList, unconnectedList);
-//    }
+    public SidebarMindMapResponse getMindMapList(Long memberId){
+        List<Object[]> results = mindMapRepository.findMindMapWithEisenhowerByMemberId(memberId);
+        return results.stream()
+            .map(row -> {
+                MindMap mindMap = (MindMap) row[0];
+                EisenhowerItem eisenhowerItem = (EisenhowerItem) row[1]; // null 가능
+                return SidebarMindMapResponse.from(mindMap, eisenhowerItem);
+            })
+            .toList();
+    }
 }
