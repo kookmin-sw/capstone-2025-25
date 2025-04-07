@@ -1,13 +1,13 @@
 package capstone.backend.domain.pomodoro.service;
 
+import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
 import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.eisenhower.schema.EisenhowerItem;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
-import capstone.backend.domain.pomodoro.dto.request.LinkedPomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
-import capstone.backend.domain.pomodoro.dto.request.UnlinkedPomodoroRequest;
+import capstone.backend.domain.pomodoro.dto.request.CreatePomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
 import capstone.backend.domain.pomodoro.dto.response.SidebarPomodoroResponse;
 import capstone.backend.domain.pomodoro.exception.PomodoroNotFoundException;
@@ -34,9 +34,9 @@ public class PomodoroService {
     private final EisenhowerItemRepository eisenhowerItemRepository;
     private final DailyPomodoroSummaryService dailyPomodoroSummaryService;
 
-    // unLinked 뽀모도로 생성
+    // 뽀모도로 생성
     @Transactional
-    public void createUnlinkedToDo(Long memberId, UnlinkedPomodoroRequest request) {
+    public void createPomodoro(Long memberId, CreatePomodoroRequest request) {
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
@@ -47,35 +47,31 @@ public class PomodoroService {
                 request.plannedCycles()
         );
 
-        pomodoroRepository.save(pomodoro);
-    }
-
-    // linked 뽀모도로 생성
-    @Transactional
-    public void createLinkedToDo(Long memberId, LinkedPomodoroRequest request) {
-
-        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(request.eisenhowerId()).orElseThrow(IllegalArgumentException::new);
-
-        Pomodoro pomodoro = Pomodoro.create(
-                member,
-                eisenhowerItem,
-                eisenhowerItem.getTitle(),
-                LocalTime.parse(request.totalPlannedTime()),
-                request.plannedCycles()
-        );
+        // eisenhowerId가 있으면 매핑
+        Optional.ofNullable(request.eisenhowerId())
+                .ifPresent(eisenhowerId -> {
+                    // 한번 더 유효성 검사
+                    EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(eisenhowerId)
+                            .orElseThrow(EisenhowerItemNotFoundException::new);
+                    eisenhowerItem.setPomodoro(pomodoro); // 연관관계 설정
+                    eisenhowerItemRepository.save(eisenhowerItem);
+                });
 
         pomodoroRepository.save(pomodoro);
     }
 
     // (언링크 + 링크) 뽀모도로 전체 조회
     public SidebarResponse getAllPomodoros(Long memberId) {
-        Map<Boolean, List<SidebarPomodoroResponse>> partitionedPomodoros = pomodoroRepository.findAllByMemberId(memberId)
-                .stream()
-                .map(SidebarPomodoroResponse::new)
-                .collect(Collectors.partitioningBy(dto -> dto.eisenhower() != null));
+        List<Object[]> results = pomodoroRepository.findPomodoroWithEisenhowerByMemberId(memberId);
 
-        return new SidebarResponse(partitionedPomodoros.get(false), partitionedPomodoros.get(true));
+        Map<Boolean, List<SidebarPomodoroResponse>> partitioned = results.stream()
+                .map(row -> new SidebarPomodoroResponse((Pomodoro) row[0], (EisenhowerItem) row[1]))
+                .collect(Collectors.partitioningBy(SidebarPomodoroResponse::isLinked));
+
+        return new SidebarResponse(
+                partitioned.getOrDefault(false, List.of()), // unlinked
+                partitioned.getOrDefault(true, List.of())   // linked
+        );
     }
 
     // 특정 뽀모도로 조회
@@ -88,6 +84,9 @@ public class PomodoroService {
     public void deletePomodoro(Long pomodoroId, Long memberId) {
         // 도훈 피드백 (특정 사용자가 다른 사용자의 뽀모도로를 삭제시킬 수도 있음.)
         Pomodoro pomodoro = pomodoroRepository.findByIdAndMemberId(pomodoroId, memberId).orElseThrow(PomodoroNotFoundException::new);
+
+        // EisenhowerItem에서 연결 끊기 (만약 존재한다면)
+        eisenhowerItemRepository.findById(pomodoroId).ifPresent(eisenhowerItem -> eisenhowerItem.setPomodoro(null));
 
         pomodoroRepository.delete(pomodoro);
     }
