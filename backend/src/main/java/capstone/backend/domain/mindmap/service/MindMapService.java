@@ -1,5 +1,6 @@
 package capstone.backend.domain.mindmap.service;
 
+import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
@@ -23,7 +24,7 @@ public class MindMapService {
     //마인드맵 생성
     @Transactional
     public Long createMindMap(Long memberId, MindMapRequest mindMapRequest) {
-        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         MindMap mindMap = MindMap.createMindMap(mindMapRequest, member);
 
         Optional.ofNullable(mindMapRequest.eisenhowerId())
@@ -48,9 +49,7 @@ public class MindMapService {
     //마인드맵 삭제
     @Transactional
     public void deleteMindMap(Long memberId, Long mindMapId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
-
-        if (!mindMapRepository.existsByIdAndMemberId(mindMapId, member.getId())) {
+        if (!mindMapRepository.existsByIdAndMemberId(mindMapId, memberId)) {
             throw new MindMapNotFoundException();
         }
 
@@ -60,9 +59,7 @@ public class MindMapService {
     //마인드맵 노드 수정, 하위노드, 엣지 삭제
     @Transactional
     public void updateMindMap(Long memberId, Long mindMapId, MindMapRequest mindMapRequest) {
-        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
-
-        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, member.getId())
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
             .orElseThrow(MindMapNotFoundException::new);
 
         mindMap.update(mindMapRequest);
@@ -71,10 +68,9 @@ public class MindMapService {
     //마인드맵 제목 수정
     @Transactional
     public void updateMindMapTitle(Long memberId, Long mindMapId, UpdateMindMapTitleRequest request){
-        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
-
-        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, member.getId())
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
             .orElseThrow(MindMapNotFoundException::new);
+
         mindMap.updateTitle(request.title());
     }
 
