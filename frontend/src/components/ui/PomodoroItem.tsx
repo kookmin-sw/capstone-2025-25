@@ -1,6 +1,6 @@
 import { Link, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { PomodoroItemProps } from '@/types/pomodoro.ts';
+import { PomodoroItemProps } from '@/types/pomodoro';
 
 // 시간 포멧
 function formatToHourMin(time: string): string {
@@ -29,7 +29,7 @@ export function PomodoroItem({
           'bg-[rgba(123,104,238,0.2)] hover:bg-[rgba(123,104,238,0.2)]',
       )}
     >
-      <div className="flex justify-between px-1">
+      <div className="flex justify-between pl-1">
         <p className="font-semibold text-lg">{title}</p>
         <button className={'cursor-pointer hidden group-hover:block'}>
           <X className="w-5 h-5 text-gray-700" />

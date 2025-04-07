@@ -1,6 +1,11 @@
+export type cycleType = 'focus' | 'break';
+
 export type PomodoroCycle = {
   workDuration: number;
   breakDuration: number | null;
+};
+export type PomodoroTimerProps = {
+  plannedCycles: PomodoroCycle[];
 };
 
 export type Pomodoro = {
