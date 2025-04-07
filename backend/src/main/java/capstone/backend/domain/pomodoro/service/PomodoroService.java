@@ -75,8 +75,8 @@ public class PomodoroService {
     }
 
     // 특정 뽀모도로 조회
-    public Pomodoro findById(Long memberId, Long eisenhowerId) {
-        return pomodoroRepository.findByIdAndMemberId(eisenhowerId, memberId).orElseThrow(PomodoroNotFoundException::new);
+    public Pomodoro findById(Long memberId, Long pomodoroId) {
+        return pomodoroRepository.findByIdAndMemberId(pomodoroId, memberId).orElseThrow(PomodoroNotFoundException::new);
     }
 
     // 특정 뽀모도로 삭제
