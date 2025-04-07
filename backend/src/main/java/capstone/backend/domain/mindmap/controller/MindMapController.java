@@ -53,7 +53,7 @@ public class MindMapController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "마인드맵 루트 노드 수정")
+    @Operation(summary = "마인드맵 수정 (루트노드, 하위노드, 엣지)")
     public ApiResponse<String> updateMindMap(
         @Parameter(name = "id", description = "수정 마인드맵 ID", required = true, in = ParameterIn.PATH)
         @PathVariable Long id,

@@ -22,6 +22,7 @@ public class MindMapService {
     private final MindMapRepository mindMapRepository;
     private final MemberRepository memberRepository;
 
+    //마인드맵 생성
     @Transactional
     public Long createMindMap(Long memberId, MindMapRequest mindMapRequest) {
         Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
@@ -31,12 +32,14 @@ public class MindMapService {
         return mindMap.getId();
     }
 
+    //마인드맵 상세 조회
     public MindMapResponse getMindMapById(Long memberId, Long mindMapId){
         return mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
             .map(MindMapResponse::fromEntity)
             .orElseThrow(MindMapNotFoundException::new);
     }
 
+    //마인드맵 삭제
     @Transactional
     public void deleteMindMap(Long memberId, Long mindMapId) {
         Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
@@ -48,6 +51,7 @@ public class MindMapService {
         mindMapRepository.deleteById(memberId);
     }
 
+    //마인드맵 노드 수정, 하위노드, 엣지 삭제
     @Transactional
     public void updateMindMap(Long memberId, Long mindMapId, MindMapRequest mindMapRequest) {
         Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
@@ -58,6 +62,7 @@ public class MindMapService {
         mindMap.update(mindMapRequest);
     }
 
+    //마인드맵 제목 수정
     @Transactional
     public void updateMindMapTitle(Long memberId, Long mindMapId, UpdateMindMapTitleRequest request){
         Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new); //에러핸들링 변경하기
@@ -67,6 +72,8 @@ public class MindMapService {
         mindMap.updateTitle(request.title());
     }
 
+
+    //마인드맵 리스트 조회
 //    public MindMapGroupListResponse getMindMapList(){
 //        List<MindMap> connected = mindMapRepository.findByEisenhowerIdIsNotNullOrderByLastModifiedAtDesc();
 //        List<MindMap> unconnected = mindMapRepository.findByEisenhowerIdIsNullOrderByLastModifiedAtDesc();
