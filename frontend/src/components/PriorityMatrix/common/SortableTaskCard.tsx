@@ -49,7 +49,7 @@ export function SortableTaskCard({
             ? 'opacity-50 z-10 shadow-lg border-2 border-purple-300'
             : 'border border-gray-100'
         } transition-all duration-200 cursor-pointer hover:shadow-md flex flex-col relative`}
-        onClick={(e) => {
+        onClick={() => {
           // 드래그 중에는 onClick 이벤트가 발생하지 않도록 함
           if (!isDragging && onClick) {
             onClick();
