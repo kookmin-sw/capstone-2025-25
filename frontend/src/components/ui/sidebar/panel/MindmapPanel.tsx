@@ -2,20 +2,23 @@ import { useState } from 'react';
 import CommonPanelWrapper from './CommonPanelWrapper';
 import { ChevronDown, ChevronRight, Link2, Shuffle } from 'lucide-react';
 import MindmapCard from '@/components/ui/sidebar/MindmapCard';
+import MindmapAddButton from '@/components/ui/sidebar/MindmapAddButton';
+import { useMindMaps } from '@/store/mindmapListStore';
 
 export default function MindmapPanel({ onClose }: { onClose: () => void }) {
   const [accordionOpen, setAccordionOpen] = useState({
     connected: false,
     free: true,
   });
-  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
 
-  const handleCardSelect = (id: string) => {
-    setSelectedCardId((prev) => (prev === id ? null : id));
-  };
+  const mindMaps = useMindMaps();
 
   return (
-    <CommonPanelWrapper title="마인드맵" onClose={onClose}>
+    <CommonPanelWrapper
+      title="마인드맵"
+      addButton={<MindmapAddButton />}
+      onClose={onClose}
+    >
       {/* 연결된 마인드맵 */}
       <div>
         <button
@@ -38,7 +41,7 @@ export default function MindmapPanel({ onClose }: { onClose: () => void }) {
         </button>
         {accordionOpen.connected && (
           <div className="space-y-4">
-            <MindmapCard
+            {/* <MindmapCard
               title="개인 계획"
               selected={selectedCardId === 'card-1'}
               onClick={() => handleCardSelect('card-1')}
@@ -47,7 +50,7 @@ export default function MindmapPanel({ onClose }: { onClose: () => void }) {
               title="정리하기"
               selected={selectedCardId === 'card-2'}
               onClick={() => handleCardSelect('card-2')}
-            />
+            /> */}
           </div>
         )}
       </div>
@@ -71,7 +74,10 @@ export default function MindmapPanel({ onClose }: { onClose: () => void }) {
         </button>
         {accordionOpen.free && (
           <div className="space-y-4">
-            <MindmapCard
+            {mindMaps.map((mindmap) => (
+              <MindmapCard key={mindmap.id} mindmap={mindmap} />
+            ))}
+            {/* <MindmapCard
               title="개인 계획"
               selected={selectedCardId === '3'}
               onClick={() => handleCardSelect('3')}
@@ -86,7 +92,7 @@ export default function MindmapPanel({ onClose }: { onClose: () => void }) {
               status="Thinking"
               selected={selectedCardId === '5'}
               onClick={() => handleCardSelect('5')}
-            />
+            /> */}
           </div>
         )}
       </div>

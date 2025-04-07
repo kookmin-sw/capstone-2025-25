@@ -6,15 +6,10 @@ export type GeneratedThoughtRes = {
   generated_questions: string[];
 };
 
-export type ConvertedScheduleTodoRes = {
-  todo_list: string[];
-};
-
-export type ConvertedThoughtListRes = {
-  thought_list: {
-    summary: string;
-    description: string;
-  }[];
+export type ConvertedToTaskRes = {
+  task: {
+    title: string;
+  };
 };
 
 export type SummarizedNodeRes = {

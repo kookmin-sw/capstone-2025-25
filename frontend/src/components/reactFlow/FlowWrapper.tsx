@@ -10,7 +10,7 @@ import {
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import {
   useNodes,
@@ -20,15 +20,26 @@ import {
   useNodesChange,
   useUpdateNodeQuestions,
   useUpdateNodePending,
+  useSetInitialData,
 } from '@/store/mindMapStore';
+import {
+  useLoadMindMapData,
+  useSaveMindMapData,
+} from '@/store/mindmapListStore';
+import { useIsNodeSelectionMode } from '@/store/nodeSelection';
+
 import MindMapEdge from '@/components/reactFlow/edges';
 import SummaryNode from '@/components/reactFlow/nodes/ui/SummaryNode';
 import RootNode from '@/components/reactFlow/nodes/ui/RootNode';
 import AnswerInputNode from '@/components/reactFlow/nodes/ui/AnswerInputNode';
 import QuestionListNode from '@/components/reactFlow/nodes/ui/QuestionListNode';
-import { GeneratedScheduleReq } from '@/types/api/mindmap';
+import { GenerateReq } from '@/types/api/mindmap';
 import useGenerateSchedule from '@/hooks/queries/mindmap/useGenerateSchedule';
 import { findParentNode } from '@/lib/mindMap';
+
+import useGenerateThought from '@/hooks/queries/mindmap/useGenerateThought';
+
+import { NodeSelectionPanel } from '@/components/reactFlow/ui/NodeSelectionPanel';
 
 const nodeTypes = {
   root: RootNode,
@@ -43,7 +54,11 @@ const edgeTypes = {
 
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
-function FlowContent() {
+type FlowContentProps = {
+  mindmapId?: string;
+};
+
+function FlowContent({ mindmapId }: FlowContentProps) {
   const nodes = useNodes();
   const edges = useEdges();
   const onNodesChange = useNodesChange();
@@ -51,23 +66,49 @@ function FlowContent() {
   const addChildNode = useAddChildNode();
   const updateNodeQuestions = useUpdateNodeQuestions();
   const updateNodePending = useUpdateNodePending();
+  const setInitialData = useSetInitialData();
+
+  const loadMindMapData = useLoadMindMapData();
+  const saveMindMapData = useSaveMindMapData();
 
   const { generateScheduleMutation } = useGenerateSchedule();
+  const { generateThoughtMutation } = useGenerateThought();
 
   const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
 
-  const getChildNodePosition = useCallback(
-    (event: MouseEvent) => {
-      const rect = (event.target as Element)
-        .closest('.react-flow')
-        ?.getBoundingClientRect();
+  useEffect(() => {
+    if (mindmapId) {
+      const mindMapData = loadMindMapData(mindmapId);
 
-      if (!rect) return;
+      if (mindMapData) {
+        if (mindMapData.nodes && mindMapData.edges) {
+          setInitialData(mindMapData.nodes, mindMapData.edges);
+        }
+      }
+
+      if (!mindMapData) {
+        console.error(
+          `마인드맵 ID ${mindmapId}에 해당하는 데이터를 찾을 수 없습니다.`,
+        );
+      }
+    }
+  }, [mindmapId, loadMindMapData, setInitialData]);
+
+  useEffect(() => {
+    if (mindmapId && nodes.length > 0) {
+      saveMindMapData(mindmapId, nodes, edges);
+    }
+  }, [nodes, edges, mindmapId, saveMindMapData]);
+
+  const getChildNodePosition = useCallback(
+    (event: MouseEvent | TouchEvent) => {
+      const { clientX, clientY } =
+        'changedTouches' in event ? event.changedTouches[0] : event;
 
       return screenToFlowPosition({
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top,
+        x: clientX,
+        y: clientY,
       });
     },
     [screenToFlowPosition],
@@ -121,7 +162,7 @@ function FlowContent() {
           parentNode가 rootNode일때는 mainNode + selectedNode만 보내기
           -> null로 처리
           */
-          const requestData: GeneratedScheduleReq = {
+          const requestData: GenerateReq = {
             mainNode: mainNode?.data?.label
               ? { summary: mainNode.data.label }
               : null,
@@ -136,25 +177,53 @@ function FlowContent() {
 
           const newNodeId = addChildNode(selectedNode, childNodePosition, true);
 
-          generateScheduleMutation(requestData, {
-            onSuccess: (data) => {
-              updateNodeQuestions(selectedNode.id, data.generated_questions);
+          if (mindmapId) {
+            const mindMapData = loadMindMapData(mindmapId);
 
-              updateNodePending(newNodeId, false);
-            },
-            onError: (error) => {
-              console.error('요약 생성 중 오류가 발생했습니다:', error);
-            },
-          });
+            if (mindMapData?.type === 'TODO') {
+              generateScheduleMutation(requestData, {
+                onSuccess: (data) => {
+                  updateNodeQuestions(
+                    selectedNode.id,
+                    data.generated_questions,
+                  );
+
+                  updateNodePending(newNodeId, false);
+                },
+                onError: (error) => {
+                  console.error('요약 생성 중 오류가 발생했습니다:', error);
+                },
+              });
+            }
+
+            if (mindMapData?.type === 'THINKING') {
+              generateThoughtMutation(requestData, {
+                onSuccess: (data) => {
+                  updateNodeQuestions(
+                    selectedNode.id,
+                    data.generated_questions,
+                  );
+
+                  updateNodePending(newNodeId, false);
+                },
+                onError: (error) => {
+                  console.error('요약 생성 중 오류가 발생했습니다:', error);
+                },
+              });
+            }
+          }
         }
       }
     },
     [
       nodes,
       edges,
+      mindmapId,
       getChildNodePosition,
       addChildNode,
+      loadMindMapData,
       generateScheduleMutation,
+      generateThoughtMutation,
       updateNodeQuestions,
       updateNodePending,
     ],
@@ -181,11 +250,26 @@ function FlowContent() {
   );
 }
 
-function FlowWrapper() {
+type FlowWrapperProps = {
+  mindmapId?: string;
+};
+
+function FlowWrapper({ mindmapId }: FlowWrapperProps) {
+  const isNodeSelectionMode = useIsNodeSelectionMode();
+
+  const handleScheduleCreated = () => {
+    // 추가적인 일정 생성 후 작업이 필요하면 여기에 구현
+    // 예: 성공 메시지 표시, 데이터 리로드 등
+  };
+
   return (
-    <div className="h-screen">
+    <div className="h-screen relative">
+      {isNodeSelectionMode && (
+        <NodeSelectionPanel onCreateSchedule={handleScheduleCreated} />
+      )}
+
       <ReactFlowProvider>
-        <FlowContent />
+        <FlowContent mindmapId={mindmapId} />
       </ReactFlowProvider>
     </div>
   );

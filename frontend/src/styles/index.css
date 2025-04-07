@@ -1,52 +1,56 @@
 @import 'tailwindcss';
 
 @theme {
-    /* 공통 색상 */
-    --color-border-gray: #e3e3e3;
+  /* 공통 색상 */
+  --color-border-gray: #e3e3e3;
 
-    /* button 색상 */
-    --color-button-primary: #ffe277;
-    --color-button-disabled: #e7e7e7;
+  /* button 색상 */
+  --color-button-primary: #ffe277;
+  --color-button-disabled: #e7e7e7;
 
-    /* Gray Colors */
-    --color-gray-100: #fafafa;
-    --color-gray-200: #fafafa;
-    --color-gray-300: #e5e5e5;
-    --color-gray-400: #cecfcd;
-    --color-gray-500: #c8c8c8;
-    --color-gray-600: #aaaaaa;
-    --color-gray-700: #6e726e;
-    --color-gray-800: #3b3d3b;
+  /* Gray Colors */
+  --color-gray-100: #fafafa;
+  --color-gray-200: #fafafa;
+  --color-gray-300: #e5e5e5;
+  --color-gray-400: #cecfcd;
+  --color-gray-500: #c8c8c8;
+  --color-gray-600: #aaaaaa;
+  --color-gray-700: #6e726e;
+  --color-gray-800: #3b3d3b;
 
-    /* Primary Colors */
-    --color-primary-10: rgba(141, 92, 246, 0.1); /* opacity 10 */
-    --color-primary-20: rgba(141, 92, 246, 0.2); /* opacity 20 */
-    --color-primary-50: rgba(141, 92, 246, 0.5); /* opacity 50 */
-    --color-primary-70: rgba(141, 92, 246, 0.7); /* opacity 70 */
-    --color-primary-100: #8D5CF6;
+  /* Primary Colors */
+  --color-primary-10: rgba(141, 92, 246, 0.1); /* opacity 10 */
+  --color-primary-20: rgba(141, 92, 246, 0.2); /* opacity 20 */
+  --color-primary-50: rgba(141, 92, 246, 0.5); /* opacity 50 */
+  --color-primary-70: rgba(141, 92, 246, 0.7); /* opacity 70 */
+  --color-primary-100: #8d5cf6;
 
-    /*category chip bg color*/
-    --color-category-green: rgba(0, 184, 132, 0.2);
-    --color-category-gray: rgba(120, 119, 119, 0.2);
-    --color-category-yellow: rgba(255, 203, 17, 0.2);
-    --color-category-blue: rgba(70, 182, 254, 0.2);
-    --color-category-pink: rgba(255, 139, 195, 0.2);
-    --color-category-red: rgba(255, 30, 0, 0.2);
-    --color-category-orange: rgba(255, 132, 0, 0.2);
-    --color-category-brown: rgba(151, 75, 0, 0.2);
+  /*category chip bg color*/
+  --color-category-green: rgba(0, 184, 132, 0.2);
+  --color-category-gray: rgba(120, 119, 119, 0.2);
+  --color-category-yellow: rgba(255, 203, 17, 0.2);
+  --color-category-blue: rgba(70, 182, 254, 0.2);
+  --color-category-pink: rgba(255, 139, 195, 0.2);
+  --color-category-red: rgba(255, 30, 0, 0.2);
+  --color-category-orange: rgba(255, 132, 0, 0.2);
+  --color-category-brown: rgba(151, 75, 0, 0.2);
 
+  /* Font Sizes */
+  --font-heading-1: 32px;
+  --font-heading-2: 28px;
+  --font-heading-3: 22px;
+  --font-heading-4: 18px;
+  --font-heading-5: 16px;
+  --font-heading-6: 14px;
+  --font-body-1: 16px;
+  --font-body-2: 14px;
+  --font-body-3: 12px;
 
-    /* Font Sizes */
-    --font-heading-1: 32px;
-    --font-heading-2: 28px;
-    --font-heading-3: 22px;
-    --font-heading-4: 18px;
-    --font-heading-5: 16px;
-    --font-heading-6: 14px;
-    --font-body-1: 16px;
-    --font-body-2: 14px;
-    --font-body-3: 12px;
+  /* Font Family */
+  --font-primary: 'Inter', sans-serif;
 
-    /* Font Family */
-    --font-primary: 'Inter', sans-serif;
+  /* mindmap 관련 색상 */
+  --color-root-icon: #ffea9f;
+  --color-question-input-hover: rgba(0, 0, 0, 0.02);
+  --color-question-input-active: rgba(0, 0, 0, 0.05);
 }

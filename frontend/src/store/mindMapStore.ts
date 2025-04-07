@@ -27,17 +27,10 @@ export type RFState = {
   updateNodePending: (nodeId: string, isPending: boolean) => void;
   deleteNode: (nodeId: string) => void;
   updateNode: (nodeId: string, answer: string, summary: string) => void;
+  setInitialData: (nodes: MindMapNode[], edges: MindMapEdge[]) => void;
 };
 
-const initialNodes: MindMapNode[] = [
-  {
-    id: '1',
-    type: 'root',
-    data: { label: '운동', depth: 0 },
-    position: { x: 0, y: 0 },
-  },
-];
-
+const initialNodes: MindMapNode[] = [];
 const initialEdges: MindMapEdge[] = [];
 
 const useStore = create<RFState>((set, get) => ({
@@ -179,6 +172,12 @@ const useStore = create<RFState>((set, get) => ({
       edges: filteredEdges,
     });
   },
+  setInitialData: (nodes, edges) => {
+    set({
+      nodes: nodes,
+      edges: edges,
+    });
+  },
 }));
 
 export const useNodes = () => useStore((state) => state.nodes);
@@ -193,5 +192,7 @@ export const useUpdateNodePending = () =>
   useStore((state) => state.updateNodePending);
 export const useDeleteNode = () => useStore((state) => state.deleteNode);
 export const useUpdateNode = () => useStore((state) => state.updateNode);
+export const useSetInitialData = () =>
+  useStore((state) => state.setInitialData);
 
 export default useStore;
