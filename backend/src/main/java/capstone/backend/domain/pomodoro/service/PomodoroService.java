@@ -1,5 +1,6 @@
 package capstone.backend.domain.pomodoro.service;
 
+import static capstone.backend.domain.pomodoro.util.PomodoroTimeUtils.*;
 import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
 import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.eisenhower.schema.EisenhowerItem;
@@ -110,31 +111,5 @@ public class PomodoroService {
 
         // 일일 뽀모도로 총 시간 업데이트
         dailyPomodoroSummaryService.updateDailyPomodoroSummary(memberId, times[2]);
-
     }
-
-
-    private int[] calculateTotalTimeSummary(List<PomodoroCycle> cycles) {
-        int totalWorkingSeconds = 0;
-        int totalBreakSeconds = 0;
-
-        for (PomodoroCycle cycle : cycles) {
-            totalWorkingSeconds += Optional.ofNullable(cycle.getWorkDuration()).orElse(0) * 60;
-            totalBreakSeconds += Optional.ofNullable(cycle.getBreakDuration()).orElse(0) * 60;
-        }
-
-        return new int[]{
-                totalWorkingSeconds,
-                totalBreakSeconds,
-                totalWorkingSeconds + totalBreakSeconds
-        };
-    }
-
-    private LocalTime convertSecondsToLocalTime(int totalSeconds) {
-        int hours = totalSeconds / 3600;
-        int minutes = (totalSeconds % 3600) / 60;
-        int seconds = totalSeconds % 60;
-        return LocalTime.of(hours, minutes, seconds);
-    }
-
 }
