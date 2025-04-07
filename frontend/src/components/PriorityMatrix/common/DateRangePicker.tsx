@@ -56,7 +56,7 @@ export function DateRangePicker({
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="default"
+          variant="primary"
           className="flex items-center justify-between w-full md:w-auto min-w-[200px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer"
         >
           <div className="flex items-center">
