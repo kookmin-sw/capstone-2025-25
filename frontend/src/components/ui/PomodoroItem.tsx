@@ -37,8 +37,8 @@ export function PomodoroItem({
       </div>
 
       {eisenhower && (
-        <div className="flex justify-end gap-2 w-full">
-          <Link className="text-[#9F4BC9] w-5 h-5" />
+        <div className="flex justify-end gap-2 w-full items-center">
+          <Link className="text-[#9F4BC9] w-4 h-4" />
           <p className="text-[#9F4BC9] text-base">{eisenhower.title}</p>
         </div>
       )}
