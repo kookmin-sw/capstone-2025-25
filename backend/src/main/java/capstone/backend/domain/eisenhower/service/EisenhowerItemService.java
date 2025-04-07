@@ -1,6 +1,7 @@
 package capstone.backend.domain.eisenhower.service;
 
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemFilterRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemOrderUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.response.EisenhowerItemResponse;
@@ -15,6 +16,8 @@ import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,14 +53,9 @@ public class EisenhowerItemService {
         return EisenhowerItemResponse.from(item);
     }
 
-    public List<EisenhowerItemResponse> getItemsNotCompleted(Long memberId) {
-        List<EisenhowerItem> items = eisenhowerItemRepository.findAllByMemberIdAndIsCompletedFalse(memberId);
-        return EisenhowerItemResponse.listFrom(items);
-    }
-
-    public List<EisenhowerItemResponse> getItemsCompleted(Long memberId) {
-        List<EisenhowerItem> items = eisenhowerItemRepository.findAllByMemberIdAndIsCompletedTrue(memberId);
-        return EisenhowerItemResponse.listFrom(items);
+    public Page<EisenhowerItemResponse> getItemsFiltered(Long memberId, EisenhowerItemFilterRequest filter, Pageable pageable) {
+        return eisenhowerItemRepository.findFiltered(memberId, filter, pageable)
+                .map(EisenhowerItemResponse::from);
     }
 
     @Transactional

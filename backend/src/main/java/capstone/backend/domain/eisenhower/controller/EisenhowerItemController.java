@@ -1,6 +1,7 @@
 package capstone.backend.domain.eisenhower.controller;
 
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
+import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemFilterRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemOrderUpdateRequests;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.response.EisenhowerItemResponse;
@@ -10,9 +11,10 @@ import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
-import java.util.List;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "아이젠하워 작업", description = "아이젠하워 작업 관련 API")
@@ -46,21 +47,19 @@ public class EisenhowerItemController {
     @GetMapping("/{itemId}")
     public ApiResponse<EisenhowerItemResponse> getItem(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
-            @Parameter(name = "itemId", description = "조회할 아이젠하워 항목 ID", example = "1", required = true, in = ParameterIn.PATH)
+            @Parameter(name = "itemId", description = "조회할 아이젠하워 항목 ID", example = "1", required = true)
             @PathVariable Long itemId) {
         return ApiResponse.ok(eisenhowerItemService.getItem(customOAuth2User.getMemberId(), itemId));
     }
 
-    @Operation(summary = "아이젠하워 작업 전체 조회", description = "완료된 작업과 미완료된 작업을 구분하여 조회할 수 있습니다.")
+    @Operation(summary = "아이젠하워 작업 전체 조회", description = "필터링 조건에 따라 아이젠하워 작업을 조회합니다.")
     @GetMapping
-    public ApiResponse<List<EisenhowerItemResponse>> getItems(
+    public ApiResponse<Page<EisenhowerItemResponse>> getItemsFiltered(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
-            @Parameter(description = "완료된 작업만 조회할지 여부", example = "false") @RequestParam(required = false) Boolean completed
+            @ParameterObject EisenhowerItemFilterRequest filter,
+            @ParameterObject Pageable pageable
     ) {
-        if(Boolean.TRUE.equals(completed)) {
-            return ApiResponse.ok(eisenhowerItemService.getItemsCompleted(customOAuth2User.getMemberId()));
-        }
-        return ApiResponse.ok(eisenhowerItemService.getItemsNotCompleted(customOAuth2User.getMemberId()));
+        return ApiResponse.ok(eisenhowerItemService.getItemsFiltered(customOAuth2User.getMemberId(), filter, pageable));
     }
 
     @Operation(summary = "아이젠하워 작업 수정")
@@ -68,9 +67,8 @@ public class EisenhowerItemController {
     public ApiResponse<EisenhowerItemResponse> updateItem(
             @RequestBody @Valid EisenhowerItemUpdateRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
-            @Parameter(name = "itemId", description = "수정할 아이젠하워 항목 ID", example = "1", required = true, in = ParameterIn.PATH)
-            @PathVariable
-            Long itemId
+            @Parameter(name = "itemId", description = "수정할 아이젠하워 항목 ID", example = "1", required = true)
+            @PathVariable Long itemId
     ) {
         return ApiResponse.ok(eisenhowerItemService.updateItem(customOAuth2User.getMemberId(), itemId, request));
     }
@@ -79,7 +77,7 @@ public class EisenhowerItemController {
     @DeleteMapping("/{itemId}")
     public ApiResponse<String> deleteItem(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
-            @Parameter(name = "itemId", description = "삭제할 아이젠하워 항목 ID", example = "1", required = true, in = ParameterIn.PATH)
+            @Parameter(name = "itemId", description = "삭제할 아이젠하워 항목 ID", example = "1", required = true)
             @PathVariable Long itemId
     ) {
         eisenhowerItemService.deleteItem(customOAuth2User.getMemberId(), itemId);
