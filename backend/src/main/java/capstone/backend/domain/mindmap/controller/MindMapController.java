@@ -57,10 +57,11 @@ public class MindMapController {
     public ApiResponse<String> updateMindMap(
         @Parameter(name = "id", description = "수정 마인드맵 ID", required = true, in = ParameterIn.PATH)
         @PathVariable Long id,
-        @Valid @RequestBody MindMapRequest mindMapRequest
+        @Valid @RequestBody MindMapRequest mindMapRequest,
+        @AuthenticationPrincipal CustomOAuth2User user
     ){
-        mindMapService.updateMindMap(id, mindMapRequest);
-        return ApiResponse.ok("마인드맵이 수정되었습니다. ID: " + id);
+        mindMapService.updateMindMap(user.getMemberId(), id, mindMapRequest);
+        return ApiResponse.ok("마인드맵이 수정되었습니다.");
     }
 
     @PatchMapping("/title/{id}")
