@@ -283,13 +283,13 @@ export function PomodoroTimer({ plannedCycles }: PomodoroTimerProps) {
 
           <div className="flex items-center justify-center gap-8 mb-8">
             <button
-              className="w-[60px] h-[60px] rounded-full border-2 border-gray-200 flex items-center justify-center hover:bg-gray-50"
+              className="w-[60px] h-[60px] rounded-full border-2 border-gray-200 flex items-center justify-center hover:bg-gray-50 cursor-pointer"
               onClick={resetTimer}
             >
               <X className="w-[30px] h-[30px]" />
             </button>
             <button
-              className={`w-[85px] h-[85px] rounded-full flex items-center justify-center bg-[#9747ff]
+              className={`w-[85px] h-[85px] rounded-full flex items-center justify-center bg-[#9747ff] cursor-pointer hover:bg-[#7e3fd4]
               }`}
               onClick={isRunning ? switchPhaseOrCycle : toggleTimer}
             >
@@ -304,7 +304,7 @@ export function PomodoroTimer({ plannedCycles }: PomodoroTimerProps) {
               )}
             </button>
             <button
-              className="w-[60px] h-[60px] rounded-full border-2 border-gray-200 flex items-center justify-center hover:bg-gray-50"
+              className="w-[60px] h-[60px] rounded-full border-2 border-gray-200 flex items-center justify-center hover:bg-gray-50 cursor-pointer"
               onClick={resetTimer}
             >
               <Square className="w-[30px] h-[30px]" />
