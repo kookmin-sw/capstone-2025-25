@@ -11,7 +11,11 @@ type MultiSliderProps = {
   step?: number;
   className?: string;
   readonly?: boolean;
-    style?: React.CSSProperties;
+  style:{
+      fontColor?:string;
+      bgColor?:string;
+  }
+
 } & React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>;
 
 const MultiSlider = React.forwardRef<
@@ -120,7 +124,7 @@ const MultiSlider = React.forwardRef<
     }, [sliderValues, min, max]);
 
     return (
-        <div className={cn('relative w-full h-full', className)} style={style}>
+        <div className={cn('relative w-full h-full', className)} >
             <div className="w-full h-full rounded-md relative">
                 {intervals.map((interval, index) => (
                     <div
@@ -136,10 +140,14 @@ const MultiSlider = React.forwardRef<
                         style={{
                             left: `${interval.leftPercent}%`,
                             width: `${interval.widthPercent}%`,
+                            backgroundColor: (interval.type === 'focus' ? style?.bgColor|| '#DECFFF' : 'white')
                         }}
+
                     >
                         {(intervals.length <= 1 || interval.duration >= 5) && (
-                            <span>
+                            <span style={{
+                                color:(interval.type === 'focus' ? style?.fontColor|| 'black' : 'black')
+                            }}>
             {interval.type === 'focus' ? '집중' : '휴식'} {interval.duration}분
           </span>
                         )}
