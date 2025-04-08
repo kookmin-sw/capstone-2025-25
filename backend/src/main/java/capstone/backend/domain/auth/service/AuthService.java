@@ -3,6 +3,7 @@ package capstone.backend.domain.auth.service;
 import capstone.backend.domain.auth.dto.response.AccessTokenResponse;
 import capstone.backend.domain.auth.dto.response.TokenResponse;
 import capstone.backend.domain.auth.exception.CodeExpiredException;
+import capstone.backend.domain.auth.exception.RefreshTokenExpiredException;
 import capstone.backend.domain.auth.exception.RefreshTokenNotFoundException;
 import capstone.backend.domain.auth.repository.OauthCodeRedisRepository;
 import capstone.backend.domain.auth.repository.RefreshTokenRedisRepository;
@@ -33,9 +34,16 @@ public class AuthService {
 
     // AT 재발급
     public AccessTokenResponse reissueAccessToken(String refreshToken) {
-        RefreshToken storedToken = refreshTokenRedisRepository.findByToken(refreshToken).orElseThrow(RefreshTokenNotFoundException::new);
-        String at = jwtProvider.refreshAccessToken(storedToken.token());
-        return new AccessTokenResponse(at);
+        RefreshToken storedToken = refreshTokenRedisRepository.findByToken(refreshToken)
+                .orElseThrow(RefreshTokenNotFoundException::new);
+
+        // 실제 RT가 유효한지 검증 (만료 여부 포함)
+        if (!jwtProvider.validateToken(storedToken.token())) {
+            throw new RefreshTokenExpiredException();
+        }
+
+        String accessToken = jwtProvider.refreshAccessToken(storedToken.token());
+        return new AccessTokenResponse(accessToken);
     }
 
     // 임시 코드 생성 및 저장
