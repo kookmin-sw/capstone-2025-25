@@ -1,56 +1,63 @@
 package capstone.backend.domain.auth.service;
 
-import capstone.backend.domain.auth.dto.response.RefreshAccessTokenResponse;
-import capstone.backend.domain.auth.exception.InvalidRefreshTokenException;
+import capstone.backend.domain.auth.dto.response.AccessTokenResponse;
+import capstone.backend.domain.auth.dto.response.TokenResponse;
+import capstone.backend.domain.auth.exception.CodeExpiredException;
+import capstone.backend.domain.auth.exception.RefreshTokenNotFoundException;
+import capstone.backend.domain.auth.repository.OauthCodeRedisRepository;
 import capstone.backend.domain.auth.repository.RefreshTokenRedisRepository;
+import capstone.backend.domain.auth.schema.OauthCode;
 import capstone.backend.domain.auth.schema.RefreshToken;
 import capstone.backend.global.security.jwt.JwtProvider;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class AuthService {
 
+    private final OauthCodeRedisRepository oauthCodeRedisRepository;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final JwtProvider jwtProvider;
 
-    @Transactional
-    public void saveRefreshToken(Long memberId, String token, long ttl) {
-        RefreshToken refreshToken = new RefreshToken(memberId, token, String.valueOf(memberId), ttl);
+    public void saveRefreshToken(Long memberId, String token) {
+        RefreshToken refreshToken = new RefreshToken(memberId, token, memberId, jwtProvider.getRefreshTokenExpiration());
         refreshTokenRedisRepository.save(refreshToken);
     }
 
-    @Transactional
-    public void deleteRefreshToken(String token) {
-        refreshTokenRedisRepository.deleteByToken(token);
-    }
-
-    // RT로 AT발급
-    public RefreshAccessTokenResponse refreshAccessToken(String refreshToken) {
-        RefreshToken storedToken = refreshTokenRedisRepository.findByToken(refreshToken).orElseThrow(InvalidRefreshTokenException::new);
+    // AT 재발급
+    public AccessTokenResponse reissueAccessToken(String refreshToken) {
+        RefreshToken storedToken = refreshTokenRedisRepository.findByToken(refreshToken).orElseThrow(RefreshTokenNotFoundException::new);
         String at = jwtProvider.refreshAccessToken(storedToken.token());
-        return new RefreshAccessTokenResponse(at);
+        return new AccessTokenResponse(at);
     }
 
-    // 로그아웃
-    @Transactional
-    public void logout(String refreshToken, HttpServletResponse response) {
-        if (refreshToken != null) {
-            deleteRefreshToken(refreshToken);
-        }
+    // 임시 코드 생성 및 저장
+    public String generateOneTimeCode(Long memberId) {
+        String code = UUID.randomUUID().toString();
+        oauthCodeRedisRepository.save(new OauthCode(memberId, code, memberId, 60000));
+        return code;
+    }
 
-        // 쿠키에서 Refresh Token 삭제
-        Cookie refreshTokenCookie = new Cookie("refreshToken", null);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(0);
-        response.addCookie(refreshTokenCookie);
+    // code를 통한 AT, RT 발급
+    public TokenResponse loginByCode(String code) {
+        Long memberId = oauthCodeRedisRepository.findByCode(code)
+                .map(OauthCode::memberId)
+                .orElseThrow(CodeExpiredException::new);
+
+        oauthCodeRedisRepository.deleteByCode(code);  // 재사용 방지
+
+        String accessToken = jwtProvider.generateAccessToken(memberId.toString());
+        String refreshToken = jwtProvider.generateRefreshToken(memberId.toString());
+
+        saveRefreshToken(memberId, refreshToken);  // Redis에 RT 저장
+
+        return new TokenResponse(accessToken, refreshToken);
     }
 }

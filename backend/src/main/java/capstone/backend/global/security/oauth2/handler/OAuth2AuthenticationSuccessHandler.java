@@ -4,10 +4,8 @@ import capstone.backend.domain.auth.service.AuthService;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
-import capstone.backend.global.security.jwt.JwtProvider;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -23,18 +21,15 @@ import java.io.IOException;
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final String CALLBACK_URL;
-    private final JwtProvider jwtProvider;
     private final MemberRepository memberRepository;
     private final AuthService authService;
 
     public OAuth2AuthenticationSuccessHandler(
             @Value("${url.base.client}") String clientDomain,
             @Value("${url.path.client.callback}") String callbackEndpoint,
-            JwtProvider jwtProvider,
             MemberRepository memberRepository,
             AuthService authService) {
                 this.CALLBACK_URL = clientDomain + callbackEndpoint;
-                this.jwtProvider = jwtProvider;
                 this.memberRepository = memberRepository;
                 this.authService = authService;
     }
@@ -48,25 +43,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         Member member = memberRepository.findByEmail(oAuth2User.getEmail()).orElseThrow(MemberNotFoundException::new);
 
-        String memberId = member.getId().toString();
-
-        String accessToken = jwtProvider.generateAccessToken(memberId);
-        String refreshToken = jwtProvider.generateRefreshToken(memberId);
-
-        // redis에 RT 저장
-        authService.saveRefreshToken(member.getId(), refreshToken, jwtProvider.getRefreshTokenExpiration());
-
-        response.setHeader("Authorization", "Bearer " + accessToken);
-
-        // HTTP Only & Secure 쿠키에 리프레시 토큰 추가
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);  // HTTPS에서만 사용
-        refreshTokenCookie.setPath("/");  // 모든 경로에서 쿠키 접근 가능
-        refreshTokenCookie.setMaxAge((int) (jwtProvider.getRefreshTokenExpiration() / 1000)); // 초 단위
-
-        response.addCookie(refreshTokenCookie);
-
-        getRedirectStrategy().sendRedirect(request, response, CALLBACK_URL);
+        // 임시 발급 코드 생성 후 리디렉션
+        String code = authService.generateOneTimeCode(member.getId());
+        String redirectUrl = CALLBACK_URL + "?code=" + code;
+        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 }

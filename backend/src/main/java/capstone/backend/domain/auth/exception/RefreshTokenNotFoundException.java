@@ -1,0 +1,11 @@
+package capstone.backend.domain.auth.exception;
+
+import capstone.backend.global.api.exception.ApiException;
+import org.springframework.http.HttpStatus;
+
+public class RefreshTokenNotFoundException extends ApiException {
+
+    public RefreshTokenNotFoundException() {
+        super(HttpStatus.FORBIDDEN, "발급한 Refresh Token이 없습니다.");
+    }
+}
