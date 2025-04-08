@@ -4,6 +4,8 @@ import capstone.backend.domain.eisenhower.schema.EisenhowerItem;
 import capstone.backend.domain.pomodoro.schema.Pomodoro;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.time.LocalDateTime;
+
 public record SidebarPomodoroResponse(
         Pomodoro pomodoro,
         SidebarEisenhowerItemDTO eisenhower
@@ -29,32 +31,25 @@ public record SidebarPomodoroResponse(
 record SidebarEisenhowerItemDTO(
         Long id,
         String title
-//        String memo,
-//        String dueDate,
-//        String quadrant,
-//        String type,
-//        boolean isPinned,
-//        boolean isTodayTask,
-//        LocalDate todayTaskDate,
-//        String order,
-//        boolean isCompleted,
-//        LocalDateTime createdAt
+        String memo,
+        String dueDate,
+        EisenhowerQuadrant quadrant,
+        TaskType type,
+        Long order,
+        boolean isCompleted,
+        LocalDateTime createdAt
 ) {
     SidebarEisenhowerItemDTO(EisenhowerItem eisenhowerItem) {
         this(
                 eisenhowerItem.getId(),
-                eisenhowerItem.getTitle()
-//                eisenhowerItem.getMemo(),
-//                eisenhowerItem.getDueDate(),
-//                eisenhowerItem.getQuadrant(),
-//                eisenhowerItem.getType(),
-//                eisenhowerItem.getIsPinned(),
-//                eisenhowerItem.getIsTodayTask(),
-//                eisenhowerItem.getTodayTaskDate(),
-//                eisenhowerItem.getorder(),
-//                eisenhowerItem.getIsCompleted(),
-//                eisenhowerItem.getCreatedAt()
+                eisenhowerItem.getTitle(),
+                eisenhowerItem.getMemo(),
+                eisenhowerItem.getDueDate(),
+                eisenhowerItem.getQuadrant(),
+                eisenhowerItem.getType(),
+                eisenhowerItem.getorder(),
+                eisenhowerItem.getIsCompleted(),
+                eisenhowerItem.getCreatedAt()
         );
     }
 }
-
