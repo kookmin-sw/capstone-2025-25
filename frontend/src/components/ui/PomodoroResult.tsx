@@ -1,66 +1,31 @@
 import { Pomodoro } from '@/types/pomodoro';
 import { Button } from '@/components/ui/button.tsx';
+import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 
 export default function PomodoroResult({ pomodoro }: { pomodoro: Pomodoro }) {
-  const plannedFocus = pomodoro.plannedCycles.map((c) => c.workDuration); //예상 집중 배열
-  const plannedBreak = pomodoro.plannedCycles // 예상 휴식 배열
-    .map((c) => c.breakDuration)
-    .filter((b): b is number => b !== null);
+  const totalPlannedTime = pomodoro.plannedCycles.reduce(
+    (sum, cycle) => sum + cycle.workDuration + (cycle.breakDuration ?? 0),
+    0,
+  );
+  const totalExecutedTime = pomodoro.executedCycles.reduce(
+    (sum, cycle) => sum + cycle.workDuration + (cycle.breakDuration ?? 0),
+    0,
+  );
 
-  const actualFocus = pomodoro.executedCycles.map((c) => c.workDuration); //실제 집중 배열
-  const actualBreak = pomodoro.executedCycles //실제 휴식 배열
-    .map((c) => c.breakDuration)
-    .filter((b): b is number => b !== null);
+  const maxTime = Math.max(totalPlannedTime, totalExecutedTime);
 
-  const totalPlannedTime =
-    plannedFocus.reduce((a, b) => a + b, 0) +
-    plannedBreak.reduce((a, b) => a + b, 0);
-
-  const totalActualTime =
-    actualFocus.reduce((a, b) => a + b, 0) +
-    actualBreak.reduce((a, b) => a + b, 0);
-
-  const maxTime = Math.max(totalPlannedTime, totalActualTime);
   const plannedTimeRatio = totalPlannedTime / maxTime;
-  const actualTimeRatio = totalActualTime / maxTime;
+  const excutedTimeRatio = totalExecutedTime / maxTime;
 
-  const formatTime = (minutes: number) => `${minutes}min`;
+  const plannedFocus = pomodoro.executedCycles.map((c) => c.workDuration); //실제 집중 배열
+  const plannedBreak = pomodoro.executedCycles //실제 휴식 배열
+    .map((c) => c.breakDuration)
+    .filter((b): b is number => b !== null);
 
-  const createTimelineBlocks = (
-    focusArray: number[],
-    breakArray: number[],
-    totalTime: number,
-  ) => {
-    const timelineBlocks = [];
-    for (let i = 0; i < focusArray.length; i++) {
-      timelineBlocks.push({
-        type: 'focus',
-        time: focusArray[i],
-        width: (focusArray[i] / totalTime) * 100,
-      });
-
-      if (i < breakArray.length) {
-        timelineBlocks.push({
-          type: 'break',
-          time: breakArray[i],
-          width: (breakArray[i] / totalTime) * 100,
-        });
-      }
-    }
-    return timelineBlocks;
-  };
-
-  const plannedTimeline = createTimelineBlocks(
-    plannedFocus,
-    plannedBreak,
-    totalPlannedTime,
-  );
-
-  const actualTimeline = createTimelineBlocks(
-    actualFocus,
-    actualBreak,
-    totalActualTime,
-  );
+  const excutedFocus = pomodoro.executedCycles.map((c) => c.workDuration); //실제 집중 배열
+  const excutedBreaak = pomodoro.executedCycles //실제 휴식 배열
+    .map((c) => c.breakDuration)
+    .filter((b): b is number => b !== null);
 
   const formatTimeDisplay = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
@@ -75,25 +40,17 @@ export default function PomodoroResult({ pomodoro }: { pomodoro: Pomodoro }) {
           <h2 className="font-semibold text-[18px]">계획 실행 시간</h2>
           <div className="px-[17px] py-[20px] bg-[#F2F2F2] rounded-[10px] w-full">
             <div
-              className="flex gap-1.25 "
+              className="flex gap-1.25 h-[66px]"
               style={{ width: `${plannedTimeRatio * 100}%` }}
             >
-              {plannedTimeline.map((segment, index) => (
-                <div
-                  key={`planned-${index}`}
-                  className={`
-              text-center py-3 border-[#B9B9B7] border-[1px]
-              ${segment.type === 'focus' ? 'bg-[#decfff]' : 'bg-white '}
-              ${index === 0 ? 'rounded-l-md' : ''}
-              ${index === plannedTimeline.length - 1 ? 'rounded-r-md' : ''}
-            `}
-                  style={{ width: `${segment.width}%` }}
-                >
-                  <span className="font-normal text-[18px]">
-                    {formatTime(segment.time)}
-                  </span>
-                </div>
-              ))}
+              <MultiSlider
+                min={0}
+                max={totalPlannedTime}
+                step={1}
+                cycles={pomodoro.plannedCycles}
+                readonly={true}
+                onValueChange={() => {}}
+              />
             </div>
           </div>
         </div>
@@ -101,25 +58,21 @@ export default function PomodoroResult({ pomodoro }: { pomodoro: Pomodoro }) {
           <h2 className="font-semibold text-[18px]">실제 실행 시간</h2>
           <div className="px-[17px] py-[20px] bg-[#F2F2F2] rounded-[10px] w-full">
             <div
-              className="flex gap-1.25 "
-              style={{ width: `${actualTimeRatio * 100}%` }}
+              className="flex gap-1.25 h-[66px]"
+              style={{ width: `${excutedTimeRatio * 100}%` }}
             >
-              {actualTimeline.map((block, index) => (
-                <div
-                  key={`actual-${index}`}
-                  className={`
-              text-center py-3 border-[#B9B9B7] border-[1px]
-              ${block.type === 'focus' ? 'bg-[#8d5cf6] text-white' : 'bg-white '}
-              ${index === 0 ? 'rounded-l-md' : ''}
-              ${index === actualTimeline.length - 1 ? 'rounded-r-md' : ''}
-            `}
-                  style={{ width: `${block.width}%` }}
-                >
-                  <span className="font-normal text-[18px]">
-                    {formatTime(block.time)}
-                  </span>
-                </div>
-              ))}
+              <MultiSlider
+                min={0}
+                max={totalExecutedTime}
+                step={1}
+                cycles={pomodoro.executedCycles}
+                readonly={true}
+                onValueChange={() => {}}
+                style={{
+                  bgColor: '#8D5CF6', // 원하는 배경색
+                  fontColor: '#ffffff', // 원하는 글씨 색 (optional)
+                }}
+              />
             </div>
           </div>
         </div>
@@ -151,22 +104,26 @@ export default function PomodoroResult({ pomodoro }: { pomodoro: Pomodoro }) {
             <div className="text-sm flex flex-col gap-[15px] text-[16px] font-normal">
               <div className="flex justify-between ">
                 <span>총 시간 :</span>
-                <span>{formatTimeDisplay(totalActualTime)}</span>
+                <span>{formatTimeDisplay(totalExecutedTime)}</span>
               </div>
               <div className="flex justify-between">
                 <span>집중 시간 :</span>
-                <span>{actualFocus.reduce((a, b) => a + b, 0)}분</span>
+                <span>
+                  {formatTimeDisplay(excutedFocus.reduce((a, b) => a + b, 0))}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>휴식 시간 :</span>
-                <span>{actualBreak.reduce((a, b) => a + b, 0)}분</span>
+                <span>
+                  {formatTimeDisplay(excutedBreaak.reduce((a, b) => a + b, 0))}
+                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className='flex w-full justify-end'>
-        <Button  className="w-[180px] h-[48px] text-[16px] black">
+      <div className="flex w-full justify-end">
+        <Button className="w-[180px] h-[48px] text-[16px] black">
           삭제하기
         </Button>
       </div>
