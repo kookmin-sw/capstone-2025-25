@@ -2,22 +2,21 @@ package capstone.backend.domain.auth.schema;
 
 import java.util.concurrent.TimeUnit;
 
+import lombok.Builder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 
-import lombok.Builder;
-
 @Builder
-@RedisHash(value = "refresh_token")
-public record RefreshToken(
+@RedisHash(value = "oauth_code")
+public record OauthCode(
 
         @Id
         Long id,
 
         @Indexed
-        String token,
+        String code,
 
         Long memberId,
 
