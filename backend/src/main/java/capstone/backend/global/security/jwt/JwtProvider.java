@@ -73,8 +73,14 @@ public class JwtProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
-            return true;
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // 토큰의 만료 시간 검증
+            return !claims.getExpiration().before(new Date());
         } catch (JwtException e) {
             log.error("Invalid JWT token: ", e);
             return false;
