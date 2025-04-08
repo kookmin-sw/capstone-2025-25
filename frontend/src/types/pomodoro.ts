@@ -18,7 +18,7 @@ export type Pomodoro = {
   totalWorkingTime: string | null;
   totalBreakTime: string | null;
   plannedCycles: PomodoroCycle[];
-  executedCycles: PomodoroCycle[] | null;
+  executedCycles: PomodoroCycle[] ;
 };
 
 export type Eisenhower = {
