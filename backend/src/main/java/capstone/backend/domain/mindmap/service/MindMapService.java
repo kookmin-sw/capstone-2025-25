@@ -51,11 +51,10 @@ public class MindMapService {
     //마인드맵 삭제
     @Transactional
     public void deleteMindMap(Long memberId, Long mindMapId) {
-        if (!mindMapRepository.existsByIdAndMemberId(mindMapId, memberId)) {
-            throw new MindMapNotFoundException();
-        }
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
+            .orElseThrow(MindMapNotFoundException::new);
 
-        mindMapRepository.deleteById(memberId);
+        mindMapRepository.delete(mindMap);
     }
 
     //마인드맵 노드 수정, 하위노드, 엣지 삭제
