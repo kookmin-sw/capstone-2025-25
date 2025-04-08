@@ -3,13 +3,17 @@ package capstone.backend.domain.eisenhower.repository;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemFilterRequest;
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.entity.QEisenhowerItem;
-import com.querydsl.core.BooleanBuilder;
+import capstone.backend.domain.common.entity.TaskType;
+import capstone.backend.domain.eisenhower.entity.EisenhowerQuadrant;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class EisenhowerItemRepositoryImpl implements EisenhowerItemRepositoryCustom {
@@ -20,17 +24,16 @@ public class EisenhowerItemRepositoryImpl implements EisenhowerItemRepositoryCus
     public Page<EisenhowerItem> findFiltered(Long memberId, EisenhowerItemFilterRequest filter, Pageable pageable) {
         QEisenhowerItem item = QEisenhowerItem.eisenhowerItem;
 
-        BooleanBuilder whereClause = new BooleanBuilder();
-        whereClause.and(item.member.id.eq(memberId));
-        if (filter.completed() != null) whereClause.and(item.isCompleted.eq(filter.completed()));
-        if (filter.categoryId() != null) whereClause.and(item.category.id.eq(filter.categoryId()));
-        if (filter.dueDate() != null) whereClause.and(item.dueDate.eq(filter.dueDate()));
-        if (filter.type() != null) whereClause.and(item.type.eq(filter.type()));
-        if (filter.quadrant() != null) whereClause.and(item.quadrant.eq(filter.quadrant()));
-
         List<EisenhowerItem> results = queryFactory
                 .selectFrom(item)
-                .where(whereClause)
+                .where(
+                        item.member.id.eq(memberId),
+                        eqCompleted(filter.completed(), item),
+                        eqCategory(filter.categoryId(), item),
+                        eqDueDate(filter.dueDate(), item),
+                        eqType(filter.type(), item),
+                        eqQuadrant(filter.quadrant(), item)
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(item.order.asc())
@@ -39,9 +42,36 @@ public class EisenhowerItemRepositoryImpl implements EisenhowerItemRepositoryCus
         Long total = queryFactory
                 .select(item.count())
                 .from(item)
-                .where(whereClause)
+                .where(
+                        item.member.id.eq(memberId),
+                        eqCompleted(filter.completed(), item),
+                        eqCategory(filter.categoryId(), item),
+                        eqDueDate(filter.dueDate(), item),
+                        eqType(filter.type(), item),
+                        eqQuadrant(filter.quadrant(), item)
+                )
                 .fetchOne();
 
         return new PageImpl<>(results, pageable, total != null ? total : 0L);
+    }
+
+    private BooleanExpression eqCompleted(Boolean completed, QEisenhowerItem item) {
+        return completed != null ? item.isCompleted.eq(completed) : null;
+    }
+
+    private BooleanExpression eqCategory(Long categoryId, QEisenhowerItem item) {
+        return categoryId != null ? item.category.id.eq(categoryId) : null;
+    }
+
+    private BooleanExpression eqDueDate(LocalDate dueDate, QEisenhowerItem item) {
+        return dueDate != null ? item.dueDate.eq(dueDate) : null;
+    }
+
+    private BooleanExpression eqType(TaskType type, QEisenhowerItem item) {
+        return type != null ? item.type.eq(type) : null;
+    }
+
+    private BooleanExpression eqQuadrant(EisenhowerQuadrant quadrant, QEisenhowerItem item) {
+        return quadrant != null ? item.quadrant.eq(quadrant) : null;
     }
 }
