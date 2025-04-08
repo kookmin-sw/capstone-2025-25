@@ -5,6 +5,7 @@ import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateReques
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemUpdateRequest;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.mindmap.entity.MindMap;
+import capstone.backend.domain.pomodoro.schema.Pomodoro;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
