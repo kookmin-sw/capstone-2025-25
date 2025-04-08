@@ -1,31 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   DndContext,
+  type DragEndEvent,
   DragOverlay,
   PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
   pointerWithin,
   rectIntersection,
+  useSensor,
+  useSensors,
 } from '@dnd-kit/core';
 
 import {
-  Search,
-  Settings,
   Bell,
   ChevronDown,
   LayoutGrid,
   List,
-  Columns,
+  Search,
+  Settings,
 } from 'lucide-react';
 
 import { TaskDetailSidebar } from '@/components/PriorityMatrix/common/TaskDetailSidebar';
 import { DragOverlayCard } from '@/components/PriorityMatrix/common/DragOverlayCard';
 import { MobileMenu } from '@/components/PriorityMatrix/common/MobileMenu';
-import { initialTasks, completedTasks } from '@/components/PriorityMatrix/data';
+import { completedTasks, initialTasks } from '@/components/PriorityMatrix/data';
 import { AllScheduleView } from '@/components/PriorityMatrix/AllScheduleView';
 import { CompletedScheduleView } from '@/components/PriorityMatrix/CompletedScheduleView';
 import { isWithinRange } from '@/utils/date';
@@ -57,7 +56,7 @@ export default function PriorityMatrix() {
     const savedCategories = localStorage.getItem('taskCategories');
     if (savedCategories) {
       // 여기서는 카테고리를 직접 사용하지 않지만,
-      // FilterBar 컴포넌트에서 로컬 스토리지를 사용하도록 구현했습니다.
+      // FilterBar 컴포넌트에서 로컬 스토리지를 사용하도록 구현함
       console.log('카테고리 로드됨:', JSON.parse(savedCategories));
     }
   }, []);
@@ -161,6 +160,7 @@ export default function PriorityMatrix() {
         [sourceSectionId]: newTasks,
       });
     }
+
     // 다른 섹션으로 이동
     else {
       const sourceSection = [...tasks[sourceSectionId as keyof typeof tasks]];
@@ -322,12 +322,10 @@ export default function PriorityMatrix() {
         const allCollisions = [...pointerCollisions, ...rectCollisions];
 
         // 중복 제거
-        const uniqueCollisions = allCollisions.filter(
+        return allCollisions.filter(
           (collision, index, self) =>
             self.findIndex((c) => c.id === collision.id) === index,
         );
-
-        return uniqueCollisions;
       }}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
@@ -376,7 +374,6 @@ export default function PriorityMatrix() {
             </div>
           </div>
 
-          {/* 일정 헤더 영역 */}
           <div className="flex items-center justify-between p-4 md:p-6">
             <div className="relative">
               <div
@@ -435,25 +432,18 @@ export default function PriorityMatrix() {
             <div className="flex items-center">
               <div className="flex items-center mr-2">
                 <button
-                  className={`flex items-center justify-center border border-[#e5e5e5] rounded-l-md px-2 md:px-3 py-1.5 ${view === 'matrix' ? 'bg-[#8d5cf6] text-white' : 'bg-white'}`}
+                  className={`cursor-pointer flex items-center justify-center border border-[#e5e5e5] rounded-l-md px-2 md:px-3 py-1.5 ${view === 'matrix' ? 'bg-[#8d5cf6] text-white' : 'bg-white'}`}
                   onClick={() => setView('matrix')}
                 >
                   <LayoutGrid className="w-4 h-4 mr-0 md:mr-1" />
                   <span className="hidden md:inline text-sm">매트릭스</span>
                 </button>
                 <button
-                  className={`flex items-center justify-center border-t border-b border-[#e5e5e5] px-2 md:px-3 py-1.5 ${view === 'board' ? 'bg-[#8d5cf6] text-white' : 'bg-white'}`}
+                  className={`cursor-pointer flex items-center justify-center border border-[#e5e5e5] rounded-r-md px-2 md:px-3 py-1.5 ${view === 'board' ? 'bg-[#8d5cf6] text-white' : 'bg-white'}`}
                   onClick={() => setView('board')}
                 >
-                  <Columns className="w-4 h-4 mr-0 md:mr-1" />
-                  <span className="hidden md:inline text-sm">보드</span>
-                </button>
-                <button
-                  className={`flex items-center justify-center border border-[#e5e5e5] rounded-r-md px-2 md:px-3 py-1.5 ${view === 'list' ? 'bg-[#8d5cf6] text-white' : 'bg-white'}`}
-                  onClick={() => setView('list')}
-                >
                   <List className="w-4 h-4 mr-0 md:mr-1" />
-                  <span className="hidden md:inline text-sm">리스트</span>
+                  <span className="hidden md:inline text-sm">보드</span>
                 </button>
               </div>
             </div>
