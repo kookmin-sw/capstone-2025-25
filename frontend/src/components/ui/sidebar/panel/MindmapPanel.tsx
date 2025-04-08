@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
 
-export default function MindmapPanel({ onClose }: { onClose: () => void }) {
+export default function MindmapPanel() {
   const [openSections, setOpenSections] = useState({
     connected: false,
     free: true,
@@ -20,11 +20,7 @@ export default function MindmapPanel({ onClose }: { onClose: () => void }) {
   const mindMaps = useMindMaps();
 
   return (
-    <CommonPanelWrapper
-      title="마인드맵"
-      addButton={<MindmapAddButton />}
-      onClose={onClose}
-    >
+    <CommonPanelWrapper title="마인드맵" addButton={<MindmapAddButton />}>
       {/* 연결된 마인드맵 */}
       <Collapsible
         open={openSections.connected}

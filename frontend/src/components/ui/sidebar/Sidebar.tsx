@@ -1,11 +1,17 @@
 'use client';
 
-import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { Network, LayoutDashboard, Grid2x2, TimerReset } from 'lucide-react';
+import {
+  Network,
+  LayoutDashboard,
+  Grid2x2,
+  TimerReset,
+  ChevronsRight,
+} from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router';
 
 import SidebarPanel from '@/components/ui/sidebar/panel/SidebarPanel';
+import { useSidebarStore } from '@/store/sidebarStore';
 
 const navItems = [
   {
@@ -13,41 +19,51 @@ const navItems = [
     icon: <LayoutDashboard size={24} />,
     label: '오늘의 할 일',
     route: '/today',
+    hasPanel: false,
   },
   {
     id: 'matrix',
     icon: <Grid2x2 size={24} />,
     label: '매트릭스',
     route: '/matrix',
+    hasPanel: false,
   },
   {
     id: 'mindmap',
     icon: <Network size={24} className="rotate-[-90deg]" />,
     label: '마인드맵',
     route: '/mindmap',
+    hasPanel: true,
   },
   {
     id: 'pomodoro',
     icon: <TimerReset size={24} />,
     label: '뽀모도로',
     route: '/pomodoro',
+    hasPanel: true,
   },
 ];
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [panelVisible, setPanelVisible] = useState(true);
+  const { panelVisible, setPanelVisible } = useSidebarStore();
 
   const activeId =
     navItems.find((item) => location.pathname.includes(item.route))?.id || null;
 
-  const handleNavClick = (route: string) => {
-    setPanelVisible(true);
-    navigate(route);
-  };
+  const handleNavItemClick = (e: React.MouseEvent, route: string) => {
+    const target = e.target as HTMLElement;
+    const isChevronButton = target.closest('.panel-toggle-button');
 
-  const handlePanelClose = () => setPanelVisible(false);
+    if (isChevronButton) {
+      setPanelVisible(true);
+      return;
+    }
+
+    navigate(route);
+    setPanelVisible(false);
+  };
 
   return (
     <div className="flex h-screen">
@@ -63,9 +79,9 @@ export default function Sidebar() {
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => handleNavClick(item.route)}
+              onClick={(e) => handleNavItemClick(e, item.route)}
               className={cn(
-                'flex items-center w-full px-4 py-3 gap-2 text-left transition rounded-md cursor-pointer',
+                'flex items-center w-full px-4 py-3 gap-2 text-left transition rounded-md cursor-pointer relative group',
                 activeId === item.id
                   ? 'bg-[#8F5AFF] text-white font-semibold'
                   : 'text-black hover:bg-gray-50',
@@ -73,15 +89,20 @@ export default function Sidebar() {
             >
               <div>{item.icon}</div>
               <p>{item.label}</p>
+
+              {/* 패널이 있고, 활성화되어 있으며, 패널이 닫혀있을 때 화살표 표시 */}
+              {item.hasPanel && activeId === item.id && !panelVisible && (
+                <div className="panel-toggle-button absolute right-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 hover:bg-white/10 rounded-full cursor-pointer">
+                  <ChevronsRight size={18} />
+                </div>
+              )}
             </button>
           ))}
         </div>
       </aside>
 
       {/* Panel 영역 */}
-      {panelVisible && activeId && (
-        <SidebarPanel activeId={activeId} onClose={handlePanelClose} />
-      )}
+      {panelVisible && activeId && <SidebarPanel activeId={activeId} />}
 
       {/* 콘텐츠 영역 */}
       <div className="flex-1 bg-gray-50"></div>
