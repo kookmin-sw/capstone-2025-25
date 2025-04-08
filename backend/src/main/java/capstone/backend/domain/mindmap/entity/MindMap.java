@@ -57,7 +57,6 @@ public class MindMap {
             .member(member)
             .title(mindMapRequest.title())
             .type(mindMapRequest.type())
-            .lastModifiedAt(LocalDateTime.now())
             .nodes(mindMapRequest.nodes())
             .build();
     }
@@ -65,7 +64,6 @@ public class MindMap {
     public void update(MindMapRequest mindMapRequest) {
         this.title = mindMapRequest.title();
         this.type = mindMapRequest.type();
-        this.lastModifiedAt = LocalDateTime.now();
         this.nodes = mindMapRequest.nodes() != null ? new ArrayList<>(mindMapRequest.nodes()) : null;
         this.edges = mindMapRequest.edges() != null ? new ArrayList<>(mindMapRequest.edges()) : null;
     }
