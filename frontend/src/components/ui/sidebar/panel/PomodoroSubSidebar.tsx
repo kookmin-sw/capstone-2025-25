@@ -1,8 +1,9 @@
-import { LinkIcon, Unlink } from 'lucide-react';
+import { LinkIcon, Unlink, Plus } from 'lucide-react';
 import { SubSidebarAccordion } from '@/components/ui/SubSidebarAccordion.tsx';
 import CommonPanelWrapper from './CommonPanelWrapper';
 import { PomodoroItem } from '@/components/ui/PomodoroItem';
 import type { PomodoroResponse } from '@/types/pomodoro';
+import AddFreePomodoro from '@/components/ui/Modal/AddFreePomodoro.tsx';
 
 // 예시 데이터
 const response: PomodoroResponse = {
@@ -102,7 +103,11 @@ export default function PomodoroSubSidebar({
   onClose: () => void;
 }) {
   return (
-    <CommonPanelWrapper title="뽀모도로" onClose={onClose}>
+    <CommonPanelWrapper
+      title="뽀모도로"
+      onClose={onClose}
+      addButton={<AddFreePomodoro />}
+    >
       <div>
         <SubSidebarAccordion
           value="linked"
