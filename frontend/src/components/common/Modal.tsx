@@ -16,6 +16,7 @@ type ModalProps = {
   children: ReactNode;
   footer?: ReactNode;
   maxWidth?: string;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export function Modal({
@@ -25,9 +26,10 @@ export function Modal({
   children,
   footer,
   maxWidth = 'sm:max-w-lg',
+                        onOpenChange
 }: ModalProps) {
   return (
-    <Dialog>
+    <Dialog onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className={maxWidth}>
         <DialogHeader>
@@ -38,7 +40,7 @@ export function Modal({
             </DialogDescription>
           )}
         </DialogHeader>
-        <div className="py-4">{children}</div>
+        <div>{children}</div>
         {footer && <DialogFooter>{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>
