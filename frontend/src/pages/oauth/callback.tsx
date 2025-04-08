@@ -12,7 +12,6 @@ export default function LoginCallbackPage() {
   useEffect(() => {
     fetchMyInfo()
       .then((data) => {
-        // 받은 토큰이나 유저 정보 저장
         if (data.token) login(data.token);
         else if (data.id) login('SESSION'); // 세션 기반이라면 임의값
         console.log(data.token);
