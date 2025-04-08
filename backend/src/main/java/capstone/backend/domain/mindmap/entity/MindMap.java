@@ -7,13 +7,15 @@ import java.util.ArrayList;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import net.minidev.json.annotate.JsonIgnore;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
@@ -25,7 +27,7 @@ public class MindMap {
     @Column(nullable = false, name="mindmap_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     @JsonIgnore
     private Member member;
@@ -37,6 +39,7 @@ public class MindMap {
     @Column(nullable = false, name="type")
     private MindMapType type; // TODO / THINKING
 
+    @LastModifiedDate
     @Column(nullable = false, name="last_modified_at")
     private LocalDateTime lastModifiedAt;
 
