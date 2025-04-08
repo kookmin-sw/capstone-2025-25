@@ -3,7 +3,7 @@ import { SubSidebarAccordion } from '@/components/ui/SubSidebarAccordion.tsx';
 import CommonPanelWrapper from './CommonPanelWrapper';
 import { PomodoroItem } from '@/components/ui/PomodoroItem';
 import type { PomodoroResponse } from '@/types/pomodoro';
-import AddFreePomodoro from '@/components/ui/Modal/AddFreePomodoro.tsx';
+import AddPomodoro from '@/components/ui/Modal/AddPomodoro.tsx';
 
 // 예시 데이터
 const response: PomodoroResponse = {
@@ -106,7 +106,7 @@ export default function PomodoroSubSidebar({
     <CommonPanelWrapper
       title="뽀모도로"
       onClose={onClose}
-      addButton={<AddFreePomodoro />}
+      addButton={<AddPomodoro />}
     >
       <div>
         <SubSidebarAccordion

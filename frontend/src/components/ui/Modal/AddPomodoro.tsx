@@ -1,11 +1,16 @@
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { Plus, ChevronDown, ChevronUp, Timer, RotateCw } from 'lucide-react';
-import { ChangeEvent, useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { PomodoroCycle, Eisenhower } from '@/types/pomodoro';
+import { Input } from '@/components/ui/Input.tsx';
 
-export default function AddLinkedPomodoro(linkedEisenhower: Eisenhower) {
+type Props = {
+  linkedEisenhower?: Eisenhower;
+};
+
+export default function AddPomodoro({ linkedEisenhower }: Props) {
   const [title, setTitle] = useState('');
   const [page, setPage] = useState(0);
   const [hours, setHours] = useState(0);
@@ -13,6 +18,7 @@ export default function AddLinkedPomodoro(linkedEisenhower: Eisenhower) {
   const [totalTime, setTotalTime] = useState(0);
   const [cycleValue, setCycleValue] = useState<PomodoroCycle[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+
   // 슬라이더 값 포맷팅
   const formatSliderLabel = (value: number, index: number) => {
     if (index === 0) return '시작';
@@ -84,6 +90,10 @@ export default function AddLinkedPomodoro(linkedEisenhower: Eisenhower) {
     }
   };
 
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
   //모달 닫으면 입력 데이터 초기화 되도록
   const resetStates = () => {
     setTitle('');
@@ -143,7 +153,20 @@ export default function AddLinkedPomodoro(linkedEisenhower: Eisenhower) {
       {/*시간 설정 파트*/}
       {page === 0 && (
         <div className="flex flex-col gap-[33px]">
-          <div className="h-[153px] border-1">컴포넌트로 변경</div>
+          {linkedEisenhower?.id ? (
+            <div className="h-[153px] border-1">컴포넌트로</div>
+          ) : (
+            <div>
+              <label className="text-[14px] block mb-2">뽀모도로 이름</label>
+              <Input
+                placeholder="주제를 입력하세요"
+                value={title}
+                onChange={handleInputChange}
+                onClick={(e) => e.stopPropagation()}
+                className="h-12"
+              />
+            </div>
+          )}
           <div className="flex justify-center items-center gap-[30px]">
             <div className="flex items-center gap-[10px]">
               <div className="flex flex-col items-center gap-6">
@@ -191,8 +214,14 @@ export default function AddLinkedPomodoro(linkedEisenhower: Eisenhower) {
       {page === 1 && (
         <>
           <div className="flex flex-col gap-[33px]">
-            <div className="h-[153px] border-1">컴포넌트로 변경</div>
-
+            {linkedEisenhower?.id ? (
+              <div className="h-[153px] border-1"></div>
+            ) : (
+              <div className="flex px-4 py-4 border-1 border-[#E5E5E5] gap-2.5 rounded-[10px]">
+                <Timer className="text-primary-100" />
+                <p className="text-[16px] font-semibold">{title}</p>
+              </div>
+            )}
             <div className="flex flex-col gap-[10px]">
               <div className=" bg-[#F2F2F2] rounded-[10px] px-[25px] py-[20px] h-[87px]">
                 <MultiSlider
