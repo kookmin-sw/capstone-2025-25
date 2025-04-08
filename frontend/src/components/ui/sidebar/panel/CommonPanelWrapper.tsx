@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ChevronLeft, Plus } from 'lucide-react';
+import { ChevronsLeft } from 'lucide-react';
 
 type CommonPanelWrapperProps = {
   title: string;
@@ -15,20 +15,18 @@ export default function CommonPanelWrapper({
   children,
 }: CommonPanelWrapperProps) {
   return (
-    <div className="relative w-[300px] border-r p-4 bg-white h-full overflow-y-auto">
-      <div className="flex items-center justify-between mb-4">
+    <div className="relative w-[300px] border-r bg-white h-full overflow-y-auto">
+      <div className="px-[20px] py-[10px] h-[83px] flex items-center justify-between mb-4 border-b border-gray-300">
         <h2 className="font-bold text-lg">{title}</h2>
-        <div className="flex items-center">
-          {addButton && <div className="mr-2">{addButton}</div>}
-          <button
-            onClick={onClose}
-            className="top-4 z-10 w-8 h-8 flex items-center justify-center"
-          >
-            <ChevronLeft size={16} />
+        <div className="flex items-center gap-1">
+          {addButton && <div>{addButton}</div>}
+          <button onClick={onClose} className="cursor-pointer">
+            <ChevronsLeft size={20} />
           </button>
         </div>
       </div>
-      {children}
+
+      <div className="px-[20px] py-[10px]">{children}</div>
     </div>
   );
 }

@@ -1,14 +1,10 @@
 'use client';
 
 import MindmapPanel from '@/components/ui/sidebar/panel/MindmapPanel.tsx';
-import TodayListPanel from '@/components/ui/sidebar/panel/TodayListPanel.tsx';
-import MatrixPanel from '@/components/ui/sidebar/panel/MatrixPanel.tsx';
 import PomodoroPanel from '@/components/ui/sidebar/panel/PomodoroPanel.tsx';
 
 const panelComponents = {
   mindmap: MindmapPanel,
-  todayList: TodayListPanel,
-  matrix: MatrixPanel,
   pomodoro: PomodoroPanel,
 };
 
