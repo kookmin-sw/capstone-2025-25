@@ -1,9 +1,11 @@
 package capstone.backend.domain.pomodoro.dto.response;
 
-import capstone.backend.domain.eisenhower.schema.EisenhowerItem;
+import capstone.backend.domain.common.entity.TaskType;
+import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
+import capstone.backend.domain.eisenhower.entity.EisenhowerQuadrant;
 import capstone.backend.domain.pomodoro.schema.Pomodoro;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record SidebarPomodoroResponse(
@@ -30,9 +32,9 @@ public record SidebarPomodoroResponse(
  */
 record SidebarEisenhowerItemDTO(
         Long id,
-        String title
+        String title,
         String memo,
-        String dueDate,
+        LocalDate dueDate,
         EisenhowerQuadrant quadrant,
         TaskType type,
         Long order,
@@ -47,7 +49,7 @@ record SidebarEisenhowerItemDTO(
                 eisenhowerItem.getDueDate(),
                 eisenhowerItem.getQuadrant(),
                 eisenhowerItem.getType(),
-                eisenhowerItem.getorder(),
+                eisenhowerItem.getOrder(),
                 eisenhowerItem.getIsCompleted(),
                 eisenhowerItem.getCreatedAt()
         );
