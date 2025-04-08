@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 public class RefreshTokenNotFoundException extends ApiException {
 
     public RefreshTokenNotFoundException() {
-        super(HttpStatus.FORBIDDEN, "발급한 Refresh Token이 없습니다.");
+        super(HttpStatus.NOT_FOUND, "발급한 Refresh Token이 없습니다.");
     }
 }
