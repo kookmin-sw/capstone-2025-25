@@ -3,13 +3,13 @@ import {
   route,
   index,
   layout,
-  prefix,
 } from '@react-router/dev/routes';
 
 export default [
   layout('layouts/AuthLayout.tsx', [
     route('login', 'pages/login.tsx'),
     route('register', 'pages/register.tsx'),
+    route('auth/login/callback', 'pages/oauth/callback.tsx'),
   ]),
 
   layout('layouts/DefaultLayout.tsx', [
