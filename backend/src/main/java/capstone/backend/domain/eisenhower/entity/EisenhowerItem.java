@@ -69,10 +69,12 @@ public class EisenhowerItem {
     private LocalDate dueDate;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mind_map_id")
     private MindMap mindMap;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    private Pomodoro pomodoro;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pomodoro_id")
+    private Pomodoro pomodoro;
 
 
     public static EisenhowerItem from(EisenhowerItemCreateRequest request, Member member, EisenhowerCategory category) {

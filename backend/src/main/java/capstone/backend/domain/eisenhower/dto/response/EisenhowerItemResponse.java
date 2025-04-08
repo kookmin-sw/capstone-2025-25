@@ -18,8 +18,8 @@ public record EisenhowerItemResponse(
         Long order,
         Boolean isCompleted,
         LocalDateTime createdAt,
-        Long mindMapId
-//        Long pomodoroId
+        Long mindMapId,
+        Long pomodoroId
 ) {
     public static EisenhowerItemResponse from(EisenhowerItem item) {
         return new EisenhowerItemResponse(
@@ -33,8 +33,8 @@ public record EisenhowerItemResponse(
                 item.getOrder(),
                 item.getIsCompleted(),
                 item.getCreatedAt(),
-                item.getMindMap() != null ? item.getMindMap().getId() : null
-//                item.getPomodoro() != null ? item.getPomodoro().getId() : null
+                item.getMindMap() != null ? item.getMindMap().getId() : null,
+                item.getPomodoro() != null ? item.getPomodoro().getId() : null
         );
     }
 
