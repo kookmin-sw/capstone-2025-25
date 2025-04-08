@@ -11,7 +11,7 @@ type MultiSliderProps = {
   step?: number;
   className?: string;
   readonly?: boolean;
-  style: {
+  style?: {
     fontColor?: string;
     bgColor?: string;
   };
