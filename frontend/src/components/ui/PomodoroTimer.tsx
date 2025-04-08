@@ -294,7 +294,7 @@ export function PomodoroTimer({ plannedCycles }: PomodoroTimerProps) {
               onClick={isRunning ? switchPhaseOrCycle : toggleTimer}
             >
               {!isRunning && (
-                <Play className="w-[40px] h-[40px] text-[#ffffff]" />
+                <Play className="w-[40px] h-[40px] text-[#ffffff] fill-white" />
               )}
               {isRunning && cycleType === 'focus' && (
                 <Crosshair className="w-[40px] h-[40px] text-[#ffffff]" />

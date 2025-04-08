@@ -1,25 +1,55 @@
 import { Search, Settings, Bell } from 'lucide-react';
 import { PomodoroTimer } from '@/components/ui/PomodoroTimer';
+import PomodoroResult from '@/components/ui/PomodoroResult';
 
 //예시 데이터
-const plannedCycles = [
-  {
-    workDuration: 0.1,
-    breakDuration: 0.1,
+const data = {
+  pomodoro: {
+    id: 1,
+    title: '개발하기',
+    createdAt: '2025-04-04T19:43:39.359437',
+    completedAt: '2025-04-04T19:46:58.644763',
+    totalPlannedTime: '00:40:00',
+    totalExecutedTime: '01:30:00',
+    totalWorkingTime: '01:20:00',
+    totalBreakTime: '00:10:00',
+    plannedCycles: [
+      {
+        workDuration: 25,
+        breakDuration: 5,
+      },
+      {
+        workDuration: 25,
+        breakDuration: 5,
+      },
+      {
+        workDuration: 25,
+        breakDuration: 5,
+      },
+      {
+        workDuration: 25,
+        breakDuration: null,
+      },
+    ],
+    executedCycles: [
+      {
+        workDuration: 30,
+        breakDuration: 5,
+      },
+      {
+        workDuration: 25,
+        breakDuration: 5,
+      },
+      {
+        workDuration: 25,
+        breakDuration: null,
+      },
+    ],
   },
-  {
-    workDuration: 0.1,
-    breakDuration: 0.1,
-  },
-  {
-    workDuration: 0.1,
-    breakDuration: 0.1,
-  },
-  {
-    workDuration: 0.1,
-    breakDuration: null,
-  },
-];
+  eisenhower: null,
+};
+
+const results = [null];
 
 export default function Pomodoro() {
   return (
@@ -70,9 +100,13 @@ export default function Pomodoro() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center justify-center gap-[30px]">
+          <div className="flex flex-col items-center gap-[30px]">
             <div className="h-[153px] w-full border"></div>
-            <PomodoroTimer plannedCycles={plannedCycles} />
+            {data.pomodoro.executedCycles.length > 0 ? (
+              <PomodoroResult pomodoro={data.pomodoro} />
+            ) : data.pomodoro.plannedCycles.length > 0 ? (
+              <PomodoroTimer plannedCycles={data.pomodoro.plannedCycles} />
+            ) : null}
           </div>
         </main>
       </div>

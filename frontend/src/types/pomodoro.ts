@@ -7,7 +7,7 @@ export type PomodoroCycle = {
 export type PomodoroTimerProps = {
   plannedCycles: PomodoroCycle[];
 };
-
+//뽀모도로 데이터
 export type Pomodoro = {
   id: number;
   title: string;
@@ -18,14 +18,14 @@ export type Pomodoro = {
   totalWorkingTime: string | null;
   totalBreakTime: string | null;
   plannedCycles: PomodoroCycle[];
-  executedCycles: PomodoroCycle[] | null;
+  executedCycles: PomodoroCycle[] | [];
 };
 
 export type Eisenhower = {
   id: number;
   title: string;
 };
-
+//뽀모도로 사이드바 아이템 데이터(연결 투두 포함)
 export type PomodoroData = {
   pomodoro: Pomodoro;
   eisenhower: Eisenhower | null;
