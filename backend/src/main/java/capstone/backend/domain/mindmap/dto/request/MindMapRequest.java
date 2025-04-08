@@ -5,6 +5,7 @@ import capstone.backend.domain.mindmap.entity.MindMapType;
 import capstone.backend.domain.mindmap.entity.Node;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public record MindMapRequest(
     MindMapType type,
 
     @Schema(description = "마인드맵 노드 정보")
-    @NotNull(message = "노드 정보를 입력해주세요.")
+    @NotEmpty(message = "노드 정보를 입력해주세요.")
     List<Node> nodes,
 
     @Schema(description = "마인드맵 엣지 정보")
