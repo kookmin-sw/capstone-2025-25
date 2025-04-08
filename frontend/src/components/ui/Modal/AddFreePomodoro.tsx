@@ -2,7 +2,6 @@ import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { Plus, ChevronDown, ChevronUp, Timer, RotateCw } from 'lucide-react';
 import { ChangeEvent, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { Input } from '@/components/ui/Input.tsx';
 import { PomodoroCycle } from '@/types/pomodoro';
@@ -12,8 +11,9 @@ export default function AddFreePomodoro() {
   const [page, setPage] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
-  const [totalTime, setTotalTime] = useState(0); // 분 단위
-  const [sliderValues, setSliderValues] = useState<PomodoroCycle[]>([]);
+  const [totalTime, setTotalTime] = useState(0);
+  const [cycleValue, setCycleValue] = useState<PomodoroCycle[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   // 슬라이더 값 포맷팅
   const formatSliderLabel = (value: number, index: number) => {
@@ -51,55 +51,9 @@ export default function AddFreePomodoro() {
   useEffect(() => {
     setTotalTime(hours * 60 + minutes);
     const newSliderValues = generateSliderValuesFromTime(hours, minutes);
-    setSliderValues(newSliderValues);
+    setCycleValue(newSliderValues);
   }, [hours, minutes, page]);
 
-  //
-  //
-  // // 슬라이더 값 -> plannedCycles 변환
-  // const generatePlannedCyclesFromSlider = (values: number[]) => {
-  //   const result: {
-  //     workDuration: number;
-  //     breakDuration: number | null;
-  //   }[] = [];
-  //
-  //   for (let i = 0; i < values.length - 1; i += 2) {
-  //     const work = values[i + 1] - values[i];
-  //     const isLast = i + 2 >= values.length - 1;
-  //     const breakDur = isLast ? null : values[i + 2] - values[i + 1];
-  //
-  //     result.push({
-  //       workDuration: work,
-  //       breakDuration: breakDur,
-  //     });
-  //   }
-  //
-  //   return result;
-  // };
-  //
-  // // 슬라이더 값 -> intervals 변환 (타입 맞추기용)
-  // const generateIntervalsFromSlider = (values: number[]) => {
-  //   const result: PomodoroSession['intervals'] = [];
-  //
-  //   for (let i = 0; i < values.length - 1; i += 2) {
-  //     result.push({
-  //       type: 'focus',
-  //       duration: values[i + 1] - values[i],
-  //     });
-  //
-  //     const isLast = i + 2 >= values.length - 1;
-  //     if (!isLast) {
-  //       result.push({
-  //         type: 'break',
-  //         duration: values[i + 2] - values[i + 1],
-  //       });
-  //     }
-  //   }
-  //
-  //   return result;
-  // };
-
-  const navigate = useNavigate();
   //시간 설정
   const handleTimeChange = (
     direction: 'up' | 'down',
@@ -140,8 +94,10 @@ export default function AddFreePomodoro() {
     setPage(0);
   };
 
-  const handleCreateClick = () => {
-    navigate(`/pomodoro/`);
+  const createPomodoro = () => {
+    // 생성 api
+    setModalOpen(false);
+    resetStates();
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -150,11 +106,13 @@ export default function AddFreePomodoro() {
 
   return (
     <Modal
-      trigger={<Plus size={24} />}
+      trigger={<Plus size={24} className="cursor-pointer"/>}
+      isOpen={modalOpen}
       title="뽀모도로 설정하기"
       description={`일정의 예상 시간을 입력해주세요.
       뽀모도로 기법을 바탕으로 집중 및 휴식시간을 제안해드려요.`}
       onOpenChange={(open) => {
+        setModalOpen(!modalOpen);
         if (!open) {
           resetStates();
         }
@@ -180,10 +138,7 @@ export default function AddFreePomodoro() {
               >
                 뒤로가기
               </Button>
-              <Button
-                className="px-8 w-full flex-1"
-                onClick={handleCreateClick}
-              >
+              <Button className="px-8 w-full flex-1" onClick={createPomodoro}>
                 다음
               </Button>
             </div>
@@ -257,26 +212,25 @@ export default function AddFreePomodoro() {
             </div>
 
             <div className="flex flex-col gap-[10px]">
-              <div className=" bg-[#F2F2F2] rounded-[10px] px-[25px] py-[20px]">
+              <div className=" bg-[#F2F2F2] rounded-[10px] px-[25px] py-[20px] h-[87px]">
                 <MultiSlider
                   min={0}
                   max={totalTime}
                   step={1}
-                  value={sliderValues}
-                  onValueChange={setSliderValues}
-                  formatLabel={formatSliderLabel}
-                  showIntervalLabels={true}
+                  cycles={cycleValue}
+                  onValueChange={setCycleValue}
                 />
               </div>
 
               <div
-                className="flex w-full justify-end items-center gap-[3px] text-[#AAAAAA] font-normal text-[14px]"
-                onClick={() => {
-                  setSliderValues(generateSliderValuesFromTime(hours, minutes));
-                }}
+                className="flex w-full  justify-end items-center gap-[3px] text-[#AAAAAA] font-normal text-[14px]"
               >
-                <RotateCw size={16} className="text-[#AAAAAA] " />
-                다시 설정
+                <div className='cursor-pointer flex justify-end items-center gap-[3px]' onClick={() => {
+                  setCycleValue(generateSliderValuesFromTime(hours, minutes));
+                }}>
+                  <RotateCw size={16} className="text-[#AAAAAA] " />
+                  <p>다시 설정</p>
+                </div>
               </div>
             </div>
           </div>
