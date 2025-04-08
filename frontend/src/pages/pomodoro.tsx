@@ -49,7 +49,6 @@ const data = {
   eisenhower: null,
 };
 
-const results = [null];
 
 export default function Pomodoro() {
   return (
