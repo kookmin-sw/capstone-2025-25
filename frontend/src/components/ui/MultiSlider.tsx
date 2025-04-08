@@ -11,6 +11,7 @@ type MultiSliderProps = {
   step?: number;
   className?: string;
   readonly?: boolean;
+    style?: React.CSSProperties;
 } & React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>;
 
 const MultiSlider = React.forwardRef<
@@ -26,6 +27,7 @@ const MultiSlider = React.forwardRef<
       step = 1,
       readonly,
       className,
+        style,
       ...props
     },
     ref,
@@ -118,66 +120,65 @@ const MultiSlider = React.forwardRef<
     }, [sliderValues, min, max]);
 
     return (
-      <div className="relative">
-        <div className="w-full h-10 rounded-md relative">
-          {intervals.map((interval, index) => (
-            <div
-              key={index}
-              className={cn(
-                'absolute h-full flex items-center justify-center text-[12px] font-normal text-black border-[1px] border-[#AAAAAA]',
-                interval.type === 'focus' ? 'bg-[#DECFFF]' : 'bg-white',
-                index === 0 ? 'rounded-tl-[10px] rounded-bl-[10px]' : '',
-                index === intervals.length - 1
-                  ? 'rounded-tr-[10px] rounded-br-[10px]'
-                  : '',
-              )}
-              style={{
-                left: `${interval.leftPercent}%`,
-                width: `${interval.widthPercent}%`,
-              }}
-            >
-              {(intervals.length <= 1 || interval.duration >= 5) && (
-                <span>
-                  {interval.type === 'focus' ? '집중' : '휴식'}{' '}
-                  {interval.duration}분
-                </span>
-              )}
-            </div>
-          ))}
-          <SliderPrimitive.Root
-            ref={ref}
-            className={cn(
-              'relative flex w-full touch-none select-none items-center h-full',
-              className,
-            )}
-            min={min}
-            max={max}
-            step={step}
-            value={sliderValues}
-            onValueChange={readonly ? undefined : handleValueChange}
-            disabled={readonly}
-            {...props}
-          >
-            <SliderPrimitive.Track className="relative h-full w-full grow overflow-hidden rounded-md bg-transparent">
-              <SliderPrimitive.Range className="absolute h-full bg-transparent" />
-            </SliderPrimitive.Track>
+        <div className={cn('relative w-full h-full', className)} style={style}>
+            <div className="w-full h-full rounded-md relative">
+                {intervals.map((interval, index) => (
+                    <div
+                        key={index}
+                        className={cn(
+                            'absolute h-full flex items-center justify-center text-[12px] font-normal text-black border-[1px] border-[#AAAAAA]',
+                            interval.type === 'focus' ? 'bg-[#DECFFF]' : 'bg-white',
+                            index === 0 ? 'rounded-tl-[10px] rounded-bl-[10px]' : '',
+                            index === intervals.length - 1
+                                ? 'rounded-tr-[10px] rounded-br-[10px]'
+                                : '',
+                        )}
+                        style={{
+                            left: `${interval.leftPercent}%`,
+                            width: `${interval.widthPercent}%`,
+                        }}
+                    >
+                        {(intervals.length <= 1 || interval.duration >= 5) && (
+                            <span>
+            {interval.type === 'focus' ? '집중' : '휴식'} {interval.duration}분
+          </span>
+                        )}
+                    </div>
+                ))}
+                <SliderPrimitive.Root
+                    ref={ref}
+                    className={cn(
+                        'relative flex w-full h-full touch-none select-none items-center',
+                        className,
+                    )}
+                    min={min}
+                    max={max}
+                    step={step}
+                    value={sliderValues}
+                    onValueChange={readonly ? undefined : handleValueChange}
+                    disabled={readonly}
+                    {...props}
+                >
+                    <SliderPrimitive.Track className="relative h-full w-full grow overflow-hidden rounded-md bg-transparent">
+                        <SliderPrimitive.Range className="absolute h-full bg-transparent" />
+                    </SliderPrimitive.Track>
 
-            {sliderValues.map((value, index) => (
-              <React.Fragment key={index}>
-                <SliderPrimitive.Thumb
-                  className={cn(
-                    'block h-6 w-2 bg-transparent  border-gray-300 cursor-ew-resize z-10 ',
-                    index === 0 || index === sliderValues.length - 1 || readonly
-                      ? 'opacity-0 pointer-events-none'
-                      : '',
-                    readonly ? 'cursor-not-allowed' : 'cursor-ew-resize',
-                  )}
-                />
-              </React.Fragment>
-            ))}
-          </SliderPrimitive.Root>
+                    {sliderValues.map((value, index) => (
+                        <SliderPrimitive.Thumb
+                            key={index}
+                            className={cn(
+                                'block w-2 h-[50px] bg-transparent border-gray-300 z-10',
+                                index === 0 || index === sliderValues.length - 1 || readonly
+                                    ? 'opacity-0 pointer-events-none'
+                                    : '',
+                                readonly ? 'cursor-not-allowed' : 'cursor-ew-resize',
+                            )}
+                        />
+                    ))}
+                </SliderPrimitive.Root>
+            </div>
         </div>
-      </div>
+
     );
   },
 );
