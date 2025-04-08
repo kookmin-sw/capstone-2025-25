@@ -1,5 +1,6 @@
 package capstone.backend.domain.mindmap.entity;
 
+import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class MindMap {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name="type")
-    private MindMapType type; // TODO / THINKING
+    private TaskType type; // TODO / THINKING
 
     @Column(nullable = false, name="last_modified_at")
     private LocalDateTime lastModifiedAt;
