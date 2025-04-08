@@ -55,7 +55,7 @@ public class PomodoroService {
                     // 한번 더 유효성 검사
                     EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(eisenhowerId)
                             .orElseThrow(EisenhowerItemNotFoundException::new);
-                    eisenhowerItem.setPomodoro(pomodoro); // 연관관계 설정
+                    eisenhowerItem.connectPomodoro(pomodoro); // 연관관계 설정
                     eisenhowerItemRepository.save(eisenhowerItem);
                 });
 
@@ -88,7 +88,7 @@ public class PomodoroService {
         Pomodoro pomodoro = pomodoroRepository.findByIdAndMemberId(pomodoroId, memberId).orElseThrow(PomodoroNotFoundException::new);
 
         // EisenhowerItem에서 연결 끊기 (만약 존재한다면)
-        eisenhowerItemRepository.findById(pomodoroId).ifPresent(eisenhowerItem -> eisenhowerItem.setPomodoro(null));
+        eisenhowerItemRepository.findById(pomodoroId).ifPresent(eisenhowerItem -> eisenhowerItem.connectPomodoro(null));
 
         pomodoroRepository.delete(pomodoro);
     }

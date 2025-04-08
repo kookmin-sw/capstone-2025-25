@@ -109,4 +109,12 @@ public class EisenhowerItem {
         this.order = order;
         this.quadrant = quadrant;
     }
+
+    public void connectPomodoro(Pomodoro pomodoro) {
+        this.pomodoro = pomodoro;
+    }
+
+    public void connectMindMap(MindMap mindMap) {
+        this.mindMap = mindMap;
+    }
 }
