@@ -3,7 +3,6 @@ import {
   route,
   index,
   layout,
-  prefix,
 } from '@react-router/dev/routes';
 
 export default [
@@ -18,7 +17,7 @@ export default [
     route('mindmap/:id', 'pages/mindmapDetail.tsx'),
     route('today-list', 'pages/today-list.tsx'),
     route('matrix', 'pages/matrix.tsx'),
-    route('pomodoro', 'pages/pomodoro.tsx'),
+    route('pomodoro/:id?', 'pages/pomodoro.tsx'),
     route('list', 'pages/list.tsx'),
     route('dashboard', 'pages/dashboard.tsx'),
   ]),
