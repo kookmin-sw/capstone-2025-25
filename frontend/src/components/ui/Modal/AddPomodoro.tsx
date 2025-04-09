@@ -17,22 +17,10 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
   const [page, setPage] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
-  const [totalTime, setTotalTime] = useState(0);
-  const [cycleValue, setCycleValue] = useState<PomodoroCycle[]>([]);
+  const [totalTime, setTotalTime] = useState(0); // 전체 시간 (분)
+  const [cycleValue, setCycleValue] = useState<PomodoroCycle[]>([]); // 슬라이더 값
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  // 슬라이더 값 포맷팅
-  const formatSliderLabel = (value: number, index: number) => {
-    if (index === 0) return '시작';
-    if (index === generateSliderValuesFromTime(hours, minutes).length * 2 + 1)
-      return '종료';
-
-    const isEven = index % 2 === 0;
-    const cycleIndex = Math.floor(index / 2);
-    const type = isEven ? '휴식' : '집중';
-
-    return `${type} ${isEven ? cycleIndex : cycleIndex + 1}`;
-  };
 
   // 세션 간격 추천
   const generateSliderValuesFromTime = (hours: number, minutes: number) => {

@@ -5,7 +5,7 @@ import { Cycle } from '@/types/pomodoro';
 
 type MultiSliderProps = {
   cycles: Cycle[];
-  onValueChange: (values: Cycle[]) => void;
+  onValueChange?: (values: Cycle[]) => void;
   min: number;
   max: number;
   step?: number;
