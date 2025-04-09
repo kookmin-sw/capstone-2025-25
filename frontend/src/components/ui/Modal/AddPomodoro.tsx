@@ -5,12 +5,14 @@ import { useState, useEffect, ChangeEvent } from 'react';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { PomodoroCycle, Eisenhower } from '@/types/pomodoro';
 import { Input } from '@/components/ui/Input.tsx';
+import { ReactNode } from 'react';
 
 type Props = {
+  trigger: ReactNode;
   linkedEisenhower?: Eisenhower;
 };
 
-export default function AddPomodoro({ linkedEisenhower }: Props) {
+export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
   const [title, setTitle] = useState('');
   const [page, setPage] = useState(0);
   const [hours, setHours] = useState(0);
@@ -110,7 +112,7 @@ export default function AddPomodoro({ linkedEisenhower }: Props) {
 
   return (
     <Modal
-      trigger={<Plus size={24} className="cursor-pointer" />}
+      trigger={trigger}
       isOpen={modalOpen}
       title="뽀모도로 설정하기"
       description={`일정의 예상 시간을 입력해주세요.
@@ -129,8 +131,8 @@ export default function AddPomodoro({ linkedEisenhower }: Props) {
               onClick={() => setPage(1)}
               disabled={
                 linkedEisenhower?.id
-                    ? hours === 0 && minutes === 0
-                    : (!title?.trim() || (hours === 0 && minutes === 0))
+                  ? hours === 0 && minutes === 0
+                  : !title?.trim() || (hours === 0 && minutes === 0)
               }
             >
               다음
