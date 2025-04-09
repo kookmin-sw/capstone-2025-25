@@ -4,8 +4,8 @@ import {MultiSlider} from '@/components/ui/MultiSlider.tsx';
 
 export default function PomodoroResult({pomodoro}: { pomodoro: Pomodoro }) {
     const convertToTotalMinutes = (time: TotalTime): number => {
-        const totalMinutes = time.hour * 60 + time.minute;
-        return totalMinutes;
+        const totalSeconds = (time.hour * 60 * 60 + time.minute * 60+ time.second)/60;
+        return totalSeconds;
     };
 
     // 슬라이더 전체 길이 비율 계산
@@ -18,7 +18,6 @@ export default function PomodoroResult({pomodoro}: { pomodoro: Pomodoro }) {
         convertToTotalMinutes(pomodoro.totalPlannedTime) / maxTime;
     const executedTimeRatio =
         convertToTotalMinutes(pomodoro.totalExecutedTime) / maxTime;
-
     const formatTimeDisplay = (totalTime: TotalTime) => {
         return totalTime.hour > 0
             ? `${totalTime.hour}시간 ${totalTime.minute}분`
