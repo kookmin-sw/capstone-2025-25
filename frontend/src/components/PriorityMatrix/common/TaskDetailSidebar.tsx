@@ -6,6 +6,8 @@ import { Edit2, Tag, Calendar, Save } from 'lucide-react';
 import { format } from 'date-fns';
 import type { Task } from '@/types/task';
 import { CreateMindmapModal } from '@/components/PriorityMatrix/common/CreateMindmapModal';
+import { CategoryBadge } from '@/components/PriorityMatrix/common/CategoryBadge.tsx';
+import { TypeBadge } from '@/components/PriorityMatrix/common/TypeBadge.tsx';
 
 interface TaskDetailSidebarProps {
   task: Task | null;
@@ -26,6 +28,9 @@ export function TaskDetailSidebar({
   const [editedTask, setEditedTask] = useState<Task | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
   const [isMindmapModalOpen, setIsMindmapModalOpen] = useState(false); // 마인드맵 모달
+
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -109,15 +114,6 @@ export function TaskDetailSidebar({
     }
   };
 
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (editedTask) {
-      setEditedTask({
-        ...editedTask,
-        tags: { ...editedTask.tags, category: e.target.value },
-      });
-    }
-  };
-
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (editedTask) {
       setEditedTask({ ...editedTask, date: e.target.value });
@@ -174,42 +170,40 @@ export function TaskDetailSidebar({
             )}
 
             <div className="space-y-6">
-              <div className="flex items-center">
+              <div className="flex items-center relative">
                 <div className="w-5 h-5 rounded-full border-2 border-[#8d5cf6] mr-3"></div>
                 <span className="text-sm mr-4">타입</span>
+
                 {isEditing ? (
-                  <div className="flex space-x-2">
-                    <button
-                      className={`px-3 py-1 rounded-full text-xs ${
-                        editedTask.tags.type === 'Todo'
-                          ? 'bg-purple-100 text-purple-600'
-                          : 'bg-gray-100 text-gray-500'
-                      }`}
-                      onClick={() => handleTypeChange('Todo')}
+                  <div className="relative">
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => setIsTypeDropdownOpen((prev) => !prev)}
                     >
-                      Todo
-                    </button>
-                    <button
-                      className={`px-3 py-1 rounded-full text-xs ${
-                        editedTask.tags.type === 'Thinking'
-                          ? 'bg-blue-100 text-blue-600'
-                          : 'bg-gray-100 text-gray-500'
-                      }`}
-                      onClick={() => handleTypeChange('Thinking')}
-                    >
-                      Thinking
-                    </button>
+                      <TypeBadge type={editedTask.tags.type} />
+                    </div>
+
+                    {isTypeDropdownOpen && (
+                      <div className="absolute mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 w-40">
+                        <div className="p-2 space-y-1">
+                          {(['Todo', 'Thinking'] as const).map((type) => (
+                            <div
+                              key={type}
+                              className="cursor-pointer px-3 py-2 rounded-md hover:bg-gray-50"
+                              onClick={() => {
+                                handleTypeChange(type);
+                                setIsTypeDropdownOpen(false);
+                              }}
+                            >
+                              <TypeBadge type={type} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
-                  <div
-                    className={`text-xs px-2 py-0.5 rounded-full ${
-                      task.tags.type === 'Todo'
-                        ? 'bg-purple-100 text-purple-600'
-                        : 'bg-blue-100 text-blue-600'
-                    }`}
-                  >
-                    {task.tags.type}
-                  </div>
+                  <TypeBadge type={task.tags.type} />
                 )}
               </div>
 
@@ -217,23 +211,64 @@ export function TaskDetailSidebar({
                 <Tag className="w-5 h-5 text-[#8d5cf6] mr-3" />
                 <span className="text-sm mr-4">카테고리</span>
                 {isEditing ? (
-                  <select
-                    value={editedTask.tags.category || ''}
-                    onChange={handleCategoryChange}
-                    className="text-xs px-2 py-1 rounded-md border border-gray-200 focus:outline-none focus:ring-1 focus:ring-[#8d5cf6]"
-                  >
-                    <option value="">카테고리 없음</option>
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <div
+                      className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-white border border-gray-200 cursor-pointer"
+                      onClick={() => setIsCategoryDropdownOpen((prev) => !prev)}
+                    >
+                      <span className="mr-2 text-sm">카테고리 선택</span>
+                      <CategoryBadge
+                        label={editedTask.tags.category || '없음'}
+                        colorClass="bg-gray-100 text-gray-600"
+                      />
+                    </div>
+
+                    {isCategoryDropdownOpen && (
+                      <div className="absolute z-10 mt-2 bg-white border border-gray-200 rounded-md shadow-md w-48">
+                        <div className="p-2">
+                          <div
+                            className={`px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-gray-50`}
+                            onClick={() => {
+                              setEditedTask({
+                                ...editedTask,
+                                tags: { ...editedTask.tags, category: '' },
+                              });
+                              setIsCategoryDropdownOpen(false);
+                            }}
+                          >
+                            <CategoryBadge
+                              label="카테고리 없음"
+                              colorClass="bg-gray-100 text-gray-600"
+                            />
+                          </div>
+                          {categories.map((cat) => (
+                            <div
+                              key={cat}
+                              className={`px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-gray-50`}
+                              onClick={() => {
+                                setEditedTask({
+                                  ...editedTask,
+                                  tags: { ...editedTask.tags, category: cat },
+                                });
+                                setIsCategoryDropdownOpen(false);
+                              }}
+                            >
+                              <CategoryBadge
+                                label={cat}
+                                colorClass="bg-gray-100 text-gray-600" // ← 이 부분도 동적으로 매핑 가능
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   task.tags.category && (
-                    <div className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                      {task.tags.category}
-                    </div>
+                    <CategoryBadge
+                      label={task.tags.category}
+                      colorClass="bg-gray-100 text-gray-600"
+                    />
                   )
                 )}
               </div>
