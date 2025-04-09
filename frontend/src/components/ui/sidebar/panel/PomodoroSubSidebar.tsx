@@ -128,7 +128,7 @@ export default function PomodoroSubSidebar({
       } else if (firstUnlinked) {
         navigate(`/pomodoro/${firstUnlinked}`);
       } else {
-        // 아무것도 없을 때 처리 (예: 안내 메시지 띄우거나, disabled 상태 유지)
+        // 아무것도 없을 때 화면 필요
         console.log('표시할 뽀모도로가 없습니다.');
       }
     }
@@ -150,8 +150,9 @@ export default function PomodoroSubSidebar({
           icon={<LinkIcon className="w-4 h-4" />}
           title="연결된 뽀모도로"
         >
-          {response.linkedPomodoros.map((item) => (
+          {response.linkedPomodoros?.map((item) => (
             <PomodoroItem
+                key={item.pomodoro.id}
               item={item}
               selected={item.pomodoro.id === Number(id)}
               onClick={() => pomodoroClick(item.pomodoro.id)}
@@ -163,8 +164,9 @@ export default function PomodoroSubSidebar({
           icon={<Unlink className="w-4 h-4" />}
           title="자유로운 뽀모도로"
         >
-          {response.unlinkedPomodoros.map((item) => (
+          {response.unlinkedPomodoros?.map((item) => (
             <PomodoroItem
+                key={item.pomodoro.id}
               item={item}
               selected={item.pomodoro.id === Number(id)}
               onClick={() => pomodoroClick(item.pomodoro.id)}
