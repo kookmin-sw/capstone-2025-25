@@ -119,12 +119,19 @@ export default function PomodoroSubSidebar({
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
-    if (!id && response.linkedPomodoros.length > 0) {
-      navigate(`/pomodoro/${response.linkedPomodoros[0].pomodoro.id}`);
-    } else if (!id && response.unlinkedPomodoros.length > 0) {
-      navigate(`/pomodoro/${response.unlinkedPomodoros[0].pomodoro.id}`);
+    if (!id) {
+      const firstLinked = response.linkedPomodoros[0]?.pomodoro.id;
+      const firstUnlinked = response.unlinkedPomodoros[0]?.pomodoro.id;
+
+      if (firstLinked) {
+        navigate(`/pomodoro/${firstLinked}`);
+      } else if (firstUnlinked) {
+        navigate(`/pomodoro/${firstUnlinked}`);
+      } else {
+        // 아무것도 없을 때 처리 (예: 안내 메시지 띄우거나, disabled 상태 유지)
+        console.log('표시할 뽀모도로가 없습니다.');
+      }
     }
-    // 만들어진게 없을 때 상태 필요
   }, [id, response]);
 
   const pomodoroClick = (id: number) => {
