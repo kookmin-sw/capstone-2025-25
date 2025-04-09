@@ -3,9 +3,9 @@
 import { useState, useRef, useEffect } from 'react';
 import type React from 'react';
 import { ChevronDown, Plus, Check } from 'lucide-react';
-import { DateRangePicker } from '@/components/PriorityMatrix/common/DateRangePicker';
-import { CategoryBadge } from '@/components/PriorityMatrix/common/CategoryBadge';
-import { TypeBadge } from '@/components/PriorityMatrix/common/TypeBadge';
+import { DateRangePicker } from '@/components/PriorityMatrix/filter/DateRangePicker';
+import { CategoryBadge } from '@/components/PriorityMatrix/filter/CategoryBadge';
+import { TypeBadge } from '@/components/PriorityMatrix/filter/TypeBadge';
 
 interface Category {
   title: string;

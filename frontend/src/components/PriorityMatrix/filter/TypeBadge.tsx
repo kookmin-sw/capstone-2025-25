@@ -1,5 +1,3 @@
-// components/ui/TypeBadge.tsx
-
 type TaskType = 'Todo' | 'Thinking' | 'all';
 
 interface TypeBadgeProps {

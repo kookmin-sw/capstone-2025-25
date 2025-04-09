@@ -4,8 +4,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Calendar } from 'lucide-react';
 import type { Task } from '@/types/task';
-import { CategoryBadge } from '@/components/PriorityMatrix/common/CategoryBadge';
-import { TypeBadge } from '@/components/PriorityMatrix/common/TypeBadge';
+import { CategoryBadge } from '@/components/PriorityMatrix/filter/CategoryBadge';
+import { TypeBadge } from '@/components/PriorityMatrix/filter/TypeBadge';
 
 interface SortableTaskCardProps {
   task: Task;

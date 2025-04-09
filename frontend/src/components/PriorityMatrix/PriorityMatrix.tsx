@@ -19,9 +19,9 @@ import {
   Settings,
 } from 'lucide-react';
 
-import { TaskDetailSidebar } from '@/components/PriorityMatrix/common/TaskDetailSidebar';
-import { DragOverlayCard } from '@/components/PriorityMatrix/common/DragOverlayCard';
-import { MobileMenu } from '@/components/PriorityMatrix/common/MobileMenu';
+import { TaskDetailSidebar } from '@/components/PriorityMatrix/TaskDetailSidebar';
+import { DragOverlayCard } from '@/components/PriorityMatrix/card/DragOverlayCard';
+import { MobileMenu } from '@/components/PriorityMatrix/MobileMenu';
 import { completedTasks, initialTasks } from '@/components/PriorityMatrix/data';
 import { AllScheduleView } from '@/components/PriorityMatrix/AllScheduleView';
 import { CompletedScheduleView } from '@/components/PriorityMatrix/CompletedScheduleView';

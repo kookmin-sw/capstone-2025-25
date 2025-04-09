@@ -1,5 +1,3 @@
-// components/ui/CategoryBadge.tsx
-
 import { X } from 'lucide-react';
 
 interface CategoryBadgeProps {

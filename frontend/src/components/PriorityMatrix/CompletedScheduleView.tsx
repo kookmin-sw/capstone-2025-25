@@ -1,7 +1,7 @@
 'use client';
-import { FilterBar } from '@/components/PriorityMatrix/common/FilterBar';
+import { FilterBar } from '@/components/PriorityMatrix/FilterBar';
 import type { Task } from '@/types/task';
-import { TaskCard } from './common/TaskCard';
+import { TaskCard } from '../PriorityMatrix/card/TaskCard';
 
 interface CompletedScheduleViewProps {
   tasks: Task[];

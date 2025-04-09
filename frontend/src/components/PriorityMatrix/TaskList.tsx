@@ -1,6 +1,6 @@
 'use client';
 
-import { TaskCard } from './TaskCard';
+import { TaskCard } from '../PriorityMatrix/card/TaskCard';
 import type { Task } from '@/types/task';
 
 interface TaskListProps {

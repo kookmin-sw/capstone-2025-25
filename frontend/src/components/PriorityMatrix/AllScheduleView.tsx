@@ -1,10 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { Droppable } from '@/components/PriorityMatrix/common/Droppable';
-import { SortableTaskCard } from '@/components/PriorityMatrix/common/SortableTaskCard';
-import { TaskList } from '@/components/PriorityMatrix/common/TaskList';
-import { FilterBar } from '@/components/PriorityMatrix/common/FilterBar';
-import { CreateTaskModal } from '@/components/PriorityMatrix/common/CreateTaskModal';
+import { Droppable } from '@/components/PriorityMatrix/Droppable';
+import { SortableTaskCard } from '@/components/PriorityMatrix/card/SortableTaskCard';
+import { TaskList } from '@/components/PriorityMatrix/TaskList';
+import { FilterBar } from '@/components/PriorityMatrix/FilterBar';
+import { CreateTaskModal } from '@/components/PriorityMatrix/modal/CreateTaskModal';
 import {
   SortableContext,
   verticalListSortingStrategy,

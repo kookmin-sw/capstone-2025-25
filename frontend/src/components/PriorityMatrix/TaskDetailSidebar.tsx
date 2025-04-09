@@ -5,9 +5,9 @@ import { useState, useEffect } from 'react';
 import { Edit2, Tag, Calendar, Save } from 'lucide-react';
 import { format } from 'date-fns';
 import type { Task } from '@/types/task';
-import { CreateMindmapModal } from '@/components/PriorityMatrix/common/CreateMindmapModal';
-import { CategoryBadge } from '@/components/PriorityMatrix/common/CategoryBadge.tsx';
-import { TypeBadge } from '@/components/PriorityMatrix/common/TypeBadge.tsx';
+import { CreateMindmapModal } from '@/components/PriorityMatrix/modal/CreateMindmapModal';
+import { CategoryBadge } from '@/components/PriorityMatrix/filter/CategoryBadge.tsx';
+import { TypeBadge } from '@/components/PriorityMatrix/filter/TypeBadge.tsx';
 
 interface TaskDetailSidebarProps {
   task: Task | null;
