@@ -1,9 +1,12 @@
 // api/auth.ts
 export async function fetchMyInfo() {
-  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
-    method: 'GET',
-    credentials: 'include', // ✅ 세션/쿠키 인증 시 꼭 필요!
-  });
+  const res = await fetch(
+    `${import.meta.env.VITE_API_BASE_URL}/api/auth/token`,
+    {
+      method: 'GET',
+      credentials: 'include', // ✅ 세션/쿠키 인증 시 꼭 필요!
+    },
+  );
 
   if (!res.ok) throw new Error('유저 정보 요청 실패');
 
