@@ -46,10 +46,3 @@ export type PomodoroList = {
 };
 
 export type EisenhowerType = 'TODO' | 'SCHEDULE' | 'DELEGATE' | 'DELETE';
-
-
-//뽀모도로 사이드바 아이템 데이터(연결 투두 포함)
-export type PomodoroData = {
-  pomodoro: Pomodoro | null;
-  eisenhower: Eisenhower | null;
-};
