@@ -3,6 +3,8 @@
 import { useDraggable } from '@dnd-kit/core';
 import { Calendar } from 'lucide-react';
 import type { Task } from '@/types/task';
+import { CategoryBadge } from '@/components/PriorityMatrix/common/CategoryBadge';
+import { TypeBadge } from '@/components/PriorityMatrix/common/TypeBadge';
 
 interface TaskCardProps {
   task: Task;
@@ -33,21 +35,12 @@ export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
       onClick={onClick}
     >
       <div className="flex mb-2 flex-wrap gap-1">
-        <div
-          className={`inline-flex items-center ${tags.type === 'Todo' ? 'text-purple-600' : 'text-blue-600'}`}
-        >
-          <div
-            className={`text-xs px-2 py-0.5 rounded-full ${tags.type === 'Todo' ? 'bg-purple-100' : 'bg-blue-100'}`}
-          >
-            {tags.type}
-          </div>
-        </div>
+        <TypeBadge type={tags.type} />
         {tags.category && (
-          <div className="inline-flex items-center">
-            <div className="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-600">
-              {tags.category}
-            </div>
-          </div>
+          <CategoryBadge
+            label={tags.category}
+            colorClass="bg-yellow-100 text-yellow-600"
+          />
         )}
       </div>
 
