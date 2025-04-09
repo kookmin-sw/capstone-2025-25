@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/Dialog';
 
 type ModalProps = {
-  trigger: ReactNode;
+  trigger?: ReactNode;
   title: string;
   description?: string;
   children: ReactNode;
