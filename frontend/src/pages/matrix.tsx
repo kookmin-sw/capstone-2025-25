@@ -1,3 +1,8 @@
+import PriorityMatrix from '@/components/PriorityMatrix/PriorityMatrix.tsx';
 export default function MatrixPage() {
-  return <h1>아이젠하워매트릭스페이지</h1>;
+  return (
+    <div className="flex flex-col gap-10">
+      <PriorityMatrix />
+    </div>
+  );
 }
