@@ -187,7 +187,7 @@ export default function Pomodoro() {
             {data?.pomodoro?.executedCycles?.length ? (
               <PomodoroResult pomodoro={data?.pomodoro} />
             ) : data?.pomodoro?.plannedCycles?.length ? (
-              <PomodoroTimer plannedCycles={data.pomodoro.plannedCycles} />
+              <PomodoroTimer eisenhower={data?.eisenhower} plannedCycles={data.pomodoro.plannedCycles} />
             ) : null}
           </div>
         </main>

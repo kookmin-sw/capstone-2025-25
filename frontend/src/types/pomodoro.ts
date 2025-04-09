@@ -1,49 +1,55 @@
-export type cycleType = 'focus' | 'break';
+export type TotalTime = {
+  hour: number;
+  minute: number;
+  second: number;
+  nano: number;
+};
 
-export type PomodoroCycle = {
+export type Mode = 'WORK' | 'BREAK'
+
+export type Cycle = {
   workDuration: number;
-  breakDuration: number | null;
+  breakDuration: number;
 };
-export type PomodoroTimerProps = {
-  plannedCycles: PomodoroCycle[];
-};
-//뽀모도로 데이터
+
 export type Pomodoro = {
   id: number;
   title: string;
   createdAt: string;
-  completedAt: string | null;
-  totalPlannedTime: string | null;
-  totalExecutedTime: string | null;
-  totalWorkingTime: string | null;
-  totalBreakTime: string | null;
-  plannedCycles: PomodoroCycle[];
-  executedCycles: PomodoroCycle[] ;
+  completedAt: string;
+  totalPlannedTime: TotalTime;
+  totalExecutedTime: TotalTime;
+  totalWorkingTime: TotalTime;
+  totalBreakTime: TotalTime;
+  plannedCycles: Cycle[];
+  executedCycles: Cycle[];
 };
 
 export type Eisenhower = {
   id: number;
   title: string;
+  memo: string;
+  dueDate: string;
+  quadrant: 'Q1' | 'Q2' | 'Q3' | 'Q4';
+  type: EisenhowerType;
+  order: number;
+  isCompleted: boolean;
+  createdAt: string;
 };
-//뽀모도로 사이드바 아이템 데이터(연결 투두 포함)
-export type PomodoroData = {
+export type LinkedUnlinkedPomodoro = {
   pomodoro: Pomodoro;
   eisenhower: Eisenhower | null;
 };
-
-export type PomodoroResponse = {
-  statusCode: number;
-  error: string | null;
-  content: {
-    linkedPomodoros: PomodoroData[];
-    unlinkedPomodoros: PomodoroData[];
-  };
+export type PomodoroList = {
+  linkedPomodoros: LinkedUnlinkedPomodoro[] | null;
+  unlinkedPomodoros: LinkedUnlinkedPomodoro[]  | null;
 };
-// 서브 사이드바의 item
-export type PomodoroItemProps = {
-  title: string;
+
+export type EisenhowerType = 'TODO' | 'SCHEDULE' | 'DELEGATE' | 'DELETE';
+
+
+//뽀모도로 사이드바 아이템 데이터(연결 투두 포함)
+export type PomodoroData = {
+  pomodoro: Pomodoro | null;
   eisenhower: Eisenhower | null;
-  time: string;
-  selected?: boolean;
-  onRemove?: () => void;
 };
