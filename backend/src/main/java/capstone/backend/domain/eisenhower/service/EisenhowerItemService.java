@@ -94,4 +94,9 @@ public class EisenhowerItemService {
         }
 
     }
+
+    public Page<EisenhowerItemResponse> searchItems(Long memberId, String keyword, Pageable pageable) {
+        return eisenhowerItemRepository.findByMemberIdAndTitleContaining(memberId, keyword, pageable)
+                .map(EisenhowerItemResponse::from);
+    }
 }
