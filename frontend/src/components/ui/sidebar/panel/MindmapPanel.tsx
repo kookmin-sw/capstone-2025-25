@@ -48,13 +48,6 @@ export default function MindmapPanel() {
           <div className="space-y-4">
             {/* 연결된 마인드맵 목록 */}
             {/* 아직 연결된 마인드맵이 없음 */}
-            {mindMaps.map((mindmap) => (
-              <MindmapCard
-                key={mindmap.id}
-                mindmap={mindmap}
-                isConnected={true}
-              />
-            ))}{' '}
           </div>
         </CollapsibleContent>
       </Collapsible>

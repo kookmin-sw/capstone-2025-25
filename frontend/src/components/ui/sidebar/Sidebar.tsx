@@ -67,45 +67,49 @@ export default function Sidebar() {
 
   return (
     <div className="flex h-screen">
-      <aside className="w-[250px] bg-white border-r border-gray-300 px-[22px] py-[20px]">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-8 h-8 bg-black rounded-xl flex items-center justify-center">
-            <span className="text-white font-bold">★</span>
+      <div className="flex h-full relative">
+        <aside className="w-[250px] bg-white border-r border-gray-300 px-[22px] py-[20px]">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-8 h-8 bg-black rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold">★</span>
+            </div>
+            <span className="text-lg font-semibold">Flowin</span>
           </div>
-          <span className="text-lg font-semibold">Flowin</span>
+
+          <div className="overflow-hidden">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={(e) => handleNavItemClick(e, item.route)}
+                className={cn(
+                  'flex items-center w-full px-4 py-3 gap-2 text-left transition rounded-md cursor-pointer relative group',
+                  activeId === item.id
+                    ? 'bg-[#8F5AFF] text-white font-semibold'
+                    : 'text-black hover:bg-gray-50',
+                )}
+              >
+                <div>{item.icon}</div>
+                <p>{item.label}</p>
+
+                {item.hasPanel && activeId === item.id && !panelVisible && (
+                  <div className="panel-toggle-button absolute right-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-100 p-1 hover:bg-white/10 rounded-full cursor-pointer">
+                    <ChevronsRight size={18} />
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        <div
+          className={cn(
+            'h-full bg-white border-r border-gray-300 transition-all duration-300 ease-in-out overflow-hidden',
+            panelVisible ? 'w-[300px] opacity-100' : 'w-0 opacity-0',
+          )}
+        >
+          {activeId && <SidebarPanel activeId={activeId} />}
         </div>
-
-        <div className="overflow-hidden">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={(e) => handleNavItemClick(e, item.route)}
-              className={cn(
-                'flex items-center w-full px-4 py-3 gap-2 text-left transition rounded-md cursor-pointer relative group',
-                activeId === item.id
-                  ? 'bg-[#8F5AFF] text-white font-semibold'
-                  : 'text-black hover:bg-gray-50',
-              )}
-            >
-              <div>{item.icon}</div>
-              <p>{item.label}</p>
-
-              {/* 패널이 있고, 활성화되어 있으며, 패널이 닫혀있을 때 화살표 표시 */}
-              {item.hasPanel && activeId === item.id && !panelVisible && (
-                <div className="panel-toggle-button absolute right-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 hover:bg-white/10 rounded-full cursor-pointer">
-                  <ChevronsRight size={18} />
-                </div>
-              )}
-            </button>
-          ))}
-        </div>
-      </aside>
-
-      {/* Panel 영역 */}
-      {panelVisible && activeId && <SidebarPanel activeId={activeId} />}
-
-      {/* 콘텐츠 영역 */}
-      <div className="flex-1 bg-gray-50"></div>
+      </div>
     </div>
   );
 }
