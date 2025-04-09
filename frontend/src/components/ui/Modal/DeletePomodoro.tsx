@@ -65,7 +65,6 @@ export default function DeletePomodoro({
                 step={1}
                 cycles={pomodoro.executedCycles}
                 readonly={true}
-                onValueChange={() => {}}
               />
             </div>
           </div>
