@@ -1,56 +1,136 @@
 import { Search, Settings, Bell } from 'lucide-react';
 import { PomodoroTimer } from '@/components/ui/PomodoroTimer';
 import PomodoroResult from '@/components/ui/PomodoroResult';
+import { LinkedUnlinkedPomodoro, PomodoroList } from '@/types/pomodoro';
+import { useParams, useNavigate } from 'react-router';
+import { useEffect } from 'react';
 
-//예시 데이터
-const data = {
-  pomodoro: {
-    id: 1,
-    title: '개발하기',
-    createdAt: '2025-04-04T19:43:39.359437',
-    completedAt: '2025-04-04T19:46:58.644763',
-    totalPlannedTime: '00:40:00',
-    totalExecutedTime: '01:30:00',
-    totalWorkingTime: '01:20:00',
-    totalBreakTime: '00:10:00',
-    plannedCycles: [
-      {
-        workDuration: 25,
-        breakDuration: 5,
+// 예시 데이터
+const response: PomodoroList = {
+  linkedPomodoros: [
+    {
+      pomodoro: {
+        id: 1,
+        title: '개발하기',
+        createdAt: '2025-04-04T19:43:39.359437',
+        completedAt: '2025-04-04T19:46:58.644763',
+        totalPlannedTime: {
+          hour: 1,
+          minute: 55,
+          second: 0,
+          nano: 0,
+        },
+        totalExecutedTime: {
+          hour: 1,
+          minute: 30,
+          second: 0,
+          nano: 0,
+        },
+        totalWorkingTime: {
+          hour: 0,
+          minute: 0,
+          second: 0,
+          nano: 0,
+        },
+        totalBreakTime: {
+          hour: 0,
+          minute: 0,
+          second: 0,
+          nano: 0,
+        },
+        plannedCycles: [
+          { workDuration: 25, breakDuration: 5 },
+          { workDuration: 25, breakDuration: 5 },
+          { workDuration: 25, breakDuration: 5 },
+          { workDuration: 25, breakDuration: 0 },
+        ],
+        executedCycles: [
+          { workDuration: 30, breakDuration: 5 },
+          { workDuration: 25, breakDuration: 5 },
+          { workDuration: 25, breakDuration: 0 },
+        ],
       },
-      {
-        workDuration: 25,
-        breakDuration: 5,
+      eisenhower: {
+        id: 1,
+        title: '개발 프로젝트',
+        memo: '깃헙에 푸시해야 함',
+        dueDate: '2025-04-10',
+        quadrant: 'Q1',
+        type: 'TODO',
+        order: 1,
+        isCompleted: false,
+        createdAt: '2025-04-04T19:40:00',
       },
-      {
-        workDuration: 25,
-        breakDuration: 5,
+    },
+  ],
+
+  unlinkedPomodoros: [
+    {
+      pomodoro: {
+        id: 2,
+        title: '자유',
+        createdAt: '2025-04-04T19:43:41.849539',
+        completedAt: '2025-04-05T09:00:00',
+        totalPlannedTime: {
+          hour: 1,
+          minute: 55,
+          second: 0,
+          nano: 0,
+        },
+        totalExecutedTime: {
+          hour: 0,
+          minute: 0,
+          second: 0,
+          nano: 0,
+        },
+        totalWorkingTime: {
+          hour: 0,
+          minute: 0,
+          second: 0,
+          nano: 0,
+        },
+        totalBreakTime: {
+          hour: 0,
+          minute: 0,
+          second: 0,
+          nano: 0,
+        },
+        plannedCycles: [
+          { workDuration: 25, breakDuration: 5 },
+          { workDuration: 25, breakDuration: 5 },
+          { workDuration: 25, breakDuration: 5 },
+          { workDuration: 25, breakDuration: 0 },
+        ],
+        executedCycles: [],
       },
-      {
-        workDuration: 25,
-        breakDuration: null,
-      },
-    ],
-    executedCycles: [
-      {
-        workDuration: 30,
-        breakDuration: 5,
-      },
-      {
-        workDuration: 25,
-        breakDuration: 5,
-      },
-      {
-        workDuration: 25,
-        breakDuration: null,
-      },
-    ],
-  },
-  eisenhower: null,
+      eisenhower: null,
+    },
+  ],
 };
 
-
 export default function Pomodoro() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  // 예시 데이터 선택. api 연결 후 수정
+  const allPomodoros: LinkedUnlinkedPomodoro[] = [
+    ...(response.linkedPomodoros ?? []),
+    ...(response.unlinkedPomodoros ?? []),
+  ];
+
+  const data = id
+    ? (allPomodoros.find((item) => item.pomodoro.id === Number(id)) ?? null)
+    : null;
+
+  // 존재하지 않는 id로 접근했거나, id 없이 접근했을 경우 → 리다이렉트
+  useEffect(() => {
+    if (!id || !data) {
+      if (allPomodoros.length > 0) {
+        navigate(`/pomodoro/${allPomodoros[0].pomodoro.id}`, { replace: true });
+      }
+    }
+  }, [id, data, allPomodoros, navigate]);
+
   return (
     <div className="flex min-h-screen bg-white">
       <div className="flex-1">
@@ -100,10 +180,13 @@ export default function Pomodoro() {
           </div>
 
           <div className="flex flex-col items-center gap-[30px]">
-            <div className="h-[153px] w-full border"></div>
-            {data.pomodoro.executedCycles.length > 0 ? (
-              <PomodoroResult pomodoro={data.pomodoro} />
-            ) : data.pomodoro.plannedCycles.length > 0 ? (
+            {/*컴포넌트로 교체*/}
+            {data?.eisenhower ? (
+              <div className="h-[153px] w-full border"></div>
+            ) : null}
+            {data?.pomodoro?.executedCycles?.length ? (
+              <PomodoroResult pomodoro={data?.pomodoro} />
+            ) : data?.pomodoro?.plannedCycles?.length ? (
               <PomodoroTimer plannedCycles={data.pomodoro.plannedCycles} />
             ) : null}
           </div>
