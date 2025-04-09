@@ -1,10 +1,9 @@
-'use client';
-
-import { useState } from 'react';
-import { Calendar, Star, Tag } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Calendar, ChevronDown } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/Dialog';
-import { format } from 'date-fns';
-import type { Task } from '@/types/task';
+import { CategoryBadge } from '@/components/PriorityMatrix/filter/CategoryBadge';
+import { TypeBadge } from '@/components/PriorityMatrix/filter/TypeBadge';
+import type { Task, TaskType } from '@/types/task';
 
 interface CreateTaskModalProps {
   isOpen: boolean;
@@ -14,6 +13,15 @@ interface CreateTaskModalProps {
   onCreateTask: (task: Omit<Task, 'id'>) => void;
 }
 
+const CATEGORY_COLOR_PALETTE = [
+  'bg-green-100 text-green-600',
+  'bg-yellow-100 text-yellow-600',
+  'bg-orange-100 text-orange-600',
+  'bg-amber-100 text-amber-600',
+  'bg-blue-100 text-blue-600',
+  'bg-gray-100 text-gray-600',
+];
+
 export function CreateTaskModal({
   isOpen,
   onClose,
@@ -22,11 +30,32 @@ export function CreateTaskModal({
   onCreateTask,
 }: CreateTaskModalProps) {
   const [title, setTitle] = useState('');
-  const [taskType, setTaskType] = useState<'Todo' | 'Thinking'>('Todo');
+  const [taskType, setTaskType] = useState<TaskType>('Todo');
   const [category, setCategory] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [memo, setMemo] = useState('');
-  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const [isTypeOpen, setIsTypeOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+
+  const typeRef = useRef<HTMLDivElement>(null);
+  const categoryRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (typeRef.current && !typeRef.current.contains(event.target as Node)) {
+        setIsTypeOpen(false);
+      }
+      if (
+        categoryRef.current &&
+        !categoryRef.current.contains(event.target as Node)
+      ) {
+        setIsCategoryOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSubmit = () => {
     if (!title.trim()) return;
@@ -69,93 +98,90 @@ export function CreateTaskModal({
     >
       <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden">
         <div className="p-6">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <p className="text-sm text-gray-500">{sectionTitle}</p>
-              <input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="새로운 일정"
-                className="text-2xl font-bold border-none p-0 h-auto focus:ring-0 placeholder-gray-300 outline-none w-full"
-              />
-            </div>
+          <div className="mb-4">
+            <p className="text-sm text-gray-500">{sectionTitle}</p>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="새로운 일정"
+              className="text-2xl font-bold border-none p-0 h-auto focus:ring-0 placeholder-gray-300 outline-none w-full"
+            />
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center">
-              <Star className="w-5 h-5 text-gray-400 mr-3" />
-              <span className="text-sm mr-4">타입</span>
-              <div className="flex space-x-2">
-                <button
-                  className={`px-3 py-1 rounded-full text-xs ${
-                    taskType === 'Todo'
-                      ? 'bg-purple-100 text-purple-600'
-                      : 'bg-gray-100 text-gray-500'
-                  }`}
-                  onClick={() => setTaskType('Todo')}
-                >
-                  Todo
-                </button>
-                <button
-                  className={`px-3 py-1 rounded-full text-xs ${
-                    taskType === 'Thinking'
-                      ? 'bg-purple-100 text-purple-600'
-                      : 'bg-gray-100 text-gray-500'
-                  }`}
-                  onClick={() => setTaskType('Thinking')}
-                >
-                  Thinking
-                </button>
-              </div>
+            <div className="relative flex items-center gap-2" ref={typeRef}>
+              <span className="text-sm">타입</span>
+              <button
+                className="flex items-center gap-1"
+                onClick={() => setIsTypeOpen((prev) => !prev)}
+              >
+                <TypeBadge type={taskType} />
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {isTypeOpen && (
+                <div className="absolute ml-12 top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 max-h-80 overflow-y-auto">
+                  {(['Todo', 'Thinking'] as TaskType[]).map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => {
+                        setTaskType(type);
+                        setIsTypeOpen(false);
+                      }}
+                      className="block w-full text-left px-3 py-1 hover:bg-gray-100 text-sm"
+                    >
+                      <TypeBadge type={type} />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="flex items-center">
-              <Tag className="w-5 h-5 text-gray-400 mr-3" />
-              <span className="text-sm mr-4">카테고리</span>
-              <input
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="비어있음"
-                className="h-8 text-sm border rounded-md px-2 outline-none focus:border-purple-300"
-              />
-            </div>
-
-            <div className="flex items-center">
-              <Calendar className="w-5 h-5 text-gray-400 mr-3" />
-              <span className="text-sm mr-4">마감일</span>
-              <div className="relative">
-                <input
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                  placeholder="비어있음"
-                  className="h-8 text-sm border rounded-md px-2 outline-none focus:border-purple-300"
-                  onFocus={() => setShowDatePicker(true)}
-                  onBlur={() => setTimeout(() => setShowDatePicker(false), 200)}
+            <div className="relative flex items-center gap-2" ref={categoryRef}>
+              <span className="text-sm">카테고리</span>
+              <button
+                className="flex items-center gap-1"
+                onClick={() => setIsCategoryOpen((prev) => !prev)}
+              >
+                <CategoryBadge
+                  label={category || '선택하기'}
+                  colorClass="bg-gray-100 text-gray-500"
                 />
-                {showDatePicker && (
-                  <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg p-2 z-10">
-                    {/* Simple date picker UI */}
-                    <div className="grid grid-cols-7 gap-1">
-                      {Array.from({ length: 7 }).map((_, i) => {
-                        const date = new Date();
-                        date.setDate(date.getDate() + i);
-                        return (
-                          <button
-                            key={i}
-                            className="w-8 h-8 rounded-full hover:bg-purple-100 flex items-center justify-center text-xs"
-                            onClick={() => {
-                              setDueDate(format(date, 'yyyy.MM.dd'));
-                              setShowDatePicker(false);
-                            }}
-                          >
-                            {format(date, 'd')}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {isCategoryOpen && (
+                <div className="absolute ml-12 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 max-h-80 overflow-y-auto">
+                  {['study', 'work', 'personal', 'oo'].map((cat, idx) => (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        setCategory(cat);
+                        setIsCategoryOpen(false);
+                      }}
+                      className="block w-full text-left px-3 py-1 hover:bg-gray-100 text-sm"
+                    >
+                      <CategoryBadge
+                        label={cat}
+                        colorClass={
+                          CATEGORY_COLOR_PALETTE[
+                            idx % CATEGORY_COLOR_PALETTE.length
+                          ]
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center">
+              <Calendar className="w-5 h-5 text-[#8d5cf6] mr-3" />
+              <span className="text-sm mr-4">마감일</span>
+              <input
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="text-xs px-2 py-1 rounded-md border border-gray-200 focus:outline-none focus:ring-1 focus:ring-[#8d5cf6]"
+              />
             </div>
           </div>
 
@@ -169,7 +195,6 @@ export function CreateTaskModal({
             />
           </div>
 
-          {/* Submit Button */}
           <div className="mt-6 flex justify-end space-x-2">
             <button
               onClick={onClose}
