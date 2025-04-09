@@ -1,6 +1,12 @@
 package capstone.backend.domain.mindmap.dto.response;
 
+import capstone.backend.domain.common.entity.TaskType;
+import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
+import capstone.backend.domain.eisenhower.entity.EisenhowerQuadrant;
 import capstone.backend.domain.mindmap.entity.MindMap;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record SidebarMindMapResponse(
     MindMap mindMap,
@@ -18,12 +24,26 @@ public record SidebarMindMapResponse(
 
 record SidebarEisenhowerItemDTO(
     Long id,
-    String title
+    String title,
+    String memo,
+    LocalDate dueDate,
+    EisenhowerQuadrant quadrant,
+    TaskType type,
+    Long order,
+    boolean isCompleted,
+    LocalDateTime createdAt
 ){
     SidebarEisenhowerItemDTO(EisenhowerItem eisenhowerItem) {
         this(
             eisenhowerItem.getId(),
-            eisenhowerItem.getTitle()
+            eisenhowerItem.getTitle(),
+            eisenhowerItem.getMemo(),
+            eisenhowerItem.getDueDate(),
+            eisenhowerItem.getQuadrant(),
+            eisenhowerItem.getType(),
+            eisenhowerItem.getOrder(),
+            eisenhowerItem.getIsCompleted(),
+            eisenhowerItem.getCreatedAt()
         );
     }
 }

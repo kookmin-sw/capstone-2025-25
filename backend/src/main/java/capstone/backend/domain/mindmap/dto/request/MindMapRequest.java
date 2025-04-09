@@ -19,7 +19,7 @@ public record MindMapRequest(
 
     @Schema(description = "마인드맵 타입(TODO, THINKING)")
     @NotNull(message = "타입을 입력해주세요.")
-    MindMapType type,
+    TaskType type,
 
     @Schema(description = "마인드맵 노드 정보")
     @NotEmpty(message = "노드 정보를 입력해주세요.")

@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/mindmap")
 @RequiredArgsConstructor
@@ -78,10 +80,9 @@ public class MindMapController {
 
     @GetMapping("/list")
     @Operation(summary = "아이젠하워 연결 별 마인드맵 리스트 조회")
-    public ApiResponse<SidebarMindMapResponse> getMindMapList(
+    public ApiResponse<List<SidebarMindMapResponse>> getMindMapList(
         @AuthenticationPrincipal CustomOAuth2User user
     ) {
-        SidebarMindMapResponse response = mindMapService.getMindMapList(user.getMemberId());
-        return ApiResponse.ok(response);
+        return ApiResponse.ok(mindMapService.getMindMapList(user.getMemberId()));
     }
 }

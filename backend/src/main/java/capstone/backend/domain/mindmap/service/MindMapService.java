@@ -1,5 +1,8 @@
 package capstone.backend.domain.mindmap.service;
 
+import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
+import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
+import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MindMapService {
     private final MindMapRepository mindMapRepository;
     private final MemberRepository memberRepository;
+    private final EisenhowerItemRepository eisenhowerItemRepository;
 
     //마인드맵 생성
     @Transactional
@@ -32,8 +36,8 @@ public class MindMapService {
         Optional.ofNullable(mindMapRequest.eisenhowerId())
             .ifPresent(eisenhowerId -> {
                 EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(eisenhowerId)
-                    .orElseThrow(EisenhowerNotFoundException::new);
-                eisenhowerItem.setMindMap(mindMap);
+                    .orElseThrow(EisenhowerItemNotFoundException::new);
+                eisenhowerItem.connectMindMap(mindMap);
                 eisenhowerItemRepository.save(eisenhowerItem);
             });
         mindMapRepository.save(mindMap);
@@ -77,7 +81,7 @@ public class MindMapService {
 
 
     //마인드맵 리스트 조회
-    public SidebarMindMapResponse getMindMapList(Long memberId){
+    public List<SidebarMindMapResponse> getMindMapList(Long memberId){
         List<Object[]> results = mindMapRepository.findMindMapWithEisenhowerByMemberId(memberId);
         return results.stream()
             .map(row -> {
