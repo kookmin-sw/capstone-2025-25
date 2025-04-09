@@ -96,7 +96,7 @@ const response: PomodoroList = {
           nano: 0,
         },
         plannedCycles: [
-          { workDuration: 25, breakDuration: 5 },
+          { workDuration: 25, breakDuration: 0.5 },
           { workDuration: 25, breakDuration: 5 },
           { workDuration: 25, breakDuration: 5 },
           { workDuration: 25, breakDuration: 0 },
@@ -185,7 +185,7 @@ export default function Pomodoro() {
               <div className="h-[153px] w-full border"></div>
             ) : null}
             {data?.pomodoro?.executedCycles?.length ? (
-              <PomodoroResult pomodoro={data?.pomodoro} />
+              <PomodoroResult linkedUnlinkedPomodoro={data} />
             ) : data?.pomodoro?.plannedCycles?.length ? (
               <PomodoroTimer eisenhower={data?.eisenhower} plannedCycles={data.pomodoro.plannedCycles} />
             ) : null}
