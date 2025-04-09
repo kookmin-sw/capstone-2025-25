@@ -2,8 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import type React from 'react';
-import { ChevronDown, Plus, X, Check } from 'lucide-react';
+import { ChevronDown, Plus, Check } from 'lucide-react';
 import { DateRangePicker } from '@/components/PriorityMatrix/common/DateRangePicker';
+import { CategoryBadge } from '@/components/PriorityMatrix/common/CategoryBadge';
+import { TypeBadge } from '@/components/PriorityMatrix/common/TypeBadge';
 
 interface Category {
   title: string;
@@ -114,22 +116,11 @@ export function FilterBar({
       : (categories.find((c) => c.title === title)?.color ??
         'bg-gray-100 text-gray-600');
 
-  const getTypeBadgeColor = (type: string) => {
-    switch (type) {
-      case 'Todo':
-        return 'bg-purple-100 text-purple-600';
-      case 'Thinking':
-        return 'bg-blue-100 text-blue-600';
-      case 'all':
-      default:
-        return 'bg-gray-200 text-gray-600';
-    }
-  };
-
   return (
     <div className="bg-white rounded-lg p-4">
       <div className="flex flex-col md:flex-row justify-between gap-3">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          {/* 타입 필터 */}
           {/* 타입 필터 */}
           <div className="relative" ref={typeRef}>
             <div
@@ -139,50 +130,43 @@ export function FilterBar({
               <span className="text-sm font-medium">타입</span>
               <ChevronDown className="w-4 h-4" />
             </div>
+
+            {/* 선택된 타입 뱃지 */}
             <div
-              className={`mt-2 inline-flex items-center px-3 py-1 rounded-full text-xs ${getTypeBadgeColor(
-                selectedType,
-              )}`}
+              className={`mt-2 inline-flex items-center px-3 py-1 rounded-full border text-xs font-medium ${
+                selectedType === 'all'
+                  ? 'border-gray-300 text-gray-500'
+                  : 'border-[#8D5CF6] text-[#8D5CF6]'
+              }`}
             >
+              <span
+                className={`w-2 h-2 rounded-full mr-2 ${
+                  selectedType === 'all' ? 'bg-gray-400' : 'bg-[#8D5CF6]'
+                }`}
+              ></span>
               {selectedType === 'all' ? '모든 타입' : selectedType}
             </div>
+
+            {/* 드롭다운 */}
             {isTypeDropdownOpen && (
               <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 w-40">
                 <div className="p-2 space-y-1">
-                  {['Todo', 'Thinking'].map((type) => (
+                  {(['all', 'Todo', 'Thinking'] as const).map((type) => (
                     <div
                       key={type}
-                      className={`px-3 py-2 text-sm rounded-md cursor-pointer flex items-center ${
+                      className={`px-3 py-2 text-sm rounded-md cursor-pointer ${
                         selectedType === type
                           ? 'bg-gray-100'
                           : 'hover:bg-gray-50'
                       }`}
                       onClick={() => {
-                        onTypeChange(type as 'Todo' | 'Thinking');
+                        onTypeChange(type);
                         setIsTypeDropdownOpen(false);
                       }}
                     >
-                      <div
-                        className={`w-2 h-2 rounded-full mr-2 ${
-                          type === 'Todo' ? 'bg-purple-500' : 'bg-blue-500'
-                        }`}
-                      ></div>
-                      {type}
+                      <TypeBadge type={type} />
                     </div>
                   ))}
-                  <div
-                    className={`px-3 py-2 text-sm rounded-md cursor-pointer ${
-                      selectedType === 'all'
-                        ? 'bg-gray-100'
-                        : 'hover:bg-gray-50'
-                    }`}
-                    onClick={() => {
-                      onTypeChange('all');
-                      setIsTypeDropdownOpen(false);
-                    }}
-                  >
-                    모든 타입
-                  </div>
                 </div>
               </div>
             )}
@@ -257,15 +241,14 @@ export function FilterBar({
                         {categories.map((cat) => (
                           <div
                             key={cat.title}
-                            className="flex items-center justify-between px-2 py-1 rounded-md hover:bg-gray-50"
+                            className="flex items-center justify-between px-2 py-1 rounded-md hover:bg-gray-50 cursor-pointer"
                           >
-                            <span className="text-sm">{cat.title}</span>
-                            <button
-                              onClick={() => handleDeleteCategory(cat.title)}
-                              className="p-1 rounded-full hover:bg-red-100 text-red-500"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
+                            <CategoryBadge
+                              label={cat.title}
+                              colorClass={cat.color}
+                              showDelete
+                              onDelete={() => handleDeleteCategory(cat.title)}
+                            />
                           </div>
                         ))}
                       </div>
