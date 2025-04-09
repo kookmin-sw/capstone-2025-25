@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import { cn } from '@/lib/utils';
-import { PomodoroCycle } from '@/types/pomodoro';
+import { Cycle } from '@/types/pomodoro';
 
 type MultiSliderProps = {
-  cycles: PomodoroCycle[];
-  onValueChange: (values: PomodoroCycle[]) => void;
+  cycles: Cycle[];
+  onValueChange: (values: Cycle[]) => void;
   min: number;
   max: number;
   step?: number;
@@ -35,9 +35,9 @@ const MultiSlider = React.forwardRef<
     },
     ref,
   ) => {
-    // 슬라이더용 형태 변경
+    // 슬라이더용 형태로 변경 함수
     const cycleToSliderValues = React.useCallback(
-      (cycles: PomodoroCycle[]): number[] => {
+      (cycles: Cycle[]): number[] => {
         const values: number[] = [min];
         let currentTime = min;
 
@@ -45,7 +45,7 @@ const MultiSlider = React.forwardRef<
           currentTime += cycle.workDuration;
           values.push(currentTime);
 
-          if (cycle.breakDuration !== null) {
+          if (cycle.breakDuration !== 0) {
             currentTime += cycle.breakDuration;
             values.push(currentTime);
           }
@@ -61,18 +61,22 @@ const MultiSlider = React.forwardRef<
       [cycles, cycleToSliderValues],
     );
 
-    // 원래 형태로 변경
+    // 원래 형태로 변경 함수
     const sliderToCycleValues = React.useCallback(
-      (sliderValues: number[]): PomodoroCycle[] => {
-        const cycles: PomodoroCycle[] = [];
+      (sliderValues: number[]): Cycle[] => {
+        const cycles: Cycle[] = [];
 
         for (let i = 0; i < sliderValues.length - 1; i += 2) {
-          const workDuration = sliderValues[i + 1] - sliderValues[i];
-          if (i + 2 >= sliderValues.length) {
-            cycles.push({ workDuration, breakDuration: null });
+          if (i + 2 <= sliderValues.length) {
+            const workDurationValue = sliderValues[i + 1] - sliderValues[i];
+            const breakDurationValue = sliderValues[i + 1] - sliderValues[i];
+            cycles.push({
+              workDuration: workDurationValue,
+              breakDuration: breakDurationValue,
+            });
           } else {
-            const breakDuration = sliderValues[i + 2] - sliderValues[i + 1];
-            cycles.push({ workDuration, breakDuration });
+            const workDurationValue = sliderValues[i + 1] - sliderValues[i];
+            cycles.push({ workDuration: workDurationValue, breakDuration: 0 });
           }
         }
         return cycles;
@@ -82,7 +86,7 @@ const MultiSlider = React.forwardRef<
 
     //데이터 변경 시 부모에게 전달
     const handleValueChange = (newSliderValues: number[]) => {
-      // 첫 번째와 마지막 값은 원래 값으로 유지
+      // 슬라이더 양 끝 위치 고정
       const fixedValues = [...newSliderValues];
       fixedValues[0] = min;
       fixedValues[fixedValues.length - 1] = max;
@@ -146,6 +150,7 @@ const MultiSlider = React.forwardRef<
                 fontSize: 'clamp(10px, 2vh, 16px)',
               }}
             >
+              {/*  칸의 시간 글씨 보이는 기준*/}
               {(intervals.length <= 1 || interval.duration >= 5) && (
                 <span
                   style={{
