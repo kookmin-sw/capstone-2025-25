@@ -265,7 +265,6 @@ export function PomodoroTimer({
   };
   // 중지 버튼 완료 모달 열기
   const finishPomodoro = () => {
-    console.log(pomodoroResult);
     const minutes = elapsedTime / 60;
     const tempResult = [...pomodoroResult];
 
@@ -281,7 +280,6 @@ export function PomodoroTimer({
         breakDuration: minutes,
       };
     }
-    console.log('pomodoroResult', pomodoroResult);
     setPreviewResult(tempResult);
     setIsRunning(false);
     setIsModalOpen(true);
@@ -289,13 +287,22 @@ export function PomodoroTimer({
 
   //모달 닫힌 이후 동작 (이어서/ 끝남)
   useEffect(() => {
-    if (!isModalOpen && !didConfirm) {
-      setIsRunning(true);
+    if (
+      !isRunning &&
+      previewResult.length == 0 &&
+      elapsedTime == 0 &&
+      pomodoroResult.length == 0
+    ) {
       return;
-    } else if (!isModalOpen && didConfirm) {
-      setDidConfirm(false);
-      setPomodoroResult(previewResult);
-      return;
+    } else {
+      if (!isModalOpen && !didConfirm) {
+        setIsRunning(true);
+        return;
+      } else if (!isModalOpen && didConfirm) {
+        setDidConfirm(false);
+        setPomodoroResult(previewResult);
+        return;
+      }
     }
   }, [isModalOpen]);
 
