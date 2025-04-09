@@ -2,11 +2,11 @@ import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { Timer } from 'lucide-react';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
-import { PomodoroData, Eisenhower } from '@/types/pomodoro';
+import { Cycle, Eisenhower } from '@/types/pomodoro';
 
 type EndPomodoroProps = {
   eisenhower: Eisenhower | null;
-  pomodoroData: PomodoroData | null;
+  cycles: Cycle[] ;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onComplete: () => void;
@@ -14,12 +14,12 @@ type EndPomodoroProps = {
 
 export default function EndPomodoro({
   eisenhower,
-  pomodoroData,
+  cycles,
   isOpen,
   onOpenChange,
   onComplete,
 }: EndPomodoroProps) {
-  const totalExecutedTime = pomodoroData?.pomodoro?.executedCycles.reduce(
+  const totalExecutedTime = cycles?.reduce(
     (sum, cycle) => sum + cycle.workDuration + (cycle.breakDuration ?? 0),
     0,
   );
@@ -27,7 +27,7 @@ export default function EndPomodoro({
   const finishPomodoro = () => {
     // 완료 API 추가
     onComplete();
-    onOpenChange(false)
+    onOpenChange(false);
   };
 
   return (
@@ -68,9 +68,8 @@ export default function EndPomodoro({
               min={0}
               max={totalExecutedTime}
               step={1}
-              cycles={pomodoroData}
+              cycles={cycles}
               readonly={true}
-              onValueChange={() => {}}
             />
           </div>
         </div>

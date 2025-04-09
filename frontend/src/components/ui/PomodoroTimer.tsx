@@ -310,7 +310,7 @@ export function PomodoroTimer({
     <div className="flex flex-col items-center">
       <EndPomodoro
         eisenhower={eisenhower}
-        pomodoroData={previewResult}
+        cycles={previewResult}
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
         onComplete={() => {
