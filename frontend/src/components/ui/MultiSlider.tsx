@@ -67,9 +67,9 @@ const MultiSlider = React.forwardRef<
         const cycles: Cycle[] = [];
 
         for (let i = 0; i < sliderValues.length - 1; i += 2) {
-          if (i + 2 <= sliderValues.length) {
+          if (i + 2 < sliderValues.length) {
             const workDurationValue = sliderValues[i + 1] - sliderValues[i];
-            const breakDurationValue = sliderValues[i + 1] - sliderValues[i];
+            const breakDurationValue = sliderValues[i + 2] - sliderValues[i+1];
             cycles.push({
               workDuration: workDurationValue,
               breakDuration: breakDurationValue,
@@ -85,20 +85,17 @@ const MultiSlider = React.forwardRef<
     );
 
     //데이터 변경 시 부모에게 전달
-    const handleValueChange = (newSliderValues: number[]) => {
-      // 슬라이더 양 끝 위치 고정
-      const fixedValues = [...newSliderValues];
-      fixedValues[0] = min;
-      fixedValues[fixedValues.length - 1] = max;
+      const handleValueChange = (newSliderValues: number[]) => {
 
-      const sortedValues = [...fixedValues].sort((a, b) => a - b);
+          const sortedValues = [...newSliderValues].sort((a, b) => a - b);
 
-      sortedValues[0] = min;
-      sortedValues[sortedValues.length - 1] = max;
+          sortedValues[0] = min;
+          sortedValues[sortedValues.length - 1] = max;
 
-      const newCycles = sliderToCycleValues(sortedValues);
-      onValueChange(newCycles);
-    };
+
+          const newCycles = sliderToCycleValues(sortedValues);
+          onValueChange(newCycles);
+      };
 
     // 슬라이더 블럭형태의 정보
     const intervals = React.useMemo(() => {

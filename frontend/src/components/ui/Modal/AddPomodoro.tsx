@@ -35,7 +35,7 @@ export default function AddPomodoro({ linkedEisenhower }: Props) {
   // 세션 간격 추천
   const generateSliderValuesFromTime = (hours: number, minutes: number) => {
     const totalMinutes = hours * 60 + minutes;
-    const values: { workDuration: number; breakDuration: number | null }[] = [];
+    const values: { workDuration: number; breakDuration: number }[] = [];
     let remainingTime = totalMinutes;
 
     // workDuration 25분, breakDuration 5분으로 기본 구성
@@ -44,7 +44,7 @@ export default function AddPomodoro({ linkedEisenhower }: Props) {
         values.push({ workDuration: 25, breakDuration: 5 });
         remainingTime -= 30; // 집중 25분 + 휴식 5분씩 차감
       } else {
-        values.push({ workDuration: remainingTime, breakDuration: null });
+        values.push({ workDuration: remainingTime, breakDuration: 0 });
         remainingTime = 0;
       }
     }
@@ -127,7 +127,11 @@ export default function AddPomodoro({ linkedEisenhower }: Props) {
             <Button
               className="px-8"
               onClick={() => setPage(1)}
-              disabled={hours == 0 && minutes == 0}
+              disabled={
+                linkedEisenhower?.id
+                    ? hours === 0 && minutes === 0
+                    : (!title?.trim() || (hours === 0 && minutes === 0))
+              }
             >
               다음
             </Button>
