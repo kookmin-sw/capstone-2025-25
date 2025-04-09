@@ -1,14 +1,15 @@
 import { Link, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-import {LinkedUnlinkedPomodoro, TotalTime} from '@/types/pomodoro';
+import { LinkedUnlinkedPomodoro, TotalTime } from '@/types/pomodoro';
+import DeletePomodoro from "@/components/ui/Modal/DeletePomodoro.tsx";
+import {useState} from "react";
 
 export type PomodoroItemProps = {
   item: LinkedUnlinkedPomodoro;
   selected?: boolean;
   onClick?: () => void;
 };
-
 
 // 시간 포맷 함수
 function formatToHourMin(timeObj: TotalTime): string {
@@ -21,7 +22,11 @@ function formatToHourMin(timeObj: TotalTime): string {
   return parts.join(' ');
 }
 
-export function PomodoroItem({ item, selected,onClick }: PomodoroItemProps) {
+const deletePomodoro = () => {};
+
+export function PomodoroItem({ item, selected, onClick }: PomodoroItemProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log(item)
   return (
     <div
       className={cn(
@@ -33,9 +38,17 @@ export function PomodoroItem({ item, selected,onClick }: PomodoroItemProps) {
     >
       <div className="flex justify-between pl-1">
         <p className="font-semibold text-lg">{item.pomodoro.title}</p>
-        <button className={'cursor-pointer hidden group-hover:block'}>
-          <X className="w-5 h-5 text-gray-700" />
-        </button>
+        <DeletePomodoro
+            trigger = {<button
+                className={'cursor-pointer hidden group-hover:block'}
+                onClick={deletePomodoro}
+            >
+              <X className="w-5 h-5 text-gray-700" />
+            </button>}
+            linkedUnlinkedPomodoro={item}
+            isOpen={isModalOpen}
+            onOpenChange={setIsModalOpen}
+        />
       </div>
 
       {item.eisenhower && (
@@ -46,7 +59,9 @@ export function PomodoroItem({ item, selected,onClick }: PomodoroItemProps) {
       )}
 
       <div className="px-1">
-        <p className="text-sm text-gray-500">{formatToHourMin(item.pomodoro.totalExecutedTime)}</p>
+        <p className="text-sm text-gray-500">
+          {formatToHourMin(item.pomodoro.totalExecutedTime)}
+        </p>
       </div>
     </div>
   );
