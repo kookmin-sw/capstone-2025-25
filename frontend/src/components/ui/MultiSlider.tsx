@@ -92,8 +92,15 @@ const MultiSlider = React.forwardRef<
           sortedValues[0] = min;
           sortedValues[sortedValues.length - 1] = max;
 
+          // 최소 1분 간격으로 보정
+          for (let i = 1; i < sortedValues.length; i++) {
+              if (sortedValues[i] - sortedValues[i - 1] < 1) {
+                  sortedValues[i] = sortedValues[i - 1] + 1;
+              }
+          }
 
           const newCycles = sliderToCycleValues(sortedValues);
+
           onValueChange(newCycles);
       };
 
