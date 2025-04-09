@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Edit2, Tag, Calendar, Save } from 'lucide-react';
 import { format } from 'date-fns';
 import type { Task } from '@/types/task';
-import { CreateMindmapModal } from '@/components/PriorityMatrix/common/CreateMindmapModal'; // 경로는 실제 위치에 맞게 조정
+import { CreateMindmapModal } from '@/components/PriorityMatrix/common/CreateMindmapModal';
 
 interface TaskDetailSidebarProps {
   task: Task | null;
