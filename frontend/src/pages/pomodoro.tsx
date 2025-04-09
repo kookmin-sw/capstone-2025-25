@@ -96,7 +96,7 @@ const response: PomodoroList = {
           nano: 0,
         },
         plannedCycles: [
-          { workDuration: 25, breakDuration: 0.5 },
+          { workDuration: 25, breakDuration: 5 },
           { workDuration: 25, breakDuration: 5 },
           { workDuration: 25, breakDuration: 5 },
           { workDuration: 25, breakDuration: 0 },
