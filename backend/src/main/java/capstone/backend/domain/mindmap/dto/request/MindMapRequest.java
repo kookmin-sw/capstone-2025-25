@@ -1,7 +1,7 @@
 package capstone.backend.domain.mindmap.dto.request;
 
 import capstone.backend.domain.mindmap.entity.Edge;
-import capstone.backend.domain.mindmap.entity.MindMapType;
+import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.mindmap.entity.Node;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

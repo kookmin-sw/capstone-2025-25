@@ -19,7 +19,7 @@ public record RefreshToken(
         @Indexed
         String token,
 
-        String memberId,
+        Long memberId,
 
         @TimeToLive(unit = TimeUnit.MILLISECONDS)
         long ttl
