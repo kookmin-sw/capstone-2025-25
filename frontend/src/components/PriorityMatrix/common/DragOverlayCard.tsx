@@ -33,7 +33,7 @@ export function DragOverlayCard({
       </div>
 
       <div className="flex items-start mb-2 flex-grow">
-        <div className="w-5 h-5 rounded-full border-2 border-[#8d5cf6] mr-2 mt-0.5 flex-shrink-0"></div>
+        <div className="w-4 h-4 rounded-full border-2 border-[#8d5cf6] mr-2 mt-0.5 flex-shrink-0"></div>
         <div className="text-sm font-medium line-clamp-2">{title}</div>
       </div>
 

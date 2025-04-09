@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import {
   DndContext,
@@ -32,9 +30,8 @@ import type { Task } from '@/types/task';
 
 export default function PriorityMatrix() {
   const [tasks, setTasks] = useState(initialTasks);
-  const [startDate, setStartDate] = useState(new Date(2025, 0, 20));
-  const [endDate, setEndDate] = useState(new Date(2025, 3, 9));
-  const [view, setView] = useState<'matrix' | 'board' | 'list'>('matrix');
+  const [startDate, setStartDate] = useState(new Date());
+  const [view, setView] = useState<'matrix' | 'board'>('matrix');
   const [selectedType, setSelectedType] = useState<'all' | 'Todo' | 'Thinking'>(
     'Thinking',
   );
@@ -48,6 +45,14 @@ export default function PriorityMatrix() {
   const [completedSelectedType, setCompletedSelectedType] = useState<
     'all' | 'Todo' | 'Thinking'
   >('Thinking');
+
+  // 오늘 날짜부터 10 일 뒤까지 캘린더 범위 설정
+  const [endDate, setEndDate] = useState(() => {
+    const date = new Date();
+    date.setDate(date.getDate() + 10);
+    return date;
+  });
+
   const [completedSelectedCategory, setCompletedSelectedCategory] =
     useState<string>('category');
 
@@ -55,12 +60,12 @@ export default function PriorityMatrix() {
   useEffect(() => {
     const savedCategories = localStorage.getItem('taskCategories');
     if (savedCategories) {
-      // 여기서는 카테고리를 직접 사용하지 않지만,
       // FilterBar 컴포넌트에서 로컬 스토리지를 사용하도록 구현함
-      console.log('카테고리 로드됨:', JSON.parse(savedCategories));
+      console.log('카테고리', JSON.parse(savedCategories));
     }
   }, []);
 
+  // 드래그 센서 설정하는 부분 5px 이상 움직여야 드래그로 인식
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 5 },
@@ -92,6 +97,7 @@ export default function PriorityMatrix() {
     );
   };
 
+  // 드래그 시작 지점에 어떤 작업을 현재 끌고 있는지 기록
   const handleDragStart = (event: DragEndEvent) => {
     const { active } = event;
     const sectionId = getTaskSectionId(active.id.toString());
@@ -259,7 +265,6 @@ export default function PriorityMatrix() {
   const handleSaveTask = (updatedTask: Task) => {
     const sectionId = getTaskSectionId(updatedTask.id);
     // TODO : 코드 개선 필요 (타입에러)
-
     if (sectionId) {
       setTasks((prevTasks) => {
         const sectionTasks = [
@@ -316,7 +321,7 @@ export default function PriorityMatrix() {
     <DndContext
       sensors={sensors}
       collisionDetection={(args) => {
-        // 충돌 감지 알고리즘 조합 - 더 정확한 드래그 앤 드롭을 위해
+        // 충돌 감지 추가
         const pointerCollisions = pointerWithin(args);
         const rectCollisions = rectIntersection(args);
         const allCollisions = [...pointerCollisions, ...rectCollisions];
@@ -332,9 +337,9 @@ export default function PriorityMatrix() {
     >
       <div className="flex h-screen bg-white">
         <div className="flex-1 flex flex-col">
-          {/* 헤더 영역 */}
           <div className="h-14 border-b border-[#e5e5e5] flex items-center px-4 justify-between">
             <div className="flex items-center">
+              {/*모바일일 때만 나타남*/}
               <MobileMenu
                 activeMenu={activeMenu}
                 onMenuChange={handleMenuChange}
@@ -351,6 +356,7 @@ export default function PriorityMatrix() {
                 </div>
               </div>
             </div>
+            {/*임시 헤더 */}
             <div className="flex items-center">
               <button className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#f2f2f2]">
                 <Settings className="w-5 h-5 text-[#6e726e]" />
@@ -363,13 +369,8 @@ export default function PriorityMatrix() {
                   <div>Anima Agrawal</div>
                   <div className="text-[#6e726e]">user@naver.com</div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white">
-                  <img
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/%E1%84%86%E1%85%A2%E1%84%90%E1%85%B3%E1%84%85%E1%85%B5%E1%86%A8%E1%84%89%E1%85%B3%E1%84%92%E1%85%A7%E1%86%BC-29sN9XSuJyQEX1de091ZwDB7zyyixh.png"
-                    alt="User"
-                    className="w-8 h-8 rounded-full"
-                  />
-                </div>
+                {/*프로필 사진 영역*/}
+                <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white"></div>
               </div>
             </div>
           </div>
@@ -386,7 +387,7 @@ export default function PriorityMatrix() {
                 <ChevronDown className="ml-2 w-5 h-5" />
               </div>
               {isHeaderDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 bg-white border border-[#e5e5e5] rounded-md shadow-md z-10 w-40">
+                <div className="absolute top-full left-0 mt-1 bg-white border border-[#e5e5e5] rounded-md shadow-md z-10">
                   <div
                     className="px-4 py-2 text-sm hover:bg-[#f5f1ff] cursor-pointer flex items-center"
                     onClick={() => {
@@ -395,13 +396,11 @@ export default function PriorityMatrix() {
                     }}
                   >
                     {scheduleType === 'all' && (
-                      <div className="w-4 h-4 mr-2 flex items-center justify-center">
+                      <div className="w-1 h-4 mr-2 flex items-center justify-center">
                         ✓
                       </div>
                     )}
-                    <span className={scheduleType === 'all' ? 'ml-6' : ''}>
-                      모든 일정
-                    </span>
+                    <span>모든 일정</span>
                   </div>
                   <div
                     className="px-4 py-2 text-sm hover:bg-[#f5f1ff] cursor-pointer flex items-center"
@@ -411,15 +410,11 @@ export default function PriorityMatrix() {
                     }}
                   >
                     {scheduleType === 'completed' && (
-                      <div className="w-4 h-4 mr-2 flex items-center justify-center">
+                      <div className="w-1 h-4 mr-2 flex items-center justify-center">
                         ✓
                       </div>
                     )}
-                    <span
-                      className={scheduleType === 'completed' ? 'ml-6' : ''}
-                    >
-                      완료된 일정
-                    </span>
+                    <span>완료된 일정</span>
                   </div>
                 </div>
               )}
@@ -449,7 +444,7 @@ export default function PriorityMatrix() {
             </div>
           </div>
 
-          <div className="flex-1 bg-[#faf6ff] px-3 md:px-6 pb-6 overflow-auto">
+          <div className="flex-1  px-3 md:px-6 pb-6 overflow-auto">
             {scheduleType === 'all' ? (
               <AllScheduleView
                 tasks={filteredTasks}
