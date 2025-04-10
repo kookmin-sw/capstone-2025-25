@@ -188,7 +188,7 @@ const MultiSlider = React.forwardRef<
               <SliderPrimitive.Range className="absolute h-full bg-transparent" />
             </SliderPrimitive.Track>
 
-            {sliderValues.map((value, index) => (
+            {sliderValues.map((_, index) => (
               <SliderPrimitive.Thumb
                 key={index}
                 className={cn(
