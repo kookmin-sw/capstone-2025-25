@@ -304,7 +304,7 @@ export function PomodoroTimer({
         return;
       }
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, didConfirm, previewResult, isRunning, elapsedTime, pomodoroResult.length]);
 
   return (
     <div className="flex flex-col items-center">
