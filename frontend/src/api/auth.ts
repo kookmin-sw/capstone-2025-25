@@ -1,9 +1,9 @@
 export async function fetchMyInfo() {
   const res = await fetch(
-    `${import.meta.env.VITE_API_BASE_URL}/api/auth/token`, // 서버에서 로그인 상태 확인 & accessToken 받아오기
+    `${import.meta.env.VITE_API_BASE_URL}/api/auth/token`,
     {
       method: 'GET',
-      credentials: 'include', // HttpOnly 쿠키 포함
+      credentials: 'include',
     },
   );
 
