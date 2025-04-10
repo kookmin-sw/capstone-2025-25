@@ -3,21 +3,21 @@ import { Button } from '@/components/ui/button';
 import { Timer } from 'lucide-react';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { PomodoroCycle, Eisenhower } from '@/types/pomodoro';
+import { DialogClose } from '@radix-ui/react-dialog';
+import { ReactNode } from 'react';
 
 type EndPomodoroProps = {
+  trigger: ReactNode;
   eisenhower: Eisenhower | null;
-  cycles: PomodoroCycle[] ;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  onComplete: () => void;
+  cycles: PomodoroCycle[];
+  handleContinue: (open: boolean) => void;
 };
 
 export default function EndPomodoro({
+  trigger,
   eisenhower,
   cycles,
-  isOpen,
-  onOpenChange,
-  onComplete,
+  handleContinue,
 }: EndPomodoroProps) {
   const totalExecutedTime = cycles?.reduce(
     (sum, cycle) => sum + cycle.workDuration + (cycle.breakDuration ?? 0),
@@ -26,29 +26,28 @@ export default function EndPomodoro({
 
   const finishPomodoro = () => {
     // 완료 API 추가
-    onComplete();
-    onOpenChange(false);
   };
 
   return (
     <Modal
-      isOpen={isOpen}
+      trigger={trigger}
       title="뽀모도로를 완료할까요?"
       description="지금까지의 진행 시간이 기록돼요"
-      onOpenChange={onOpenChange}
       footer={
         <div className="w-full flex justify-end">
-          <div className="flex w-full justify-between gap-4">
-            <Button
-              variant="white"
-              className="px-8 flex-1"
-              onClick={() => onOpenChange(false)}
-            >
-              취소하기
-            </Button>
-            <Button className="px-8 w-full flex-1" onClick={finishPomodoro}>
-              완료하기
-            </Button>
+          <div className="flex w-full flex items-center justify-between gap-4">
+            <DialogClose asChild>
+              <Button
+                variant="white"
+                className="px-8 flex-1"
+                onClick={() => handleContinue(true)}
+              >
+                취소하기
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button className="px-8 w-full flex-1" onClick={finishPomodoro}>완료하기</Button>
+            </DialogClose>
           </div>
         </div>
       }
