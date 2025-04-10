@@ -15,10 +15,13 @@ type MultiSliderProps = {
     fontColor?: string;
     bgColor?: string;
   };
-} & React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>;
+} & Omit<
+  React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>,
+  'onValueChange'
+>;
 
 const MultiSlider = React.forwardRef<
-  React.ElementRef<typeof SliderPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>,
   MultiSliderProps
 >(
   (
@@ -69,7 +72,8 @@ const MultiSlider = React.forwardRef<
         for (let i = 0; i < sliderValues.length - 1; i += 2) {
           if (i + 2 < sliderValues.length) {
             const workDurationValue = sliderValues[i + 1] - sliderValues[i];
-            const breakDurationValue = sliderValues[i + 2] - sliderValues[i+1];
+            const breakDurationValue =
+              sliderValues[i + 2] - sliderValues[i + 1];
             cycles.push({
               workDuration: workDurationValue,
               breakDuration: breakDurationValue,
@@ -85,24 +89,23 @@ const MultiSlider = React.forwardRef<
     );
 
     //데이터 변경 시 부모에게 전달
-      const handleValueChange = (newSliderValues: number[]) => {
+    const handleValueChange = (newSliderValues: number[]) => {
+      const sortedValues = [...newSliderValues].sort((a, b) => a - b);
 
-          const sortedValues = [...newSliderValues].sort((a, b) => a - b);
+      sortedValues[0] = min;
+      sortedValues[sortedValues.length - 1] = max;
 
-          sortedValues[0] = min;
-          sortedValues[sortedValues.length - 1] = max;
+      // 최소 1분 간격으로 보정
+      for (let i = 1; i < sortedValues.length; i++) {
+        if (sortedValues[i] - sortedValues[i - 1] < 1) {
+          sortedValues[i] = sortedValues[i - 1] + 1;
+        }
+      }
 
-          // 최소 1분 간격으로 보정
-          for (let i = 1; i < sortedValues.length; i++) {
-              if (sortedValues[i] - sortedValues[i - 1] < 1) {
-                  sortedValues[i] = sortedValues[i - 1] + 1;
-              }
-          }
+      const newCycles = sliderToCycleValues(sortedValues);
 
-          const newCycles = sliderToCycleValues(sortedValues);
-
-          onValueChange(newCycles);
-      };
+      onValueChange?.(newCycles);
+    };
 
     // 슬라이더 블럭형태의 정보
     const intervals = React.useMemo(() => {
