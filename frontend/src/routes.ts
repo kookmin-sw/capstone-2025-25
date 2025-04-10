@@ -9,7 +9,7 @@ export default [
   layout('layouts/AuthLayout.tsx', [
     route('login', 'pages/login.tsx'),
     route('register', 'pages/register.tsx'),
-    route('auth/login/callback', 'pages/oauth/callback.tsx'),
+    route('auth/login/callback', 'pages/callbackPage.tsx'),
   ]),
 
   layout('layouts/DefaultLayout.tsx', [
