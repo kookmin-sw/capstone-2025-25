@@ -1,4 +1,4 @@
-import { TotalTime, LinkedUnlinkedPomodoro } from '@/types/pomodoro';
+import { TotalTime, LinkedUnlinkedPomodoro } from '@/types/pomodoro.ts';
 import { Button } from '@/components/ui/button.tsx';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { useState } from 'react';

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, Play, CirclePause, Coffee, Square, Crosshair } from 'lucide-react';
-import { Mode, Cycle, Eisenhower } from '@/types/pomodoro';
+import { Mode, Cycle, Eisenhower } from '@/types/pomodoro.ts';
 import EndPomodoro from '@/components/ui/Modal/EndPomodoro.tsx';
 
 type PomodoroTimerProps = {

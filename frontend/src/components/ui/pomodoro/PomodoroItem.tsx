@@ -1,7 +1,7 @@
 import { Link, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils.ts';
 
-import { LinkedUnlinkedPomodoro, TotalTime } from '@/types/pomodoro';
+import { LinkedUnlinkedPomodoro, TotalTime } from '@/types/pomodoro.ts';
 import DeletePomodoro from "@/components/ui/Modal/DeletePomodoro.tsx";
 import {useState} from "react";
 
