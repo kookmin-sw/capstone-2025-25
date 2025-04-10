@@ -3,13 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Timer } from 'lucide-react';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { LinkedUnlinkedPomodoro } from '@/types/pomodoro';
+import { DialogClose } from '@radix-ui/react-dialog';
 import { ReactNode } from 'react';
 
 export default function DeletePomodoro({
   trigger,
   linkedUnlinkedPomodoro,
-  isOpen,
-  onOpenChange,
 }: {
   trigger: ReactNode;
   linkedUnlinkedPomodoro: LinkedUnlinkedPomodoro;
@@ -30,25 +29,21 @@ export default function DeletePomodoro({
   return (
     <Modal
       trigger={trigger}
-      isOpen={isOpen}
       title="뽀모도로를 삭제할까요?"
       description={`삭제 후 새로운 뽀모도로를 실행할 수 있어요`}
-      onOpenChange={onOpenChange}
       footer={
         <div className="w-full flex justify-end">
           <div className="flex w-full justify-between gap-4">
-            <Button
-              variant="white"
-              className="px-8 flex-1"
-              onClick={() => {
-                onOpenChange(false);
-              }}
-            >
-              취소하기
-            </Button>
-            <Button className="px-8 w-full flex-1" onClick={deletePomodoro}>
-              삭제하기
-            </Button>
+            <DialogClose asChild>
+              <Button variant="white" className="px-8 flex-1">
+                취소하기
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button className="px-8 w-full flex-1" onClick={deletePomodoro}>
+                삭제하기
+              </Button>
+            </DialogClose>
           </div>
         </div>
       }
