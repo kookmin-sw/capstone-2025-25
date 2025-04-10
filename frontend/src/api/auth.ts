@@ -1,6 +1,6 @@
 export async function fetchMyInfo() {
   const res = await fetch(
-    `${import.meta.env.VITE_API_BASE_URL}/api/auth/token`,
+    `${import.meta.env.VITE_API_BASE_URL}/api/auth/reissue`,
     {
       method: 'GET',
       credentials: 'include',
