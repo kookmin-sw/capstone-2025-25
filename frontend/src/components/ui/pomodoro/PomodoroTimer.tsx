@@ -18,7 +18,6 @@ export function PomodoroTimer({
   const [isRunning, setIsRunning] = useState(false); // 타이머 실행
   const [cycleMode, setCycleMode] = useState<Mode>('WORK'); //현재 진행 사이클 모드
   const [currentCycleIndex, setCurrentCycleIndex] = useState(0); //현재 사이클 인덱스
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [pomodoroResult, setPomodoroResult] = useState<PomodoroCycle[]>([]);
   const [previewResult, setPreviewResult] = useState<PomodoroCycle[]>([]); // 임시 결과 (모달)
   const [didConfirm, setDidConfirm] = useState(false); // 모달에서 완료처리를 하였는가
@@ -186,7 +185,6 @@ export function PomodoroTimer({
 
   // 동작 관련
   useEffect(() => {
-    console.log(isRunning);
     if (isRunning) {
       timerRef.current = setInterval(() => {
         setElapsedTime((prevTime) => prevTime + 1);
@@ -263,7 +261,7 @@ export function PomodoroTimer({
       finishPomodoro();
     }
   };
-  // 중지 버튼 완료 모달 열기
+  // 중지 버튼
   const finishPomodoro = () => {
     const minutes = elapsedTime / 60;
     const tempResult = [...pomodoroResult];
@@ -282,42 +280,31 @@ export function PomodoroTimer({
     }
     setPreviewResult(tempResult);
     setIsRunning(false);
-    setIsModalOpen(true);
   };
 
-  //모달 닫힌 이후 동작 (이어서/ 끝남)
-  useEffect(() => {
-    if (
-      !isRunning &&
-      previewResult.length == 0 &&
-      elapsedTime == 0 &&
-      pomodoroResult.length == 0
-    ) {
-      return;
-    } else {
-      if (!isModalOpen && !didConfirm) {
-        setIsRunning(true);
-        return;
-      } else if (!isModalOpen && didConfirm) {
-        setDidConfirm(false);
-        setPomodoroResult(previewResult);
-        return;
-      }
-    }
-  }, [isModalOpen, didConfirm, previewResult, isRunning, elapsedTime, pomodoroResult.length]);
+  // //모달 닫힌 이후 동작 (이어서/ 끝남)
+  // useEffect(() => {
+  //   if (
+  //     !isRunning &&
+  //     previewResult.length == 0 &&
+  //     elapsedTime == 0 &&
+  //     pomodoroResult.length == 0
+  //   ) {
+  //     return;
+  //   } else {
+  //     if (!isModalOpen && !didConfirm) {
+  //       setIsRunning(true);
+  //       return;
+  //     } else if (!isModalOpen && didConfirm) {
+  //       setDidConfirm(false);
+  //       setPomodoroResult(previewResult);
+  //       return;
+  //     }
+  //   }
+  // }, [isModalOpen, didConfirm, previewResult, isRunning, elapsedTime, pomodoroResult.length]);
 
   return (
     <div className="flex flex-col items-center">
-      <EndPomodoro
-        eisenhower={eisenhower}
-        cycles={previewResult}
-        isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
-        onComplete={() => {
-          setDidConfirm(true);
-        }}
-      />
-
       <>
         <div className="relative w-[340px] h-[340px] mb-8">
           {/* Canvas로 타이머 그리기 */}
@@ -366,12 +353,20 @@ export function PomodoroTimer({
               <Coffee className="w-[40px] h-[40px] text-[#ffffff]" />
             )}
           </button>
-          <button
-            className="w-[60px] h-[60px] rounded-full border-2 border-gray-200 flex items-center justify-center hover:bg-gray-50 cursor-pointer"
-            onClick={finishPomodoro}
-          >
-            <Square className="w-[30px] h-[30px]" />
-          </button>
+          <EndPomodoro
+            trigger={
+              <button
+                className="w-[60px] h-[60px] rounded-full border-2 border-gray-200 flex items-center justify-center hover:bg-gray-50 cursor-pointer"
+                onClick={finishPomodoro}
+              >
+                <Square className="w-[30px] h-[30px]" />
+              </button>
+            }
+            cycles={previewResult}
+            eisenhower={eisenhower}
+            handleContinue={()=>{setIsRunning(true)}}
+
+          />
         </div>
 
         <div className="flex items-center gap-4">

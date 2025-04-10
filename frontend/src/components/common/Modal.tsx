@@ -16,22 +16,18 @@ type ModalProps = {
   children: ReactNode;
   footer?: ReactNode;
   maxWidth?: string;
-  isOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
 };
 
 export function Modal({
   trigger,
   title,
-  isOpen = false,
   description,
   children,
   footer,
   maxWidth = 'sm:max-w-lg',
-  onOpenChange,
 }: ModalProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className={maxWidth}>
         <DialogHeader>
