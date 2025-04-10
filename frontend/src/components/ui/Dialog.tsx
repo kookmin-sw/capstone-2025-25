@@ -79,22 +79,19 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
     />
   );
 }
-function DialogFooter({ className, children, ...props }: React.ComponentProps<'div'>) {
+
+function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-      <div
-          data-slot="dialog-footer"
-          className={cn(
-              'flex gap-2 ',
-              React.Children.count(children) > 1 ? 'justify-between' : 'justify-end',
-              className,
-          )}
-          {...props}
-      >
-        {children}
-      </div>
+    <div
+      data-slot="dialog-footer"
+      className={cn(
+        'flex flex-col-reverse gap-2 sm:flex-row sm:justify-end',
+        className,
+      )}
+      {...props}
+    />
   );
 }
-
 
 function DialogTitle({
   className,
