@@ -117,19 +117,39 @@ export default function Pomodoro() {
     ...(response.linkedPomodoros ?? []),
     ...(response.unlinkedPomodoros ?? []),
   ];
-
+  // id에 따른 예시 데이터
   const data = id
     ? (allPomodoros.find((item) => item.pomodoro.id === Number(id)) ?? null)
     : null;
 
-  // 존재하지 않는 id로 접근했거나, id 없이 접근했을 경우 → 리다이렉트
+  // // 존재하지 않는 id로 접근했거나, id 없이 접근했을 경우 → 리다이렉트
   useEffect(() => {
-    if (!id || !data) {
-      if (allPomodoros.length > 0) {
-        navigate(`/pomodoro/${allPomodoros[0].pomodoro.id}`, { replace: true });
+    if (!data) {
+      const pomodoroIdToShow =
+        response.linkedPomodoros?.[0]?.pomodoro.id ||
+        response.unlinkedPomodoros?.[0]?.pomodoro.id;
+      if (pomodoroIdToShow) {
+        navigate(`/pomodoro/${pomodoroIdToShow}`);
+        return;
       }
+      // 아무것도 없을 때 화면 필요
+      console.log('표시할 뽀모도로가 없습니다.');
     }
   }, [id, data, allPomodoros, navigate]);
+
+  useEffect(() => {
+    if (!id) {
+      const pomodoroIdToShow =
+        response.linkedPomodoros?.[0]?.pomodoro.id ||
+        response.unlinkedPomodoros?.[0]?.pomodoro.id;
+      if (pomodoroIdToShow) {
+        navigate(`/pomodoro/${pomodoroIdToShow}`);
+        return;
+      }
+      // 아무것도 없을 때 화면 필요
+      console.log('표시할 뽀모도로가 없습니다.');
+    }
+  }, [id, navigate]);
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -187,7 +207,10 @@ export default function Pomodoro() {
             {data?.pomodoro?.executedCycles?.length ? (
               <PomodoroResult linkedUnlinkedPomodoro={data} />
             ) : data?.pomodoro?.plannedCycles?.length ? (
-              <PomodoroTimer eisenhower={data?.eisenhower} plannedCycles={data.pomodoro.plannedCycles} />
+              <PomodoroTimer
+                eisenhower={data?.eisenhower}
+                plannedCycles={data.pomodoro.plannedCycles}
+              />
             ) : null}
           </div>
         </main>

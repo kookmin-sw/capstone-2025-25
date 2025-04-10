@@ -1,7 +1,7 @@
-import { LinkIcon, Unlink,Plus } from 'lucide-react';
+import { LinkIcon, Unlink, Plus } from 'lucide-react';
 import { SubSidebarAccordion } from '@/components/ui/SubSidebarAccordion.tsx';
 import CommonPanelWrapper from './CommonPanelWrapper';
-import { PomodoroItem } from '@/components/ui/PomodoroItem';
+import { PomodoroItem } from '@/components/ui/pomodoro/PomodoroItem.tsx';
 import type { PomodoroList } from '@/types/pomodoro';
 import AddPomodoro from '@/components/ui/Modal/AddPomodoro.tsx';
 import { useNavigate, useParams } from 'react-router';
@@ -118,22 +118,6 @@ export default function PomodoroSubSidebar({
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
-  useEffect(() => {
-    if (!id) {
-      const firstLinked = response.linkedPomodoros[0]?.pomodoro.id;
-      const firstUnlinked = response.unlinkedPomodoros[0]?.pomodoro.id;
-
-      if (firstLinked) {
-        navigate(`/pomodoro/${firstLinked}`);
-      } else if (firstUnlinked) {
-        navigate(`/pomodoro/${firstUnlinked}`);
-      } else {
-        // 아무것도 없을 때 화면 필요
-        console.log('표시할 뽀모도로가 없습니다.');
-      }
-    }
-  }, [id, response]);
-
   const pomodoroClick = (id: number) => {
     navigate(`/pomodoro/${id}`);
   };
@@ -142,7 +126,9 @@ export default function PomodoroSubSidebar({
     <CommonPanelWrapper
       title="뽀모도로"
       onClose={onClose}
-      addButton={<AddPomodoro trigger={<Plus size={24} className="cursor-pointer" />}/>}
+      addButton={
+        <AddPomodoro trigger={<Plus size={24} className="cursor-pointer" />} />
+      }
     >
       <div>
         <SubSidebarAccordion
@@ -152,7 +138,7 @@ export default function PomodoroSubSidebar({
         >
           {response.linkedPomodoros?.map((item) => (
             <PomodoroItem
-                key={item.pomodoro.id}
+              key={item.pomodoro.id}
               item={item}
               selected={item.pomodoro.id === Number(id)}
               onClick={() => pomodoroClick(item.pomodoro.id)}
@@ -166,7 +152,7 @@ export default function PomodoroSubSidebar({
         >
           {response.unlinkedPomodoros?.map((item) => (
             <PomodoroItem
-                key={item.pomodoro.id}
+              key={item.pomodoro.id}
               item={item}
               selected={item.pomodoro.id === Number(id)}
               onClick={() => pomodoroClick(item.pomodoro.id)}
