@@ -282,27 +282,6 @@ export function PomodoroTimer({
     setIsRunning(false);
   };
 
-  // //모달 닫힌 이후 동작 (이어서/ 끝남)
-  // useEffect(() => {
-  //   if (
-  //     !isRunning &&
-  //     previewResult.length == 0 &&
-  //     elapsedTime == 0 &&
-  //     pomodoroResult.length == 0
-  //   ) {
-  //     return;
-  //   } else {
-  //     if (!isModalOpen && !didConfirm) {
-  //       setIsRunning(true);
-  //       return;
-  //     } else if (!isModalOpen && didConfirm) {
-  //       setDidConfirm(false);
-  //       setPomodoroResult(previewResult);
-  //       return;
-  //     }
-  //   }
-  // }, [isModalOpen, didConfirm, previewResult, isRunning, elapsedTime, pomodoroResult.length]);
-
   return (
     <div className="flex flex-col items-center">
       <>
