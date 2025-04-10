@@ -1,6 +1,6 @@
 import { Search, Settings, Bell } from 'lucide-react';
-import { PomodoroTimer } from '@/components/ui/PomodoroTimer';
-import PomodoroResult from '@/components/ui/PomodoroResult';
+import { PomodoroTimer } from '@/components/ui/pomodoro/PomodoroTimer.tsx';
+import PomodoroResult from '@/components/ui/pomodoro/PomodoroResult.tsx';
 import { LinkedUnlinkedPomodoro, PomodoroList } from '@/types/pomodoro';
 import { useParams, useNavigate } from 'react-router';
 import { useEffect } from 'react';
