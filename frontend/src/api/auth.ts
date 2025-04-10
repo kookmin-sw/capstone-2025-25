@@ -1,10 +1,9 @@
-// api/auth.ts
 export async function fetchMyInfo() {
   const res = await fetch(
     `${import.meta.env.VITE_API_BASE_URL}/api/auth/token`,
     {
       method: 'GET',
-      credentials: 'include', // ✅ 세션/쿠키 인증 시 꼭 필요!
+      credentials: 'include',
     },
   );
 

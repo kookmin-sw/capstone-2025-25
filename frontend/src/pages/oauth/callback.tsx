@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import axios from 'axios';
-import { useAuthStore } from '@/store/auth';
+import { useAuthStore } from '@/store/authStore.ts';
 
 export default function LoginCallbackPage() {
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ export default function LoginCallbackPage() {
         localStorage.setItem('accessToken', accessToken);
         login(accessToken);
 
-        console.log('✅ accessToken:', accessToken);
+        console.log('accessToken:', accessToken);
         navigate('/dashboard');
       })
       .catch((err) => {
