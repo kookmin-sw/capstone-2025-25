@@ -1,10 +1,11 @@
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
-import {  ChevronDown, ChevronUp, Timer, RotateCw } from 'lucide-react';
+import { ChevronDown, ChevronUp, Timer, RotateCw } from 'lucide-react';
 import { useState, useEffect, ChangeEvent, ReactNode } from 'react';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { PomodoroCycle, Eisenhower } from '@/types/pomodoro';
 import { Input } from '@/components/ui/Input.tsx';
+import { DialogClose } from '@radix-ui/react-dialog';
 
 type Props = {
   trigger: ReactNode;
@@ -18,7 +19,6 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
   const [minutes, setMinutes] = useState(0);
   const [totalTime, setTotalTime] = useState(0); // 전체 시간 (분)
   const [cycleValue, setCycleValue] = useState<PomodoroCycle[]>([]); // 슬라이더 값
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   // 세션 간격 추천
   const generateSliderValuesFromTime = (hours: number, minutes: number) => {
@@ -92,23 +92,15 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
 
   const createPomodoro = () => {
     // 생성 api 추가
-    setModalOpen(false);
     resetStates();
   };
 
   return (
     <Modal
       trigger={trigger}
-      isOpen={modalOpen}
       title="뽀모도로 설정하기"
       description={`일정의 예상 시간을 입력해주세요.
       뽀모도로 기법을 바탕으로 집중 및 휴식시간을 제안해드려요.`}
-      onOpenChange={(open) => {
-        setModalOpen(!modalOpen);
-        if (!open) {
-          resetStates();
-        }
-      }}
       footer={
         <div className="w-full flex justify-end">
           {page === 0 ? (
@@ -134,9 +126,11 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
               >
                 뒤로가기
               </Button>
-              <Button className="px-8 w-full flex-1" onClick={createPomodoro}>
-                다음
-              </Button>
+              <DialogClose asChild>
+                <Button className="px-8 w-full flex-1" onClick={createPomodoro}>
+                  다음
+                </Button>
+              </DialogClose>
             </div>
           )}
         </div>
