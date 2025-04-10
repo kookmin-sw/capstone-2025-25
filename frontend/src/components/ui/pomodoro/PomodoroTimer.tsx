@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, Play, CirclePause, Coffee, Square, Crosshair } from 'lucide-react';
-import { Mode, Cycle, Eisenhower } from '@/types/pomodoro.ts';
+import { Mode, PomodoroCycle, Eisenhower } from '@/types/pomodoro.ts';
 import EndPomodoro from '@/components/ui/Modal/EndPomodoro.tsx';
 
 type PomodoroTimerProps = {
   eisenhower: Eisenhower | null;
-  plannedCycles: Cycle[];
+  plannedCycles: PomodoroCycle[];
 };
 
 export function PomodoroTimer({
@@ -19,8 +19,8 @@ export function PomodoroTimer({
   const [cycleMode, setCycleMode] = useState<Mode>('WORK'); //현재 진행 사이클 모드
   const [currentCycleIndex, setCurrentCycleIndex] = useState(0); //현재 사이클 인덱스
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [pomodoroResult, setPomodoroResult] = useState<Cycle[]>([]);
-  const [previewResult, setPreviewResult] = useState<Cycle[]>([]); // 임시 결과 (모달)
+  const [pomodoroResult, setPomodoroResult] = useState<PomodoroCycle[]>([]);
+  const [previewResult, setPreviewResult] = useState<PomodoroCycle[]>([]); // 임시 결과 (모달)
   const [didConfirm, setDidConfirm] = useState(false); // 모달에서 완료처리를 하였는가
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);

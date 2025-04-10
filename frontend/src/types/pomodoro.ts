@@ -7,7 +7,7 @@ export type TotalTime = {
 
 export type Mode = 'WORK' | 'BREAK'
 
-export type Cycle = {
+export type PomodoroCycle = {
   workDuration: number;
   breakDuration: number;
 };
@@ -21,8 +21,8 @@ export type Pomodoro = {
   totalExecutedTime: TotalTime;
   totalWorkingTime: TotalTime;
   totalBreakTime: TotalTime;
-  plannedCycles: Cycle[];
-  executedCycles: Cycle[];
+  plannedCycles: PomodoroCycle[];
+  executedCycles: PomodoroCycle[];
 };
 
 export type Eisenhower = {

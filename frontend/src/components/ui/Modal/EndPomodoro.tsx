@@ -2,11 +2,11 @@ import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { Timer } from 'lucide-react';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
-import { Cycle, Eisenhower } from '@/types/pomodoro';
+import { PomodoroCycle, Eisenhower } from '@/types/pomodoro';
 
 type EndPomodoroProps = {
   eisenhower: Eisenhower | null;
-  cycles: Cycle[] ;
+  cycles: PomodoroCycle[] ;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onComplete: () => void;

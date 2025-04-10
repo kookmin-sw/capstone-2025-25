@@ -1,6 +1,6 @@
 import {
   TotalTime,
-  Cycle,
+  PomodoroCycle,
   Pomodoro,
   Eisenhower,
   LinkedUnlinkedPomodoro,

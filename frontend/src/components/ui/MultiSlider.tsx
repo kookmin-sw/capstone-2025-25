@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import { cn } from '@/lib/utils';
-import { Cycle } from '@/types/pomodoro';
+import { PomodoroCycle } from '@/types/pomodoro';
 
 type MultiSliderProps = {
-  cycles: Cycle[];
-  onValueChange?: (values: Cycle[]) => void;
+  cycles: PomodoroCycle[];
+  onValueChange?: (values: PomodoroCycle[]) => void;
   min: number;
   max: number;
   step?: number;
@@ -37,7 +37,7 @@ const MultiSlider = React.forwardRef<
   ) => {
     // 슬라이더용 형태로 변경 함수
     const cycleToSliderValues = React.useCallback(
-      (cycles: Cycle[]): number[] => {
+      (cycles: PomodoroCycle[]): number[] => {
         const values: number[] = [min];
         let currentTime = min;
 
@@ -63,8 +63,8 @@ const MultiSlider = React.forwardRef<
 
     // 원래 형태로 변경 함수
     const sliderToCycleValues = React.useCallback(
-      (sliderValues: number[]): Cycle[] => {
-        const cycles: Cycle[] = [];
+      (sliderValues: number[]): PomodoroCycle[] => {
+        const cycles: PomodoroCycle[] = [];
 
         for (let i = 0; i < sliderValues.length - 1; i += 2) {
           if (i + 2 < sliderValues.length) {

@@ -1,11 +1,10 @@
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
-import { Plus, ChevronDown, ChevronUp, Timer, RotateCw } from 'lucide-react';
-import { useState, useEffect, ChangeEvent } from 'react';
+import {  ChevronDown, ChevronUp, Timer, RotateCw } from 'lucide-react';
+import { useState, useEffect, ChangeEvent, ReactNode } from 'react';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { PomodoroCycle, Eisenhower } from '@/types/pomodoro';
 import { Input } from '@/components/ui/Input.tsx';
-import { ReactNode } from 'react';
 
 type Props = {
   trigger: ReactNode;
@@ -20,7 +19,6 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
   const [totalTime, setTotalTime] = useState(0); // 전체 시간 (분)
   const [cycleValue, setCycleValue] = useState<PomodoroCycle[]>([]); // 슬라이더 값
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-
 
   // 세션 간격 추천
   const generateSliderValuesFromTime = (hours: number, minutes: number) => {
