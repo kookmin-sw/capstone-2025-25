@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/api/client.ts';
-import { login } from '@/services/loginService';
+import { authService } from '@/services/loginService';
 import { ENDPOINTS } from '@/api/endpoints.ts';
 
 export default function OAuthCallbackPage() {
@@ -27,7 +27,7 @@ export default function OAuthCallbackPage() {
       if (!token) {
         throw new Error('토큰 누락');
       }
-      login(token);
+      authService.login(token);
       navigate('/dashboard');
     },
     onError: () => {
