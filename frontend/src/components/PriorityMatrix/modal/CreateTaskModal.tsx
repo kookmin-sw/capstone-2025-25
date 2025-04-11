@@ -4,6 +4,7 @@ import { CategoryBadge } from '@/components/PriorityMatrix/filter/CategoryBadge'
 import { TypeBadge } from '@/components/PriorityMatrix/filter/TypeBadge';
 import type { Task, TaskType } from '@/types/task';
 import { SingleDatePicker } from '@/components/PriorityMatrix/filter/SingleDatePicker';
+import { useOutsideClick } from '@/hooks/useOutsideClick.ts';
 
 const CATEGORY_COLOR_PALETTE = [
   'bg-green-100 text-green-600',
@@ -39,21 +40,8 @@ export function CreateTaskModal({
     }
   }, [sectionId]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (typeRef.current && !typeRef.current.contains(event.target as Node)) {
-        setIsTypeOpen(false);
-      }
-      if (
-        categoryRef.current &&
-        !categoryRef.current.contains(event.target as Node)
-      ) {
-        setIsCategoryOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  useOutsideClick(typeRef, () => setIsTypeOpen(false));
+  useOutsideClick(categoryRef, () => setIsCategoryOpen(false));
 
   return (
     <div className="p-6">
