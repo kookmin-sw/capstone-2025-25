@@ -21,6 +21,8 @@ import {
   useUpdateNodeQuestions,
   useUpdateNodePending,
   useSetInitialData,
+  useActiveState,
+  useRestoreActiveState,
 } from '@/store/mindMapStore';
 import {
   useLoadMindMapData,
@@ -67,6 +69,8 @@ function FlowContent({ mindmapId }: FlowContentProps) {
   const updateNodeQuestions = useUpdateNodeQuestions();
   const updateNodePending = useUpdateNodePending();
   const setInitialData = useSetInitialData();
+  const activeState = useActiveState();
+  const restoreActiveState = useRestoreActiveState();
 
   const loadMindMapData = useLoadMindMapData();
   const saveMindMapData = useSaveMindMapData();
@@ -76,6 +80,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
 
   const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
+  const ignoreNextPaneClick = useRef(false);
 
   useEffect(() => {
     if (mindmapId) {
@@ -214,6 +219,11 @@ function FlowContent({ mindmapId }: FlowContentProps) {
           }
         }
       }
+      ignoreNextPaneClick.current = true;
+
+      setTimeout(() => {
+        ignoreNextPaneClick.current = false;
+      }, 100);
     },
     [
       nodes,
@@ -229,6 +239,20 @@ function FlowContent({ mindmapId }: FlowContentProps) {
     ],
   );
 
+  const onPaneClick = useCallback(() => {
+    if (ignoreNextPaneClick.current) {
+      ignoreNextPaneClick.current = false;
+      return;
+    }
+
+    if (activeState) {
+      const node = nodes.find((n) => n.id === activeState.nodeId);
+      if (node && (node.type === 'question' || node.type === 'answer')) {
+        restoreActiveState();
+      }
+    }
+  }, [activeState, nodes, restoreActiveState]);
+
   return (
     <div className="w-full h-full">
       <ReactFlow
@@ -238,6 +262,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
         onEdgesChange={onEdgesChange}
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
+        onPaneClick={onPaneClick}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         nodeOrigin={nodeOrigin}
@@ -257,16 +282,9 @@ type FlowWrapperProps = {
 function FlowWrapper({ mindmapId }: FlowWrapperProps) {
   const isNodeSelectionMode = useIsNodeSelectionMode();
 
-  const handleScheduleCreated = () => {
-    // 추가적인 일정 생성 후 작업이 필요하면 여기에 구현
-    // 예: 성공 메시지 표시, 데이터 리로드 등
-  };
-
   return (
     <div className="h-screen relative">
-      {isNodeSelectionMode && (
-        <NodeSelectionPanel onCreateSchedule={handleScheduleCreated} />
-      )}
+      {isNodeSelectionMode && <NodeSelectionPanel />}
 
       <ReactFlowProvider>
         <FlowContent mindmapId={mindmapId} />
