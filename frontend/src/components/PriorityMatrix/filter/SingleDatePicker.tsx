@@ -40,7 +40,9 @@ export function SingleDatePicker({
           <div className="flex items-center">
             <CalendarIcon className="mr-2 h-4 w-4 text-[#6e726e]" />
             <span className="text-sm">
-              {format(selectedDate, 'yyyy년 MM월 dd일', { locale: ko })}
+              {selectedDate instanceof Date && !isNaN(selectedDate.getTime())
+                ? format(selectedDate, 'yyyy년 MM월 dd일', { locale: ko })
+                : '날짜 없음'}
             </span>
           </div>
         </Button>

@@ -1,8 +1,6 @@
-'use client';
-
 import { useState } from 'react';
 import { Droppable } from '@/components/PriorityMatrix/Droppable';
-import { TaskCard } from '@/components/PriorityMatrix/card/TaskCard.tsx';
+import { TaskCard } from '@/components/PriorityMatrix/card/TaskCard';
 import { FilterBar } from '@/components/PriorityMatrix/FilterBar';
 import { CreateTaskModal } from '@/components/PriorityMatrix/modal/CreateTaskModal';
 import {
@@ -10,6 +8,9 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import type { Task } from '@/types/task';
+import { Modal } from '@/components/common/Modal';
+import { DialogClose } from '@/components/ui/Dialog';
+import { Button } from '@/components/ui/button';
 
 type AllScheduleViewProps = {
   tasks: {
@@ -30,6 +31,13 @@ type AllScheduleViewProps = {
   onAddTask: (sectionId: string, task: Task) => void;
 };
 
+const sectionTitles = {
+  section1: '긴급하고 중요한 일',
+  section2: '긴급하지 않지만 중요한 일',
+  section3: '긴급하지만 중요하지 않은 일',
+  section4: '긴급하지도 중요하지도 않은 일',
+} as const;
+
 export function AllScheduleView({
   tasks,
   view,
@@ -43,15 +51,16 @@ export function AllScheduleView({
   onTaskClick,
   onAddTask,
 }: AllScheduleViewProps) {
-  const [modalOpen, setModalOpen] = useState(false);
   const [activeSectionId, setActiveSectionId] = useState<string>('');
-  const [activeSectionTitle, setActiveSectionTitle] = useState<string>('');
+  const [, setActiveSectionTitle] = useState<string>('');
 
-  const handleOpenModal = (sectionId: string, sectionTitle: string) => {
-    setActiveSectionId(sectionId);
-    setActiveSectionTitle(sectionTitle);
-    setModalOpen(true);
-  };
+  const [taskForm, setTaskForm] = useState<Omit<Task, 'id'>>({
+    title: '',
+    memo: '',
+    date: '',
+    tags: { type: 'Todo', category: undefined },
+    section: '',
+  });
 
   const handleCreateTask = (taskData: Omit<Task, 'id'>) => {
     const newTask: Task = {
@@ -59,14 +68,6 @@ export function AllScheduleView({
       ...taskData,
     };
     onAddTask(activeSectionId, newTask);
-    setModalOpen(false);
-  };
-
-  const sectionTitles = {
-    section1: '긴급하고 중요한 일',
-    section2: '긴급하지 않지만 중요한 일',
-    section3: '긴급하지만 중요하지 않은 일',
-    section4: '긴급하지도 중요하지도 않은 일',
   };
 
   const renderSection = (id: keyof typeof tasks, index: number) => (
@@ -81,13 +82,66 @@ export function AllScheduleView({
           <h3 className="font-bold text-lg">{sectionTitles[id]}</h3>
           <span className="text-xs text-gray-500 ml-2">{tasks[id].length}</span>
         </div>
-        <button
-          className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-white"
-          onClick={() => handleOpenModal(id, sectionTitles[id])}
-        >
-          <span className="text-lg">+</span>
-        </button>
+        <Modal
+          trigger={
+            <button
+              className="w-6 h-6 rounded-full flex items-center justify-center hover:bg-white"
+              onClick={() => {
+                setActiveSectionId(id);
+                setActiveSectionTitle(sectionTitles[id]);
+              }}
+            >
+              <span className="text-lg">+</span>
+            </button>
+          }
+          title={sectionTitles[id]}
+          description="새로운 작업을 추가해보세요."
+          children={
+            <CreateTaskModal
+              sectionId={id}
+              sectionTitle={sectionTitles[id]}
+              form={taskForm}
+              setForm={(partial) =>
+                setTaskForm((prev) => ({ ...prev, ...partial }))
+              }
+              onCreateTask={(taskData) => {
+                handleCreateTask(taskData);
+                close();
+              }}
+            />
+          }
+          footer={
+            <div className="w-full flex items-center justify-between">
+              <DialogClose asChild>
+                <Button className="px-8" variant="white">
+                  취소하기
+                </Button>
+              </DialogClose>
+              <DialogClose>
+                <Button
+                  className="px-8"
+                  onClick={() => {
+                    if (!taskForm.title.trim()) return;
+
+                    handleCreateTask(taskForm);
+                    close();
+                    setTaskForm({
+                      title: '',
+                      memo: '',
+                      date: '',
+                      tags: { type: 'Todo', category: undefined },
+                      section: '',
+                    });
+                  }}
+                >
+                  생성하기
+                </Button>
+              </DialogClose>
+            </div>
+          }
+        />
       </div>
+      {/*드래그 기능*/}
       <Droppable
         id={id}
         className="h-[calc(100%-2rem)] overflow-y-auto pr-1 custom-scrollbar"
@@ -138,14 +192,6 @@ export function AllScheduleView({
           ),
         )}
       </div>
-
-      <CreateTaskModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        sectionTitle={activeSectionTitle}
-        sectionId={activeSectionId}
-        onCreateTask={handleCreateTask}
-      />
     </div>
   );
 }
