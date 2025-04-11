@@ -11,7 +11,7 @@ import {
 } from '@dnd-kit/sortable';
 import type { Task } from '@/types/task';
 
-interface AllScheduleViewProps {
+type AllScheduleViewProps = {
   tasks: {
     section1: Task[];
     section2: Task[];
@@ -28,7 +28,7 @@ interface AllScheduleViewProps {
   onDateChange: (start: Date, end: Date) => void;
   onTaskClick: (task: Task) => void;
   onAddTask: (sectionId: string, task: Task) => void;
-}
+};
 
 export function AllScheduleView({
   tasks,

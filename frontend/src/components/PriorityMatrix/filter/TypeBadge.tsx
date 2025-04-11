@@ -1,10 +1,10 @@
-type TaskType = 'Todo' | 'Thinking' | 'all';
+import { TaskType } from '@/types/task.ts';
 
-interface TypeBadgeProps {
+type TypeBadgeProps = {
   type: TaskType;
   withDot?: boolean;
   className?: string;
-}
+};
 
 export const TypeBadge = ({
   type,

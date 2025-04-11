@@ -12,11 +12,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 
-interface DateRangePickerProps {
+type DateRangePickerProps = {
   startDate: Date;
   endDate: Date;
   onDateChange: (start: Date, end: Date) => void;
-}
+};
 
 export function DateRangePicker({
   startDate,

@@ -11,10 +11,10 @@ import {
   CheckCircle,
 } from 'lucide-react';
 
-interface MobileMenuProps {
+type MobileMenuProps = {
   activeMenu: string;
   onMenuChange: (menu: string) => void;
-}
+};
 
 export function MobileMenu({ activeMenu, onMenuChange }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);

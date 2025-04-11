@@ -8,14 +8,15 @@ import type { Task } from '@/types/task';
 import { CreateMindmapModal } from '@/components/PriorityMatrix/modal/CreateMindmapModal';
 import { CategoryBadge } from '@/components/PriorityMatrix/filter/CategoryBadge.tsx';
 import { TypeBadge } from '@/components/PriorityMatrix/filter/TypeBadge.tsx';
+import { SingleDatePicker } from '@/components/PriorityMatrix/filter/SingleDatePicker.tsx';
 
-interface TaskDetailSidebarProps {
+type TaskDetailSidebarProps = {
   task: Task | null;
   onClose: () => void;
   isOpen: boolean;
   onSave?: (updatedTask: Task) => void;
   onDelete?: (taskId: string) => void;
-}
+};
 
 export function TaskDetailSidebar({
   task,
@@ -114,12 +115,6 @@ export function TaskDetailSidebar({
     }
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (editedTask) {
-      setEditedTask({ ...editedTask, date: e.target.value });
-    }
-  };
-
   return (
     <>
       <div
@@ -133,7 +128,8 @@ export function TaskDetailSidebar({
               onClick={isEditing ? handleCancelEdit : onClose}
               className="p-2 rounded-full hover:bg-[#f5f1ff]"
             >
-              {'>>'}
+              {' >>'}
+              {/*TODO: 아이콘 lucide-react*/}
             </button>
             <h2 className="text-lg font-semibold">
               {isEditing ? '작업 편집' : '작업 상세'}
@@ -277,16 +273,7 @@ export function TaskDetailSidebar({
                 <Calendar className="w-5 h-5 text-[#8d5cf6] mr-3" />
                 <span className="text-sm mr-4">마감일</span>
                 {isEditing ? (
-                  <input
-                    type="date"
-                    value={
-                      typeof editedTask.date === 'string'
-                        ? editedTask.date.split('.').join('-')
-                        : ''
-                    }
-                    onChange={handleDateChange}
-                    className="text-xs px-2 py-1 rounded-md border border-gray-200 focus:outline-none focus:ring-1 focus:ring-[#8d5cf6]"
-                  />
+                  <SingleDatePicker date={new Date()} />
                 ) : (
                   <span>{formattedDate}</span>
                 )}

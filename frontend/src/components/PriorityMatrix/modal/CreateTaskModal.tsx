@@ -1,17 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
-import { Calendar, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/Dialog';
 import { CategoryBadge } from '@/components/PriorityMatrix/filter/CategoryBadge';
 import { TypeBadge } from '@/components/PriorityMatrix/filter/TypeBadge';
 import type { Task, TaskType } from '@/types/task';
+import { SingleDatePicker } from '@/components/PriorityMatrix/filter/SingleDatePicker.tsx';
 
-interface CreateTaskModalProps {
+type CreateTaskModalProps = {
   isOpen: boolean;
   onClose: () => void;
   sectionTitle: string;
   sectionId: string;
   onCreateTask: (task: Omit<Task, 'id'>) => void;
-}
+};
 
 const CATEGORY_COLOR_PALETTE = [
   'bg-green-100 text-green-600',
@@ -174,14 +175,8 @@ export function CreateTaskModal({
             </div>
 
             <div className="flex items-center">
-              <Calendar className="w-5 h-5 text-[#8d5cf6] mr-3" />
               <span className="text-sm mr-4">마감일</span>
-              <input
-                type="date"
-                value={dueDate}
-                onChange={(e) => setDueDate(e.target.value)}
-                className="text-xs px-2 py-1 rounded-md border border-gray-200 focus:outline-none focus:ring-1 focus:ring-[#8d5cf6]"
-              />
+              <SingleDatePicker date={new Date()} />
             </div>
           </div>
 

@@ -7,11 +7,11 @@ import type { Task } from '@/types/task';
 import { CategoryBadge } from '@/components/PriorityMatrix/filter/CategoryBadge';
 import { TypeBadge } from '@/components/PriorityMatrix/filter/TypeBadge';
 
-interface TaskCardProps {
+type TaskCardProps = {
   task: Task;
   onClick?: () => void;
   layout?: 'matrix' | 'board' | 'list';
-}
+};
 
 export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
   const { id, title, memo, date, tags } = task;
