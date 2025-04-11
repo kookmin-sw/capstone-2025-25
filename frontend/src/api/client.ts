@@ -1,10 +1,6 @@
 import axios from 'axios';
 import { ENDPOINTS } from '@/api/endpoints.ts';
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const GPT_BASE_URL =
-  import.meta.env.VITE_GPT_API_BASE_URL || 'http://3.36.179.66';
-
+import { BASE_URL, GPT_BASE_URL } from '@/constants/auth.ts';
 /*
 백엔드 API 클라이언트
 TODO: 백엔드 API 주소 나오면 설정 예정
