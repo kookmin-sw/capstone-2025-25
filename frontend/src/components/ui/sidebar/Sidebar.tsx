@@ -62,7 +62,6 @@ export default function Sidebar() {
     }
 
     navigate(route);
-    setPanelVisible(false);
   };
 
   return (
