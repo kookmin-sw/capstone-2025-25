@@ -1,11 +1,3 @@
-export interface TaskCardType {
-  id: string;
-  title: string;
-  memo?: string;
-  date?: string;
-  category?: string;
-}
-
 export const initialTasks = {
   section1: [
     {
