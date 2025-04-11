@@ -255,7 +255,7 @@ export function TaskDetailSidebar({
                             >
                               <CategoryBadge
                                 label={cat}
-                                colorClass="bg-gray-100 text-gray-600" // ← 이 부분도 동적으로 매핑 가능
+                                colorClass="bg-gray-100 text-gray-600"
                               />
                             </div>
                           ))}

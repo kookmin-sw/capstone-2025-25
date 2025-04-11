@@ -120,8 +120,6 @@ export function FilterBar({
     <div className="bg-white rounded-lg p-4">
       <div className="flex flex-col md:flex-row justify-between gap-3">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
-          {/* 타입 필터 */}
-          {/* 타입 필터 */}
           <div className="relative" ref={typeRef}>
             <div
               className="flex items-center space-x-2 cursor-pointer"
