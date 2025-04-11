@@ -3,7 +3,7 @@ import { ACCESS_TOKEN_KEY } from '@/constants/auth.ts';
 
 export const login = (token: string) => {
   localStorage.setItem(ACCESS_TOKEN_KEY, token); // 토큰을 브라우저에 저장
-  const setToken = useAuthStore.getState().setToken;
+  const setToken = useAuthStore.getState().setToken; // 전역 상태 갱신
   setToken(token);
 };
 
