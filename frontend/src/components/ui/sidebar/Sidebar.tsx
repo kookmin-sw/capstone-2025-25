@@ -49,8 +49,10 @@ export default function Sidebar() {
   const location = useLocation();
   const { panelVisible, setPanelVisible } = useSidebarStore();
 
-  const activeId =
-    navItems.find((item) => location.pathname.includes(item.route))?.id || null;
+  const activeItem =
+    navItems.find((item) => location.pathname.includes(item.route)) || null;
+  const activeId = activeItem?.id || null;
+  const activeItemHasPanel = activeItem?.hasPanel || false;
 
   const handleNavItemClick = (e: React.MouseEvent, route: string) => {
     const target = e.target as HTMLElement;
@@ -100,14 +102,16 @@ export default function Sidebar() {
           </div>
         </aside>
 
-        <div
-          className={cn(
-            'h-full bg-white border-r border-gray-300 transition-all duration-300 ease-in-out overflow-hidden',
-            panelVisible ? 'w-[300px] opacity-100' : 'w-0 opacity-0',
-          )}
-        >
-          {activeId && <SidebarPanel activeId={activeId} />}
-        </div>
+        {activeItemHasPanel && (
+          <div
+            className={cn(
+              'h-full bg-white border-r border-gray-300 transition-all duration-300 ease-in-out overflow-hidden',
+              panelVisible ? 'w-[300px] opacity-100' : 'w-0 opacity-0',
+            )}
+          >
+            {activeId && <SidebarPanel activeId={activeId} />}
+          </div>
+        )}
       </div>
     </div>
   );

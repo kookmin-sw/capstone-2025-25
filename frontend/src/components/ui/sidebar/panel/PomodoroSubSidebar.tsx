@@ -5,7 +5,6 @@ import { PomodoroItem } from '@/components/ui/pomodoro/PomodoroItem.tsx';
 import type { PomodoroList } from '@/types/pomodoro';
 import AddPomodoro from '@/components/ui/Modal/AddPomodoro.tsx';
 import { useNavigate, useParams } from 'react-router';
-import { useEffect } from 'react';
 
 // 예시 데이터
 const response: PomodoroList = {
