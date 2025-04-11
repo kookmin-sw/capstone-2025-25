@@ -110,11 +110,7 @@ const response: PomodoroList = {
   ],
 };
 
-export default function PomodoroSubSidebar({
-  onClose,
-}: {
-  onClose: () => void;
-}) {
+export default function PomodoroSubSidebar() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
@@ -125,7 +121,6 @@ export default function PomodoroSubSidebar({
   return (
     <CommonPanelWrapper
       title="뽀모도로"
-      onClose={onClose}
       addButton={
         <AddPomodoro trigger={<Plus size={24} className="cursor-pointer" />} />
       }
