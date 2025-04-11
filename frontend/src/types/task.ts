@@ -1,6 +1,6 @@
 export type TaskType = 'Todo' | 'Thinking' | 'all';
 
-export interface Task {
+export type Task = {
   id: string;
   title: string;
   memo: string;
@@ -10,4 +10,12 @@ export interface Task {
     category?: string;
   };
   section?: string;
-}
+};
+
+export type TaskCardType = {
+  id: string;
+  title: string;
+  memo?: string;
+  date?: string;
+  category?: string;
+};
