@@ -1,47 +1,53 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
-import { login } from '@/services/loginService.ts';
-import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
+import { apiClient } from '@/api/client.ts';
+import { login } from '@/services/loginService';
+import { ENDPOINTS } from '@/api/endpoints.ts';
 
 export default function OAuthCallbackPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [error, setError] = useState('');
+  const code = searchParams.get('code');
 
-  useEffect(() => {
-    const code = searchParams.get('code');
-
-    if (!code) {
-      setError('code 파라미터가 없습니다.');
-      setTimeout(() => navigate('/login'), 1500);
-      return;
-    }
-
-    const form = new URLSearchParams();
-    form.append('code', code);
-
-    axios
-      .post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/token`, form, {
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: async (code: string) => {
+      const form = new URLSearchParams();
+      form.append('code', code);
+      const res = await apiClient.post(ENDPOINTS.AUTH.ACCESS_TOKEN, form, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         withCredentials: true,
-      })
-      .then((res) => {
-        const token = res.data?.content?.accessToken;
-        if (!token) throw new Error('토큰 누락');
-        login(token);
-        setTimeout(() => navigate('/dashboard'), 1500);
-      })
-      .catch((err) => {
-        setError('토큰 발급 실패: ' + (err.response?.data || err.message));
-        setTimeout(() => navigate('/login'), 1500);
       });
-  }, [navigate, searchParams]);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const token = data?.content?.accessToken;
+      if (!token) {
+        throw new Error('토큰 누락');
+      }
+      login(token);
+      navigate('/dashboard');
+    },
+    onError: () => {
+      setTimeout(() => navigate('/login'), 1500);
+    },
+  });
+
+  useEffect(() => {
+    if (code) {
+      mutate(code);
+    }
+  }, [code, mutate]);
 
   return (
     <p className="text-center mt-10 text-red-500">
-      {error || '로그인 처리 중입니다...'}
+      {error
+        ? `토큰 발급 실패: ${error instanceof Error ? error.message : '오류'}`
+        : isPending
+          ? '로그인 처리 중입니다...'
+          : ''}
     </p>
   );
 }
