@@ -1,8 +1,10 @@
+'use client';
+
 import { useState } from 'react';
-import { Droppable } from '@/components/PriorityMatrix/Droppable';
-import { TaskCard } from '@/components/PriorityMatrix/card/TaskCard';
-import { FilterBar } from '@/components/PriorityMatrix/FilterBar';
-import { CreateTaskModal } from '@/components/PriorityMatrix/modal/CreateTaskModal';
+import { Droppable } from '@/components/eisenhower/Droppable';
+import { TaskCard } from '@/components/eisenhower/card/TaskCard';
+import { FilterBar } from '@/components/eisenhower/FilterBar';
+import { CreateTaskForm } from '@/components/eisenhower/modal/CreateTaskForm.tsx';
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -20,11 +22,11 @@ type AllScheduleViewProps = {
     section4: Task[];
   };
   view: 'matrix' | 'board';
-  selectedType: 'all' | 'Todo' | 'Thinking';
+  selectedType: 'ALL' | 'TODO' | 'THINKING';
   selectedCategory: string;
   startDate: Date;
   endDate: Date;
-  onTypeChange: (type: 'all' | 'Todo' | 'Thinking') => void;
+  onTypeChange: (type: 'ALL' | 'TODO' | 'THINKING') => void;
   onCategoryChange: (category: string) => void;
   onDateChange: (start: Date, end: Date) => void;
   onTaskClick: (task: Task) => void;
@@ -58,7 +60,7 @@ export function AllScheduleView({
     title: '',
     memo: '',
     date: '',
-    tags: { type: 'Todo', category: undefined },
+    tags: { type: 'TODO', category: undefined },
     section: '',
   });
 
@@ -97,7 +99,7 @@ export function AllScheduleView({
           title={sectionTitles[id]}
           description="새로운 작업을 추가해보세요."
           children={
-            <CreateTaskModal
+            <CreateTaskForm
               sectionId={id}
               sectionTitle={sectionTitles[id]}
               form={taskForm}
