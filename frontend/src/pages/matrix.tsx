@@ -4,7 +4,7 @@ import { CompletedScheduleView } from '@/components/eisenhower/view/CompletedSch
 import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
 import { Button } from '@/components/ui/button';
 import { FilterBar } from '@/components/eisenhower/FilterBar';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs.tsx';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import { useTaskFilters } from '@/hooks/useTaskFilters';
 import { useTaskDnD } from '@/hooks/useTaskDnD';

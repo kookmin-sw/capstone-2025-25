@@ -1,6 +1,6 @@
 import type { TaskType } from '@/types/task.ts';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/Badge.tsx';
 
 type TypeBadgeProps = {
   type: TaskType;
