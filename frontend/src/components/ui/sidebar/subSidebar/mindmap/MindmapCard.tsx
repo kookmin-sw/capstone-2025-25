@@ -5,20 +5,18 @@ import { cn } from '@/lib/utils';
 import { useDeleteMindMap } from '@/store/mindmapListStore';
 import { MindMap } from '@/types/mindMap';
 import { Link, X } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 
 type MindmapCardProps = {
   mindmap: MindMap;
+  selected: boolean;
 };
 
-export default function MindmapCard({ mindmap }: MindmapCardProps) {
+export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
   const navigate = useNavigate();
-  const { id: currentMindMapId } = useParams<{ id: string }>();
   const deleteMindMap = useDeleteMindMap();
 
   const { title, type, id, lastModifiedAt, linked } = mindmap;
-
-  const selected = currentMindMapId === id;
 
   const statusColor =
     type === 'THINKING'
