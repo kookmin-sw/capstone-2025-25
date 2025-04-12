@@ -10,20 +10,22 @@ export default function MindmapPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (id) {
+    const isValidId = id && mindMaps.some((mindmap) => mindmap.id === id);
+
+    if (id && isValidId) {
       setActiveMindMap(id);
       return;
     }
 
     const linkedMindMaps = mindMaps.filter((mindmap) => mindmap.linked);
     if (linkedMindMaps.length > 0) {
-      navigate(`/mindmap/${linkedMindMaps[0].id}`);
+      navigate(`/mindmap/${linkedMindMaps[0].id}`, { replace: true });
       return;
     }
 
     const freeMindMaps = mindMaps.filter((mindmap) => !mindmap.linked);
     if (freeMindMaps.length > 0) {
-      navigate(`/mindmap/${freeMindMaps[0].id}`);
+      navigate(`/mindmap/${freeMindMaps[0].id}`, { replace: true });
       return;
     }
 
