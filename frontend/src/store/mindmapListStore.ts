@@ -37,6 +37,7 @@ const useStore = create<MindMapListState>((set, get) => ({
       id,
       title,
       type,
+      lastModifiedAt: new Date().toISOString(),
       nodes: initialNodes,
       edges: [],
       linked: false,

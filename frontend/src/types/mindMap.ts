@@ -31,7 +31,7 @@ export type MindMap = {
   id: string;
   title: string;
   type: TodoType;
-  lastModifiedAt?: Date;
+  lastModifiedAt: string;
   nodes: MindMapNode[];
   edges: MindMapEdge[];
   linked: boolean;

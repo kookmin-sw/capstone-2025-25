@@ -5,6 +5,7 @@ export const mockMindMaps: MindMap[] = [
     id: 'hrgRaTSuSTxaBIGNbqm1c',
     title: '운동하기',
     type: 'TODO',
+    lastModifiedAt: '2025-04-12T04:16:18.018Z',
     nodes: [
       {
         id: '1',
@@ -182,9 +183,10 @@ export const mockMindMaps: MindMap[] = [
   },
 
   {
-    id: 'travelPlanMindMap',
+    id: 'zmdLOCSTxaasZQlp',
     title: '여행 계획',
     type: 'TODO',
+    lastModifiedAt: '2025-04-12T04:16:18.018Z',
     nodes: [
       {
         id: '1',
@@ -333,9 +335,10 @@ export const mockMindMaps: MindMap[] = [
   },
 
   {
-    id: 'studyPlanMindMap',
+    id: 'skNCDUchOkmewQ',
     title: '학습 계획',
     type: 'TODO',
+    lastModifiedAt: '2025-04-12T04:16:18.018Z',
     nodes: [
       {
         id: '1',
@@ -485,9 +488,10 @@ export const mockMindMaps: MindMap[] = [
   },
 
   {
-    id: 'hobbyMindMap',
+    id: 'tKfkQfkdXpTmzs',
     title: '취미 생활',
-    type: 'TODO',
+    type: 'THINKING',
+    lastModifiedAt: '2025-04-12T04:16:18.018Z',
     nodes: [
       {
         id: '1',
