@@ -3,18 +3,13 @@ import { SubSidebarAccordion } from '@/components/ui/SubSidebarAccordion.tsx';
 import CommonSubSidebarWrapper from '../CommonSubSidebarWrapper';
 import { PomodoroItem } from '@/components/ui/pomodoro/PomodoroItem.tsx';
 import AddPomodoro from '@/components/ui/Modal/AddPomodoro.tsx';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { usePomodoros } from '@/store/pomodoro';
 
 export default function PomodoroSubSidebar() {
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   const pomodoros = usePomodoros();
-
-  const pomodoroClick = (id: number) => {
-    navigate(`/pomodoro/${id}`);
-  };
 
   return (
     <CommonSubSidebarWrapper
@@ -34,7 +29,6 @@ export default function PomodoroSubSidebar() {
               key={item.pomodoro.id}
               item={item}
               selected={item.pomodoro.id === Number(id)}
-              onClick={() => pomodoroClick(item.pomodoro.id)}
             />
           ))}
         </SubSidebarAccordion>
@@ -48,7 +42,6 @@ export default function PomodoroSubSidebar() {
               key={item.pomodoro.id}
               item={item}
               selected={item.pomodoro.id === Number(id)}
-              onClick={() => pomodoroClick(item.pomodoro.id)}
             />
           ))}
         </SubSidebarAccordion>
