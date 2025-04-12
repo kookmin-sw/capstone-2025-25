@@ -6,6 +6,7 @@ import { useDeleteMindMap } from '@/store/mindmapListStore';
 import { MindMap } from '@/types/mindMap';
 import { Link, X } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
+import { MouseEvent } from 'react';
 
 type MindmapCardProps = {
   mindmap: MindMap;
@@ -27,7 +28,20 @@ export default function MindmapCard({ mindmap }: MindmapCardProps) {
 
   const cardBg = selected ? 'bg-[#ECE5FF] rounded-lg' : 'bg-white';
 
-  const handleClick = () => {
+  const handleClick = (e: MouseEvent) => {
+    const closeButton = e.currentTarget.querySelector('.close-button');
+    if (closeButton && closeButton.contains(e.target as Node)) {
+      return;
+    }
+
+    const target = e.target as HTMLElement;
+    if (
+      target.getAttribute('data-slot') === 'dialog-overlay' ||
+      target.closest('[data-slot="dialog-overlay"]')
+    ) {
+      return;
+    }
+
     navigate(`/mindmap/${id}`);
   };
 
@@ -47,7 +61,7 @@ export default function MindmapCard({ mindmap }: MindmapCardProps) {
       <div className="flex items-center justify-between">
         <div
           className={cn(
-            'inline-flex items-center gap-1  px-2 py-1 rounded-full font-medium',
+            'inline-flex items-center gap-1 px-2 py-1 rounded-full font-medium',
             statusColor,
           )}
         >
@@ -55,16 +69,16 @@ export default function MindmapCard({ mindmap }: MindmapCardProps) {
           <p className="text-[12px] truncate">{type}</p>
         </div>
         <Modal
-          trigger={<X size={16} className="text-gray-700" />}
+          trigger={<X size={16} className="close-button text-gray-700" />}
           title="이 마인드맵을 삭제할까요?"
           description="해야 할 일이나 생각이 떠올랐다면 여기 적어보세요! 
-          질문을 통해 더 깊이 고민할 수 있도록 도와줄게요"
+            질문을 통해 더 깊이 고민할 수 있도록 도와줄게요"
           footer={<Button onClick={handleDelete}>삭제하기</Button>}
         >
           <div className="border border-border-gray p-[20px] rounded-sm flex flex-col gap-[10px]">
             <div
               className={cn(
-                'inline-flex items-center gap-1  px-2 py-1 rounded-full font-medium w-fit',
+                'inline-flex items-center gap-1 px-2 py-1 rounded-full font-medium w-fit',
                 statusColor,
               )}
             >
