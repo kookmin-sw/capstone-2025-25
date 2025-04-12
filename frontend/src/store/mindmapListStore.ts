@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
 import { MindMapNode, MindMap, TodoType, MindMapEdge } from '@/types/mindMap';
+import { mockMindMaps } from '@/mock/mindmap';
 
 export type MindMapListState = {
   mindMaps: MindMap[];
@@ -17,7 +18,7 @@ export type MindMapListState = {
 };
 
 const useStore = create<MindMapListState>((set, get) => ({
-  mindMaps: [],
+  mindMaps: mockMindMaps,
   activeMindMapId: null,
 
   createMindMap: (title, type) => {
@@ -38,6 +39,7 @@ const useStore = create<MindMapListState>((set, get) => ({
       type,
       nodes: initialNodes,
       edges: [],
+      linked: false,
     };
 
     set((state) => ({

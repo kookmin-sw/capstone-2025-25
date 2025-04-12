@@ -29,9 +29,10 @@ export type MindMapEdge = ReactFlowEdge;
 
 export type MindMap = {
   id: string;
-  order?: number;
-  type: TodoType;
   title: string;
+  type: TodoType;
+  lastModifiedAt?: Date;
   nodes: MindMapNode[];
   edges: MindMapEdge[];
+  linked: boolean;
 };
