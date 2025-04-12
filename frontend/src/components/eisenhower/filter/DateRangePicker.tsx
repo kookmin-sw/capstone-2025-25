@@ -1,48 +1,54 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
-import { ko } from "date-fns/locale"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { useState, useEffect } from 'react';
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 
 type DateRangePickerProps = {
-  startDate: Date
-  endDate: Date
-  onDateChange: (start: Date, end: Date) => void
-}
+  startDate: Date;
+  endDate: Date;
+  onDateChange: (start: Date, end: Date) => void;
+};
 
-export function DateRangePicker({ startDate, endDate, onDateChange }: DateRangePickerProps) {
-  const [isOpen, setIsOpen] = useState(false)
+export function DateRangePicker({
+  startDate,
+  endDate,
+  onDateChange,
+}: DateRangePickerProps) {
+  const [isOpen, setIsOpen] = useState(false);
   const [dateRange, setDateRange] = useState<{
-    from: Date
-    to: Date | undefined
+    from: Date;
+    to: Date | undefined;
   }>({
     from: startDate,
     to: endDate,
-  })
+  });
 
   useEffect(() => {
     if (dateRange.from && dateRange.to) {
-      onDateChange(dateRange.from, dateRange.to)
+      onDateChange(dateRange.from, dateRange.to);
     }
-  }, [dateRange, onDateChange])
+  }, [dateRange, onDateChange]);
 
   const formatDateRange = () => {
-    if (!dateRange.from) return "날짜 선택"
+    if (!dateRange.from) return '날짜 선택';
 
     if (!dateRange.to) {
-      return format(dateRange.from, "yyyy년 MM월 dd일", { locale: ko })
+      return format(dateRange.from, 'yyyy년 MM월 dd일', { locale: ko });
     }
 
-    if (format(dateRange.from, "yyyy-MM") === format(dateRange.to, "yyyy-MM")) {
-      return `${format(dateRange.from, "yyyy년 MM월 dd일", { locale: ko })} - ${format(dateRange.to, "dd일", { locale: ko })}`
+    if (format(dateRange.from, 'yyyy-MM') === format(dateRange.to, 'yyyy-MM')) {
+      return `${format(dateRange.from, 'yyyy년 MM월 dd일', { locale: ko })} - ${format(dateRange.to, 'dd일', { locale: ko })}`;
     }
 
-    return `${format(dateRange.from, "yyyy년 MM월 dd일", { locale: ko })} - ${format(dateRange.to, "yyyy년 MM월 dd일", { locale: ko })}`
-  }
+    return `${format(dateRange.from, 'yyyy년 MM월 dd일', { locale: ko })} - ${format(dateRange.to, 'yyyy년 MM월 dd일', { locale: ko })}`;
+  };
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -68,10 +74,10 @@ export function DateRangePicker({ startDate, endDate, onDateChange }: DateRangeP
             }}
             onSelect={(range) => {
               if (range?.from && range?.to) {
-                setDateRange({ from: range.from, to: range.to })
-                setIsOpen(false)
+                setDateRange({ from: range.from, to: range.to });
+                setIsOpen(false);
               } else if (range?.from) {
-                setDateRange({ from: range.from, to: undefined })
+                setDateRange({ from: range.from, to: undefined });
               }
             }}
             numberOfMonths={2}
@@ -80,5 +86,5 @@ export function DateRangePicker({ startDate, endDate, onDateChange }: DateRangeP
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

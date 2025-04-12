@@ -1,6 +1,3 @@
-// CreateTaskForm.tsx
-'use client';
-
 import { useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';

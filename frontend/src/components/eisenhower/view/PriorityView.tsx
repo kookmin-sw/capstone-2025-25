@@ -1,11 +1,11 @@
-import type { Task, TaskType, SectionId } from '@/types/task';
+import type { Task, TaskType, SectionId } from '@/types/task.ts';
 import { useState } from 'react';
-import { Modal } from '@/components/common/Modal';
-import { CreateTaskForm } from '@/components/eisenhower/modal/CreateTaskForm';
-import { DialogClose } from '@/components/ui/Dialog';
-import { Button } from '@/components/ui/button';
-import { TaskCard } from '@/components/eisenhower/card/TaskCard';
-import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
+import { Modal } from '@/components/common/Modal.tsx';
+import { CreateTaskForm } from '@/components/eisenhower/modal/CreateTaskForm.tsx';
+import { DialogClose } from '@/components/ui/Dialog.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { TaskCard } from '@/components/eisenhower/card/TaskCard.tsx';
+import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar.tsx';
 import {
   DndContext,
   closestCorners,
@@ -19,8 +19,8 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from '@dnd-kit/sortable';
-import { SECTION_IDS, SECTION_TITLES } from '@/constants/eisenhower';
-import { useCategoryStore } from '@/store/useCategoryStore';
+import { SECTION_IDS, SECTION_TITLES } from '@/constants/eisenhower.ts';
+import { useCategoryStore } from '@/store/useCategoryStore.ts';
 
 interface PriorityViewProps {
   tasks: Record<SectionId, Task[]>;

@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { Modal } from '@/components/common/Modal';
 import { CreateTaskForm } from './CreateTaskForm';

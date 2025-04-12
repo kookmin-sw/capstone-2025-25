@@ -1,24 +1,33 @@
-"use client"
-
-import { useState } from "react"
-import { Menu, X, Grid2x2, LayoutGrid, BrainCircuit, Clock, CheckCircle } from "lucide-react"
+import { useState } from 'react';
+import {
+  Menu,
+  X,
+  Grid2x2,
+  LayoutGrid,
+  BrainCircuit,
+  Clock,
+  CheckCircle,
+} from 'lucide-react';
 
 type MobileMenuProps = {
-  activeMenu: string
-  onMenuChange: (menu: string) => void
-}
+  activeMenu: string;
+  onMenuChange: (menu: string) => void;
+};
 
 export function MobileMenu({ activeMenu, onMenuChange }: MobileMenuProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleMenuClick = (menu: string) => {
-    onMenuChange(menu)
-    setIsOpen(false)
-  }
+    onMenuChange(menu);
+    setIsOpen(false);
+  };
 
   return (
     <div className="md:hidden">
-      <button className="p-2 rounded-md hover:bg-[#f5f1ff]" onClick={() => setIsOpen(!isOpen)}>
+      <button
+        className="p-2 rounded-md hover:bg-[#f5f1ff]"
+        onClick={() => setIsOpen(!isOpen)}
+      >
         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
 
@@ -32,15 +41,18 @@ export function MobileMenu({ activeMenu, onMenuChange }: MobileMenuProps) {
                 </div>
                 <span className="font-semibold">Flowin</span>
               </div>
-              <button className="p-2 rounded-md hover:bg-[#f5f1ff]" onClick={() => setIsOpen(false)}>
+              <button
+                className="p-2 rounded-md hover:bg-[#f5f1ff]"
+                onClick={() => setIsOpen(false)}
+              >
                 <X className="w-6 h-6" />
               </button>
             </div>
 
             <div className="flex-1 overflow-auto">
               <div
-                className={`px-4 py-4 flex items-center text-sm ${activeMenu === "today" ? "bg-[#8d5cf6] text-white" : "hover:bg-[#f2f2f2]"} cursor-pointer`}
-                onClick={() => handleMenuClick("today")}
+                className={`px-4 py-4 flex items-center text-sm ${activeMenu === 'today' ? 'bg-[#8d5cf6] text-white' : 'hover:bg-[#f2f2f2]'} cursor-pointer`}
+                onClick={() => handleMenuClick('today')}
               >
                 <div className="w-6 h-6 mr-2 flex items-center justify-center">
                   <Grid2x2 className="w-4 h-4" />
@@ -49,8 +61,8 @@ export function MobileMenu({ activeMenu, onMenuChange }: MobileMenuProps) {
               </div>
 
               <div
-                className={`px-4 py-4 flex items-center text-sm ${activeMenu === "matrix" ? "bg-[#8d5cf6] text-white" : "hover:bg-[#f2f2f2]"} cursor-pointer`}
-                onClick={() => handleMenuClick("matrix")}
+                className={`px-4 py-4 flex items-center text-sm ${activeMenu === 'matrix' ? 'bg-[#8d5cf6] text-white' : 'hover:bg-[#f2f2f2]'} cursor-pointer`}
+                onClick={() => handleMenuClick('matrix')}
               >
                 <div className="w-6 h-6 mr-2 flex items-center justify-center">
                   <LayoutGrid className="w-4 h-4" />
@@ -59,8 +71,8 @@ export function MobileMenu({ activeMenu, onMenuChange }: MobileMenuProps) {
               </div>
 
               <div
-                className={`px-4 py-4 flex items-center text-sm ${activeMenu === "mindmap" ? "bg-[#8d5cf6] text-white" : "hover:bg-[#f2f2f2]"} cursor-pointer`}
-                onClick={() => handleMenuClick("mindmap")}
+                className={`px-4 py-4 flex items-center text-sm ${activeMenu === 'mindmap' ? 'bg-[#8d5cf6] text-white' : 'hover:bg-[#f2f2f2]'} cursor-pointer`}
+                onClick={() => handleMenuClick('mindmap')}
               >
                 <div className="w-6 h-6 mr-2 flex items-center justify-center">
                   <BrainCircuit className="w-4 h-4" />
@@ -69,8 +81,8 @@ export function MobileMenu({ activeMenu, onMenuChange }: MobileMenuProps) {
               </div>
 
               <div
-                className={`px-4 py-4 flex items-center text-sm ${activeMenu === "pomodoro" ? "bg-[#8d5cf6] text-white" : "hover:bg-[#f2f2f2]"} cursor-pointer`}
-                onClick={() => handleMenuClick("pomodoro")}
+                className={`px-4 py-4 flex items-center text-sm ${activeMenu === 'pomodoro' ? 'bg-[#8d5cf6] text-white' : 'hover:bg-[#f2f2f2]'} cursor-pointer`}
+                onClick={() => handleMenuClick('pomodoro')}
               >
                 <div className="w-6 h-6 mr-2 flex items-center justify-center">
                   <Clock className="w-4 h-4" />
@@ -79,8 +91,8 @@ export function MobileMenu({ activeMenu, onMenuChange }: MobileMenuProps) {
               </div>
 
               <div
-                className={`px-4 py-4 flex items-center text-sm ${activeMenu === "completed" ? "bg-[#8d5cf6] text-white" : "hover:bg-[#f2f2f2]"} cursor-pointer`}
-                onClick={() => handleMenuClick("completed")}
+                className={`px-4 py-4 flex items-center text-sm ${activeMenu === 'completed' ? 'bg-[#8d5cf6] text-white' : 'hover:bg-[#f2f2f2]'} cursor-pointer`}
+                onClick={() => handleMenuClick('completed')}
               >
                 <div className="w-6 h-6 mr-2 flex items-center justify-center">
                   <CheckCircle className="w-4 h-4" />
@@ -92,5 +104,5 @@ export function MobileMenu({ activeMenu, onMenuChange }: MobileMenuProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

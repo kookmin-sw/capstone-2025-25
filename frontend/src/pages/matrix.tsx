@@ -1,9 +1,6 @@
-// src/pages/MatrixPage.tsx
-'use client';
-
 import { useState } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
-import { CompletedScheduleView } from '@/components/eisenhower/CompletedScheduleView';
+import { CompletedScheduleView } from '@/components/eisenhower/view/CompletedScheduleView.tsx';
 import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
 import { Button } from '@/components/ui/button';
 import { FilterBar } from '@/components/eisenhower/FilterBar';
@@ -12,7 +9,7 @@ import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import { useTaskFilters } from '@/hooks/useTaskFilters';
 import { useTaskDnD } from '@/hooks/useTaskDnD';
 import type { Task } from '@/types/task.ts';
-import { PriorityView } from '@/components/eisenhower/PriorityView';
+import { PriorityView } from '@/components/eisenhower/view/PriorityView.tsx';
 
 import {
   initialTasks,
