@@ -5,6 +5,8 @@ import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { LinkedUnlinkedPomodoro } from '@/types/pomodoro';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { ReactNode } from 'react';
+import { useDeletePomodoro } from '@/store/pomodoro';
+import { useNavigate } from 'react-router';
 
 export default function DeletePomodoro({
   trigger,
@@ -21,9 +23,14 @@ export default function DeletePomodoro({
     0,
   );
 
-  const deletePomodoro = () => {
+  const navigate = useNavigate();
+
+  const deletePomodoro = useDeletePomodoro();
+
+  const handleDeletePomodoro = () => {
     // 삭제 api 추가
-    console.log('deletePomodoro');
+    deletePomodoro(pomodoro.id);
+    navigate('/pomodoro');
   };
 
   return (
@@ -40,7 +47,10 @@ export default function DeletePomodoro({
               </Button>
             </DialogClose>
             <DialogClose asChild>
-              <Button className="px-8 w-full flex-1" onClick={deletePomodoro}>
+              <Button
+                className="px-8 w-full flex-1"
+                onClick={handleDeletePomodoro}
+              >
                 삭제하기
               </Button>
             </DialogClose>
