@@ -14,8 +14,7 @@ export default [
 
   layout('layouts/DefaultLayout.tsx', [
     index('pages/home.tsx'),
-    route('mindmap', 'pages/mindmap.tsx'),
-    route('mindmap/:id', 'pages/mindmapDetail.tsx'),
+    route('mindmap/:id?', 'pages/mindmap.tsx'),
     route('today', 'pages/today.tsx'),
     route('matrix', 'pages/matrix.tsx'),
     route('pomodoro/:id?', 'pages/pomodoro.tsx'),
