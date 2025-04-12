@@ -1,10 +1,10 @@
 'use client';
 
-import MindmapPanel from '@/components/ui/sidebar/panel/MindmapPanel.tsx';
+import MindmapSubSidebar from '@/components/ui/sidebar/panel/MindmapSubSidebar';
 import PomodoroSubSidebar from '@/components/ui/sidebar/panel/PomodoroSubSidebar.tsx';
 
 const panelComponents = {
-  mindmap: MindmapPanel,
+  mindmap: MindmapSubSidebar,
   pomodoro: PomodoroSubSidebar,
 };
 
@@ -12,7 +12,7 @@ type SidebarPanelProps = {
   activeId: string;
 };
 
-export default function SidebarPanel({ activeId }: SidebarPanelProps) {
+export default function SubSidebar({ activeId }: SidebarPanelProps) {
   const PanelComponent =
     panelComponents[activeId as keyof typeof panelComponents];
 

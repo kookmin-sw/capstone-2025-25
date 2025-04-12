@@ -2,17 +2,17 @@ import { ReactNode } from 'react';
 import { ChevronsLeft } from 'lucide-react';
 import { useSidebarStore } from '@/store/sidebarStore';
 
-type CommonPanelWrapperProps = {
+type CommonSubSidebarWrapperProps = {
   title: string;
   addButton?: ReactNode;
   children: ReactNode;
 };
 
-export default function CommonPanelWrapper({
+export default function CommonSubSidebarWrapper({
   title,
   addButton,
   children,
-}: CommonPanelWrapperProps) {
+}: CommonSubSidebarWrapperProps) {
   const { setPanelVisible } = useSidebarStore();
 
   return (

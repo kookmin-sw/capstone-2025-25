@@ -1,6 +1,6 @@
 import { LinkIcon, Unlink, Plus } from 'lucide-react';
 import { SubSidebarAccordion } from '@/components/ui/SubSidebarAccordion.tsx';
-import CommonPanelWrapper from './CommonPanelWrapper';
+import CommonSubSidebarWrapper from './CommonSubSidebarWrapper';
 import { PomodoroItem } from '@/components/ui/pomodoro/PomodoroItem.tsx';
 import type { PomodoroList } from '@/types/pomodoro';
 import AddPomodoro from '@/components/ui/Modal/AddPomodoro.tsx';
@@ -118,7 +118,7 @@ export default function PomodoroSubSidebar() {
   };
 
   return (
-    <CommonPanelWrapper
+    <CommonSubSidebarWrapper
       title="뽀모도로"
       addButton={
         <AddPomodoro trigger={<Plus size={24} className="cursor-pointer" />} />
@@ -154,6 +154,6 @@ export default function PomodoroSubSidebar() {
           ))}
         </SubSidebarAccordion>
       </div>
-    </CommonPanelWrapper>
+    </CommonSubSidebarWrapper>
   );
 }
