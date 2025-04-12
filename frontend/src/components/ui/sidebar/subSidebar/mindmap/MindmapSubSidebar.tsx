@@ -1,10 +1,10 @@
 import { Link, Unlink } from 'lucide-react';
-import MindmapCard from '@/components/ui/sidebar/panel/mindmap/MindmapCard';
-import MindmapAddButton from '@/components/ui/sidebar/panel/mindmap/MindmapAddButton';
+import MindmapCard from '@/components/ui/sidebar/subSidebar/mindmap/MindmapCard';
+import MindmapAddButton from '@/components/ui/sidebar/subSidebar/mindmap/MindmapAddButton';
 import { useMindMaps } from '@/store/mindmapListStore';
 
 import { SubSidebarAccordion } from '@/components/ui/SubSidebarAccordion';
-import CommonSubSidebarWrapper from '@/components/ui/sidebar/panel/CommonSubSidebarWrapper';
+import CommonSubSidebarWrapper from '@/components/ui/sidebar/subSidebar/CommonSubSidebarWrapper';
 
 export default function MindmapSubSidebar() {
   const mindMaps = useMindMaps();

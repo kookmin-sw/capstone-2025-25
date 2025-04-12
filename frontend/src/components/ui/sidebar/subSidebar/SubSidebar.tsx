@@ -1,7 +1,7 @@
 'use client';
 
-import MindmapSubSidebar from '@/components/ui/sidebar/panel/MindmapSubSidebar';
-import PomodoroSubSidebar from '@/components/ui/sidebar/panel/PomodoroSubSidebar.tsx';
+import MindmapSubSidebar from '@/components/ui/sidebar/subSidebar/mindmap/MindmapSubSidebar';
+import PomodoroSubSidebar from '@/components/ui/sidebar/subSidebar/pomodoro/PomodoroSubSidebar';
 
 const panelComponents = {
   mindmap: MindmapSubSidebar,

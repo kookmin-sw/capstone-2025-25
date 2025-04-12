@@ -11,7 +11,7 @@ import {
 import { useNavigate, useLocation } from 'react-router';
 
 import { useSidebarStore } from '@/store/sidebarStore';
-import SubSidebar from '@/components/ui/sidebar/panel/SubSidebar';
+import SubSidebar from '@/components/ui/sidebar/subSidebar/SubSidebar';
 
 const navItems = [
   {
