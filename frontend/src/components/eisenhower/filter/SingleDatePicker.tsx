@@ -1,30 +1,22 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
-import { ko } from "date-fns/locale"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 
 type SingleDatePickerProps = {
-  date: Date
-  onDateChange?: (date: Date) => void
-}
+  date: Date;
+  onChange: (date: Date | undefined) => void;
+};
 
-export function SingleDatePicker({ date, onDateChange }: SingleDatePickerProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [selectedDate, setSelectedDate] = useState<Date>(date)
-
-  useEffect(() => {
-    if (onDateChange) {
-      onDateChange(selectedDate)
-    }
-  }, [selectedDate, onDateChange])
-
+export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="primary"
@@ -33,9 +25,9 @@ export function SingleDatePicker({ date, onDateChange }: SingleDatePickerProps) 
           <div className="flex items-center">
             <CalendarIcon className="mr-2 h-4 w-4 text-[#6e726e]" />
             <span className="text-sm">
-              {selectedDate instanceof Date && !isNaN(selectedDate.getTime())
-                ? format(selectedDate, "yyyy년 MM월 dd일", { locale: ko })
-                : "날짜 없음"}
+              {date instanceof Date && !isNaN(date.getTime())
+                ? format(date, 'yyyy년 MM월 dd일', { locale: ko })
+                : '날짜 없음'}
             </span>
           </div>
         </Button>
@@ -43,16 +35,13 @@ export function SingleDatePicker({ date, onDateChange }: SingleDatePickerProps) 
       <PopoverContent className="w-auto p-0" align="start">
         <CalendarComponent
           mode="single"
-          selected={selectedDate}
-          onSelect={(date) => {
-            if (date) {
-              setSelectedDate(date)
-              setIsOpen(false)
-            }
+          selected={date}
+          onSelect={(selected) => {
+            onChange(selected);
           }}
           locale={ko}
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }

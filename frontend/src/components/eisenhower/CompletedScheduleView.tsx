@@ -1,6 +1,6 @@
 'use client';
 
-import type { Task } from '@/types/task';
+import type { Task } from '@/types/task.ts';
 import { TaskCard } from './card/TaskCard';
 
 interface CompletedScheduleViewProps {

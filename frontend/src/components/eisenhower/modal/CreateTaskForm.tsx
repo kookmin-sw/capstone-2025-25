@@ -1,56 +1,40 @@
+// CreateTaskForm.tsx
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
-import type { Task, TaskType } from '@/types/task';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
-import { useOutsideClick } from '@/hooks/useOutsideClick.ts';
+import { useOutsideClick } from '@/hooks/useOutsideClick';
+import type { Task, TaskType } from '@/types/task';
 
-const CATEGORY_COLOR_PALETTE = [
-  'bg-green-100 text-green-600',
-  'bg-yellow-100 text-yellow-600',
-  'bg-orange-100 text-orange-600',
-  'bg-amber-100 text-amber-600',
-  'bg-blue-100 text-blue-600',
-  'bg-gray-100 text-gray-600',
-];
-
-type TaskForm = Omit<Task, 'id'>;
-
-type CreateTaskModalProps = {
-  // sectionTitle: string;
+interface CreateTaskFormProps {
   sectionId: string;
-  form: TaskForm;
-  setForm: (partial: Partial<TaskForm>) => void;
-  onCreateTask: (taskData: TaskForm) => void;
-};
+  form: Omit<Task, 'id'>;
+  setForm: (partial: Partial<Omit<Task, 'id'>>) => void;
+  onCreateTask: (taskData: Omit<Task, 'id'>) => void;
+  categoryOptions: string[];
+}
 
 export function CreateTaskForm({
-  // sectionTitle,
   sectionId,
   form,
   setForm,
-}: CreateTaskModalProps) {
-  const typeRef = useRef<HTMLDivElement>(null);
-  const categoryRef = useRef<HTMLDivElement>(null);
+  onCreateTask,
+  categoryOptions,
+}: CreateTaskFormProps) {
+  const typeRef = useRef(null);
+  const categoryRef = useRef(null);
   const [isTypeOpen, setIsTypeOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-
-  useEffect(() => {
-    if (sectionId && form.section !== sectionId) {
-      setForm({ section: sectionId });
-    }
-  }, [sectionId]);
 
   useOutsideClick(typeRef, () => setIsTypeOpen(false));
   useOutsideClick(categoryRef, () => setIsCategoryOpen(false));
 
   return (
-    <div className="p-6">
+    <div>
       <div className="mb-4">
-        {/*<p className="text-sm text-gray-500">{sectionTitle}</p>*/}
         <input
           value={form.title}
           onChange={(e) => setForm({ title: e.target.value })}
@@ -71,7 +55,7 @@ export function CreateTaskForm({
           </button>
           {isTypeOpen && (
             <div className="absolute ml-12 top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 max-h-80 overflow-y-auto">
-              {(['Todo', 'Thinking'] as TaskType[]).map((type) => (
+              {(['TODO', 'THINKING'] as TaskType[]).map((type) => (
                 <button
                   key={type}
                   onClick={() => {
@@ -101,7 +85,7 @@ export function CreateTaskForm({
           </button>
           {isCategoryOpen && (
             <div className="absolute ml-12 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 max-h-80 overflow-y-auto">
-              {['study', 'work', 'personal', 'oo'].map((cat, idx) => (
+              {categoryOptions.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => {
@@ -112,11 +96,7 @@ export function CreateTaskForm({
                 >
                   <CategoryBadge
                     label={cat}
-                    colorClass={
-                      CATEGORY_COLOR_PALETTE[
-                        idx % CATEGORY_COLOR_PALETTE.length
-                      ]
-                    }
+                    colorClass="bg-yellow-100 text-yellow-600"
                   />
                 </button>
               ))}

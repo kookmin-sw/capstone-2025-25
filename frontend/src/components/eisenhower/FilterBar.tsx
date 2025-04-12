@@ -1,6 +1,5 @@
-'use client';
-
-import { useState, useRef, useEffect } from 'react';
+import { useCategoryStore } from '@/store/useCategoryStore';
+import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 import { DateRangePicker } from '@/components/eisenhower/filter/DateRangePicker';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
@@ -27,16 +26,7 @@ export function FilterBar({
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
-  // Get categories from localStorage or use default ones
-  const [categories, setCategories] = useState<string[]>([
-    'category',
-    'work',
-    'personal',
-    'study',
-    'health',
-    'dev',
-    'marketing',
-  ]);
+  const { categories } = useCategoryStore();
 
   const typeRef = useRef<HTMLDivElement>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
@@ -57,14 +47,6 @@ export function FilterBar({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Load categories from localStorage
-  useEffect(() => {
-    const savedCategories = localStorage.getItem('taskCategories');
-    if (savedCategories) {
-      setCategories(JSON.parse(savedCategories));
-    }
-  }, []);
-
   const getCategoryColor = (title: string) =>
     title === 'all'
       ? 'bg-gray-200 text-gray-600'
@@ -83,7 +65,6 @@ export function FilterBar({
               <ChevronDown className="w-4 h-4" />
             </div>
 
-            {/* 선택된 타입 뱃지 */}
             <div
               className={`mt-2 inline-flex items-center px-3 py-1 rounded-full border text-xs font-medium ${
                 selectedType === 'ALL'
@@ -92,12 +73,13 @@ export function FilterBar({
               }`}
             >
               <span
-                className={`w-2 h-2 rounded-full mr-2 ${selectedType === 'ALL' ? 'bg-gray-400' : 'bg-[#8D5CF6]'}`}
+                className={`w-2 h-2 rounded-full mr-2 ${
+                  selectedType === 'ALL' ? 'bg-gray-400' : 'bg-[#8D5CF6]'
+                }`}
               ></span>
               {selectedType === 'ALL' ? '모든 타입' : selectedType}
             </div>
 
-            {/* 드롭다운 */}
             {isTypeDropdownOpen && (
               <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 w-40">
                 <div className="p-2 space-y-1">
@@ -122,7 +104,6 @@ export function FilterBar({
             )}
           </div>
 
-          {/* 카테고리 필터 */}
           <div className="relative" ref={categoryRef}>
             <div
               className="flex items-center space-x-2 cursor-pointer"
@@ -183,9 +164,7 @@ export function FilterBar({
                         }}
                       >
                         <div className="flex items-center">
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-600`}
-                          >
+                          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-600">
                             {cat}
                           </span>
                           {selectedCategory === cat && (
@@ -200,7 +179,6 @@ export function FilterBar({
             )}
           </div>
 
-          {/* 날짜 필터 */}
           <div className="relative">
             <div className="flex items-center space-x-2 cursor-pointer">
               <span className="text-sm font-medium">날짜</span>

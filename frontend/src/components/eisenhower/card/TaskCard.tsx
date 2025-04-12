@@ -1,11 +1,9 @@
-'use client';
-
+import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge.tsx';
+import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge.tsx';
 import { useSortable } from '@dnd-kit/sortable';
+import { Task } from '@/types/task.ts';
 import { CSS } from '@dnd-kit/utilities';
 import { Calendar } from 'lucide-react';
-import type { Task } from '@/types/task';
-import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
-import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 
 type TaskCardProps = {
   task: Task;
@@ -23,12 +21,7 @@ export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
     transform,
     transition,
     isDragging,
-  } = useSortable({
-    id,
-    data: {
-      ...task,
-    },
-  });
+  } = useSortable({ id, data: { ...task } });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -41,19 +34,20 @@ export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
         ref={setNodeRef}
         style={style}
         {...attributes}
-        {...listeners}
         className={`bg-white rounded-md p-3 ${layout === 'board' ? 'w-full' : ''} ${
           isDragging
             ? 'opacity-50 z-10 shadow-lg border-2 border-purple-300'
             : 'border border-gray-100'
         } transition-all duration-200 cursor-pointer hover:shadow-md flex flex-col relative`}
         onClick={() => {
-          // 드래그 중에는 onClick 이벤트가 발생하지 않도록 함
-          if (!isDragging && onClick) {
-            onClick();
-          }
+          if (!isDragging && onClick) onClick();
         }}
       >
+        {/* 드래그 핸들 전용 영역 */}
+        <div {...listeners} className="absolute top-1 right-1 p-1 cursor-move">
+          <span className="text-xs text-gray-400">↕</span>
+        </div>
+
         <div className="flex mb-2 flex-wrap gap-1">
           <TypeBadge type={tags.type} />
           {tags.category && (
@@ -84,8 +78,6 @@ export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
           </div>
         )}
       </div>
-
-      <div className="w-full group-hover:bg-purple-100 transition-colors duration-200"></div>
     </div>
   );
 }
