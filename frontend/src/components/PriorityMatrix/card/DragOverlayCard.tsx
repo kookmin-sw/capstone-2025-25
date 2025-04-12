@@ -1,5 +1,3 @@
-'use client';
-
 import { Calendar } from 'lucide-react';
 import type { Task } from '@/types/task';
 

@@ -1,5 +1,3 @@
-'use client';
-
 import type React from 'react';
 import { useState, useEffect } from 'react';
 import { Edit2, Tag, Calendar, Save } from 'lucide-react';

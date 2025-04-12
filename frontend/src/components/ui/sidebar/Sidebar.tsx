@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Network, ListTodo, LayoutDashboard, Timer } from 'lucide-react';

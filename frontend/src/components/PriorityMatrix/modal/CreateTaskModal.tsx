@@ -15,12 +15,14 @@ const CATEGORY_COLOR_PALETTE = [
   'bg-gray-100 text-gray-600',
 ];
 
+type TaskForm = Omit<Task, 'id'>;
+
 type CreateTaskModalProps = {
   sectionTitle: string;
   sectionId: string;
-  form: Omit<Task, 'id'>;
-  setForm: (partial: Partial<Omit<Task, 'id'>>) => void;
-  onCreateTask: (taskData: any) => void;
+  form: TaskForm;
+  setForm: (partial: Partial<TaskForm>) => void;
+  onCreateTask: (taskData: TaskForm) => void;
 };
 
 export function CreateTaskModal({

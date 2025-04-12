@@ -1,4 +1,3 @@
-'use client';
 import { FilterBar } from '@/components/PriorityMatrix/FilterBar';
 import type { Task } from '@/types/task';
 import { TaskCard } from '../PriorityMatrix/card/TaskCard';
