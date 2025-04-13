@@ -96,16 +96,16 @@ export function TaskDetailSidebar({
           <SheetTitle className="text-base font-semibold">
             {isEditing ? '작업 편집' : '작업 상세'}
           </SheetTitle>
-          <button
-            onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
-            className="p-2 rounded hover:bg-gray-100"
-          >
-            {isEditing ? (
-              <Save className="w-5 h-5" />
-            ) : (
+          {isEditing ? (
+            <div className="p-2"></div>
+          ) : (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="p-2 rounded hover:bg-gray-100"
+            >
               <PencilLine className="w-5 h-5" />
-            )}
-          </button>
+            </button>
+          )}
         </div>
 
         <div className="flex flex-col p-6 h-full gap-6">
@@ -215,28 +215,6 @@ export function TaskDetailSidebar({
             )}
           </div>
         </div>
-        {!isEditing && (
-          <div className="p-4 border-t flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                // 마인드맵 그리기 로직
-              }}
-              className="flex-1 border rounded py-2"
-            >
-              마인드맵 그리기
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => {
-                // 뽀모도로 생성 로직
-              }}
-              className="flex-1 bg-black text-white rounded py-2"
-            >
-              뽀모도로 생성하기
-            </Button>
-          </div>
-        )}
 
         {isEditing && (
           <div className="p-4 border-t">
@@ -270,6 +248,47 @@ export function TaskDetailSidebar({
             </div>
           </div>
         )}
+        <div className="p-4 border-t flex gap-2">
+          {isEditing ? (
+            <>
+              <Button
+                variant="outline"
+                onClick={handleCancelEdit}
+                className="flex-1 border rounded py-2"
+              >
+                취소하기
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleSave}
+                className="flex-1 bg-black text-white rounded py-2"
+              >
+                저장하기
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  // 마인드맵 그리기 로직
+                }}
+                className="flex-1 border rounded py-2"
+              >
+                마인드맵 그리기
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  // 뽀모도로 생성 로직
+                }}
+                className="flex-1 bg-black text-white rounded py-2"
+              >
+                뽀모도로 실행하기
+              </Button>
+            </>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   );
