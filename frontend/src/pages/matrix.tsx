@@ -11,10 +11,6 @@ import { useCategoryStore } from '@/store/useCategoryStore';
 import { Toaster, toast } from 'sonner';
 import type { Task, TaskDetail } from '@/types/task';
 import { PriorityView } from '@/components/eisenhower/view/PriorityView';
-import {
-  initialTasks,
-  completedTasks,
-} from '@/components/eisenhower/data/tasks';
 
 import {
   DropdownMenu,
@@ -23,6 +19,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, Grid2X2, Kanban } from 'lucide-react';
+import useMatrixStore from '@/store/matrixStore';
+
 function convertToTaskDetail(task: Task): TaskDetail {
   return {
     ...task,
@@ -46,18 +44,21 @@ export default function MatrixPage() {
 
   const [view, setView] = useState<'matrix' | 'board'>('matrix');
   const [activeTab, setActiveTab] = useState<'all' | 'completed'>('all');
-  const [tasks, setTasks] = useState<Record<string, Task[]>>(initialTasks);
-  const [doneTasks, setDoneTasks] =
-    useState<Record<string, Task[]>>(completedTasks);
+
+  const {
+    tasks,
+    completedTasks,
+    updateTask,
+    addTask,
+    deleteTask,
+    reorderTasks,
+  } = useMatrixStore();
 
   const [selectedTask, setSelectedTask] = useState<TaskDetail | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const { categories, addCategory, removeCategory } = useCategoryStore();
-  const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD({
-    tasks,
-    setTasks,
-  });
+  const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD();
 
   const handleTaskClick = (task: TaskDetail) => {
     setSelectedTask(task);
@@ -71,33 +72,15 @@ export default function MatrixPage() {
       dueDate: updatedTask.dueDate ?? '',
     };
 
-    setTasks((prev) => ({
-      ...prev,
-      [sectionId]: prev[sectionId].map((t) =>
-        t.id === safeTask.id ? safeTask : t,
-      ),
-    }));
-
-    setDoneTasks((prev) => ({
-      ...prev,
-      [sectionId]: prev[sectionId].map((t) =>
-        t.id === safeTask.id ? safeTask : t,
-      ),
-    }));
+    updateTask(sectionId, safeTask.id, safeTask);
 
     setSelectedTask(updatedTask);
     toast.success('작업이 저장되었습니다.');
   };
 
   const handleTaskDelete = (taskId: string | number) => {
-    setTasks((prev) =>
-      Object.fromEntries(
-        Object.entries(prev).map(([key, taskList]) => [
-          key,
-          taskList.filter((task) => task.id !== taskId),
-        ]),
-      ),
-    );
+    deleteTask(taskId);
+
     setIsSidebarOpen(false);
     toast.success('작업이 삭제되었습니다.');
   };
@@ -192,18 +175,13 @@ export default function MatrixPage() {
             viewMode={view}
             onTaskClick={(task) => handleTaskClick(convertToTaskDetail(task))}
             onReorderTask={(sectionId, newTasks) =>
-              setTasks((prev) => ({ ...prev, [sectionId]: newTasks }))
+              reorderTasks(sectionId, newTasks)
             }
-            onCreateTask={(sectionId, newTask) =>
-              setTasks((prev) => ({
-                ...prev,
-                [sectionId]: [...prev[sectionId], newTask],
-              }))
-            }
+            onCreateTask={(sectionId, newTask) => addTask(sectionId, newTask)}
           />
         ) : (
           <CompletedView
-            tasks={Object.values(doneTasks).flat()}
+            tasks={Object.values(completedTasks).flat()}
             selectedType={selectedType}
             selectedCategory={selectedCategory}
             startDate={startDate}
