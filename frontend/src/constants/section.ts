@@ -1,4 +1,8 @@
-export const SECTION_TITLES: Record<'Q1' | 'Q2' | 'Q3' | 'Q4', string> = {
+// constants/section.ts
+
+import { Quadrant } from '@/types/task.ts';
+
+export const quadrantTitles: Record<Quadrant, string> = {
   Q1: '긴급하고 중요한 일',
   Q2: '긴급하지 않지만 중요한 일',
   Q3: '긴급하지만 중요하지 않은 일',

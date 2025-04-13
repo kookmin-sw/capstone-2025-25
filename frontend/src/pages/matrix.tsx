@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
-import { CompletedScheduleView } from '@/components/eisenhower/view/CompletedScheduleView.tsx';
+import { CompletedScheduleView } from '@/components/eisenhower/view/CompletedScheduleView';
 import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
 import { Button } from '@/components/ui/button';
 import { FilterBar } from '@/components/eisenhower/FilterBar';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs.tsx';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import { useTaskFilters } from '@/hooks/useTaskFilters';
 import { useTaskDnD } from '@/hooks/useTaskDnD';
-import type { Task } from '@/types/task.ts';
-import { PriorityView } from '@/components/eisenhower/view/PriorityView.tsx';
-
+import type { Task } from '@/types/task';
+import { PriorityView } from '@/components/eisenhower/view/PriorityView';
 import {
   initialTasks,
   completedTasks,
@@ -48,20 +47,13 @@ export default function MatrixPage() {
     setTasks,
   });
 
-  const handleAddTask = (sectionId: string, task: Task) => {
-    setTasks((prev) => ({
-      ...prev,
-      [sectionId]: [...prev[sectionId], task],
-    }));
-  };
-
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
     setIsSidebarOpen(true);
   };
 
   const handleTaskSave = (updatedTask: Task) => {
-    const sectionId = updatedTask.section as keyof typeof tasks;
+    const sectionId = updatedTask.quadrant as keyof typeof tasks;
     setTasks((prev) => ({
       ...prev,
       [sectionId]: prev[sectionId].map((t) =>
@@ -163,6 +155,7 @@ export default function MatrixPage() {
             startDate={startDate}
             endDate={endDate}
             onTaskClick={handleTaskClick}
+            onCategoryChange={setSelectedCategory} // 추가: 핸들러 전달
           />
         )}
 
@@ -181,9 +174,11 @@ export default function MatrixPage() {
           {activeTask && (
             <DragOverlayCard
               title={activeTask.title}
-              memo={activeTask.memo}
-              date={activeTask.date}
-              tags={activeTask.tags}
+              categoryId={activeTask.categoryId}
+              dueDate={activeTask.dueDate}
+              quadrant={activeTask.quadrant}
+              type={activeTask.type}
+              order={activeTask.order}
             />
           )}
         </DragOverlay>

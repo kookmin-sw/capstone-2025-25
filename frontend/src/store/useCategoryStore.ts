@@ -1,19 +1,31 @@
 import { create } from 'zustand';
+import type { Category } from '@/types/category';
 
-interface UseCategoryStore {
-  categories: string[];
-  addCategory: (cat: string) => void;
-  removeCategory: (cat: string) => void;
+interface CategoryStore {
+  categories: Category[];
+  fetchCategories: () => void;
+  addCategory: (category: Category) => void;
+  removeCategory: (id: number) => void;
 }
 
-export const useCategoryStore = create<UseCategoryStore>((set) => ({
-  categories: ['study', 'work', 'personal', 'etc'],
-  addCategory: (cat) =>
+export const useCategoryStore = create<CategoryStore>((set) => ({
+  categories: [],
+  fetchCategories: () =>
+    set({
+      categories: [
+        { id: 1, name: '작업' },
+        { id: 2, name: '공부' },
+        { id: 3, name: '개인' },
+        { id: 4, name: '팀플' },
+        { id: 5, name: '기타' },
+      ],
+    }),
+  addCategory: (category) =>
     set((state) => ({
-      categories: [...state.categories, cat],
+      categories: [...state.categories, category],
     })),
-  removeCategory: (cat) =>
+  removeCategory: (id) =>
     set((state) => ({
-      categories: state.categories.filter((c) => c !== cat),
+      categories: state.categories.filter((c) => c.id !== id),
     })),
 }));

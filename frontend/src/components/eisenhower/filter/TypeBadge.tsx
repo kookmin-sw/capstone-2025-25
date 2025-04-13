@@ -1,5 +1,5 @@
-import { Badge } from '@/components/ui/badge.tsx';
-import type { TaskType } from '@/types/task.ts';
+import { Badge } from '@/components/ui/badge.tsx'; // 빨간 줄 뜨는 부분
+import type { TaskType } from '@/types/task';
 import { cn } from '@/lib/utils';
 
 type TypeBadgeProps = {

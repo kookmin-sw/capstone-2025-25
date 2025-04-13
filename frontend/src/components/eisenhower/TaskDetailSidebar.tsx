@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Sheet, SheetContent, SheetTitle } from '@/components/ui/Sheet.tsx';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/Sheet';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import {
@@ -13,15 +13,15 @@ import {
 } from 'lucide-react';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { format } from 'date-fns';
-import type { Task } from '@/types/task';
+import type { TaskDetail } from '@/types/task';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { SECTION_TITLES } from '@/constants/eisenhower';
 
 interface TaskDetailSidebarProps {
-  task: Task | null;
+  task: TaskDetail | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (task: Task) => void;
+  onSave: (task: TaskDetail) => void;
 }
 
 export function TaskDetailSidebar({
@@ -57,11 +57,13 @@ export function TaskDetailSidebar({
 
   const handleAddCategory = () => {
     const trimmed = newCategory.trim();
-    if (trimmed && !categories.includes(trimmed)) {
+    if (trimmed && !categories.some((cat) => cat.name === trimmed)) {
       addCategory(trimmed);
       setNewCategory('');
     }
   };
+
+  const selectedCategory = categories.find((cat) => cat.id === task.categoryId);
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -69,7 +71,6 @@ export function TaskDetailSidebar({
         side="right"
         className="w-full max-w-[480px] h-screen p-0 overflow-y-auto"
       >
-        {/* 헤더 */}
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <button
             onClick={isEditing ? handleCancelEdit : onClose}
@@ -91,9 +92,10 @@ export function TaskDetailSidebar({
             )}
           </button>
         </div>
+
         <div className="p-6 space-y-6">
           <p className="text-sm text-gray-500 mb-1">
-            {task.section && SECTION_TITLES[task.section]}
+            {task.quadrant && SECTION_TITLES[task.quadrant]}
           </p>
 
           {isEditing ? (
@@ -112,14 +114,11 @@ export function TaskDetailSidebar({
             <span className="text-sm">타입</span>
             {isEditing ? (
               <select
-                value={editedTask.tags.type}
+                value={editedTask.type}
                 onChange={(e) =>
                   setEditedTask({
                     ...editedTask,
-                    tags: {
-                      ...editedTask.tags,
-                      type: e.target.value as Task['tags']['type'],
-                    },
+                    type: e.target.value as Task['type'],
                   })
                 }
                 className="border rounded px-2 py-1 text-sm"
@@ -128,34 +127,35 @@ export function TaskDetailSidebar({
                 <option value="THINKING">THINKING</option>
               </select>
             ) : (
-              <TypeBadge type={task.tags.type} />
+              <TypeBadge type={task.type} />
             )}
           </div>
+
           <div className="flex items-center gap-3">
             <Tag className="w-5 h-5 text-purple-500" />
             <span className="text-sm">카테고리</span>
             {isEditing ? (
               <select
-                value={editedTask.tags.category || ''}
+                value={editedTask.categoryId || ''}
                 onChange={(e) =>
                   setEditedTask({
                     ...editedTask,
-                    tags: { ...editedTask.tags, category: e.target.value },
+                    categoryId: Number(e.target.value),
                   })
                 }
                 className="border rounded px-2 py-1 text-sm"
               >
                 <option value="">없음</option>
                 {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
                   </option>
                 ))}
               </select>
             ) : (
-              task.tags.category && (
+              selectedCategory && (
                 <CategoryBadge
-                  label={task.tags.category}
+                  label={selectedCategory.name}
                   colorClass="bg-yellow-100 text-yellow-600"
                 />
               )
@@ -167,17 +167,23 @@ export function TaskDetailSidebar({
             <span className="text-sm">마감일</span>
             {isEditing ? (
               <SingleDatePicker
-                date={new Date(editedTask.date || new Date())}
-                onChange={(date) => setEditedTask({ ...editedTask, date })}
+                date={new Date(editedTask.dueDate || new Date())}
+                onChange={(date) =>
+                  setEditedTask({
+                    ...editedTask,
+                    dueDate: date ? date.toISOString() : null,
+                  })
+                }
               />
             ) : (
               <span className="text-sm">
-                {task.date ? format(new Date(task.date), 'yyyy.MM.dd') : '없음'}
+                {task.dueDate
+                  ? format(new Date(task.dueDate), 'yyyy.MM.dd')
+                  : '없음'}
               </span>
             )}
           </div>
 
-          {/* 메모 */}
           <div>
             <p className="text-sm text-gray-600 mb-1">메모</p>
             {isEditing ? (
@@ -193,7 +199,6 @@ export function TaskDetailSidebar({
             )}
           </div>
 
-          {/* 카테고리 추가/삭제 */}
           {isEditing && (
             <div>
               <div className="flex gap-2 mt-2">
@@ -214,11 +219,11 @@ export function TaskDetailSidebar({
               <div className="grid grid-cols-2 gap-2 mt-2">
                 {categories.map((cat) => (
                   <div
-                    key={cat}
+                    key={cat.id}
                     className="flex items-center justify-between px-2 py-1 border rounded"
                   >
-                    <span className="text-sm">{cat}</span>
-                    <button onClick={() => removeCategory(cat)}>
+                    <span className="text-sm">{cat.name}</span>
+                    <button onClick={() => removeCategory(cat.id)}>
                       <X className="w-4 h-4 text-red-500" />
                     </button>
                   </div>
@@ -228,7 +233,6 @@ export function TaskDetailSidebar({
           )}
         </div>
 
-        {/* 하단 버튼 */}
         {isEditing && (
           <div className="p-4 border-t flex gap-2">
             <button

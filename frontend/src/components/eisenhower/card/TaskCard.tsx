@@ -1,18 +1,23 @@
-import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge.tsx';
-import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge.tsx';
 import { useSortable } from '@dnd-kit/sortable';
-import { Task } from '@/types/task.ts';
 import { CSS } from '@dnd-kit/utilities';
 import { Calendar } from 'lucide-react';
+import type { Task } from '@/types/task';
+import { useCategoryStore } from '@/store/useCategoryStore';
+import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
+import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
+import { getCategoryNameById } from '@/utils/category.ts';
+import { format } from 'date-fns';
 
-type TaskCardProps = {
+interface TaskCardProps {
   task: Task;
   onClick?: () => void;
   layout?: 'matrix' | 'board';
-};
+}
 
 export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
-  const { id, title, memo, date, tags } = task;
+  const { id, title, memo, dueDate, type, categoryId } = task;
+  const { categories } = useCategoryStore();
+  const category = categories.find((cat) => cat.id === categoryId);
 
   const {
     attributes,
@@ -22,11 +27,7 @@ export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
     transition,
     isDragging,
   } = useSortable({ id, data: { ...task } });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
     <div className="py-1 group">
@@ -43,17 +44,15 @@ export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
           if (!isDragging && onClick) onClick();
         }}
       >
-        {/* 드래그 핸들 전용 영역 */}
         <div {...listeners} className="absolute top-1 right-1 p-1 cursor-move">
           <span className="text-xs text-gray-400">↕</span>
         </div>
 
         <div className="flex mb-2 flex-wrap gap-1">
-          <TypeBadge type={tags.type} />
-          {tags.category && (
+          <TypeBadge type={type} />
+          {category && (
             <CategoryBadge
-              label={tags.category}
-              colorClass="bg-yellow-100 text-yellow-600"
+              label={getCategoryNameById(categoryId, categories)}
             />
           )}
         </div>
@@ -67,14 +66,10 @@ export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
           <div className="text-xs text-[#6e726e] mb-2 line-clamp-2">{memo}</div>
         )}
 
-        {date && (
+        {dueDate && (
           <div className="text-xs text-[#6e726e] flex items-center mt-auto">
             <Calendar className="w-3 h-3 mr-1" />
-            <span>
-              {typeof date === 'string'
-                ? date
-                : date.toISOString().split('T')[0]}
-            </span>
+            <span>{format(new Date(dueDate), 'yyyy.MM.dd')}</span>
           </div>
         )}
       </div>

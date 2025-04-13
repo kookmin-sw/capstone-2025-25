@@ -1,33 +1,29 @@
-export type TaskType = 'ALL' | 'TODO' | 'THINKING';
+export type ActualTaskType = 'TODO' | 'THINKING';
+export type TaskType = ActualTaskType | 'ALL';
 
-export type TaskCategory = string;
+export type Quadrant = 'Q1' | 'Q2' | 'Q3' | 'Q4';
 
-export type TaskTags = {
-  type: TaskType;
-  category?: TaskCategory;
-};
-
-export type Task = {
-  id: string;
+export interface Task {
+  id?: number | string; // 생성 시 id가 없을 수 있으므로 optional 처리
   title: string;
-  memo: string;
-  date?: string | Date;
-  tags: TaskTags;
-  section?: string;
-};
-
-export interface TaskSections {
-  section1: Task[];
-  section2: Task[];
-  section3: Task[];
-  section4: Task[];
+  categoryId: number | null;
+  dueDate: string; // "YYYY-MM-DD" 형식의 문자열
+  quadrant: Quadrant;
+  type: TaskType; // 이제 'TODO' 또는 'THINKING'만 허용됩니다.
+  order: number;
 }
 
-export const sectionTitles = {
-  section1: '긴급하고 중요한 일',
-  section2: '긴급하지 않지만 중요한 일',
-  section3: '긴급하지만 중요하지 않은 일',
-  section4: '긴급하지도 중요하지도 않은 일',
-} as const;
-
-export type SectionId = keyof typeof sectionTitles;
+export interface TaskDetail {
+  id: number | string;
+  title: string;
+  memo: string;
+  categoryId: number | null;
+  quadrant: Quadrant;
+  type: TaskType;
+  dueDate: string | null;
+  order: number;
+  isCompleted: boolean;
+  createdAt: string;
+  mindMapId: number;
+  pomodoroId: number;
+}

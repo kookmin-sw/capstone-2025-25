@@ -1,11 +1,10 @@
-import type { Task, TaskType, SectionId } from '@/types/task.ts';
-import { useState } from 'react';
-import { Modal } from '@/components/common/Modal.tsx';
-import { CreateTaskForm } from '@/components/eisenhower/modal/CreateTaskForm.tsx';
-import { DialogClose } from '@/components/ui/Dialog.tsx';
-import { Button } from '@/components/ui/button.tsx';
-import { TaskCard } from '@/components/eisenhower/card/TaskCard.tsx';
-import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar.tsx';
+import type { Task, TaskType, Quadrant, ActualTaskType } from '@/types/task';
+import { useEffect, useState } from 'react';
+import { Modal } from '@/components/common/Modal';
+import { CreateTaskForm } from '@/components/eisenhower/CreateTaskForm';
+import { Button } from '@/components/ui/button';
+import { TaskCard } from '@/components/eisenhower/card/TaskCard';
+import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
 import {
   DndContext,
   closestCorners,
@@ -19,18 +18,20 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from '@dnd-kit/sortable';
-import { SECTION_IDS, SECTION_TITLES } from '@/constants/eisenhower.ts';
-import { useCategoryStore } from '@/store/useCategoryStore.ts';
+import { quadrantTitles } from '@/constants/section';
+import { useCategoryStore } from '@/store/useCategoryStore';
+import { getCategoryNameById } from '@/utils/category';
+import { DialogClose } from '@radix-ui/react-dialog';
+import { getQuadrantId } from '@/utils/quadrant';
 
 interface PriorityViewProps {
-  tasks: Record<SectionId, Task[]>;
+  tasks: Record<Quadrant, Task[]>;
   selectedType: TaskType;
   selectedCategory: string;
   startDate: Date;
   endDate: Date;
-  onTaskClick: (task: Task) => void;
-  onReorderTask: (sectionId: SectionId, newTasks: Task[]) => void;
-  onCreateTask: (sectionId: SectionId, task: Task) => void;
+  onReorderTask: (quadrant: Quadrant, newTasks: Task[]) => void;
+  onCreateTask: (quadrant: Quadrant, task: Task) => void;
   viewMode: 'matrix' | 'board';
 }
 
@@ -40,69 +41,92 @@ export function PriorityView({
   selectedCategory,
   startDate,
   endDate,
-  onTaskClick,
   onReorderTask,
   onCreateTask,
   viewMode,
 }: PriorityViewProps) {
-  const [taskForm, setTaskForm] = useState<Omit<Task, 'id'>>({
-    title: '',
-    memo: '',
-    date: '',
-    tags: { type: 'TODO', category: undefined },
-    section: '',
-  });
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const { categories } = useCategoryStore();
+  // form 상태: category_id를 사용하도록 변경
+  const [form, setForm] = useState<{
+    title: string;
+    memo: string;
+    dueDate: Date;
+    type: ActualTaskType;
+    categoryId: number | null;
+    order: number;
+    quadrant: Quadrant;
+  }>({
+    title: '',
+    memo: '',
+    dueDate: new Date(),
+    type: 'TODO',
+    categoryId: null,
+    order: 0,
+    quadrant: 'Q1',
+  });
+
+  // 드래그 앤 드롭 센서
   const sensors = useSensors(useSensor(PointerSensor));
 
-  const findTaskSection = (taskId: string): SectionId | undefined => {
-    if (taskId.startsWith('placeholder-')) {
-      return taskId.replace('placeholder-', '') as SectionId;
+  // 카테고리 스토어
+  const { fetchCategories, categories } = useCategoryStore();
+
+  useEffect(() => {
+    if (categories.length === 0) {
+      fetchCategories(); // store에 categories 추가
     }
-    return SECTION_IDS.find((sectionId) =>
-      tasks[sectionId].some((t) => t.id === taskId),
+  }, [categories, fetchCategories]);
+
+  // taskId로 어떤 Quadrant(Q1 ~ Q4)에 위치한 작업인지 판별
+  const findTaskQuadrant = (taskId: string | number): Quadrant | undefined => {
+    if (typeof taskId === 'string' && taskId.startsWith('placeholder-')) {
+      return taskId.replace('placeholder-', '') as Quadrant;
+    }
+
+    return (['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).find((quadrant) =>
+      tasks[quadrant].some((t) => t.id === taskId),
     );
   };
 
+  // 작업카드를 클릭했을 때 상세 사이드바를 열어준다
   const handleTaskClick = (task: Task) => {
-    console.log('TaskCard 클릭됨:', task); // 디버깅 로그
     setSelectedTask(task);
     setIsSidebarOpen(true);
   };
 
+  // 드래그 앤 드롭 종료 이벤트
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
     setActiveTask(null);
     if (!over || active.id === over.id) return;
 
-    const fromSection = findTaskSection(active.id);
-    const toSection = findTaskSection(over.id);
+    const fromQuadrant = findTaskQuadrant(active.id);
+    const toQuadrant = findTaskQuadrant(over.id);
+    if (!fromQuadrant || !toQuadrant) return;
 
-    if (!fromSection || !toSection) return;
+    const activeIndex = tasks[fromQuadrant].findIndex(
+      (t) => t.id === active.id,
+    );
+    const overIndex = tasks[toQuadrant].findIndex((t) => t.id === over.id);
+    const movingTask = tasks[fromQuadrant][activeIndex];
 
-    const activeIndex = tasks[fromSection].findIndex((t) => t.id === active.id);
-    const overIndex = tasks[toSection].findIndex((t) => t.id === over.id);
-
-    const movingTask = tasks[fromSection][activeIndex];
-
-    if (fromSection === toSection) {
-      const reordered = arrayMove(tasks[fromSection], activeIndex, overIndex);
-      onReorderTask(fromSection, reordered);
+    if (fromQuadrant === toQuadrant) {
+      const reordered = arrayMove(tasks[fromQuadrant], activeIndex, overIndex);
+      onReorderTask(fromQuadrant, reordered);
     } else {
-      const newFrom = tasks[fromSection].filter((t) => t.id !== active.id);
-      const newTo = [...tasks[toSection]];
+      const newFrom = tasks[fromQuadrant].filter((t) => t.id !== active.id);
+      const newTo = [...tasks[toQuadrant]];
       const insertIndex = overIndex >= 0 ? overIndex : newTo.length;
-      newTo.splice(insertIndex, 0, { ...movingTask, section: toSection });
-
-      onReorderTask(fromSection, newFrom);
-      onReorderTask(toSection, newTo);
+      newTo.splice(insertIndex, 0, { ...movingTask, quadrant: toQuadrant });
+      onReorderTask(fromQuadrant, newFrom);
+      onReorderTask(toQuadrant, newTo);
     }
   };
 
+  // 뷰모드에 따라 다른 그리드 레이아웃
   const gridClass =
     viewMode === 'board'
       ? 'grid-cols-1 md:grid-cols-4'
@@ -115,37 +139,40 @@ export function PriorityView({
         onDragEnd={handleDragEnd}
         collisionDetection={closestCorners}
         onDragStart={({ active }) => {
-          const section = findTaskSection(active.id);
+          const quadrant = findTaskQuadrant(active.id);
           const task =
-            section && tasks[section]?.find((t) => t.id === active.id);
+            quadrant && tasks[quadrant]?.find((t) => t.id === active.id);
           if (task) setActiveTask(task);
         }}
       >
         <div className={`grid ${gridClass} gap-4`}>
-          {SECTION_IDS.map((sectionId) => {
-            const filtered = tasks[sectionId].filter((task) => {
+          {(Object.keys(tasks) as Quadrant[]).map((quadrant) => {
+            // 필터 로직에서 category_id 필드를 사용
+            const filtered = tasks[quadrant].filter((task) => {
               const matchType =
-                selectedType === 'ALL' || task.tags.type === selectedType;
+                selectedType === 'ALL' || task.type === selectedType;
               const matchCategory =
                 selectedCategory === 'all' ||
-                task.tags.category === selectedCategory;
-              const taskDate = new Date(task.date);
+                getCategoryNameById(task.categoryId, categories) ===
+                  selectedCategory;
+              // dueDate가 "YYYY-MM-DD" 형태이므로, Date 객체로 변환
+              const taskDate = new Date(task.dueDate);
               const matchDate = taskDate >= startDate && taskDate <= endDate;
               return matchType && matchCategory && matchDate;
             });
 
             return (
               <div
-                key={sectionId}
+                key={quadrant}
                 className="space-y-2 h-[400px] min-h-[300px] border rounded-xl p-2 bg-white flex flex-col"
               >
                 <div className="flex justify-between items-center">
                   <h2 className="text-sm font-semibold">
-                    {SECTION_TITLES[sectionId]}
+                    {quadrantTitles[quadrant]}
                   </h2>
                   <Modal
                     title="새로운 작업 추가"
-                    description={SECTION_TITLES[sectionId]}
+                    description={quadrantTitles[quadrant]}
                     trigger={
                       <Button variant="ghost" size="sm" className="text-xs">
                         + 추가
@@ -153,46 +180,49 @@ export function PriorityView({
                     }
                     children={
                       <CreateTaskForm
-                        sectionId={sectionId}
-                        form={taskForm}
+                        // quadrant만 변경
+                        form={{ ...form, quadrant }}
                         setForm={(partial) =>
-                          setTaskForm((prev) => ({ ...prev, ...partial }))
+                          setForm((prev) => ({ ...prev, ...partial }))
                         }
-                        onCreateTask={(taskData) => {
-                          const newTask = {
-                            id: `task-${Date.now()}`,
-                            ...taskData,
-                            section: sectionId,
-                          };
-                          onCreateTask(sectionId, newTask);
-                        }}
-                        categoryOptions={categories}
+                        categoryOptions={categories.map((c) => ({
+                          id: c.id,
+                          name: c.name,
+                        }))}
+                        onCreateTask={() => {}}
                       />
                     }
                     footer={
-                      <div className="w-full flex items-center justify-between">
+                      <div className="flex justify-end gap-2">
                         <DialogClose asChild>
-                          <Button className="px-8" variant="white">
-                            취소하기
-                          </Button>
+                          <Button variant="outline">취소하기</Button>
                         </DialogClose>
-                        <DialogClose>
+                        <DialogClose asChild>
                           <Button
-                            className="px-8"
                             onClick={() => {
-                              if (!taskForm.title.trim()) return;
-                              const newTask = {
-                                id: `task-${Date.now()}`,
-                                ...taskForm,
-                                section: sectionId,
+                              const newTask: Task = {
+                                id: Date.now().toString(), // 임시 고유 id 생성 (또는 UUID 사용)
+                                title: form.title,
+                                // memo: '', 스웨거에 메모 저장 필드가 없음
+                                dueDate: form.dueDate
+                                  .toISOString()
+                                  .split('T')[0],
+                                type: form.type,
+                                categoryId: form.categoryId,
+                                quadrant: form.quadrant,
+                                order: form.order,
                               };
-                              onCreateTask(sectionId, newTask);
-                              setTaskForm({
+
+                              onCreateTask(form.quadrant, newTask);
+
+                              setForm({
                                 title: '',
                                 memo: '',
-                                date: '',
-                                tags: { type: 'TODO', category: undefined },
-                                section: '',
+                                dueDate: new Date(),
+                                type: 'TODO',
+                                categoryId: null,
+                                order: 0,
+                                quadrant: 'Q1',
                               });
                             }}
                           >
@@ -207,8 +237,8 @@ export function PriorityView({
                 <SortableContext
                   items={
                     filtered.length > 0
-                      ? filtered.map((task) => task.id)
-                      : [`placeholder-${sectionId}`]
+                      ? filtered.map((task) => task.id as number) // task.id가 반드시 number여야 함을 단언
+                      : [getQuadrantId(quadrant)]
                   }
                   strategy={verticalListSortingStrategy}
                 >
@@ -222,15 +252,18 @@ export function PriorityView({
                         />
                       ))
                     ) : (
+                      // 드래그 앤 드롭에서 빈 배열 에러 방지를 위한 placeholder 처리
                       <div className="opacity-0 pointer-events-none select-none">
                         <TaskCard
                           task={{
-                            id: `placeholder-${sectionId}`,
+                            id: getQuadrantId(quadrant),
                             title: '',
-                            memo: '',
-                            date: '',
-                            tags: { type: 'TODO', category: '' },
-                            section: sectionId,
+                            // memo: '',
+                            dueDate: '',
+                            type: 'TODO',
+                            categoryId: 1,
+                            quadrant,
+                            order: 0,
                           }}
                           layout={viewMode}
                           onClick={() => {}}
@@ -254,8 +287,15 @@ export function PriorityView({
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         onSave={(updatedTask) => {
-          console.log('저장됨:', updatedTask);
           setIsSidebarOpen(false);
+          if (!updatedTask.quadrant) return;
+
+          onReorderTask(
+            updatedTask.quadrant,
+            tasks[updatedTask.quadrant].map((t) =>
+              t.id === updatedTask.id ? updatedTask : t,
+            ),
+          );
         }}
       />
     </div>

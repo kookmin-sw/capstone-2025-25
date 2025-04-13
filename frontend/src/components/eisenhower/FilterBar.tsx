@@ -1,3 +1,4 @@
+// FilterBar.tsx - 카테고리 선택 오류 수정 및 안전 렌더링
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
@@ -56,6 +57,7 @@ export function FilterBar({
     <div className="bg-white rounded-lg p-4">
       <div className="flex flex-col md:flex-row justify-between gap-3">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          {/* 타입 필터 */}
           <div className="relative" ref={typeRef}>
             <div
               className="flex items-center space-x-2 cursor-pointer"
@@ -104,20 +106,17 @@ export function FilterBar({
             )}
           </div>
 
+          {/* 카테고리 필터 */}
           <div className="relative" ref={categoryRef}>
             <div
               className="flex items-center space-x-2 cursor-pointer"
-              onClick={() => {
-                setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-              }}
+              onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
             >
               <span className="text-sm font-medium">카테고리</span>
               <ChevronDown className="w-4 h-4" />
             </div>
             <div
-              className={`mt-2 inline-flex items-center px-3 py-1 rounded-full text-xs ${getCategoryColor(
-                selectedCategory,
-              )}`}
+              className={`mt-2 inline-flex items-center px-3 py-1 rounded-full text-xs ${getCategoryColor(selectedCategory)}`}
             >
               {selectedCategory === 'all' ? '모든 카테고리' : selectedCategory}
             </div>
@@ -152,22 +151,22 @@ export function FilterBar({
                   <div className="grid grid-cols-1 gap-1 mt-1">
                     {categories.map((cat) => (
                       <div
-                        key={cat}
+                        key={cat.id}
                         className={`px-3 py-2 text-sm rounded-md cursor-pointer ${
-                          selectedCategory === cat
+                          selectedCategory === cat.name
                             ? 'bg-gray-100'
                             : 'hover:bg-gray-50'
                         }`}
                         onClick={() => {
-                          onCategoryChange(cat);
+                          onCategoryChange(cat.name);
                           setIsCategoryDropdownOpen(false);
                         }}
                       >
                         <div className="flex items-center">
                           <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-600">
-                            {cat}
+                            {cat.name}
                           </span>
-                          {selectedCategory === cat && (
+                          {selectedCategory === cat.name && (
                             <Check className="w-4 h-4 ml-auto" />
                           )}
                         </div>
@@ -179,6 +178,7 @@ export function FilterBar({
             )}
           </div>
 
+          {/* 날짜 필터 */}
           <div className="relative">
             <div className="flex items-center space-x-2 cursor-pointer">
               <span className="text-sm font-medium">날짜</span>
