@@ -9,7 +9,7 @@ import type { Task, TaskType } from '@/types/task';
 interface CreateTaskFormProps {
   sectionId: string;
   form: Omit<Task, 'id'>;
-  setForm: (partial: Partial<Omit<Task, 'id'>>) => void;
+  setForm: (partial: Partial<Omit<Task, 'id'>>) => void; // 부분 객체 업데이트용 콜백 함수 (TaskForm 생성에서 id 제외하고 setting)
   onCreateTask: (taskData: Omit<Task, 'id'>) => void;
   categoryOptions: string[];
 }

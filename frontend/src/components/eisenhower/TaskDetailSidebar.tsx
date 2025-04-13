@@ -91,8 +91,6 @@ export function TaskDetailSidebar({
             )}
           </button>
         </div>
-
-        {/* 내용 */}
         <div className="p-6 space-y-6">
           <p className="text-sm text-gray-500 mb-1">
             {task.section && SECTION_TITLES[task.section]}
@@ -110,7 +108,6 @@ export function TaskDetailSidebar({
             <h1 className="text-3xl font-bold">{task.title}</h1>
           )}
 
-          {/* 타입 */}
           <div className="flex items-center gap-3">
             <span className="text-sm">타입</span>
             {isEditing ? (
@@ -134,8 +131,6 @@ export function TaskDetailSidebar({
               <TypeBadge type={task.tags.type} />
             )}
           </div>
-
-          {/* 카테고리 */}
           <div className="flex items-center gap-3">
             <Tag className="w-5 h-5 text-purple-500" />
             <span className="text-sm">카테고리</span>
@@ -167,7 +162,6 @@ export function TaskDetailSidebar({
             )}
           </div>
 
-          {/* 마감일 */}
           <div className="flex items-center gap-3">
             <CalendarIcon className="w-5 h-5 text-purple-500" />
             <span className="text-sm">마감일</span>
