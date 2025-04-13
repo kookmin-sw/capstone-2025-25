@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragStartEvent,
+  DragEndEvent,
+} from '@dnd-kit/core';
 import type { Task } from '@/types/task.ts';
 
 export function useTaskDnD({
@@ -22,18 +28,20 @@ export function useTaskDnD({
       tasks[sectionId].some((task) => task.id === taskId),
     );
 
-  const handleDragStart = ({ active }: any) => {
-    const sectionId = getSectionIdByTaskId(active.id);
+  const handleDragStart = ({ active }: DragStartEvent) => {
+    const sectionId = getSectionIdByTaskId(active.id as string);
     if (!sectionId) return;
     const task = tasks[sectionId].find((task) => task.id === active.id);
     if (task) setActiveTask(task);
   };
 
-  const handleDragEnd = ({ active, over }: any) => {
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveTask(null);
     if (!over) return;
-    const activeId = active.id;
-    const overId = over.id;
+
+    const activeId = active.id as string;
+    const overId = over.id as string;
+
     const sourceSectionId = getSectionIdByTaskId(activeId);
     const targetSectionId = getSectionIdByTaskId(overId) ?? overId;
 
