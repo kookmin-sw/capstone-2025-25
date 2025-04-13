@@ -1,5 +1,5 @@
 import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, parseISO, isValid } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import {
   Popover,
@@ -10,11 +10,13 @@ import { Button } from '@/components/ui/button';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 
 type SingleDatePickerProps = {
-  date: Date;
-  onChange: (date: Date | undefined) => void;
+  date: string | null;
+  onChange: (date: string | null) => void; // ✅ 문자열로 받음
 };
 
 export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
+  const parsedDate = date ? parseISO(date) : null;
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -25,8 +27,8 @@ export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
           <div className="flex items-center">
             <CalendarIcon className="mr-2 h-4 w-4 text-[#6e726e]" />
             <span className="text-sm">
-              {date instanceof Date && !isNaN(date.getTime())
-                ? format(date, 'yyyy년 MM월 dd일', { locale: ko })
+              {parsedDate && isValid(parsedDate)
+                ? format(parsedDate, 'yyyy년 MM월 dd일', { locale: ko })
                 : '날짜 없음'}
             </span>
           </div>
@@ -35,9 +37,9 @@ export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
       <PopoverContent className="w-auto p-0" align="start">
         <CalendarComponent
           mode="single"
-          selected={date}
+          selected={parsedDate ?? undefined}
           onSelect={(selected) => {
-            onChange(selected);
+            onChange(selected ? selected.toISOString().split('T')[0] : null);
           }}
           locale={ko}
         />

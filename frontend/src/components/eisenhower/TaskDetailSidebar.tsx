@@ -11,17 +11,21 @@ import {
   Tag,
   X,
 } from 'lucide-react';
-import { useCategoryStore } from '@/store/useCategoryStore';
 import { format } from 'date-fns';
 import type { TaskDetail } from '@/types/task';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { SECTION_TITLES } from '@/constants/eisenhower';
+import type { Category } from '@/types/category';
 
 interface TaskDetailSidebarProps {
-  task: TaskDetail;
+  task: TaskDetail | null;
   isOpen: boolean;
   onClose: () => void;
   onSave: (task: TaskDetail) => void;
+  onDelete: (taskId: string | number) => void;
+  categories: Category[];
+  onAddCategory: (name: string) => void;
+  onDeleteCategory: (name: string) => void;
 }
 
 export function TaskDetailSidebar({
@@ -29,8 +33,11 @@ export function TaskDetailSidebar({
   isOpen,
   onClose,
   onSave,
+
+  categories,
+  onAddCategory,
+  onDeleteCategory,
 }: TaskDetailSidebarProps) {
-  const { categories, addCategory, removeCategory } = useCategoryStore();
   const [editedTask, setEditedTask] = useState<TaskDetail | null>(null);
   const [newCategory, setNewCategory] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -42,7 +49,6 @@ export function TaskDetailSidebar({
     }
   }, [task]);
 
-  // handleSave: 변경된 내용을 저장 후 사이드바 닫기
   const handleSave = () => {
     if (editedTask) {
       onSave(editedTask);
@@ -51,7 +57,6 @@ export function TaskDetailSidebar({
     }
   };
 
-  // handleCancelEdit: 편집 취소 시 원래 task 내용으로 복원
   const handleCancelEdit = () => {
     if (task) {
       setEditedTask({ ...task });
@@ -62,7 +67,7 @@ export function TaskDetailSidebar({
   const handleAddCategory = () => {
     const trimmed = newCategory.trim();
     if (trimmed && !categories.some((cat) => cat.name === trimmed)) {
-      addCategory(trimmed);
+      onAddCategory(trimmed);
       setNewCategory('');
     }
   };
@@ -103,7 +108,7 @@ export function TaskDetailSidebar({
 
         <div className="p-6 space-y-6">
           <p className="text-sm text-gray-500 mb-1">
-            {task.quadrant && SECTION_TITLES[task.quadrant]}
+            {SECTION_TITLES[task.quadrant]}
           </p>
 
           {isEditing ? (
@@ -144,7 +149,7 @@ export function TaskDetailSidebar({
             <span className="text-sm">카테고리</span>
             {isEditing ? (
               <select
-                value={editedTask.categoryId || ''}
+                value={editedTask.categoryId ?? ''}
                 onChange={(e) =>
                   setEditedTask({
                     ...editedTask,
@@ -175,13 +180,12 @@ export function TaskDetailSidebar({
             <span className="text-sm">마감일</span>
             {isEditing ? (
               <SingleDatePicker
-                date={
-                  editedTask.dueDate ? new Date(editedTask.dueDate) : new Date()
-                }
+                date={editedTask.dueDate ?? ''}
                 onChange={(date) =>
                   setEditedTask({
                     ...editedTask,
-                    dueDate: date ? date.toISOString() : null,
+                    dueDate: date ? date.toISOString().split('T')[0] : null,
+                    // TODO: date... 타입 수정이 필요합니다
                   })
                 }
               />
@@ -208,8 +212,6 @@ export function TaskDetailSidebar({
               <p className="text-sm">{task.memo || '메모 없음'}</p>
             )}
           </div>
-
-          {/* 추가 필드가 필요한 경우 (예: isCompleted, createdAt 등) 여기서 표시할 수 있습니다 */}
         </div>
 
         {isEditing && (
@@ -229,7 +231,6 @@ export function TaskDetailSidebar({
           </div>
         )}
 
-        {/* 새 카테고리 추가 영역 */}
         {isEditing && (
           <div className="p-4 border-t">
             <div className="flex gap-2 mt-2">
@@ -254,7 +255,7 @@ export function TaskDetailSidebar({
                   className="flex items-center justify-between px-2 py-1 border rounded"
                 >
                   <span className="text-sm">{cat.name}</span>
-                  <button onClick={() => removeCategory(cat.id)}>
+                  <button onClick={() => onDeleteCategory(cat.name)}>
                     <X className="w-4 h-4 text-red-500" />
                   </button>
                 </div>

@@ -1,6 +1,20 @@
-import type { Task, Quadrant } from '@/types/task';
-export type TaskSections = Record<Quadrant, Task[]>;
+import type { Task, TaskDetail, TaskSections } from '@/types/task';
 
+// TaskDetail → Task로 변환
+export function convertToTask(detail: TaskDetail): Task {
+  return {
+    id: detail.id,
+    title: detail.title,
+    memo: detail.memo,
+    categoryId: detail.categoryId,
+    quadrant: detail.quadrant,
+    type: detail.type,
+    dueDate: detail.dueDate ?? '',
+    order: detail.order,
+  };
+}
+
+// 미완료 태스크
 export const initialTasks: TaskSections = {
   Q1: [
     {
@@ -9,13 +23,9 @@ export const initialTasks: TaskSections = {
       memo: '종이 메모에서 디지털로 정리',
       dueDate: '2025-03-01',
       type: 'THINKING',
-      categoryId: 3, // personal
+      categoryId: 3,
       quadrant: 'Q1',
       order: 0,
-      isCompleted: false,
-      createdAt: '2025-02-28',
-      mindMapId: 1,
-      pomodoroId: 1,
     },
     {
       id: 2,
@@ -23,13 +33,9 @@ export const initialTasks: TaskSections = {
       memo: '디자이너 의견 반영하여 수정',
       dueDate: '2025-03-02',
       type: 'TODO',
-      categoryId: 1, // work
+      categoryId: 1,
       quadrant: 'Q1',
       order: 1,
-      isCompleted: false,
-      createdAt: '2025-02-28',
-      mindMapId: 1,
-      pomodoroId: 2,
     },
   ],
   Q2: [
@@ -39,13 +45,9 @@ export const initialTasks: TaskSections = {
       memo: '카페24 자료 기반 요약',
       dueDate: '2025-03-08',
       type: 'TODO',
-      categoryId: 4, // marketing
+      categoryId: 4,
       quadrant: 'Q2',
       order: 0,
-      isCompleted: false,
-      createdAt: '2025-03-01',
-      mindMapId: 2,
-      pomodoroId: 3,
     },
     {
       id: 4,
@@ -53,13 +55,9 @@ export const initialTasks: TaskSections = {
       memo: 'FloatingCalendar 개선 필요',
       dueDate: '2025-03-09',
       type: 'THINKING',
-      categoryId: 5, // dev
+      categoryId: 5,
       quadrant: 'Q2',
       order: 1,
-      isCompleted: false,
-      createdAt: '2025-03-01',
-      mindMapId: 2,
-      pomodoroId: 4,
     },
   ],
   Q3: [
@@ -72,10 +70,6 @@ export const initialTasks: TaskSections = {
       categoryId: 5,
       quadrant: 'Q3',
       order: 0,
-      isCompleted: false,
-      createdAt: '2025-03-10',
-      mindMapId: 3,
-      pomodoroId: 5,
     },
   ],
   Q4: [
@@ -88,36 +82,29 @@ export const initialTasks: TaskSections = {
       categoryId: 5,
       quadrant: 'Q4',
       order: 0,
-      isCompleted: false,
-      createdAt: '2025-03-12',
-      mindMapId: 4,
-      pomodoroId: 6,
     },
     {
       id: 7,
       title: '타입 분리하기',
       memo: '타입 분리를 통한 컴포넌트 독립성 향상',
-      dueDate: null,
+      dueDate: '',
       type: 'THINKING',
-      categoryId: 6, // category
+      categoryId: 6,
       quadrant: 'Q4',
       order: 1,
-      isCompleted: false,
-      createdAt: '2025-03-12',
-      mindMapId: 4,
-      pomodoroId: 7,
     },
   ],
 };
 
-export const completedTasks: Task[] = [
+// 완료 TaskDetail 데이터
+const completedDetails: TaskDetail[] = [
   {
     id: 101,
     title: '피그마 정리',
     memo: '전체 UI 흐름 구조화 완료',
     dueDate: '2025-03-01',
     type: 'TODO',
-    categoryId: 2, // design
+    categoryId: 2,
     quadrant: 'Q1',
     order: 0,
     isCompleted: true,
@@ -154,3 +141,19 @@ export const completedTasks: Task[] = [
     pomodoroId: 13,
   },
 ];
+
+// 완료 TaskDetail → TaskSections 변환
+export const completedTasks: TaskSections = {
+  Q1: completedDetails.filter((t) => t.quadrant === 'Q1').map(convertToTask),
+  Q2: completedDetails.filter((t) => t.quadrant === 'Q2').map(convertToTask),
+  Q3: [],
+  Q4: [],
+};
+
+// 전체 스케줄: 미완료 + 완료 병합
+export const allTasks: TaskSections = {
+  Q1: [...initialTasks.Q1, ...completedTasks.Q1],
+  Q2: [...initialTasks.Q2, ...completedTasks.Q2],
+  Q3: [...initialTasks.Q3, ...completedTasks.Q3],
+  Q4: [...initialTasks.Q4, ...completedTasks.Q4],
+};

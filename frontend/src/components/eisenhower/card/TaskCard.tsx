@@ -36,8 +36,7 @@ export function TaskCard({
 
   const style = { transform: CSS.Transform.toString(transform), transition };
 
-  const handleClick = (e: React.MouseEvent) => {
-    // 드래그가 아닌 경우에만 onClick 실행
+  const handleClick = () => {
     if (!isDragging && onClick) onClick();
   };
 

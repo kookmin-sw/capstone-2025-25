@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
-import { CompletedScheduleView } from '@/components/eisenhower/view/CompletedScheduleView';
+import { CompletedView } from '@/components/eisenhower/view/CompletedView.tsx';
 import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
 import { Button } from '@/components/ui/button';
 import { FilterBar } from '@/components/eisenhower/FilterBar';
@@ -9,12 +9,23 @@ import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import { useTaskFilters } from '@/hooks/useTaskFilters';
 import { useTaskDnD } from '@/hooks/useTaskDnD';
 import { useCategoryStore } from '@/store/useCategoryStore';
-import type { Task } from '@/types/task';
+import { Toaster, toast } from 'sonner';
+import type { Task, TaskDetail } from '@/types/task';
 import { PriorityView } from '@/components/eisenhower/view/PriorityView';
 import {
   initialTasks,
   completedTasks,
 } from '@/components/eisenhower/data/tasks';
+
+function convertToTaskDetail(task: Task): TaskDetail {
+  return {
+    ...task,
+    isCompleted: false,
+    createdAt: '',
+    mindMapId: null,
+    pomodoroId: null,
+  };
+}
 
 export default function MatrixPage() {
   const {
@@ -30,45 +41,59 @@ export default function MatrixPage() {
   const [view, setView] = useState<'matrix' | 'board'>('matrix');
   const [activeTab, setActiveTab] = useState<'all' | 'completed'>('all');
   const [tasks, setTasks] = useState<Record<string, Task[]>>(initialTasks);
-  const [doneTasks] = useState<Record<string, Task[]>>(completedTasks);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [doneTasks, setDoneTasks] =
+    useState<Record<string, Task[]>>(completedTasks);
+
+  const [selectedTask, setSelectedTask] = useState<TaskDetail | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // useCategoryStore에서 카테고리 관련 상태와 메소드를 불러옵니다.
   const { categories, addCategory, removeCategory } = useCategoryStore();
-
   const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD({
     tasks,
     setTasks,
   });
 
-  const handleTaskClick = (task: Task) => {
+  const handleTaskClick = (task: TaskDetail) => {
     setSelectedTask(task);
     setIsSidebarOpen(true);
   };
 
-  const handleTaskSave = (updatedTask: Task) => {
+  const handleTaskSave = (updatedTask: TaskDetail) => {
     const sectionId = updatedTask.quadrant as keyof typeof tasks;
+    const safeTask: Task = {
+      ...updatedTask,
+      dueDate: updatedTask.dueDate ?? '',
+    };
+
     setTasks((prev) => ({
       ...prev,
       [sectionId]: prev[sectionId].map((t) =>
-        t.id === updatedTask.id ? updatedTask : t,
+        t.id === safeTask.id ? safeTask : t,
       ),
     }));
+
+    setDoneTasks((prev) => ({
+      ...prev,
+      [sectionId]: prev[sectionId].map((t) =>
+        t.id === safeTask.id ? safeTask : t,
+      ),
+    }));
+
     setSelectedTask(updatedTask);
+    toast.success('작업이 저장되었습니다.');
   };
 
-  const handleTaskDelete = (taskId: string) => {
-    setTasks((prev) => {
-      const updated = { ...prev };
-      for (const section in updated) {
-        updated[section as keyof typeof updated] = updated[
-          section as keyof typeof updated
-        ].filter((task) => task.id !== taskId);
-      }
-      return updated;
-    });
+  const handleTaskDelete = (taskId: string | number) => {
+    setTasks((prev) =>
+      Object.fromEntries(
+        Object.entries(prev).map(([key, taskList]) => [
+          key,
+          taskList.filter((task) => task.id !== taskId),
+        ]),
+      ),
+    );
     setIsSidebarOpen(false);
+    toast.success('작업이 삭제되었습니다.');
   };
 
   return (
@@ -77,9 +102,11 @@ export default function MatrixPage() {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="relative p-4 md:p-6">
+      <div className="flex flex-col p-4 md:p-6 h-screen">
+        <Toaster richColors position="top-center" />
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-          <h1 className="text-2xl font-bold">우선순위 매트릭스</h1>
+          <h1 className="text-2xl font-bold">아이젠하워 매트릭스</h1>
           <div className="flex gap-2">
             <Tabs
               value={activeTab}
@@ -120,7 +147,8 @@ export default function MatrixPage() {
             selectedCategory={selectedCategory}
             startDate={startDate}
             endDate={endDate}
-            onTaskClick={handleTaskClick}
+            viewMode={view}
+            onTaskClick={(task) => handleTaskClick(convertToTaskDetail(task))}
             onReorderTask={(sectionId, newTasks) =>
               setTasks((prev) => ({ ...prev, [sectionId]: newTasks }))
             }
@@ -130,16 +158,15 @@ export default function MatrixPage() {
                 [sectionId]: [...prev[sectionId], newTask],
               }))
             }
-            viewMode={view}
           />
         ) : (
-          <CompletedScheduleView
-            tasks={doneTasks}
+          <CompletedView
+            tasks={Object.values(doneTasks).flat()}
             selectedType={selectedType}
             selectedCategory={selectedCategory}
             startDate={startDate}
             endDate={endDate}
-            onTaskClick={handleTaskClick}
+            onTaskClick={(task) => handleTaskClick(convertToTaskDetail(task))}
             onCategoryChange={setSelectedCategory}
             onDateChange={setDateRange}
           />
@@ -153,7 +180,10 @@ export default function MatrixPage() {
           onDelete={handleTaskDelete}
           categories={categories}
           onAddCategory={addCategory}
-          onDeleteCategory={(name) => removeCategory(name)}
+          onDeleteCategory={(name) => {
+            const category = categories.find((c) => c.name === name);
+            if (category) removeCategory(category.id);
+          }}
         />
 
         <DragOverlay>

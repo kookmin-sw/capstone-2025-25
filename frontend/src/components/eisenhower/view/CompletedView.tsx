@@ -14,13 +14,12 @@ interface CompletedScheduleViewProps {
   onTaskClick: (task: Task) => void;
 }
 
-export function CompletedScheduleView({
+export function CompletedView({
   tasks,
   selectedType,
   selectedCategory,
   onTaskClick,
 }: CompletedScheduleViewProps) {
-  // Filter tasks based on selected filters
   const { categories } = useCategoryStore();
 
   const filteredTasks = tasks.filter((task) => {

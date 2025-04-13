@@ -4,7 +4,7 @@ import type { Category } from '@/types/category';
 interface CategoryStore {
   categories: Category[];
   fetchCategories: () => void;
-  addCategory: (category: Category) => void;
+  addCategory: (name: string) => void;
   removeCategory: (id: number) => void;
 }
 
@@ -20,9 +20,9 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
         { id: 5, name: '기타' },
       ],
     }),
-  addCategory: (category) =>
+  addCategory: (name) =>
     set((state) => ({
-      categories: [...state.categories, category],
+      categories: [...state.categories, { id: Date.now(), name }],
     })),
   removeCategory: (id) =>
     set((state) => ({

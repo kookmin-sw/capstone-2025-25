@@ -8,12 +8,12 @@ import { ActualTaskType, Quadrant, TaskType } from '@/types/task.ts';
 export interface DragOverlayCardProps {
   title: string;
   categoryId: number | null;
-  dueDate: string;
+  dueDate: string | null;
   type: ActualTaskType | TaskType;
   order: number;
   memo: string;
-  categories: Category[]; // Category 타입이 정의되어 있어야 합니다.
-  quadrant: Quadrant; // 추가
+  categories: Category[];
+  quadrant: Quadrant;
 }
 
 export function DragOverlayCard({

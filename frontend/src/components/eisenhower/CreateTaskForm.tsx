@@ -10,7 +10,7 @@ type CreateTaskFormProps = {
   form: {
     title: string;
     memo: string;
-    dueDate: Date;
+    dueDate: string | null;
     type: ActualTaskType;
     categoryId: number | null;
     order: number;
