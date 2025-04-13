@@ -21,7 +21,7 @@ import { TaskCard } from '@/components/eisenhower/card/TaskCard';
 import { CreateTaskForm } from '@/components/eisenhower/CreateTaskForm';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import type { Task, TaskType, Quadrant } from '@/types/task';
-import { Check, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 interface PriorityViewProps {
   tasks: Record<Quadrant, Task[]>;

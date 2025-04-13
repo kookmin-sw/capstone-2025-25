@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { CompletedView } from '@/components/eisenhower/view/CompletedView.tsx';
 import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
-import { Button } from '@/components/ui/button';
 import { FilterBar } from '@/components/eisenhower/FilterBar';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';

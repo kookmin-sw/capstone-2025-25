@@ -181,12 +181,11 @@ export function TaskDetailSidebar({
             <span className="text-sm">마감일</span>
             {isEditing ? (
               <SingleDatePicker
-                date={editedTask.dueDate ?? ''}
+                date={editedTask.dueDate ?? null}
                 onChange={(date) =>
                   setEditedTask({
                     ...editedTask,
-                    dueDate: date ? date.toISOString().split('T')[0] : null,
-                    // TODO: date... 타입 수정이 필요합니다
+                    dueDate: date,
                   })
                 }
               />
