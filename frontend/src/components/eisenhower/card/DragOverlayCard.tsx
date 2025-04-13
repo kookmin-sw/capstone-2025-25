@@ -3,14 +3,17 @@ import type { Category } from '@/types/category';
 import { getCategoryNameById } from '@/utils/category';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
+import { ActualTaskType, Quadrant, TaskType } from '@/types/task.ts';
 
-interface DragOverlayCardProps {
+export interface DragOverlayCardProps {
   title: string;
-  memo: string;
-  dueDate: string | null;
-  type: 'TODO' | 'THINKING';
   categoryId: number | null;
-  categories: Category[];
+  dueDate: string;
+  type: ActualTaskType | TaskType;
+  order: number;
+  memo: string;
+  categories: Category[]; // Category 타입이 정의되어 있어야 합니다.
+  quadrant: Quadrant; // 추가
 }
 
 export function DragOverlayCard({
@@ -22,6 +25,7 @@ export function DragOverlayCard({
   categories,
 }: DragOverlayCardProps) {
   const categoryName = getCategoryNameById(categoryId, categories);
+
   return (
     <div className="bg-white rounded-md p-4 shadow-lg w-full flex flex-col">
       <div className="flex mb-2 gap-1">

@@ -23,7 +23,6 @@ import { quadrantTitles } from '@/constants/section';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { getCategoryNameById } from '@/utils/category';
 import { DialogClose } from '@radix-ui/react-dialog';
-import { getQuadrantId } from '@/utils/quadrant';
 
 interface PriorityViewProps {
   tasks: Record<Quadrant, Task[]>;
@@ -64,7 +63,6 @@ export function PriorityView({
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [clickStartTime, setClickStartTime] = useState<number | null>(null);
 
   const [form, setForm] = useState<{
     title: string;

@@ -18,7 +18,7 @@ import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicke
 import { SECTION_TITLES } from '@/constants/eisenhower';
 
 interface TaskDetailSidebarProps {
-  task: TaskDetail | null;
+  task: TaskDetail;
   isOpen: boolean;
   onClose: () => void;
   onSave: (task: TaskDetail) => void;
@@ -31,7 +31,7 @@ export function TaskDetailSidebar({
   onSave,
 }: TaskDetailSidebarProps) {
   const { categories, addCategory, removeCategory } = useCategoryStore();
-  const [editedTask, setEditedTask] = useState<Task | null>(null);
+  const [editedTask, setEditedTask] = useState<TaskDetail | null>(null);
   const [newCategory, setNewCategory] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
@@ -42,17 +42,21 @@ export function TaskDetailSidebar({
     }
   }, [task]);
 
-  if (!task || !editedTask) return null;
-
+  // handleSave: 변경된 내용을 저장 후 사이드바 닫기
   const handleSave = () => {
-    onSave(editedTask);
-    setIsEditing(false);
-    onClose();
+    if (editedTask) {
+      onSave(editedTask);
+      setIsEditing(false);
+      onClose();
+    }
   };
 
+  // handleCancelEdit: 편집 취소 시 원래 task 내용으로 복원
   const handleCancelEdit = () => {
-    setEditedTask({ ...task });
-    setIsEditing(false);
+    if (task) {
+      setEditedTask({ ...task });
+      setIsEditing(false);
+    }
   };
 
   const handleAddCategory = () => {
@@ -63,7 +67,11 @@ export function TaskDetailSidebar({
     }
   };
 
-  const selectedCategory = categories.find((cat) => cat.id === task.categoryId);
+  const selectedCategory = categories.find(
+    (cat) => cat.id === task?.categoryId,
+  );
+
+  if (!task || !editedTask) return null;
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -118,7 +126,7 @@ export function TaskDetailSidebar({
                 onChange={(e) =>
                   setEditedTask({
                     ...editedTask,
-                    type: e.target.value as Task['type'],
+                    type: e.target.value as TaskDetail['type'],
                   })
                 }
                 className="border rounded px-2 py-1 text-sm"
@@ -140,7 +148,7 @@ export function TaskDetailSidebar({
                 onChange={(e) =>
                   setEditedTask({
                     ...editedTask,
-                    categoryId: Number(e.target.value),
+                    categoryId: e.target.value ? Number(e.target.value) : null,
                   })
                 }
                 className="border rounded px-2 py-1 text-sm"
@@ -167,7 +175,9 @@ export function TaskDetailSidebar({
             <span className="text-sm">마감일</span>
             {isEditing ? (
               <SingleDatePicker
-                date={new Date(editedTask.dueDate || new Date())}
+                date={
+                  editedTask.dueDate ? new Date(editedTask.dueDate) : new Date()
+                }
                 onChange={(date) =>
                   setEditedTask({
                     ...editedTask,
@@ -199,38 +209,7 @@ export function TaskDetailSidebar({
             )}
           </div>
 
-          {isEditing && (
-            <div>
-              <div className="flex gap-2 mt-2">
-                <input
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
-                  placeholder="새 카테고리"
-                  className="border px-2 py-1 text-sm rounded w-full"
-                />
-                <button
-                  onClick={handleAddCategory}
-                  className="bg-purple-100 text-purple-600 px-2 rounded hover:bg-purple-200"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                {categories.map((cat) => (
-                  <div
-                    key={cat.id}
-                    className="flex items-center justify-between px-2 py-1 border rounded"
-                  >
-                    <span className="text-sm">{cat.name}</span>
-                    <button onClick={() => removeCategory(cat.id)}>
-                      <X className="w-4 h-4 text-red-500" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* 추가 필드가 필요한 경우 (예: isCompleted, createdAt 등) 여기서 표시할 수 있습니다 */}
         </div>
 
         {isEditing && (
@@ -247,6 +226,40 @@ export function TaskDetailSidebar({
             >
               저장하기
             </button>
+          </div>
+        )}
+
+        {/* 새 카테고리 추가 영역 */}
+        {isEditing && (
+          <div className="p-4 border-t">
+            <div className="flex gap-2 mt-2">
+              <input
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
+                placeholder="새 카테고리"
+                className="border px-2 py-1 text-sm rounded w-full"
+              />
+              <button
+                onClick={handleAddCategory}
+                className="bg-purple-100 text-purple-600 px-2 rounded hover:bg-purple-200"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              {categories.map((cat) => (
+                <div
+                  key={cat.id}
+                  className="flex items-center justify-between px-2 py-1 border rounded"
+                >
+                  <span className="text-sm">{cat.name}</span>
+                  <button onClick={() => removeCategory(cat.id)}>
+                    <X className="w-4 h-4 text-red-500" />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </SheetContent>

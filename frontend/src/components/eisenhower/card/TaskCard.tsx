@@ -5,16 +5,22 @@ import type { Task } from '@/types/task';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
-import { getCategoryNameById } from '@/utils/category.ts';
+import { getCategoryNameById } from '@/utils/category';
 import { format } from 'date-fns';
 
 interface TaskCardProps {
   task: Task;
   onClick?: () => void;
   layout?: 'matrix' | 'board';
+  dragHandle?: 'full';
 }
 
-export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
+export function TaskCard({
+  task,
+  onClick,
+  layout = 'matrix',
+  dragHandle,
+}: TaskCardProps) {
   const { id, title, memo, dueDate, type, categoryId } = task;
   const { categories } = useCategoryStore();
   const category = categories.find((cat) => cat.id === categoryId);
@@ -27,7 +33,13 @@ export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
     transition,
     isDragging,
   } = useSortable({ id, data: { ...task } });
+
   const style = { transform: CSS.Transform.toString(transform), transition };
+
+  const handleClick = (e: React.MouseEvent) => {
+    // 드래그가 아닌 경우에만 onClick 실행
+    if (!isDragging && onClick) onClick();
+  };
 
   return (
     <div className="py-1 group">
@@ -35,18 +47,28 @@ export function TaskCard({ task, onClick, layout = 'matrix' }: TaskCardProps) {
         ref={setNodeRef}
         style={style}
         {...attributes}
-        className={`bg-white rounded-md p-3 ${layout === 'board' ? 'w-full' : ''} ${
+        {...(dragHandle === 'full' ? listeners : {})}
+        onClick={handleClick}
+        className={`bg-white rounded-md p-3 ${
+          layout === 'board' ? 'w-full' : ''
+        } ${
           isDragging
             ? 'opacity-50 z-10 shadow-lg border-2 border-purple-300'
             : 'border border-gray-100'
-        } transition-all duration-200 cursor-pointer hover:shadow-md flex flex-col relative`}
-        onClick={() => {
-          if (!isDragging && onClick) onClick();
-        }}
+        } transition-all duration-200 ${
+          dragHandle === 'full'
+            ? 'cursor-grab active:cursor-grabbing'
+            : 'cursor-pointer'
+        } hover:shadow-md flex flex-col relative`}
       >
-        <div {...listeners} className="absolute top-1 right-1 p-1 cursor-move">
-          <span className="text-xs text-gray-400">↕</span>
-        </div>
+        {dragHandle !== 'full' && (
+          <div
+            {...listeners}
+            className="absolute top-1 right-1 p-1 cursor-move"
+          >
+            <span className="text-xs text-gray-400">↕</span>
+          </div>
+        )}
 
         <div className="flex mb-2 flex-wrap gap-1">
           <TypeBadge type={type} />
