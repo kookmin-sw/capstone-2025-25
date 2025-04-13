@@ -5,12 +5,15 @@ import { useMindMaps } from '@/store/mindmapListStore';
 
 import { SubSidebarAccordion } from '@/components/ui/SubSidebarAccordion';
 import CommonSubSidebarWrapper from '@/components/ui/sidebar/subSidebar/CommonSubSidebarWrapper';
+import { useParams } from 'react-router';
 
 export default function MindmapSubSidebar() {
   const mindMaps = useMindMaps();
 
   const connectedMindMaps = mindMaps.filter((mindmap) => mindmap.linked);
   const freeMindMaps = mindMaps.filter((mindmap) => !mindmap.linked);
+
+  const { id } = useParams<{ id: string }>();
 
   return (
     <CommonSubSidebarWrapper title="마인드맵" addButton={<MindmapAddButton />}>
@@ -21,7 +24,11 @@ export default function MindmapSubSidebar() {
       >
         <div className="space-y-4">
           {connectedMindMaps.map((mindmap) => (
-            <MindmapCard key={mindmap.id} mindmap={mindmap} />
+            <MindmapCard
+              key={mindmap.id}
+              mindmap={mindmap}
+              selected={id === mindmap.id}
+            />
           ))}
         </div>
       </SubSidebarAccordion>
@@ -33,7 +40,11 @@ export default function MindmapSubSidebar() {
       >
         <div className="space-y-4">
           {freeMindMaps.map((mindmap) => (
-            <MindmapCard key={mindmap.id} mindmap={mindmap} />
+            <MindmapCard
+              key={mindmap.id}
+              mindmap={mindmap}
+              selected={id === mindmap.id}
+            />
           ))}
         </div>
       </SubSidebarAccordion>
