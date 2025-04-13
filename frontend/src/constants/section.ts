@@ -1,5 +1,3 @@
-// constants/section.ts
-
 import { Quadrant } from '@/types/task.ts';
 
 export const quadrantTitles: Record<Quadrant, string> = {

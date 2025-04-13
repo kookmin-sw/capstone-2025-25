@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import {
   DndContext,
   rectIntersection,
@@ -21,6 +21,7 @@ import { TaskCard } from '@/components/eisenhower/card/TaskCard';
 import { CreateTaskForm } from '@/components/eisenhower/CreateTaskForm';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import type { Task, TaskType, Quadrant } from '@/types/task';
+import { Check, Plus } from 'lucide-react';
 
 interface PriorityViewProps {
   tasks: Record<Quadrant, Task[]>;
@@ -120,6 +121,36 @@ export function PriorityView({
       ? 'grid-cols-1 md:grid-cols-4'
       : 'grid-cols-1 md:grid-cols-2';
 
+  const quadrantIcons: Record<Quadrant, JSX.Element> = {
+    Q1: (
+      <div className="w-6 h-6 rounded-full border border-black text-xs font-bold flex items-center justify-center">
+        1
+      </div>
+    ),
+    Q2: (
+      <div className="w-6 h-6 rounded-full border border-black text-xs font-bold flex items-center justify-center">
+        2
+      </div>
+    ),
+    Q3: (
+      <div className="w-6 h-6 rounded-full border border-black text-xs font-bold flex items-center justify-center">
+        3
+      </div>
+    ),
+    Q4: (
+      <div className="w-6 h-6 rounded-full border border-black  text-xs font-bold flex items-center justify-center">
+        4
+      </div>
+    ),
+  };
+
+  const quadrantColors: Record<Quadrant, string> = {
+    Q1: 'bg-[#F5F1FF]',
+    Q2: 'bg-[#FAF6FF]',
+    Q3: 'bg-[#FAF8FD]',
+    Q4: 'bg-[#FAFAFA]',
+  };
+
   return (
     <DndContext
       collisionDetection={rectIntersection}
@@ -153,18 +184,23 @@ export function PriorityView({
               <div
                 className={`p-4 ${
                   viewMode === 'board' ? 'h-full' : 'h-[400px]'
-                } min-h-[300px] border rounded-xl bg-white flex flex-col`}
+                } min-h-[300px] border flex flex-col ${quadrantColors[quadrant]}`}
               >
                 <div className="flex justify-between items-center">
-                  <h2 className="text-sm font-semibold">
-                    {quadrantTitles[quadrant]}
-                  </h2>
+                  <div className="flex gap-2">
+                    <h2 className="font-semibold flex items-center gap-2">
+                      {quadrantIcons[quadrant]}
+                      {quadrantTitles[quadrant]}
+                    </h2>
+                    <div>{filtered.length}</div>
+                  </div>
+
                   <Modal
                     title="새로운 작업 추가"
                     description={quadrantTitles[quadrant]}
                     trigger={
                       <Button variant="ghost" size="sm" className="text-xs">
-                        + 추가
+                        <Plus />
                       </Button>
                     }
                     children={

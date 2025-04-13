@@ -17,6 +17,13 @@ import {
   completedTasks,
 } from '@/components/eisenhower/data/tasks';
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ChevronDown, Grid2X2, Kanban } from 'lucide-react';
 function convertToTaskDetail(task: Task): TaskDetail {
   return {
     ...task,
@@ -105,26 +112,62 @@ export default function MatrixPage() {
       <div className="flex flex-col p-4 md:p-6 h-screen">
         <Toaster richColors position="top-center" />
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-          <h1 className="text-2xl font-bold">아이젠하워 매트릭스</h1>
-          <div className="flex gap-2">
-            <Tabs
-              value={activeTab}
-              onValueChange={(val) => setActiveTab(val as 'all' | 'completed')}
-            >
-              <TabsList>
-                <TabsTrigger value="all">모든 일정</TabsTrigger>
-                <TabsTrigger value="completed">완료된 일정</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            {activeTab === 'all' && (
-              <Button
-                variant="outline"
-                onClick={() => setView(view === 'matrix' ? 'board' : 'matrix')}
+        <div className="flex flex-col justify-between items-start mb-6 w-full gap-4">
+          <div className="flex gap-2 w-full justify-between">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="text-2xl font-bold inline-flex items-center gap-1 cursor-pointer">
+                  {activeTab === 'all' ? '모든 일정' : '완료된 일정'}
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="start"
+                className="w-40 cursor-pointer"
               >
-                {view === 'matrix' ? '보드 뷰로 전환' : '매트릭스 뷰로 전환'}
-              </Button>
+                <DropdownMenuItem
+                  onClick={() => setActiveTab('all')}
+                  className={
+                    activeTab === 'all' ? 'bg-muted font-semibold' : ''
+                  }
+                >
+                  모든 일정
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setActiveTab('completed')}
+                  className={
+                    activeTab === 'completed' ? 'bg-muted font-semibold' : ''
+                  }
+                >
+                  완료된 일정
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {activeTab === 'all' && (
+              <Tabs
+                value={view}
+                onValueChange={(val) => setView(val as 'matrix' | 'board')}
+                className="cursor-pointer"
+              >
+                <TabsList>
+                  <TabsTrigger value="matrix">
+                    <div className="flex items-center gap-2">
+                      <Grid2X2 />
+                      <p>매트릭스</p>
+                    </div>
+                  </TabsTrigger>
+                  <TabsTrigger value="board">
+                    <div className="flex items-center gap-2">
+                      <Kanban />
+                      보드
+                    </div>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             )}
+          </div>
+          <div>
+            중요도와 긴급도에 따라 정리하고, 우선순위를 정해 실행해보세요!
           </div>
         </div>
 

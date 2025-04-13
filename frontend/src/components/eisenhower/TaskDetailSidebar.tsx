@@ -4,8 +4,8 @@ import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import {
   CalendarIcon,
-  ChevronLeft,
-  Edit2,
+  ChevronsLeft,
+  PencilLine,
   Plus,
   Save,
   Tag,
@@ -16,6 +16,7 @@ import type { TaskDetail } from '@/types/task';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { SECTION_TITLES } from '@/constants/eisenhower';
 import type { Category } from '@/types/category';
+import { Button } from '@/components/ui/button.tsx';
 
 interface TaskDetailSidebarProps {
   task: TaskDetail | null;
@@ -89,7 +90,7 @@ export function TaskDetailSidebar({
             onClick={isEditing ? handleCancelEdit : onClose}
             className="p-2 rounded hover:bg-gray-100"
           >
-            <ChevronLeft />
+            <ChevronsLeft />
           </button>
           <SheetTitle className="text-base font-semibold">
             {isEditing ? '작업 편집' : '작업 상세'}
@@ -99,9 +100,9 @@ export function TaskDetailSidebar({
             className="p-2 rounded hover:bg-gray-100"
           >
             {isEditing ? (
-              <Save className="w-5 h-5 text-purple-600" />
+              <Save className="w-5 h-5" />
             ) : (
-              <Edit2 className="w-5 h-5" />
+              <PencilLine className="w-5 h-5" />
             )}
           </button>
         </div>
@@ -213,24 +214,28 @@ export function TaskDetailSidebar({
             )}
           </div>
         </div>
-        <div className="p-4 border-t flex gap-2">
-          <button
-            onClick={handleCancelEdit}
-            className="flex-1 border rounded py-2"
-          >
-            마인드맵 그리기
-          </button>
-          <button
-            onClick={handleSave}
-            className="flex-1 bg-black text-white rounded py-2"
-          >
-            뽀모도로 생성하기
-          </button>
-        </div>
-
-        {/*{isEditing && (*/}
-        {/*  */}
-        {/*)}*/}
+        {!isEditing && (
+          <div className="p-4 border-t flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                // 마인드맵 그리기 로직
+              }}
+              className="flex-1 border rounded py-2"
+            >
+              마인드맵 그리기
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                // 뽀모도로 생성 로직
+              }}
+              className="flex-1 bg-black text-white rounded py-2"
+            >
+              뽀모도로 생성하기
+            </Button>
+          </div>
+        )}
 
         {isEditing && (
           <div className="p-4 border-t">
