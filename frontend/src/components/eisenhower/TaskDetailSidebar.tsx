@@ -8,7 +8,6 @@ import {
   CircleDashed,
   PencilLine,
   Plus,
-  Save,
   Tag,
   X,
 } from 'lucide-react';
