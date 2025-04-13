@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import { useTaskFilters } from '@/hooks/useTaskFilters';
 import { useTaskDnD } from '@/hooks/useTaskDnD';
+import { useCategoryStore } from '@/store/useCategoryStore';
 import type { Task } from '@/types/task';
 import { PriorityView } from '@/components/eisenhower/view/PriorityView';
 import {
@@ -28,19 +29,13 @@ export default function MatrixPage() {
 
   const [view, setView] = useState<'matrix' | 'board'>('matrix');
   const [activeTab, setActiveTab] = useState<'all' | 'completed'>('all');
-  const [tasks, setTasks] = useState(initialTasks);
-  const [doneTasks, setDoneTasks] = useState(completedTasks);
+  const [tasks, setTasks] = useState<Record<string, Task[]>>(initialTasks);
+  const [doneTasks] = useState<Record<string, Task[]>>(completedTasks);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [categories, setCategories] = useState<string[]>([
-    'category',
-    'work',
-    'personal',
-    'study',
-    'health',
-    'dev',
-    'marketing',
-  ]);
+
+  // useCategoryStore에서 카테고리 관련 상태와 메소드를 불러옵니다.
+  const { categories, addCategory, removeCategory } = useCategoryStore();
 
   const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD({
     tasks,
@@ -74,16 +69,6 @@ export default function MatrixPage() {
       return updated;
     });
     setIsSidebarOpen(false);
-  };
-
-  const handleAddCategory = (newCategory: string) => {
-    if (!categories.includes(newCategory)) {
-      setCategories((prev) => [...prev, newCategory]);
-    }
-  };
-
-  const handleDeleteCategory = (categoryToDelete: string) => {
-    setCategories((prev) => prev.filter((cat) => cat !== categoryToDelete));
   };
 
   return (
@@ -155,7 +140,8 @@ export default function MatrixPage() {
             startDate={startDate}
             endDate={endDate}
             onTaskClick={handleTaskClick}
-            onCategoryChange={setSelectedCategory} // 추가: 핸들러 전달
+            onCategoryChange={setSelectedCategory}
+            onDateChange={setDateRange}
           />
         )}
 
@@ -166,8 +152,8 @@ export default function MatrixPage() {
           onSave={handleTaskSave}
           onDelete={handleTaskDelete}
           categories={categories}
-          onAddCategory={handleAddCategory}
-          onDeleteCategory={handleDeleteCategory}
+          onAddCategory={addCategory}
+          onDeleteCategory={(name) => removeCategory(name)}
         />
 
         <DragOverlay>
@@ -179,6 +165,8 @@ export default function MatrixPage() {
               quadrant={activeTask.quadrant}
               type={activeTask.type}
               order={activeTask.order}
+              categories={categories}
+              memo={activeTask.memo}
             />
           )}
         </DragOverlay>
