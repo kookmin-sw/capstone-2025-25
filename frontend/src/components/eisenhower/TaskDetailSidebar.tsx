@@ -106,7 +106,7 @@ export function TaskDetailSidebar({
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="flex flex-col p-6 h-full gap-6">
           <p className="text-sm text-gray-500 mb-1">
             {SECTION_TITLES[task.quadrant]}
           </p>
@@ -199,7 +199,7 @@ export function TaskDetailSidebar({
           </div>
 
           <div>
-            <p className="text-sm text-gray-600 mb-1">메모</p>
+            <p className="text-sm text-gray-600 mb-1 ">메모</p>
             {isEditing ? (
               <textarea
                 value={editedTask.memo}
@@ -213,23 +213,24 @@ export function TaskDetailSidebar({
             )}
           </div>
         </div>
+        <div className="p-4 border-t flex gap-2">
+          <button
+            onClick={handleCancelEdit}
+            className="flex-1 border rounded py-2"
+          >
+            마인드맵 그리기
+          </button>
+          <button
+            onClick={handleSave}
+            className="flex-1 bg-black text-white rounded py-2"
+          >
+            뽀모도로 생성하기
+          </button>
+        </div>
 
-        {isEditing && (
-          <div className="p-4 border-t flex gap-2">
-            <button
-              onClick={handleCancelEdit}
-              className="flex-1 border rounded py-2"
-            >
-              취소하기
-            </button>
-            <button
-              onClick={handleSave}
-              className="flex-1 bg-black text-white rounded py-2"
-            >
-              저장하기
-            </button>
-          </div>
-        )}
+        {/*{isEditing && (*/}
+        {/*  */}
+        {/*)}*/}
 
         {isEditing && (
           <div className="p-4 border-t">

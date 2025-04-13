@@ -31,12 +31,10 @@ export function CreateTaskForm({
   );
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="p-1">
       {/* 상단 제목 */}
       <div>
-        <p className="text-sm text-gray-500 mb-1">
-          {SECTION_TITLES[form.quadrant]}
-        </p>
+        {/*<p className="text-sm text-gray-500">{SECTION_TITLES[form.quadrant]}</p>*/}
         <input
           className="text-3xl font-bold w-full border-b border-transparent focus:border-gray-300 outline-none"
           value={form.title}
@@ -46,7 +44,7 @@ export function CreateTaskForm({
       </div>
 
       {/* 타입, 카테고리, 마감일 */}
-      <div className="space-y-3">
+      <div className="py-2 flex flex-col gap-2">
         {/* 타입 */}
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1 text-sm text-gray-500">
@@ -96,7 +94,7 @@ export function CreateTaskForm({
 
         {/* 마감일 */}
         <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1 text-sm text-gray-500">
+          <span className="flex items-center gap-1 text-sm text-gray-500 whitespace-nowrap">
             <Calendar className="w-4 h-4" />
             마감일
           </span>
