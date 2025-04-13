@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge.tsx'; // 빨간 줄 뜨는 부분
+import { Badge } from '@/components/ui/Badge.tsx';
 import type { TaskType } from '@/types/task';
 import { cn } from '@/lib/utils';
 

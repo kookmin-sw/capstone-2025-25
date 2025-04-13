@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge.tsx';
+import { Badge } from '@/components/ui/Badge.tsx';
 import { X } from 'lucide-react';
 
 interface CategoryBadgeProps {
