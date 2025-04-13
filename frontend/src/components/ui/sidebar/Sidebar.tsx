@@ -1,111 +1,117 @@
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Network, ListTodo, LayoutDashboard, Timer } from 'lucide-react';
+import {
+  Network,
+  LayoutDashboard,
+  Grid2x2,
+  TimerReset,
+  ChevronsRight,
+} from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router';
 
-import MindmapPanel from '@/components/ui/sidebar/panel/MindmapPanel.tsx';
-import TodayListPanel from '@/components/ui/sidebar/panel/TodayListPanel.tsx';
-import MatrixPanel from '@/components/ui/sidebar/panel/MatrixPanel.tsx';
-import PomodoroPanel from '@/components/ui/sidebar/panel/PomodoroPanel.tsx';
+import { useSidebarStore } from '@/store/sidebarStore';
+import SidebarPanel from '@/components/ui/sidebar/panel/SidebarPanel';
 
 const navItems = [
   {
-    id: 'today-list',
-    icon: <LayoutDashboard size={18} />,
+    id: 'todayList',
+    icon: <LayoutDashboard size={24} />,
     label: '오늘의 할 일',
-    route: '/today-list',
+    route: '/today',
+    hasPanel: false,
   },
   {
     id: 'matrix',
-    icon: <ListTodo size={18} />,
+    icon: <Grid2x2 size={24} />,
     label: '매트릭스',
     route: '/matrix',
+    hasPanel: false,
   },
   {
     id: 'mindmap',
-    icon: <Network size={18} />,
+    icon: <Network size={24} className="rotate-[-90deg]" />,
     label: '마인드맵',
     route: '/mindmap',
+    hasPanel: true,
   },
   {
     id: 'pomodoro',
-    icon: <Timer size={18} />,
+    icon: <TimerReset size={24} />,
     label: '뽀모도로',
     route: '/pomodoro',
+    hasPanel: true,
   },
 ];
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [panelVisible, setPanelVisible] = useState(true);
+  const { panelVisible, setPanelVisible } = useSidebarStore();
 
-  useEffect(() => {
-    const matched = navItems.find((item) =>
-      location.pathname.includes(item.route),
-    );
-    if (matched) setActiveId(matched.id);
-  }, [location.pathname]);
+  const activeItem =
+    navItems.find((item) => location.pathname.includes(item.route)) || null;
+  const activeId = activeItem?.id || null;
+  const activeItemHasPanel = activeItem?.hasPanel || false;
 
-  const handleNavClick = (id: string, route: string) => {
-    setActiveId(id);
-    setPanelVisible(true);
-    navigate(route);
-  };
+  const handleNavItemClick = (e: React.MouseEvent, route: string) => {
+    const target = e.target as HTMLElement;
+    const isChevronButton = target.closest('.panel-toggle-button');
 
-  const renderPanel = () => {
-    if (!panelVisible || !activeId) return null;
-    const onClose = () => setPanelVisible(false);
-    switch (activeId) {
-      case 'mindmap':
-        return <MindmapPanel onClose={onClose} />;
-      case 'today-list':
-        return <TodayListPanel onClose={onClose} />;
-      case 'matrix':
-        return <MatrixPanel onClose={onClose} />;
-      case 'pomodoro':
-        return <PomodoroPanel onClose={onClose} />;
-      default:
-        return null;
+    if (isChevronButton) {
+      setPanelVisible(true);
+      return;
     }
+
+    navigate(route);
   };
 
   return (
     <div className="flex h-screen">
-      {/* 사이드바 */}
-      <aside className="w-[250px] bg-white border-r px-4 py-6">
-        {/* 로고 */}
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-8 h-8 bg-black rounded-xl flex items-center justify-center">
-            <span className="text-white font-bold">★</span>
+      <div className="flex h-full relative">
+        <aside className="w-[250px] bg-white border-r border-gray-300 px-[22px] py-[20px]">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-8 h-8 bg-black rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold">★</span>
+            </div>
+            <span className="text-lg font-semibold">Flowin</span>
           </div>
-          <span className="text-lg font-semibold">Flowin</span>
-        </div>
-        {/* 메뉴 */}
-        <div className="overflow-hidden">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleNavClick(item.id, item.route)}
-              className={cn(
-                'flex items-center w-full px-4 py-3 text-sm gap-2 text-left transition rounded-md cursor-pointer',
-                activeId === item.id
-                  ? 'bg-[#8F5AFF] text-white font-semibold'
-                  : 'text-black hover:bg-gray-50',
-              )}
-            >
-              {item.icon}
-              {item.label}
-            </button>
-          ))}
-        </div>
-      </aside>
 
-      {renderPanel()}
+          <div className="overflow-hidden">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={(e) => handleNavItemClick(e, item.route)}
+                className={cn(
+                  'flex items-center w-full px-4 py-3 gap-2 text-left transition rounded-md cursor-pointer relative group',
+                  activeId === item.id
+                    ? 'bg-[#8F5AFF] text-white font-semibold'
+                    : 'text-black hover:bg-gray-50',
+                )}
+              >
+                <div>{item.icon}</div>
+                <p>{item.label}</p>
 
-      {/* 콘텐츠 영역 */}
-      <div className="flex-1 bg-gray-50"></div>
+                {item.hasPanel && activeId === item.id && !panelVisible && (
+                  <div className="panel-toggle-button absolute right-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-100 p-1 hover:bg-white/10 rounded-full cursor-pointer">
+                    <ChevronsRight size={18} />
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        {activeItemHasPanel && (
+          <div
+            className={cn(
+              'h-full bg-white border-r border-gray-300 transition-all duration-300 ease-in-out overflow-hidden',
+              panelVisible ? 'w-[300px] opacity-100' : 'w-0 opacity-0',
+            )}
+          >
+            {activeId && <SidebarPanel activeId={activeId} />}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 package capstone.backend.domain.mindmap.entity;
 
+import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import jakarta.persistence.*;
@@ -9,10 +10,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import net.minidev.json.annotate.JsonIgnore;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
@@ -24,11 +28,10 @@ public class MindMap {
     @Column(nullable = false, name="mindmap_id")
     private Long id;
 
-    @Column(nullable = false, name="member_id")
-    private Long memberId;
-
-    @Column(name="eisenhower_id")
-    private Long eisenhowerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    @JsonIgnore
+    private Member member;
 
     @Column(nullable = false, name="title")
     private String title;
@@ -37,6 +40,7 @@ public class MindMap {
     @Column(nullable = false, name="type")
     private TaskType type; // TODO / THINKING
 
+    @LastModifiedDate
     @Column(nullable = false, name="last_modified_at")
     private LocalDateTime lastModifiedAt;
 
@@ -48,22 +52,19 @@ public class MindMap {
     @Column(columnDefinition = "text", name = "edges")
     private List<Edge> edges;
 
-    public static MindMap createMindMap(MindMapRequest mindMapRequest) {
+    @Builder
+    public static MindMap createMindMap(MindMapRequest mindMapRequest, Member member) {
         return MindMap.builder()
-            .memberId(mindMapRequest.memberId())
-            .eisenhowerId(mindMapRequest.eisenhowerId())
+            .member(member)
             .title(mindMapRequest.title())
             .type(mindMapRequest.type())
-            .lastModifiedAt(LocalDateTime.now())
             .nodes(mindMapRequest.nodes())
             .build();
     }
 
     public void update(MindMapRequest mindMapRequest) {
-        this.eisenhowerId = mindMapRequest.eisenhowerId();
         this.title = mindMapRequest.title();
         this.type = mindMapRequest.type();
-        this.lastModifiedAt = LocalDateTime.now();
         this.nodes = mindMapRequest.nodes() != null ? new ArrayList<>(mindMapRequest.nodes()) : null;
         this.edges = mindMapRequest.edges() != null ? new ArrayList<>(mindMapRequest.edges()) : null;
     }

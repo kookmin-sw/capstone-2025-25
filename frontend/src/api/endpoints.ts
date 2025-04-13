@@ -8,4 +8,8 @@ export const ENDPOINTS = {
     CONVERT_TO_TASK: '/api/gpt/convert_to_task',
     SUMMARIZE_NODE: '/api/gpt/summarize_node',
   },
+  AUTH: {
+    ACCESS_TOKEN: '/api/auth/token',
+    REFRESH_TOKEN: '/api/auth/reissue',
+  },
 };

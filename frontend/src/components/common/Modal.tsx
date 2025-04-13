@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/Dialog';
 
 type ModalProps = {
-  trigger: ReactNode;
+  trigger?: ReactNode;
   title: string;
   description?: string;
   children: ReactNode;
@@ -38,7 +38,7 @@ export function Modal({
             </DialogDescription>
           )}
         </DialogHeader>
-        <div className="py-4">{children}</div>
+        <div>{children}</div>
         {footer && <DialogFooter>{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>

@@ -1,14 +1,20 @@
 package capstone.backend.domain.mindmap.service;
 
+import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
+import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
+import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
+import capstone.backend.domain.member.exception.MemberNotFoundException;
+import capstone.backend.domain.member.repository.MemberRepository;
+import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
-import capstone.backend.domain.mindmap.dto.response.MindMapGroupListResponse;
-import capstone.backend.domain.mindmap.dto.response.MindMapListResponse;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
+import capstone.backend.domain.mindmap.dto.response.SidebarMindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
 import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
 import capstone.backend.domain.mindmap.repository.MindMapRepository;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,56 +24,71 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MindMapService {
     private final MindMapRepository mindMapRepository;
+    private final MemberRepository memberRepository;
+    private final EisenhowerItemRepository eisenhowerItemRepository;
 
+    //마인드맵 생성
     @Transactional
-    public Long createMindMap(MindMapRequest mindMapRequest) {
-        MindMap mindMap = MindMap.createMindMap(mindMapRequest);
+    public Long createMindMap(Long memberId, MindMapRequest mindMapRequest) {
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        MindMap mindMap = MindMap.createMindMap(mindMapRequest, member);
+
+        Optional.ofNullable(mindMapRequest.eisenhowerId())
+            .ifPresent(eisenhowerId -> {
+                EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(eisenhowerId)
+                    .orElseThrow(EisenhowerItemNotFoundException::new);
+                eisenhowerItem.connectMindMap(mindMap);
+                eisenhowerItemRepository.save(eisenhowerItem);
+            });
         mindMapRepository.save(mindMap);
+
         return mindMap.getId();
     }
 
-    public MindMapResponse getMindMapById(Long id){
-        return mindMapRepository.findById(id)
+    //마인드맵 상세 조회
+    public MindMapResponse getMindMapById(Long memberId, Long mindMapId){
+        return mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
             .map(MindMapResponse::fromEntity)
             .orElseThrow(MindMapNotFoundException::new);
     }
 
+    //마인드맵 삭제
     @Transactional
-    public void deleteMindMap(Long id) {
-        if (!mindMapRepository.existsById(id)) {
-            throw new MindMapNotFoundException();
-        }
+    public void deleteMindMap(Long memberId, Long mindMapId) {
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
+            .orElseThrow(MindMapNotFoundException::new);
 
-        mindMapRepository.deleteById(id);
+        mindMapRepository.delete(mindMap);
     }
 
+    //마인드맵 노드 수정, 하위노드, 엣지 삭제
     @Transactional
-    public void updateMindMap(Long id, MindMapRequest mindMapRequest) {
-        MindMap mindMap = mindMapRepository.findById(id)
+    public void updateMindMap(Long memberId, Long mindMapId, MindMapRequest mindMapRequest) {
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
             .orElseThrow(MindMapNotFoundException::new);
 
         mindMap.update(mindMapRequest);
     }
 
+    //마인드맵 제목 수정
     @Transactional
-    public void updateMindMapTitle(Long id, UpdateMindMapTitleRequest request){
-        MindMap mindMap = mindMapRepository.findById(id)
+    public void updateMindMapTitle(Long memberId, Long mindMapId, UpdateMindMapTitleRequest request){
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
             .orElseThrow(MindMapNotFoundException::new);
+
         mindMap.updateTitle(request.title());
     }
 
-    public MindMapGroupListResponse getMindMapList(){
-        List<MindMap> connected = mindMapRepository.findByEisenhowerIdIsNotNullOrderByLastModifiedAtDesc();
-        List<MindMap> unconnected = mindMapRepository.findByEisenhowerIdIsNullOrderByLastModifiedAtDesc();
 
-        List<MindMapListResponse> connectedList = connected.stream()
-            .map(MindMapListResponse::fromEntity)
+    //마인드맵 리스트 조회
+    public List<SidebarMindMapResponse> getMindMapList(Long memberId){
+        List<Object[]> results = mindMapRepository.findMindMapWithEisenhowerByMemberId(memberId);
+        return results.stream()
+            .map(row -> {
+                MindMap mindMap = (MindMap) row[0];
+                EisenhowerItem eisenhowerItem = (EisenhowerItem) row[1]; // null 가능
+                return SidebarMindMapResponse.from(mindMap, eisenhowerItem);
+            })
             .toList();
-
-        List<MindMapListResponse> unconnectedList = unconnected.stream()
-            .map(MindMapListResponse::fromEntity)
-            .toList();
-
-        return new MindMapGroupListResponse(connectedList, unconnectedList);
     }
 }

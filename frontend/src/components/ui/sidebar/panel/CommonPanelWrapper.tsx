@@ -1,34 +1,36 @@
 import { ReactNode } from 'react';
-import { ChevronLeft, Plus } from 'lucide-react';
+import { ChevronsLeft } from 'lucide-react';
+import { useSidebarStore } from '@/store/sidebarStore';
 
 type CommonPanelWrapperProps = {
   title: string;
-  onClose: () => void;
-  addButton: ReactNode;
+  addButton?: ReactNode;
   children: ReactNode;
 };
 
 export default function CommonPanelWrapper({
   title,
-  onClose,
   addButton,
   children,
 }: CommonPanelWrapperProps) {
+  const { setPanelVisible } = useSidebarStore();
+
   return (
-    <div className="relative w-[300px] border-r p-4 bg-white h-full overflow-y-auto">
-      <div className="flex items-center justify-between mb-4">
+    <div className="relative w-[300px] border-r bg-white h-full overflow-y-auto">
+      <div className="p-4 h-[84px] flex items-center justify-between mb-4 border-b border-gray-300">
         <h2 className="font-bold text-lg">{title}</h2>
-        <div className="flex items-center">
-          {addButton && <div className="mr-2">{addButton}</div>}
+        <div className="flex items-center gap-1">
+          {addButton && <div>{addButton}</div>}
           <button
-            onClick={onClose}
-            className="top-4 z-10 w-8 h-8 flex items-center justify-center"
+            onClick={() => setPanelVisible(false)}
+            className="cursor-pointer"
           >
-            <ChevronLeft size={16} />
+            <ChevronsLeft size={20} />
           </button>
         </div>
       </div>
-      {children}
+
+      <div className="p-4">{children}</div>
     </div>
   );
 }
