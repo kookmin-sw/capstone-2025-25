@@ -5,6 +5,7 @@ import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import {
   CalendarIcon,
   ChevronsLeft,
+  CircleDashed,
   PencilLine,
   Plus,
   Save,
@@ -125,6 +126,7 @@ export function TaskDetailSidebar({
           )}
 
           <div className="flex items-center gap-3">
+            <CircleDashed className="w-4 h-4" />
             <span className="text-sm">타입</span>
             {isEditing ? (
               <select
@@ -146,7 +148,7 @@ export function TaskDetailSidebar({
           </div>
 
           <div className="flex items-center gap-3">
-            <Tag className="w-5 h-5 text-purple-500" />
+            <Tag className="w-4 h-4" />
             <span className="text-sm">카테고리</span>
             {isEditing ? (
               <select
@@ -177,7 +179,7 @@ export function TaskDetailSidebar({
           </div>
 
           <div className="flex items-center gap-3">
-            <CalendarIcon className="w-5 h-5 text-purple-500" />
+            <CalendarIcon className="w-4 h-4" />
             <span className="text-sm">마감일</span>
             {isEditing ? (
               <SingleDatePicker

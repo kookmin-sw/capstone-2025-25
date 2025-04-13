@@ -3,8 +3,7 @@ import type { Category } from '@/types/category.ts';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge.tsx';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge.tsx';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker.tsx';
-import { Calendar, RefreshCcw, Tag } from 'lucide-react';
-import { SECTION_TITLES } from '@/constants/eisenhower.ts';
+import { Calendar, CircleDashed, Tag } from 'lucide-react';
 
 type CreateTaskFormProps = {
   form: {
@@ -48,7 +47,7 @@ export function CreateTaskForm({
         {/* 타입 */}
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1 text-sm text-gray-500">
-            <RefreshCcw className="w-4 h-4" />
+            <CircleDashed className="w-4 h-4" />
             타입
           </span>
           <select
@@ -64,7 +63,6 @@ export function CreateTaskForm({
           <TypeBadge type={form.type} />
         </div>
 
-        {/* 카테고리 */}
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1 text-sm text-gray-500">
             <Tag className="w-4 h-4" />

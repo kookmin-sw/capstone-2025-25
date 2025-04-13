@@ -1,4 +1,3 @@
-import { CalendarIcon } from 'lucide-react';
 import { format, parseISO, isValid } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import {
@@ -11,7 +10,7 @@ import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 
 type SingleDatePickerProps = {
   date: string | null;
-  onChange: (date: string | null) => void; // ✅ 문자열로 받음
+  onChange: (date: string | null) => void;
 };
 
 export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
@@ -25,7 +24,6 @@ export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
           className="flex items-center justify-between w-full md:w-auto min-w-[160px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer"
         >
           <div className="flex items-center">
-            <CalendarIcon className="mr-2 h-4 w-4 text-[#6e726e]" />
             <span className="text-sm">
               {parsedDate && isValid(parsedDate)
                 ? format(parsedDate, 'yyyy년 MM월 dd일', { locale: ko })
