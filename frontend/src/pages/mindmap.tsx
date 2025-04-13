@@ -10,6 +10,11 @@ export default function MindmapPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (mindMaps.length === 0) {
+      navigate('/mindmap');
+      return;
+    }
+
     const isValidId = id && mindMaps.some((mindmap) => mindmap.id === id);
 
     if (id && isValidId) {
