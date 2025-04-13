@@ -1,15 +1,14 @@
-import type { Task } from '@/types/task.ts';
+import type { ActualTaskType, Task, TaskType } from '@/types/task.ts';
 import { TaskCard } from '../card/TaskCard.tsx';
 import { getCategoryNameById } from '@/utils/category';
 import { useCategoryStore } from '@/store/useCategoryStore';
 
 interface CompletedScheduleViewProps {
   tasks: Task[];
-  selectedType: 'ALL' | 'TODO' | 'THINKING';
+  selectedType: ActualTaskType | TaskType;
   selectedCategory: string;
   startDate: Date;
   endDate: Date;
-  onTypeChange: (type: 'ALL' | 'TODO' | 'THINKING') => void;
   onCategoryChange: (category: string) => void;
   onDateChange: (start: Date, end: Date) => void;
   onTaskClick: (task: Task) => void;
