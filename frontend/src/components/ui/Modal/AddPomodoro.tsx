@@ -6,6 +6,8 @@ import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { PomodoroCycle, Eisenhower } from '@/types/pomodoro';
 import { Input } from '@/components/ui/Input.tsx';
 import { DialogClose } from '@radix-ui/react-dialog';
+import { useCreatePomodoro } from '@/store/pomodoro';
+import { useNavigate } from 'react-router';
 
 type Props = {
   trigger: ReactNode;
@@ -19,6 +21,10 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
   const [minutes, setMinutes] = useState(0);
   const [totalTime, setTotalTime] = useState(0); // 전체 시간 (분)
   const [cycleValue, setCycleValue] = useState<PomodoroCycle[]>([]); // 슬라이더 값
+
+  const navigate = useNavigate();
+
+  const createPomodoro = useCreatePomodoro();
 
   // 세션 간격 추천
   const generateSliderValuesFromTime = (hours: number, minutes: number) => {
@@ -90,8 +96,23 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
     setPage(0);
   };
 
-  const createPomodoro = () => {
+  const handleCreatePomodoro = () => {
     // 생성 api 추가
+
+    const newPomodoroId = createPomodoro({
+      title,
+      plannedCycles: cycleValue,
+      totalPlannedTime: {
+        hour: hours,
+        minute: minutes,
+        second: 0,
+        nano: 0,
+      },
+      eisenhower: null,
+    });
+
+    navigate(`pomodoro/${newPomodoroId}`);
+
     resetStates();
   };
 
@@ -127,7 +148,10 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
                 뒤로가기
               </Button>
               <DialogClose asChild>
-                <Button className="px-8 w-full flex-1" onClick={createPomodoro}>
+                <Button
+                  className="px-8 w-full flex-1"
+                  onClick={handleCreatePomodoro}
+                >
                   다음
                 </Button>
               </DialogClose>

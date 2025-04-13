@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
 import { MindMapNode, MindMap, TodoType, MindMapEdge } from '@/types/mindMap';
+import { mockMindMaps } from '@/mock/mindmap';
 
 export type MindMapListState = {
   mindMaps: MindMap[];
@@ -14,10 +15,11 @@ export type MindMapListState = {
     nodes: MindMapNode[],
     edges: MindMapEdge[],
   ) => void;
+  deleteMindMap: (id: string) => void;
 };
 
 const useStore = create<MindMapListState>((set, get) => ({
-  mindMaps: [],
+  mindMaps: mockMindMaps,
   activeMindMapId: null,
 
   createMindMap: (title, type) => {
@@ -36,8 +38,10 @@ const useStore = create<MindMapListState>((set, get) => ({
       id,
       title,
       type,
+      lastModifiedAt: new Date().toISOString(),
       nodes: initialNodes,
       edges: [],
+      linked: false,
     };
 
     set((state) => ({
@@ -71,6 +75,18 @@ const useStore = create<MindMapListState>((set, get) => ({
       set({ mindMaps: updatedMindMaps });
     }
   },
+
+  deleteMindMap: (id) => {
+    const { mindMaps, activeMindMapId } = get();
+    const updatedMindMaps = mindMaps.filter((mindMap) => mindMap.id !== id);
+
+    const newActiveMindMapId = activeMindMapId === id ? null : activeMindMapId;
+
+    set({
+      mindMaps: updatedMindMaps,
+      activeMindMapId: newActiveMindMapId,
+    });
+  },
 }));
 
 export const useMindMaps = () => useStore((state) => state.mindMaps);
@@ -83,5 +99,6 @@ export const useSetActiveMindMap = () =>
   useStore((state) => state.setActiveMindMap);
 export const useSaveMindMapData = () =>
   useStore((state) => state.saveMindMapData);
+export const useDeleteMindMap = () => useStore((state) => state.deleteMindMap);
 
 export default useStore;

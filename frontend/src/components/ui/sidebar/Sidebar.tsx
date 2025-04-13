@@ -11,7 +11,7 @@ import {
 import { useNavigate, useLocation } from 'react-router';
 
 import { useSidebarStore } from '@/store/sidebarStore';
-import SidebarPanel from '@/components/ui/sidebar/panel/SidebarPanel';
+import SubSidebar from '@/components/ui/sidebar/subSidebar/SubSidebar';
 
 const navItems = [
   {
@@ -109,7 +109,7 @@ export default function Sidebar() {
               panelVisible ? 'w-[300px] opacity-100' : 'w-0 opacity-0',
             )}
           >
-            {activeId && <SidebarPanel activeId={activeId} />}
+            {activeId && <SubSidebar activeId={activeId} />}
           </div>
         )}
       </div>
