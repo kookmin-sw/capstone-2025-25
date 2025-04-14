@@ -65,8 +65,8 @@ export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
 
   const nodeClass = isNodeSelectionMode
     ? isSelected
-      ? 'border-purple-500 border-2 cursor-pointer'
-      : 'border-1 border-[#414141] cursor-pointer hover:border-purple-300'
+      ? 'border-[#8D5CF6] border-2 cursor-pointer'
+      : 'border-1 border-[#414141] cursor-pointer hover:border-[#BDB3F6]'
     : 'border-1 border-[#414141]';
 
   return (
@@ -108,7 +108,7 @@ export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
 
         {isNodeSelectionMode && isSelected && (
           <div className="absolute top-2 right-2">
-            <CheckCircle2 size={30} className="text-purple-500" />
+            <CheckCircle2 size={30} className="text-[#8D5CF6]" />
           </div>
         )}
       </div>
