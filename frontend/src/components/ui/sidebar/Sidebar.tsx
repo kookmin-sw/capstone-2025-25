@@ -68,7 +68,7 @@ export default function Sidebar() {
     <div className="flex h-screen">
       <div className="flex h-full relative">
         <aside className="w-[230px] bg-white border-r border-gray-[#E5E5E5] px-[15px] py-[10px] flex flex-col gap-[20px]">
-          <div className="flex items-center gap-2  h-[45px] pl-[10px] pt-[5px]">
+          <div className="flex items-center gap-2  h-[45px] pl-[12px] pt-[5px]">
             <div className="w-8 h-8 bg-black rounded-xl flex items-center justify-center">
               <span className="text-white font-bold">★</span>
             </div>
