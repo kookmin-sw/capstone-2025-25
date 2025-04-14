@@ -1,8 +1,11 @@
 package capstone.backend.domain.eisenhower.scheduler;
 
-import capstone.backend.domain.eisenhower.service.EisenhowerNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +14,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EisenhowerNotificationScheduler {
 
-    private final EisenhowerNotificationService notificationService;
+    private final Job notificationJob;
+    private final JobLauncher jobLauncher;
 
     @Scheduled(cron = "0 0 6 * * *")
-    public void run() {
+    public void run() throws Exception {
+        // JobParameters 생성
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("timestamp", System.currentTimeMillis())
+                .toJobParameters();
+
         log.info("Eisenhower Notification Scheduler started");
-        notificationService.generateDailyNotifications();
+        // Job 실행
+        jobLauncher.run(notificationJob, jobParameters);
         log.info("Eisenhower Notification Scheduler finished");
     }
 }
