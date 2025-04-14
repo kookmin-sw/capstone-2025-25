@@ -158,7 +158,7 @@ export default function AnswerInputNode({
   return (
     <div className="w-[538px] bg-white px-8 py-[30px] border-3 border-[#8D5CF6] rounded-lg">
       {isDirectQuestion ? (
-        <div className="mb-[26px]">
+        <div className="mb-[15px]">
           <Input
             placeholder="질문을 직접 입력해주세요..."
             className="!text-[20px] font-semibold h-[48px] border-none px-0 shadow-none focus:border-none focus:border-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -167,10 +167,10 @@ export default function AnswerInputNode({
           />
         </div>
       ) : (
-        <p className="text-[20px] font-semibold mb-[26px]">{data.label}</p>
+        <p className="text-[20px] font-semibold mb-[15px]">{data.label}</p>
       )}
 
-      <div className="mb-6">
+      <div className="mb-[20px]">
         <Input
           placeholder="답변을 적어주세요"
           className="h-[48px]"
