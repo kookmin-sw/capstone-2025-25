@@ -54,7 +54,7 @@ export function PomodoroItem({ item, selected }: PomodoroItemProps) {
   return (
     <div
       className={cn(
-        'flex flex-col gap-[5px] p-5 rounded-md  cursor-pointer border-b hover:bg-[rgba(123,104,238,0.1)] transition-colors group',
+        'flex flex-col gap-[5px] p-5 cursor-pointer border-b  transition-colors group',
           cardBg
       )}
       onClick={(e) => pomodoroClick(e)}
