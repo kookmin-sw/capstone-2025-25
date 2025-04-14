@@ -12,13 +12,7 @@ import { useSidebarStore } from '@/store/sidebarStore';
 import SubSidebar from '@/components/ui/sidebar/subSidebar/SubSidebar';
 
 const navItems = [
-  {
-    id: 'todayList',
-    icon: <LayoutDashboard size={24} />,
-    label: '오늘의 할 일',
-    route: '/today',
-    hasPanel: false,
-  },
+
   {
     id: 'matrix',
     icon: <Grid2x2 size={24} />,
