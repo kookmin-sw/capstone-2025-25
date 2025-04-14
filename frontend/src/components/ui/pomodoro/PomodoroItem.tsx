@@ -67,7 +67,7 @@ export function PomodoroItem({ item, selected }: PomodoroItemProps) {
               className={'close-button cursor-pointer hidden group-hover:block'}
               onClick={deletePomodoro}
             >
-              <X className="w-5 h-5 text-gray-700" />
+              <X className=" text-gray-700" size={18}/>
             </button>
           }
           linkedUnlinkedPomodoro={item}

@@ -61,7 +61,7 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
       <div className="flex items-center justify-between">
         <TypeBadge type={type}/>
         <Modal
-          trigger={<X size={16} className="close-button text-gray-700 hidden group-hover:block" />}
+          trigger={<X size={18} className="close-button text-gray-700 hidden group-hover:block" />}
           title="이 마인드맵을 삭제할까요?"
           description="해야 할 일이나 생각이 떠올랐다면 여기 적어보세요! 
             질문을 통해 더 깊이 고민할 수 있도록 도와줄게요"

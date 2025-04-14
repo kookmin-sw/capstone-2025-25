@@ -25,7 +25,7 @@ export default function CommonSubSidebarWrapper({
             onClick={() => setPanelVisible(false)}
             className="cursor-pointer"
           >
-            <ChevronsLeft size={24} />
+            <ChevronsLeft size={22} />
           </button>
         </div>
       </div>
