@@ -158,19 +158,20 @@ const MultiSlider = React.forwardRef<
               }}
             >
               {/*  칸의 시간 글씨 보이는 기준*/}
-              {(intervals.length <= 1 || interval.duration >= 5) && (
-                <span
-                  style={{
-                    color:
-                      interval.type === 'focus'
-                        ? style?.fontColor || 'black'
-                        : 'black',
-                  }}
-                >
-                  {interval.type === 'focus' ? '집중' : '휴식'}{' '}
-                  {interval.duration}분
-                </span>
-              )}
+              {(intervals.length <= 1 || interval.duration >= 5) &&
+                interval.type == 'focus' && (
+                  <span
+                    style={{
+                      color:
+                        interval.type === 'focus'
+                          ? style?.fontColor || 'black'
+                          : 'black',
+                    }}
+                  >
+                    {interval.type === 'focus' ? '집중' : '휴식'}{' '}
+                    {interval.duration}분
+                  </span>
+                )}
             </div>
           ))}
           <SliderPrimitive.Root
