@@ -42,7 +42,7 @@ export default function PomodoroResult({
           <h2 className="font-semibold text-[18px]">계획 실행 시간</h2>
           <div className="px-[17px] py-[20px] bg-[#F2F2F2] rounded-[10px] w-full">
             <div
-              className="flex gap-1.25 h-[66px]"
+              className="flex gap-1.25 h-[50px]"
               style={{ width: `${plannedTimeRatio * 100}%` }}
             >
               <MultiSlider
@@ -60,7 +60,7 @@ export default function PomodoroResult({
           <h2 className="font-semibold text-[18px]">실제 실행 시간</h2>
           <div className="px-[17px] py-[20px] bg-[#F2F2F2] rounded-[10px] w-full">
             <div
-              className="flex gap-1.25 h-[66px]"
+              className="flex gap-1.25 h-[50px]"
               style={{ width: `${executedTimeRatio * 100}%` }}
             >
               <MultiSlider
