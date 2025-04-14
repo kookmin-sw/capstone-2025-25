@@ -17,6 +17,8 @@ import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicke
 import { SECTION_TITLES } from '@/constants/eisenhower';
 import type { Category } from '@/types/category';
 import { Button } from '@/components/ui/button.tsx';
+import { useNavigate } from 'react-router';
+import { useCreateLinkedMindMap } from '@/store/mindmapListStore';
 
 interface TaskDetailSidebarProps {
   task: TaskDetail | null;
@@ -42,6 +44,9 @@ export function TaskDetailSidebar({
   const [editedTask, setEditedTask] = useState<TaskDetail | null>(null);
   const [newCategory, setNewCategory] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+
+  const navigate = useNavigate();
+  const createLinkedMindMap = useCreateLinkedMindMap();
 
   useEffect(() => {
     if (task) {
@@ -76,6 +81,11 @@ export function TaskDetailSidebar({
   const selectedCategory = categories.find(
     (cat) => cat.id === task?.categoryId,
   );
+
+  const handleCreateMindmap = () => {
+    const newMindmapId = createLinkedMindMap(task);
+    navigate(`/mindmap/${newMindmapId}`);
+  };
 
   if (!task || !editedTask) return null;
 
@@ -269,18 +279,14 @@ export function TaskDetailSidebar({
             <>
               <Button
                 variant="outline"
-                onClick={() => {
-                  // 마인드맵 그리기 로직
-                }}
+                onClick={handleCreateMindmap}
                 className="flex-1 border rounded py-2"
               >
                 마인드맵 그리기
               </Button>
               <Button
                 variant="primary"
-                onClick={() => {
-                  // 뽀모도로 생성 로직
-                }}
+                onClick={() => {}}
                 className="flex-1 bg-black text-white rounded py-2"
               >
                 뽀모도로 실행하기
