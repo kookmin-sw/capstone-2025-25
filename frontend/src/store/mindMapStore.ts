@@ -24,8 +24,25 @@ export type RFState = {
   edges: MindMapEdge[];
   activeState: ActiveState | null;
 
-  onNodesChange: OnNodesChange;
-  onEdgesChange: OnEdgesChange;
+  onNodesChange: (
+    changes: NodeChange[],
+    saveMindMapData?: (
+      id: string,
+      nodes: MindMapNode[],
+      edges: MindMapEdge[],
+    ) => void,
+    activeMindMapId?: string | null,
+  ) => void;
+
+  onEdgesChange: (
+    changes: EdgeChange[],
+    saveMindMapData?: (
+      id: string,
+      nodes: MindMapNode[],
+      edges: MindMapEdge[],
+    ) => void,
+    activeMindMapId?: string | null,
+  ) => void;
   addChildNode: (
     selectedNode: MindMapNode,
     position: XYPosition,
@@ -48,16 +65,27 @@ const useStore = create<RFState>((set, get) => ({
   edges: initialEdges,
   activeState: null,
 
-  onNodesChange: (changes: NodeChange[]) => {
-    set({
-      nodes: applyNodeChanges(changes, get().nodes) as MindMapNode[],
-    });
+  onNodesChange: (changes, saveMindMapData, activeMindMapId) => {
+    const updatedNodes = applyNodeChanges(
+      changes,
+      get().nodes,
+    ) as MindMapNode[];
+
+    set({ nodes: updatedNodes });
+
+    if (saveMindMapData && activeMindMapId) {
+      saveMindMapData(activeMindMapId, updatedNodes, get().edges);
+    }
   },
 
-  onEdgesChange: (changes: EdgeChange[]) => {
-    set({
-      edges: applyEdgeChanges(changes, get().edges),
-    });
+  onEdgesChange: (changes, saveMindMapData, activeMindMapId) => {
+    const updatedEdges = applyEdgeChanges(changes, get().edges);
+
+    set({ edges: updatedEdges });
+
+    if (saveMindMapData && activeMindMapId) {
+      saveMindMapData(activeMindMapId, get().nodes, updatedEdges);
+    }
   },
 
   addChildNode: (

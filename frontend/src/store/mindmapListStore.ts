@@ -29,7 +29,7 @@ const useStore = create<MindMapListState>((set, get) => ({
 
     const initialNodes: MindMapNode[] = [
       {
-        id: '1',
+        id: nanoid(),
         type: 'root',
         data: { label: title, depth: 0 },
         position: { x: 0, y: 0 },
@@ -61,9 +61,9 @@ const useStore = create<MindMapListState>((set, get) => ({
 
     const initialNodes: MindMapNode[] = [
       {
-        id: '1',
+        id: nanoid(),
         type: 'root',
-        data: { label: task.title, depth: 0 },
+        data: { label: title, depth: 0 },
         position: { x: 0, y: 0 },
       },
     ];
@@ -76,6 +76,7 @@ const useStore = create<MindMapListState>((set, get) => ({
       nodes: initialNodes,
       edges: [],
       linked: true,
+      eisenhowerItemDTO: task,
     };
 
     set((state) => ({
