@@ -21,7 +21,7 @@ export function SubSidebarAccordion({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value={value}>
-        <AccordionTrigger className="hover:no-underline cursor-pointer pt-2.5 pb-2.5">
+        <AccordionTrigger className="hover:no-underline cursor-pointer">
           <div className="flex items-center gap-2">
             {icon}
             <span className="text-[18px] font-semibold">{title}</span>

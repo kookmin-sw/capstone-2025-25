@@ -5,8 +5,9 @@ import { cn } from '@/lib/utils';
 import { useDeleteMindMap } from '@/store/mindmapListStore';
 import { MindMap } from '@/types/mindMap';
 import { Link, X } from 'lucide-react';
+import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { MouseEvent } from 'react';
 
 type MindmapCardProps = {
@@ -52,23 +53,15 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
   return (
     <div
       className={cn(
-        'p-[20px] cursor-pointer transition border-b flex flex-col gap-[10px]',
+        'p-[20px] cursor-pointer transition border-b flex flex-col gap-[5px] relative group',
         cardBg,
       )}
       onClick={handleClick}
     >
       <div className="flex items-center justify-between">
-        <div
-          className={cn(
-            'inline-flex items-center gap-1 px-2 py-1 rounded-full font-medium',
-            statusColor,
-          )}
-        >
-          <div className="w-[5px] h-[5px] rounded-full bg-primary-100" />
-          <p className="text-[12px] truncate">{type}</p>
-        </div>
+        <TypeBadge type={type}/>
         <Modal
-          trigger={<X size={16} className="close-button text-gray-700" />}
+          trigger={<X size={16} className="close-button text-gray-700 hidden group-hover:block" />}
           title="이 마인드맵을 삭제할까요?"
           description="해야 할 일이나 생각이 떠올랐다면 여기 적어보세요! 
             질문을 통해 더 깊이 고민할 수 있도록 도와줄게요"
@@ -94,16 +87,16 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
         </Modal>
       </div>
 
-      <div className="font-heading-4 font-bold text-[18px]">{title}</div>
+      <div className="font-heading-4 font-semibold text-[16px] pl-1">{title}</div>
 
       {linked && (
-        <div className="flex items-center justify-end gap-1 text-primary-100">
+        <div className="flex items-center justify-end gap-1 text-[#9F4BC9]">
           <Link size={14} />
           <p>linked todo</p>
         </div>
       )}
 
-      <p className="text-[14px] text-gray-700">
+      <p className="text-[14px] text-[#6E726E]">
         최종 수정: {formatDate(lastModifiedAt)}
       </p>
     </div>
