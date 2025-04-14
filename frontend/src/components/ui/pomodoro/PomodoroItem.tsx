@@ -48,17 +48,19 @@ export function PomodoroItem({ item, selected }: PomodoroItemProps) {
     navigate(`/pomodoro/${id}`);
   };
 
+  const cardBg = selected ? 'bg-[#ECE5FF] rounded-lg' : 'bg-white';
+
+
   return (
     <div
       className={cn(
-        'flex flex-col gap-2.5 p-5 rounded-md  cursor-pointer hover:bg-[rgba(123,104,238,0.1)] transition-colors group',
-        selected &&
-          'bg-[rgba(123,104,238,0.2)] hover:bg-[rgba(123,104,238,0.2)]',
+        'flex flex-col gap-[5px] p-5 rounded-md  cursor-pointer border-b hover:bg-[rgba(123,104,238,0.1)] transition-colors group',
+          cardBg
       )}
       onClick={(e) => pomodoroClick(e)}
     >
       <div className="flex justify-between pl-1">
-        <p className="font-semibold text-lg">{item.pomodoro.title}</p>
+        <p className="font-semibold text-[16px]">{item.pomodoro.title}</p>
         <DeletePomodoro
           trigger={
             <button
@@ -75,14 +77,14 @@ export function PomodoroItem({ item, selected }: PomodoroItemProps) {
       </div>
 
       {item.eisenhower && (
-        <div className="flex justify-end gap-2 w-full items-center">
-          <Link className="text-[#9F4BC9] w-4 h-4" />
-          <p className="text-[#9F4BC9] text-base">{item.eisenhower?.title}</p>
+        <div className="flex justify-end gap-1 w-full items-center">
+          <Link className="text-[#9F4BC9]" size={14} />
+          <p className="text-[#9F4BC9]  text-[14px]">{item.eisenhower?.title}</p>
         </div>
       )}
 
       <div className="px-1">
-        <p className="text-sm text-gray-500">
+        <p className="text-[14px] text-[#6E726E]">
           {formatToHourMin(item.pomodoro.totalExecutedTime)}
         </p>
       </div>
