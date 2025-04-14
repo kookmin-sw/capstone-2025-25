@@ -4,6 +4,7 @@ import { LinkedUnlinkedPomodoro } from '@/types/pomodoro';
 import { useParams, useNavigate } from 'react-router';
 import { useEffect } from 'react';
 import { usePomodoros } from '@/store/pomodoro';
+import { TaskCard } from '@/components/eisenhower/card/TaskCard.tsx';
 
 export default function Pomodoro() {
   const { id } = useParams();
@@ -36,11 +37,11 @@ export default function Pomodoro() {
     }
   }, [id, data, linkedPomodoros, unlinkedPomodoros, navigate]);
   return (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex min-h-screen bg-white p-[30px]">
       <div className="flex-1">
-        <main className="flex flex-col gap-[50px]">
-          <div className="flex-1 flex-col gap-[25px]">
-            <h1 className="text-[40px] font-semibold">뽀모도로 실행</h1>
+        <main className="flex flex-col gap-[30px]">
+          <div className="flex-1 flex-col gap-[30px]">
+            <h1 className="text-[32px] font-semibold">뽀모도로 실행</h1>
             <p className="text-[16px] font-normal">
               성장한 뽀모도로 시간에 맞춰 집중과 휴식을 진행해보세요!
               <br />
@@ -49,9 +50,8 @@ export default function Pomodoro() {
           </div>
 
           <div className="flex flex-col items-center gap-[30px]">
-            {/*컴포넌트로 교체*/}
             {data?.eisenhower ? (
-              <div className="h-[153px] w-full border"></div>
+                <TaskCard task={data?.eisenhower} className='hover:shadow-none cursor-default'/>
             ) : null}
             {data?.pomodoro?.executedCycles?.length ? (
               <PomodoroResult linkedUnlinkedPomodoro={data} />
