@@ -171,7 +171,7 @@ const MultiSlider = React.forwardRef<
                   }}
                 >
                   {interval.type === 'focus' ? '집중' : '휴식'}{' '}
-                  {interval.duration}분
+                  {Math.floor(interval.duration)}분
                 </span>
               ) : (
                 <Tooltip>
@@ -180,7 +180,7 @@ const MultiSlider = React.forwardRef<
                   </TooltipTrigger>
                   <TooltipContent side="top" sideOffset={4}>
                     {interval.type === 'focus' ? '집중' : '휴식'}{' '}
-                    {interval.duration}분
+                    {Math.floor(interval.duration)}분
                   </TooltipContent>
                 </Tooltip>
               )}
