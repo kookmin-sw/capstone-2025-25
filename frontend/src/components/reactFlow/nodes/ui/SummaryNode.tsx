@@ -79,13 +79,13 @@ export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
       >
         <PencilLine
           size={30}
-          color="#6E726E"
+          color="#414141"
           className="cursor-pointer hover:text-black transition-colors z-20"
           onClick={handleEditClick}
         />
         <CornerDownRight
           size={30}
-          color="#6E726E"
+          color="#414141"
           className="cursor-pointer hover:text-black transition-colors z-20"
           onClick={handleActiveNodeSelectionMode}
         />
@@ -93,7 +93,7 @@ export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
         <div className="dragHandle cursor-grab z-20">
           <GripVertical
             size={30}
-            color="#6E726E"
+            color="#414141"
             className="cursor-pointer hover:text-black transition-colors"
           />
         </div>
