@@ -42,7 +42,7 @@ export default function Pomodoro() {
         <main className="flex flex-col gap-[30px]">
           <div className="flex-1 flex-col gap-[30px]">
             <h1 className="text-[32px] font-semibold">뽀모도로 실행</h1>
-            <p className="text-[16px] font-normal">
+            <p className="text-[16px] font-normal text-[#6E726E]">
               성장한 뽀모도로 시간에 맞춰 집중과 휴식을 진행해보세요!
               <br />
               집중 또는 휴식이 끝나면 종지 버튼을 눌러 주세요
