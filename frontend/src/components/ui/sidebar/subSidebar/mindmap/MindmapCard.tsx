@@ -63,24 +63,16 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
         <Modal
           trigger={<X size={18} className="close-button text-gray-700 hidden group-hover:block" />}
           title="이 마인드맵을 삭제할까요?"
-          description="해야 할 일이나 생각이 떠올랐다면 여기 적어보세요! 
+          description="해야 할 일이나 생각이 떠올랐다면 여기 적어보세요!
             질문을 통해 더 깊이 고민할 수 있도록 도와줄게요"
-          footer={<Button onClick={handleDelete}>삭제하기</Button>}
+          footer={<Button size='sm' onClick={handleDelete}>삭제하기</Button>}
         >
-          <div className="border border-border-gray p-[20px] rounded-sm flex flex-col gap-[10px]">
-            <div
-              className={cn(
-                'inline-flex items-center gap-1 px-2 py-1 rounded-full font-medium w-fit',
-                statusColor,
-              )}
-            >
-              <div className="w-[5px] h-[5px] rounded-full bg-primary-100" />
-              <p className="text-[12px] truncate">{type}</p>
-            </div>
+          <div className="border-[1px] border-[#E5E5E5] p-[20px] rounded-[7px] flex flex-col gap-[10px]">
+            <TypeBadge type={type} />
 
-            <div className="font-heading-4 font-bold text-[18px]">{title}</div>
+            <div className="font-heading-4 font-semibold text-[18px] h-[18px]">{title}</div>
 
-            <p className="text-[14px] text-gray-700">
+            <p className="text-[14px] text-[#6E726E]">
               최종 수정: {formatDate(lastModifiedAt)}
             </p>
           </div>
