@@ -36,7 +36,5 @@ public class EisenhowerNotificationService {
             eisenhowerNotificationRepository.deleteByEisenhowerItemId(item.getId());
             eisenhowerNotificationRepository.save(EisenhowerNotification.of(item));
         }
-
-        eisenhowerNotificationRepository.deleteByDueDateBefore(today.minusDays(7));
     }
 }
