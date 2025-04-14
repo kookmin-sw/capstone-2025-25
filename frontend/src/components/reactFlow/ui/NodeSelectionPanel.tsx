@@ -78,7 +78,7 @@ export function NodeSelectionPanel() {
               {selectedNodes.map((node) => (
                 <li
                   key={node.id}
-                  className="flex items-center justify-between border border-border-gray px-[15px] py-[10px] rounded-[7px]"
+                  className="flex items-center justify-between border-[#E5E5E5] border-[1px] px-[15px] py-[10px] rounded-[7px]"
                 >
                   <p className="text-[14px]">{node.data.summary || node.data.label}</p>
                   <X
