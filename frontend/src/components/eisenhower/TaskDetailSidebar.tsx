@@ -97,6 +97,8 @@ export function TaskDetailSidebar({
   const handleCreateMindmap = () => {
     if (!task) return;
 
+    setActiveTaskId(null);
+
     if (task.mindMapId) {
       navigate(`/mindmap/${task.mindMapId}`);
 
