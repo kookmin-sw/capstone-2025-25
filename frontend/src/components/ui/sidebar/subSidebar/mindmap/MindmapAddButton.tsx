@@ -32,14 +32,14 @@ export default function MindmapAddButton() {
         질문을 통해 더 깊이 고민할 수 있도록 도와줄게요`}
       footer={
         <DialogClose asChild>
-          <Button className="px-8" onClick={handleCreateClick}>
+          <Button size="sm" onClick={handleCreateClick}>
             생성하기
           </Button>
         </DialogClose>
       }
     >
       <div
-        className="flex flex-col space-y-4"
+        className="flex flex-col gap-[20px]"
         onClick={(e) => e.stopPropagation()}
       >
         <div>
@@ -61,10 +61,11 @@ export default function MindmapAddButton() {
           >
             <Button
               variant="white"
+              size="sm"
               className={cn(
-                'flex-1 border-1 font-normal',
+                'flex-1 border-1',
                 selectedType === 'TODO'
-                  ? 'border-[#8D5CF6]'
+                  ? 'border-[#8D5CF6] text-[#8D5CF6]'
                   : 'border-gray-200',
               )}
               onClick={() => setSelectedType('TODO')}
@@ -74,10 +75,11 @@ export default function MindmapAddButton() {
 
             <Button
               variant="white"
+              size="sm"
               className={cn(
-                'flex-1 border-1 font-normal',
+                'flex-1 border-1',
                 selectedType === 'THINKING'
-                  ? 'border-[#8D5CF6]'
+                  ? 'border-[#8D5CF6] text-[#8D5CF6]'
                   : 'border-gray-200',
               )}
               onClick={() => setSelectedType('THINKING')}
