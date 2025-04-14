@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/Sheet';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
@@ -12,31 +12,32 @@ import {
   X,
 } from 'lucide-react';
 import { format } from 'date-fns';
-import type { TaskDetail } from '@/types/task';
+import type { Task, TaskDetail } from '@/types/task';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { SECTION_TITLES } from '@/constants/eisenhower';
 import type { Category } from '@/types/category';
 import { Button } from '@/components/ui/button.tsx';
 import { useNavigate } from 'react-router';
 import { useCreateLinkedMindMap } from '@/store/mindmapListStore';
+import useMatrixStore from '@/store/matrixStore';
 
 interface TaskDetailSidebarProps {
-  task: TaskDetail | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (task: TaskDetail) => void;
-  onDelete: (taskId: string | number) => void;
   categories: Category[];
   onAddCategory: (name: string) => void;
   onDeleteCategory: (name: string) => void;
 }
 
-export function TaskDetailSidebar({
-  task,
-  isOpen,
-  onClose,
-  onSave,
+function convertToTaskDetail(task: Task): TaskDetail {
+  return {
+    ...task,
+    isCompleted: false,
+    createdAt: '',
+    mindMapId: null,
+    pomodoroId: null,
+  };
+}
 
+export function TaskDetailSidebar({
   categories,
   onAddCategory,
   onDeleteCategory,
@@ -48,6 +49,23 @@ export function TaskDetailSidebar({
   const navigate = useNavigate();
   const createLinkedMindMap = useCreateLinkedMindMap();
 
+  const activeTaskId = useMatrixStore((state) => state.activeTaskId);
+  const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
+  const getActiveTask = useMatrixStore((state) => state.getActiveTask);
+  const saveTask = useMatrixStore((state) => state.saveTask);
+  const deleteTask = useMatrixStore((state) => state.deleteTask);
+
+  const task = useMemo(() => {
+    const activeTask = getActiveTask();
+    return activeTaskId && activeTask ? convertToTaskDetail(activeTask) : null;
+  }, [activeTaskId, getActiveTask]);
+
+  const isOpen = activeTaskId !== null;
+
+  const handleClose = () => {
+    setActiveTaskId(null);
+  };
+
   useEffect(() => {
     if (task) {
       setEditedTask({ ...task });
@@ -57,9 +75,7 @@ export function TaskDetailSidebar({
 
   const handleSave = () => {
     if (editedTask) {
-      onSave(editedTask);
-      setIsEditing(false);
-      onClose();
+      saveTask(editedTask);
     }
   };
 
@@ -67,6 +83,12 @@ export function TaskDetailSidebar({
     if (task) {
       setEditedTask({ ...task });
       setIsEditing(false);
+    }
+  };
+
+  const handleDeleteTask = () => {
+    if (task) {
+      deleteTask(task.id);
     }
   };
 
@@ -83,6 +105,8 @@ export function TaskDetailSidebar({
   );
 
   const handleCreateMindmap = () => {
+    if (!task) return;
+
     const newMindmapId = createLinkedMindMap(task);
     navigate(`/mindmap/${newMindmapId}`);
   };
@@ -90,14 +114,14 @@ export function TaskDetailSidebar({
   if (!task || !editedTask) return null;
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Sheet open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <SheetContent
         side="right"
         className="w-full max-w-[480px] h-screen p-0 overflow-y-auto"
       >
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <button
-            onClick={isEditing ? handleCancelEdit : onClose}
+            onClick={isEditing ? handleCancelEdit : handleClose}
             className="p-2 rounded hover:bg-gray-100"
           >
             <ChevronsLeft />
@@ -262,10 +286,10 @@ export function TaskDetailSidebar({
             <>
               <Button
                 variant="outline"
-                onClick={handleCancelEdit}
+                onClick={handleDeleteTask}
                 className="flex-1 border rounded py-2"
               >
-                취소하기
+                삭제하기
               </Button>
               <Button
                 variant="primary"

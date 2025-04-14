@@ -45,44 +45,15 @@ export default function MatrixPage() {
   const [view, setView] = useState<'matrix' | 'board'>('matrix');
   const [activeTab, setActiveTab] = useState<'all' | 'completed'>('all');
 
-  const {
-    tasks,
-    completedTasks,
-    updateTask,
-    addTask,
-    deleteTask,
-    reorderTasks,
-  } = useMatrixStore();
-
-  const [selectedTask, setSelectedTask] = useState<TaskDetail | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { tasks, completedTasks, addTask, reorderTasks } = useMatrixStore();
 
   const { categories, addCategory, removeCategory } = useCategoryStore();
   const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD();
 
+  const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
+
   const handleTaskClick = (task: TaskDetail) => {
-    setSelectedTask(task);
-    setIsSidebarOpen(true);
-  };
-
-  const handleTaskSave = (updatedTask: TaskDetail) => {
-    const sectionId = updatedTask.quadrant as keyof typeof tasks;
-    const safeTask: Task = {
-      ...updatedTask,
-      dueDate: updatedTask.dueDate ?? '',
-    };
-
-    updateTask(sectionId, safeTask.id, safeTask);
-
-    setSelectedTask(updatedTask);
-    toast.success('작업이 저장되었습니다.');
-  };
-
-  const handleTaskDelete = (taskId: string | number) => {
-    deleteTask(taskId);
-
-    setIsSidebarOpen(false);
-    toast.success('작업이 삭제되었습니다.');
+    setActiveTaskId(task.id);
   };
 
   return (
@@ -193,11 +164,6 @@ export default function MatrixPage() {
         )}
 
         <TaskDetailSidebar
-          task={selectedTask}
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-          onSave={handleTaskSave}
-          onDelete={handleTaskDelete}
           categories={categories}
           onAddCategory={addCategory}
           onDeleteCategory={(name) => {
