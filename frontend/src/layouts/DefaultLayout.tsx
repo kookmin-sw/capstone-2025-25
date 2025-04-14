@@ -7,9 +7,9 @@ export default function DefaultLayout() {
     <div className="flex h-screen">
       <Sidebar />
 
-      <main className="flex flex-col w-full min-h-0 overflow-auto bg-white scrollbar-hide">
+      <main className="flex flex-col w-full h-screen overflow-auto bg-white scrollbar-hide">
         <Header />
-        <section >
+        <section className="overflow-auto" >
           <Outlet />
         </section>
       </main>
