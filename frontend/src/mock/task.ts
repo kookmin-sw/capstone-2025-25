@@ -1,110 +1,115 @@
-import type { Task, TaskDetail, TaskSections } from '@/types/task';
+import type { Task, TaskSections } from '@/types/task';
 
-// TaskDetail → Task로 변환
-export function convertToTask(detail: TaskDetail): Task {
-  return {
-    id: detail.id,
-    title: detail.title,
-    memo: detail.memo,
-    categoryId: detail.categoryId,
-    quadrant: detail.quadrant,
-    type: detail.type,
-    dueDate: detail.dueDate ?? '',
-    order: detail.order,
-  };
-}
+export const tasks: Task[] = [
+  {
+    id: 1,
+    title: '운동하기',
+    memo: '축구에 관한 운동',
+    dueDate: '2025-03-01',
+    type: 'TODO',
+    category_id: 3,
+    quadrant: 'Q1',
+    order: 0,
+    isCompleted: false,
+    createdAt: '2025-02-20',
+    mindMapId: null,
+    pomodoroId: null,
+  },
+  {
+    id: 2,
+    title: 'UI 피드백 반영',
+    memo: '디자이너 의견 반영하여 수정',
+    dueDate: '2025-03-02',
+    type: 'TODO',
+    category_id: 1,
+    quadrant: 'Q4',
+    order: 1,
+    isCompleted: false,
+    createdAt: '2025-02-21',
+    mindMapId: null,
+    pomodoroId: null,
+  },
 
-// 미완료 태스크
-export const initialTasks: TaskSections = {
-  Q1: [
-    {
-      id: 1,
-      title: '운동하기',
-      memo: '축구에 관한 운동',
-      dueDate: '2025-03-01',
-      type: 'TODO',
-      categoryId: 3,
-      quadrant: 'Q1',
-      order: 0,
-    },
-    {
-      id: 2,
-      title: 'UI 피드백 반영',
-      memo: '디자이너 의견 반영하여 수정',
-      dueDate: '2025-03-02',
-      type: 'TODO',
-      categoryId: 1,
-      quadrant: 'Q1',
-      order: 1,
-    },
-  ],
-  Q2: [
-    {
-      id: 3,
-      title: '마케팅 보고서 정리',
-      memo: '카페24 자료 기반 요약',
-      dueDate: '2025-03-08',
-      type: 'TODO',
-      categoryId: 4,
-      quadrant: 'Q2',
-      order: 0,
-    },
-    {
-      id: 4,
-      title: '캘린더 컴포넌트 정리',
-      memo: 'FloatingCalendar 개선 필요',
-      dueDate: '2025-03-09',
-      type: 'THINKING',
-      categoryId: 5,
-      quadrant: 'Q2',
-      order: 1,
-    },
-  ],
-  Q3: [
-    {
-      id: 5,
-      title: '학습 계획',
-      memo: '프로그래밍 관련 학습 계획',
-      dueDate: '2025-03-13',
-      type: 'THINKING',
-      categoryId: 5,
-      quadrant: 'Q3',
-      order: 0,
-    },
-  ],
-  Q4: [
-    {
-      id: 6,
-      title: '리팩토링 작업 목록 정리',
-      memo: '중복 로직 정리 필요',
-      dueDate: '2025-03-17',
-      type: 'TODO',
-      categoryId: 5,
-      quadrant: 'Q4',
-      order: 0,
-    },
-    {
-      id: 7,
-      title: '개발 프로젝트',
-      memo: '깃헙에 푸시해야 함',
-      dueDate: '2025-04-10',
-      quadrant: 'Q1',
-      type: 'TODO',
-      order: 1,
-      categoryId: 5,
-    },
-  ],
-};
+  {
+    id: 3,
+    title: '마케팅 보고서 정리',
+    memo: '카페24 자료 기반 요약',
+    dueDate: '2025-03-08',
+    type: 'TODO',
+    category_id: 4,
+    quadrant: 'Q2',
+    order: 0,
+    isCompleted: false,
+    createdAt: '2025-02-25',
+    mindMapId: null,
+    pomodoroId: null,
+  },
+  {
+    id: 4,
+    title: '캘린더 컴포넌트 정리',
+    memo: 'FloatingCalendar 개선 필요',
+    dueDate: '2025-03-09',
+    type: 'THINKING',
+    category_id: 5,
+    quadrant: 'Q2',
+    order: 1,
+    isCompleted: false,
+    createdAt: '2025-02-26',
+    mindMapId: null,
+    pomodoroId: null,
+  },
 
-// 완료 TaskDetail 데이터
-const completedDetails: TaskDetail[] = [
+  {
+    id: 5,
+    title: '학습 계획',
+    memo: '프로그래밍 관련 학습 계획',
+    dueDate: '2025-03-13',
+    type: 'THINKING',
+    category_id: 5,
+    quadrant: 'Q3',
+    order: 0,
+    isCompleted: false,
+    createdAt: '2025-02-28',
+    mindMapId: null,
+    pomodoroId: null,
+  },
+
+  {
+    id: 6,
+    title: '리팩토링 작업 목록 정리',
+    memo: '중복 로직 정리 필요',
+    dueDate: '2025-03-17',
+    type: 'TODO',
+    category_id: 5,
+    quadrant: 'Q4',
+    order: 0,
+    isCompleted: false,
+    createdAt: '2025-03-01',
+    mindMapId: null,
+    pomodoroId: null,
+  },
+  {
+    id: 7,
+    title: '개발 프로젝트',
+    memo: '깃헙에 푸시해야 함',
+    dueDate: '2025-04-10',
+    type: 'TODO',
+    category_id: 5,
+    quadrant: 'Q3',
+    order: 1,
+    isCompleted: false,
+    createdAt: '2025-03-05',
+    mindMapId: null,
+    pomodoroId: null,
+  },
+
   {
     id: 101,
     title: '피그마 정리',
     memo: '전체 UI 흐름 구조화 완료',
     dueDate: '2025-03-01',
     type: 'TODO',
-    categoryId: 2,
+    category_id: 2,
     quadrant: 'Q1',
     order: 0,
     isCompleted: true,
@@ -118,7 +123,7 @@ const completedDetails: TaskDetail[] = [
     memo: '팀 노션에 업로드 완료',
     dueDate: '2025-03-02',
     type: 'TODO',
-    categoryId: 4,
+    category_id: 4,
     quadrant: 'Q1',
     order: 1,
     isCompleted: true,
@@ -132,7 +137,7 @@ const completedDetails: TaskDetail[] = [
     memo: 'DragOverlayCard 등 재사용 모듈 설계함',
     dueDate: '2025-03-03',
     type: 'THINKING',
-    categoryId: 5,
+    category_id: 5,
     quadrant: 'Q2',
     order: 2,
     isCompleted: true,
@@ -142,18 +147,15 @@ const completedDetails: TaskDetail[] = [
   },
 ];
 
-// 완료 TaskDetail → TaskSections 변환
-export const completedTasks: TaskSections = {
-  Q1: completedDetails.filter((t) => t.quadrant === 'Q1').map(convertToTask),
-  Q2: completedDetails.filter((t) => t.quadrant === 'Q2').map(convertToTask),
-  Q3: [],
-  Q4: [],
-};
+export function getTasksByQuadrant(): TaskSections {
+  return {
+    Q1: tasks.filter((task) => task.quadrant === 'Q1'),
+    Q2: tasks.filter((task) => task.quadrant === 'Q2'),
+    Q3: tasks.filter((task) => task.quadrant === 'Q3'),
+    Q4: tasks.filter((task) => task.quadrant === 'Q4'),
+  };
+}
 
-// 전체 스케줄: 미완료 + 완료 병합
-export const allTasks: TaskSections = {
-  Q1: [...initialTasks.Q1, ...completedTasks.Q1],
-  Q2: [...initialTasks.Q2, ...completedTasks.Q2],
-  Q3: [...initialTasks.Q3, ...completedTasks.Q3],
-  Q4: [...initialTasks.Q4, ...completedTasks.Q4],
-};
+export function getTasksByCompletionStatus(isCompleted: boolean): Task[] {
+  return tasks.filter((task) => task.isCompleted === isCompleted);
+}
