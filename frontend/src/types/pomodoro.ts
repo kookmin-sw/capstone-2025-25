@@ -5,7 +5,7 @@ export type TotalTime = {
   nano: number;
 };
 
-export type Mode = 'WORK' | 'BREAK'
+export type Mode = 'WORK' | 'BREAK';
 
 export type PomodoroCycle = {
   workDuration: number;
@@ -26,7 +26,7 @@ export type Pomodoro = {
 };
 
 export type Eisenhower = {
-  id: number;
+  id: number | string;
   title: string;
   memo: string;
   dueDate: string;
@@ -42,7 +42,7 @@ export type LinkedUnlinkedPomodoro = {
 };
 export type PomodoroList = {
   linkedPomodoros: LinkedUnlinkedPomodoro[] | null;
-  unlinkedPomodoros: LinkedUnlinkedPomodoro[]  | null;
+  unlinkedPomodoros: LinkedUnlinkedPomodoro[] | null;
 };
 
 export type EisenhowerType = 'TODO' | 'SCHEDULE' | 'DELEGATE' | 'DELETE';

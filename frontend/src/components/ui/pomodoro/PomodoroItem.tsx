@@ -5,6 +5,7 @@ import { LinkedUnlinkedPomodoro, TotalTime } from '@/types/pomodoro.ts';
 import DeletePomodoro from '@/components/ui/Modal/DeletePomodoro.tsx';
 import { MouseEvent, useState } from 'react';
 import { useNavigate } from 'react-router';
+import useMatrixStore from '@/store/matrixStore';
 
 export type PomodoroItemProps = {
   item: LinkedUnlinkedPomodoro;
@@ -26,6 +27,7 @@ const deletePomodoro = () => {};
 
 export function PomodoroItem({ item, selected }: PomodoroItemProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
 
   const navigate = useNavigate();
 
@@ -45,7 +47,21 @@ export function PomodoroItem({ item, selected }: PomodoroItemProps) {
       return;
     }
 
+    const linkedButton = e.currentTarget.querySelector('.linked-icon');
+    if (linkedButton && linkedButton.contains(e.target as Node)) {
+      return;
+    }
+
     navigate(`/pomodoro/${id}`);
+  };
+
+  const handleLinkedTaskClick = () => {
+    const taskId = item.eisenhower?.id;
+
+    if (taskId) {
+      setActiveTaskId(taskId);
+      navigate('/matrix');
+    }
   };
 
   return (
@@ -75,7 +91,10 @@ export function PomodoroItem({ item, selected }: PomodoroItemProps) {
       </div>
 
       {item.eisenhower && (
-        <div className="flex justify-end gap-2 w-full items-center">
+        <div
+          onClick={handleLinkedTaskClick}
+          className="linked-icon flex justify-end gap-2 w-full items-center"
+        >
           <Link className="text-[#9F4BC9] w-4 h-4" />
           <p className="text-[#9F4BC9] text-base">{item.eisenhower?.title}</p>
         </div>

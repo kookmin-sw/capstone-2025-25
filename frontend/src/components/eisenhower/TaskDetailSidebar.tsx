@@ -20,6 +20,8 @@ import { Button } from '@/components/ui/button.tsx';
 import { useNavigate } from 'react-router';
 import { useCreateLinkedMindMap } from '@/store/mindmapListStore';
 import useMatrixStore from '@/store/matrixStore';
+import { usePomodoros } from '@/store/pomodoro';
+import AddPomodoro from '@/components/ui/Modal/AddPomodoro';
 
 interface TaskDetailSidebarProps {
   categories: Category[];
@@ -54,6 +56,8 @@ export function TaskDetailSidebar({
   const getActiveTask = useMatrixStore((state) => state.getActiveTask);
   const saveTask = useMatrixStore((state) => state.saveTask);
   const deleteTask = useMatrixStore((state) => state.deleteTask);
+
+  const createPomodoro = usePomodoros((state) => state.createPomodoro);
 
   const task = useMemo(() => {
     const activeTask = getActiveTask();
@@ -308,13 +312,17 @@ export function TaskDetailSidebar({
               >
                 마인드맵 그리기
               </Button>
-              <Button
-                variant="primary"
-                onClick={() => {}}
-                className="flex-1 bg-black text-white rounded py-2"
-              >
-                뽀모도로 실행하기
-              </Button>
+              <AddPomodoro
+                trigger={
+                  <Button
+                    variant="primary"
+                    className="flex-1 bg-black text-white rounded py-2"
+                  >
+                    뽀모도로 실행하기
+                  </Button>
+                }
+                linkedEisenhower={task}
+              />
             </>
           )}
         </div>

@@ -7,7 +7,7 @@ export interface Task {
   id: string | number;
   title: string;
   memo: string;
-  dueDate: string | null;
+  dueDate: string;
   type: ActualTaskType;
   categoryId: number | null;
   quadrant: Quadrant;
