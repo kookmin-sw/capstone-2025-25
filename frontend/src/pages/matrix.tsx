@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { CompletedView } from '@/components/eisenhower/view/CompletedView.tsx';
 import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
@@ -9,7 +9,7 @@ import { useTaskFilters } from '@/hooks/useTaskFilters';
 import { useTaskDnD } from '@/hooks/useTaskDnD';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { Toaster } from 'sonner';
-import type { Task } from '@/types/task';
+import type { Task, TaskSections } from '@/types/task';
 import { PriorityView } from '@/components/eisenhower/view/PriorityView';
 
 import {
@@ -35,8 +35,7 @@ export default function MatrixPage() {
   const [view, setView] = useState<'matrix' | 'board'>('matrix');
   const [activeTab, setActiveTab] = useState<'all' | 'completed'>('all');
 
-  const { tasksByQuadrant, addTask, reorderTasks, getCompletedTasks } =
-    useMatrixStore();
+  const { allTasks, addTask, reorderTasks } = useMatrixStore();
 
   const { categories, addCategory, removeCategory } = useCategoryStore();
   const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD();
@@ -47,7 +46,25 @@ export default function MatrixPage() {
     setActiveTaskId(task.id);
   };
 
-  const completedTasks = getCompletedTasks();
+  const completedTasks = useMemo(
+    () => allTasks.filter((task) => task.isCompleted),
+    [allTasks],
+  );
+
+  const uncompletedTasks = useMemo(
+    () => allTasks.filter((task) => !task.isCompleted),
+    [allTasks],
+  );
+
+  const tasksByQuadrant = useMemo<TaskSections>(
+    () => ({
+      Q1: uncompletedTasks.filter((task) => task.quadrant === 'Q1'),
+      Q2: uncompletedTasks.filter((task) => task.quadrant === 'Q2'),
+      Q3: uncompletedTasks.filter((task) => task.quadrant === 'Q3'),
+      Q4: uncompletedTasks.filter((task) => task.quadrant === 'Q4'),
+    }),
+    [uncompletedTasks],
+  );
 
   return (
     <DndContext

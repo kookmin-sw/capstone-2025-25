@@ -202,7 +202,7 @@ export function PriorityView({
                     {filtered.map((task) => (
                       <TaskCard
                         key={String(task.id)}
-                        task={{ ...task, id: String(task.id) }}
+                        task={{ ...task, id: task.id }}
                         onClick={() => onTaskClick(task)}
                         layout={viewMode}
                       />

@@ -14,6 +14,7 @@ export type MatrixState = {
   deleteTask: (taskId: string | number) => void;
   reorderTasks: (sectionId: Quadrant, newTasks: Task[]) => void;
   saveTask: (updatedTask: Task) => void;
+  completeTask: (taskId: string | number) => void;
 
   setActiveTaskId: (taskId: string | number | null) => void;
   getActiveTask: () => Task | null;
@@ -93,7 +94,6 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
 
   reorderTasks: (sectionId, newTasks) =>
     set((state) => {
-      // 다른 쿼드런트의 태스크는 그대로 유지하고 해당 쿼드런트만 업데이트
       const updatedAllTasks = [
         ...state.allTasks.filter((task) => task.quadrant !== sectionId),
         ...newTasks,
@@ -124,6 +124,19 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
     set({ activeTaskId: null });
     toast.success('작업이 저장되었습니다.');
   },
+
+  completeTask: (taskId) =>
+    set((state) => {
+      const updatedTasks = state.allTasks.map((task) =>
+        task.id === taskId ? { ...task, isCompleted: true } : task,
+      );
+
+      toast.success('작업이 완료되었습니다.');
+
+      return {
+        allTasks: updatedTasks,
+      };
+    }),
 
   getTasksByQuadrant: () => {
     const { allTasks } = get();
