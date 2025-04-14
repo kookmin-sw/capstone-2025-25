@@ -9,7 +9,7 @@ import { useTaskFilters } from '@/hooks/useTaskFilters';
 import { useTaskDnD } from '@/hooks/useTaskDnD';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { Toaster } from 'sonner';
-import type { Task, TaskDetail } from '@/types/task';
+import type { Task } from '@/types/task';
 import { PriorityView } from '@/components/eisenhower/view/PriorityView';
 
 import {
@@ -20,16 +20,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, Grid2X2, Kanban } from 'lucide-react';
 import useMatrixStore from '@/store/matrixStore';
-
-function convertToTaskDetail(task: Task): TaskDetail {
-  return {
-    ...task,
-    isCompleted: false,
-    createdAt: '',
-    mindMapId: null,
-    pomodoroId: null,
-  };
-}
 
 export default function MatrixPage() {
   const {
@@ -45,16 +35,19 @@ export default function MatrixPage() {
   const [view, setView] = useState<'matrix' | 'board'>('matrix');
   const [activeTab, setActiveTab] = useState<'all' | 'completed'>('all');
 
-  const { tasks, completedTasks, addTask, reorderTasks } = useMatrixStore();
+  const { tasksByQuadrant, addTask, reorderTasks, getCompletedTasks } =
+    useMatrixStore();
 
   const { categories, addCategory, removeCategory } = useCategoryStore();
   const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD();
 
   const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
 
-  const handleTaskClick = (task: TaskDetail) => {
+  const handleTaskClick = (task: Task) => {
     setActiveTaskId(task.id);
   };
+
+  const completedTasks = getCompletedTasks();
 
   return (
     <DndContext
@@ -138,26 +131,26 @@ export default function MatrixPage() {
 
         {activeTab === 'all' ? (
           <PriorityView
-            tasks={tasks}
+            tasks={tasksByQuadrant}
             selectedType={selectedType}
             selectedCategory={selectedCategory}
             startDate={startDate}
             endDate={endDate}
             viewMode={view}
-            onTaskClick={(task) => handleTaskClick(convertToTaskDetail(task))}
+            onTaskClick={(task) => handleTaskClick(task)}
             onReorderTask={(sectionId, newTasks) =>
               reorderTasks(sectionId, newTasks)
             }
-            onCreateTask={(sectionId, newTask) => addTask(sectionId, newTask)}
+            onCreateTask={(newTask) => addTask(newTask)}
           />
         ) : (
           <CompletedView
-            tasks={Object.values(completedTasks).flat()}
+            tasks={completedTasks}
             selectedType={selectedType}
             selectedCategory={selectedCategory}
             startDate={startDate}
             endDate={endDate}
-            onTaskClick={(task) => handleTaskClick(convertToTaskDetail(task))}
+            onTaskClick={(task) => handleTaskClick(task)}
             onCategoryChange={setSelectedCategory}
             onDateChange={setDateRange}
           />
@@ -174,16 +167,7 @@ export default function MatrixPage() {
 
         <DragOverlay>
           {activeTask && (
-            <DragOverlayCard
-              title={activeTask.title}
-              categoryId={activeTask.categoryId}
-              dueDate={activeTask.dueDate}
-              quadrant={activeTask.quadrant}
-              type={activeTask.type}
-              order={activeTask.order}
-              categories={categories}
-              memo={activeTask.memo}
-            />
+            <DragOverlayCard task={activeTask} categories={categories} />
           )}
         </DragOverlay>
       </div>

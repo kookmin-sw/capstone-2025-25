@@ -25,7 +25,7 @@ export function CompletedView({
   const filteredTasks = tasks.filter((task) => {
     if (selectedType !== 'ALL' && task.type !== selectedType) return false;
 
-    const categoryName = getCategoryNameById(task.categoryId, categories);
+    const categoryName = getCategoryNameById(task.category_id, categories);
     if (selectedCategory !== 'all' && categoryName !== selectedCategory)
       return false;
 

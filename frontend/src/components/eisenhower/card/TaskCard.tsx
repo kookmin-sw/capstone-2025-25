@@ -21,9 +21,9 @@ export function TaskCard({
   layout = 'matrix',
   dragHandle,
 }: TaskCardProps) {
-  const { id, title, memo, dueDate, type, categoryId } = task;
+  const { id, title, memo, dueDate, type, category_id } = task;
   const { categories } = useCategoryStore();
-  const category = categories.find((cat) => cat.id === categoryId);
+  const category = categories.find((cat) => cat.id === category_id);
 
   const {
     attributes,
@@ -73,7 +73,7 @@ export function TaskCard({
           <TypeBadge type={type} />
           {category && (
             <CategoryBadge
-              label={getCategoryNameById(categoryId, categories)}
+              label={getCategoryNameById(category_id, categories)}
             />
           )}
         </div>

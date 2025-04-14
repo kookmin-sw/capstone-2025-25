@@ -12,7 +12,7 @@ import {
   X,
 } from 'lucide-react';
 import { format } from 'date-fns';
-import type { Task, TaskDetail } from '@/types/task';
+import type { Task } from '@/types/task';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { SECTION_TITLES } from '@/constants/eisenhower';
 import type { Category } from '@/types/category';
@@ -20,7 +20,6 @@ import { Button } from '@/components/ui/button.tsx';
 import { useNavigate } from 'react-router';
 import { useCreateLinkedMindMap } from '@/store/mindmapListStore';
 import useMatrixStore from '@/store/matrixStore';
-import { usePomodoros } from '@/store/pomodoro';
 import AddPomodoro from '@/components/ui/Modal/AddPomodoro';
 
 interface TaskDetailSidebarProps {
@@ -29,22 +28,12 @@ interface TaskDetailSidebarProps {
   onDeleteCategory: (name: string) => void;
 }
 
-function convertToTaskDetail(task: Task): TaskDetail {
-  return {
-    ...task,
-    isCompleted: false,
-    createdAt: '',
-    mindMapId: null,
-    pomodoroId: null,
-  };
-}
-
 export function TaskDetailSidebar({
   categories,
   onAddCategory,
   onDeleteCategory,
 }: TaskDetailSidebarProps) {
-  const [editedTask, setEditedTask] = useState<TaskDetail | null>(null);
+  const [editedTask, setEditedTask] = useState<Task | null>(null);
   const [newCategory, setNewCategory] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
@@ -57,11 +46,8 @@ export function TaskDetailSidebar({
   const saveTask = useMatrixStore((state) => state.saveTask);
   const deleteTask = useMatrixStore((state) => state.deleteTask);
 
-  const createPomodoro = usePomodoros((state) => state.createPomodoro);
-
   const task = useMemo(() => {
-    const activeTask = getActiveTask();
-    return activeTaskId && activeTask ? convertToTaskDetail(activeTask) : null;
+    return getActiveTask();
   }, [activeTaskId, getActiveTask]);
 
   const isOpen = activeTaskId !== null;
@@ -105,7 +91,7 @@ export function TaskDetailSidebar({
   };
 
   const selectedCategory = categories.find(
-    (cat) => cat.id === task?.categoryId,
+    (cat) => cat.id === task?.category_id,
   );
 
   const handleCreateMindmap = () => {
@@ -171,7 +157,7 @@ export function TaskDetailSidebar({
                 onChange={(e) =>
                   setEditedTask({
                     ...editedTask,
-                    type: e.target.value as TaskDetail['type'],
+                    type: e.target.value as Task['type'],
                   })
                 }
                 className="border rounded px-2 py-1 text-sm"
@@ -189,11 +175,11 @@ export function TaskDetailSidebar({
             <span className="text-sm">카테고리</span>
             {isEditing ? (
               <select
-                value={editedTask.categoryId ?? ''}
+                value={editedTask.category_id ?? ''}
                 onChange={(e) =>
                   setEditedTask({
                     ...editedTask,
-                    categoryId: e.target.value ? Number(e.target.value) : null,
+                    category_id: e.target.value ? Number(e.target.value) : null,
                   })
                 }
                 className="border rounded px-2 py-1 text-sm"
@@ -224,7 +210,7 @@ export function TaskDetailSidebar({
                 onChange={(date) =>
                   setEditedTask({
                     ...editedTask,
-                    dueDate: date,
+                    dueDate: date ?? '',
                   })
                 }
               />
