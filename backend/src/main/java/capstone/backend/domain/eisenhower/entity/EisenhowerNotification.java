@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 public class EisenhowerNotification {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, name = "eisenhower_notification_id")
     private Long id;
 
     @Column(nullable = false)
