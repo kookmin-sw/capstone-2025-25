@@ -32,7 +32,7 @@ export default function MindmapAddButton() {
         질문을 통해 더 깊이 고민할 수 있도록 도와줄게요`}
       footer={
         <DialogClose asChild>
-          <Button size="sm" onClick={handleCreateClick}>
+          <Button size="sm" onClick={handleCreateClick} variant={selectedType && subject ? 'black': 'disabled'}  >
             생성하기
           </Button>
         </DialogClose>
