@@ -26,7 +26,7 @@ export default function MindmapAddButton() {
 
   return (
     <Modal
-      trigger={<Plus size={20} className="cursor-pointer" />}
+      trigger={<Plus size={22} className="cursor-pointer" />}
       title="마인드맵 생성하기"
       description={`해야 할 일이나 생각이 떠올랐다면 여기 적어보세요! 
         질문을 통해 더 깊이 고민할 수 있도록 도와줄게요`}

@@ -15,7 +15,7 @@ export default function PomodoroSubSidebar() {
     <CommonSubSidebarWrapper
       title="뽀모도로"
       addButton={
-        <AddPomodoro trigger={<Plus size={24} className="cursor-pointer" />} />
+        <AddPomodoro trigger={<Plus size={22} className="cursor-pointer" />} />
       }
     >
       <div>

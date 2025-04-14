@@ -16,21 +16,21 @@ export default function CommonSubSidebarWrapper({
   const { setPanelVisible } = useSidebarStore();
 
   return (
-    <div className="relative w-[300px] border-r bg-white h-full overflow-y-auto">
-      <div className="p-4 h-[84px] flex items-center justify-between mb-4 border-b border-gray-300">
+    <div className="relative w-[300px] border-r  h-full overflow-y-auto  ">
+      <div className="p-[15px] h-[55px] flex items-center justify-between border-b border-[#E5E5E5] bg-[#ffffff] z-10 sticky top-0">
         <h2 className="font-bold text-lg">{title}</h2>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-[5px]">
           {addButton && <div>{addButton}</div>}
           <button
             onClick={() => setPanelVisible(false)}
             className="cursor-pointer"
           >
-            <ChevronsLeft size={20} />
+            <ChevronsLeft size={24} />
           </button>
         </div>
       </div>
 
-      <div className="p-4">{children}</div>
+      <div className="px-[15px] py-[10px] gap-2.5">{children}</div>
     </div>
   );
 }
