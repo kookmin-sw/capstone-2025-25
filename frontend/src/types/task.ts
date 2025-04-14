@@ -13,8 +13,8 @@ export interface Task {
   order: number;
   isCompleted: boolean;
   createdAt: string;
-  mindMapId: number | null;
-  pomodoroId: number | null;
+  mindMapId: string | number | null;
+  pomodoroId: string | number | null;
 }
 
 // Tasks organized by quadrant

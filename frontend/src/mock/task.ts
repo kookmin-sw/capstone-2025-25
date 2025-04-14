@@ -12,7 +12,7 @@ export const tasks: Task[] = [
     order: 0,
     isCompleted: false,
     createdAt: '2025-02-20',
-    mindMapId: null,
+    mindMapId: 'hrgRaTSuSTxaBIGNbqm1c',
     pomodoroId: null,
   },
   {
@@ -70,7 +70,7 @@ export const tasks: Task[] = [
     order: 0,
     isCompleted: false,
     createdAt: '2025-02-28',
-    mindMapId: null,
+    mindMapId: 'skNCDUchOkmewQ',
     pomodoroId: null,
   },
 
@@ -100,7 +100,7 @@ export const tasks: Task[] = [
     isCompleted: false,
     createdAt: '2025-03-05',
     mindMapId: null,
-    pomodoroId: null,
+    pomodoroId: 1,
   },
 
   {
@@ -114,8 +114,8 @@ export const tasks: Task[] = [
     order: 0,
     isCompleted: true,
     createdAt: '2025-02-25',
-    mindMapId: 1,
-    pomodoroId: 11,
+    mindMapId: null,
+    pomodoroId: null,
   },
   {
     id: 102,
@@ -128,8 +128,8 @@ export const tasks: Task[] = [
     order: 1,
     isCompleted: true,
     createdAt: '2025-02-26',
-    mindMapId: 1,
-    pomodoroId: 12,
+    mindMapId: null,
+    pomodoroId: null,
   },
   {
     id: 103,
@@ -142,8 +142,8 @@ export const tasks: Task[] = [
     order: 2,
     isCompleted: true,
     createdAt: '2025-02-27',
-    mindMapId: 2,
-    pomodoroId: 13,
+    mindMapId: null,
+    pomodoroId: null,
   },
 ];
 

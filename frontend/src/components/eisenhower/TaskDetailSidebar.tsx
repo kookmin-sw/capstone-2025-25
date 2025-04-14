@@ -97,6 +97,12 @@ export function TaskDetailSidebar({
   const handleCreateMindmap = () => {
     if (!task) return;
 
+    if (task.mindMapId) {
+      navigate(`/mindmap/${task.mindMapId}`);
+
+      return;
+    }
+
     const newMindmapId = createLinkedMindMap(task);
     navigate(`/mindmap/${newMindmapId}`);
   };
@@ -298,17 +304,27 @@ export function TaskDetailSidebar({
               >
                 마인드맵 그리기
               </Button>
-              <AddPomodoro
-                trigger={
-                  <Button
-                    variant="primary"
-                    className="flex-1 bg-black text-white rounded py-2"
-                  >
-                    뽀모도로 실행하기
-                  </Button>
-                }
-                linkedEisenhower={task}
-              />
+              {task.pomodoroId ? (
+                <Button
+                  variant="primary"
+                  className="flex-1 bg-black text-white rounded py-2"
+                  onClick={() => navigate(`/pomodoro/${task.pomodoroId}`)}
+                >
+                  뽀모도로 실행하기
+                </Button>
+              ) : (
+                <AddPomodoro
+                  trigger={
+                    <Button
+                      variant="primary"
+                      className="flex-1 bg-black text-white rounded py-2"
+                    >
+                      뽀모도로 실행하기
+                    </Button>
+                  }
+                  linkedEisenhower={task}
+                />
+              )}
             </>
           )}
         </div>
