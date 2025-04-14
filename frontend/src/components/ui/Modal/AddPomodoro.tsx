@@ -244,7 +244,7 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
               </div>
             )}
             <div className="flex flex-col gap-[10px]">
-              <div className=" bg-[#F2F2F2] rounded-[10px] px-[25px] py-[20px] h-[87px]">
+              <div className=" bg-[#F2F2F2] rounded-[7px] px-[25px] py-[20px] h-[87px]">
                 <MultiSlider
                   min={0}
                   max={totalTime}
