@@ -192,22 +192,23 @@ export default function AnswerInputNode({
           <>
             <Modal
               trigger={
-                <Button variant="white" className="flex-1 h-12">
+                <Button size="sm" variant="white" className="flex-1">
                   삭제하기
                 </Button>
               }
               title="이 노드를 삭제할까요?"
               description="해당 노드와 모든 하위노드가 함께 삭제돼요"
               footer={
-                <div className="w-full flex items-center justify-between">
+                <div className="w-full flex items-center justify-between gap-4">
                   <DialogClose asChild>
-                    <Button className="px-8" variant="white">
+                    <Button size="sm" variant="white" className="flex-1">
                       취소하기
                     </Button>
                   </DialogClose>
                   <DialogClose asChild>
                     <Button
-                      className="px-8"
+                      size="sm"
+                      className="flex-1"
                       onClick={() => {
                         deleteNode(id);
                       }}
@@ -218,15 +219,16 @@ export default function AnswerInputNode({
                 </div>
               }
             >
-              <div className="rounded-xl px-6 py-4 font-bold border-2 border-border-gray">
+              <div className="rounded-[7px] px-6 py-4 font-semibold border-1 border-[#AAAAAA]">
                 {data.summary}
               </div>
             </Modal>
             <Modal
               trigger={
                 <Button
+                  size="sm"
+                  className="flex-1"
                   variant={isButtonDisabled ? 'disabled' : 'black'}
-                  className="flex-1 h-12"
                   disabled={isButtonDisabled}
                 >
                   {isPending ? (
@@ -242,25 +244,25 @@ export default function AnswerInputNode({
               title="이 답변을 수정할까요?"
               description="답변 수정 시, 해당 노드와 모든 하위노드가 함께 삭제돼요"
               footer={
-                <div className="w-full flex items-center justify-between">
+                <div className="w-full flex items-center justify-between gap-4">
                   <DialogClose asChild>
-                    <Button className="px-8" variant="white">
+                    <Button size="sm" className="flex-1" variant="white">
                       취소하기
                     </Button>
                   </DialogClose>
                   <DialogClose asChild>
-                    <Button className="px-8" onClick={handleEdit}>
+                    <Button size="sm" className="flex-1" onClick={handleEdit}>
                       수정하기
                     </Button>
                   </DialogClose>
                 </div>
               }
             >
-              <div className="rounded-xl px-6 py-4 border-2 border-border-gray">
-                <p className="font-bold mb-4">
+              <div className="rounded-[7px] px-6 py-4 border-1 border-[#AAAAAA]">
+                <p className="font-semibold text-[18px] mb-1">
                   {isDirectQuestion ? customQuestion : data.label}
                 </p>
-                <p>{answer}</p>
+                <p className='font-normal text-[16px]'>{answer}</p>
               </div>
             </Modal>
           </>
