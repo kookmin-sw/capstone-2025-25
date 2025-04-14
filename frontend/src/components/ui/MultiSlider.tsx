@@ -2,6 +2,11 @@ import * as React from 'react';
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import { cn } from '@/lib/utils';
 import { PomodoroCycle } from '@/types/pomodoro';
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from '@/components/ui/tooltip';
 
 type MultiSliderProps = {
   cycles: PomodoroCycle[];
@@ -157,21 +162,28 @@ const MultiSlider = React.forwardRef<
                 fontSize: 'clamp(10px, 2vh, 16px)',
               }}
             >
-              {/*  칸의 시간 글씨 보이는 기준*/}
-              {(intervals.length <= 1 || interval.duration >= 5) &&
-                interval.type == 'focus' && (
-                  <span
-                    style={{
-                      color:
-                        interval.type === 'focus'
-                          ? style?.fontColor || 'black'
-                          : 'black',
-                    }}
-                  >
+              {interval.widthPercent >= 10 ? (<span
+                  style={{
+                    color:
+                      interval.type === 'focus'
+                        ? style?.fontColor || 'black'
+                        : 'black',
+                  }}
+                >
+                  {interval.type === 'focus' ? '집중' : '휴식'}{' '}
+                  {interval.duration}분
+                </span>
+              ) : (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="w-full h-full  z-10" />
+                  </TooltipTrigger>
+                  <TooltipContent side="top" sideOffset={4}>
                     {interval.type === 'focus' ? '집중' : '휴식'}{' '}
                     {interval.duration}분
-                  </span>
-                )}
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
           ))}
           <SliderPrimitive.Root
