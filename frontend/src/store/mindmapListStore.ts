@@ -2,12 +2,14 @@ import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
 import { MindMapNode, MindMap, TodoType, MindMapEdge } from '@/types/mindMap';
 import { mockMindMaps } from '@/mock/mindmap';
+import { TaskDetail } from '@/types/task';
 
 export type MindMapListState = {
   mindMaps: MindMap[];
   activeMindMapId: string | null;
 
   createMindMap: (title: string, type: TodoType) => string;
+  createLinkedMindMap: (task: TaskDetail) => string;
   loadMindMapData: (id: string) => MindMap | null;
   setActiveMindMap: (id: string | null) => void;
   saveMindMapData: (
@@ -27,7 +29,7 @@ const useStore = create<MindMapListState>((set, get) => ({
 
     const initialNodes: MindMapNode[] = [
       {
-        id: '1',
+        id: nanoid(),
         type: 'root',
         data: { label: title, depth: 0 },
         position: { x: 0, y: 0 },
@@ -42,6 +44,39 @@ const useStore = create<MindMapListState>((set, get) => ({
       nodes: initialNodes,
       edges: [],
       linked: false,
+    };
+
+    set((state) => ({
+      mindMaps: [...state.mindMaps, newMindMap],
+      activeMindMapId: id,
+    }));
+
+    return id;
+  },
+
+  createLinkedMindMap: (task) => {
+    const id = nanoid();
+
+    const { title, type } = task;
+
+    const initialNodes: MindMapNode[] = [
+      {
+        id: nanoid(),
+        type: 'root',
+        data: { label: title, depth: 0 },
+        position: { x: 0, y: 0 },
+      },
+    ];
+
+    const newMindMap: MindMap = {
+      id,
+      title,
+      type,
+      lastModifiedAt: new Date().toISOString(),
+      nodes: initialNodes,
+      edges: [],
+      linked: true,
+      eisenhowerItemDTO: task,
     };
 
     set((state) => ({
@@ -93,6 +128,9 @@ export const useMindMaps = () => useStore((state) => state.mindMaps);
 export const useActiveMindMapId = () =>
   useStore((state) => state.activeMindMapId);
 export const useCreateMindMap = () => useStore((state) => state.createMindMap);
+export const useCreateLinkedMindMap = () =>
+  useStore((state) => state.createLinkedMindMap);
+
 export const useLoadMindMapData = () =>
   useStore((state) => state.loadMindMapData);
 export const useSetActiveMindMap = () =>

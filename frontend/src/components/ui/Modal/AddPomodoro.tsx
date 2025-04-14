@@ -97,10 +97,8 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
   };
 
   const handleCreatePomodoro = () => {
-    // 생성 api 추가
-
     const newPomodoroId = createPomodoro({
-      title,
+      title: linkedEisenhower?.title || title,
       plannedCycles: cycleValue,
       totalPlannedTime: {
         hour: hours,
@@ -108,10 +106,10 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
         second: 0,
         nano: 0,
       },
-      eisenhower: null,
+      eisenhower: linkedEisenhower || null,
     });
 
-    navigate(`pomodoro/${newPomodoroId}`);
+    navigate(`/pomodoro/${newPomodoroId}`);
 
     resetStates();
   };
@@ -164,7 +162,7 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
       {page === 0 && (
         <div className="flex flex-col gap-[33px]">
           {linkedEisenhower?.id ? (
-            <div className="h-[153px] border-1">컴포넌트로</div>
+            <div className="h-[153px] border-1">{linkedEisenhower.title}</div>
           ) : (
             <div>
               <label className="text-[14px] block mb-2">뽀모도로 이름</label>

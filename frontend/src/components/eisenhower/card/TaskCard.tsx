@@ -7,6 +7,8 @@ import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { getCategoryNameById } from '@/utils/category';
 import { format } from 'date-fns';
+import { MouseEvent } from 'react';
+import useMatrixStore from '@/store/matrixStore';
 
 interface TaskCardProps {
   task: Task;
@@ -21,9 +23,9 @@ export function TaskCard({
   layout = 'matrix',
   dragHandle,
 }: TaskCardProps) {
-  const { id, title, memo, dueDate, type, categoryId } = task;
+  const { id, title, memo, dueDate, type, category_id } = task;
   const { categories } = useCategoryStore();
-  const category = categories.find((cat) => cat.id === categoryId);
+  const category = categories.find((cat) => cat.id === category_id);
 
   const {
     attributes,
@@ -34,10 +36,21 @@ export function TaskCard({
     isDragging,
   } = useSortable({ id, data: { ...task } });
 
+  const completeTask = useMatrixStore((state) => state.completeTask);
+
   const style = { transform: CSS.Transform.toString(transform), transition };
 
-  const handleClick = () => {
+  const handleClick = (e: MouseEvent) => {
+    const checkIcon = e.currentTarget.querySelector('.check-icon');
+    if (checkIcon && checkIcon.contains(e.target as Node)) {
+      return;
+    }
+
     if (!isDragging && onClick) onClick();
+  };
+
+  const handleTaskComplete = () => {
+    completeTask(id);
   };
 
   return (
@@ -73,13 +86,16 @@ export function TaskCard({
           <TypeBadge type={type} />
           {category && (
             <CategoryBadge
-              label={getCategoryNameById(categoryId, categories)}
+              label={getCategoryNameById(category_id, categories)}
             />
           )}
         </div>
 
         <div className="flex items-start mb-2 flex-grow">
-          <div className="w-4 h-4 rounded-full border-2 border-[#8d5cf6] mr-2 mt-0.5 flex-shrink-0"></div>
+          <div
+            onClick={handleTaskComplete}
+            className="check-icon w-4 h-4 rounded-full border-2 border-[#8d5cf6] mr-2 mt-0.5 flex-shrink-0"
+          ></div>
           <div className="text-sm font-medium line-clamp-2">{title}</div>
         </div>
 

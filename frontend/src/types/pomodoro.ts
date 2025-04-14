@@ -1,3 +1,5 @@
+import { ActualTaskType, Quadrant } from '@/types/task';
+
 export type TotalTime = {
   hour: number;
   minute: number;
@@ -5,7 +7,7 @@ export type TotalTime = {
   nano: number;
 };
 
-export type Mode = 'WORK' | 'BREAK'
+export type Mode = 'WORK' | 'BREAK';
 
 export type PomodoroCycle = {
   workDuration: number;
@@ -26,23 +28,22 @@ export type Pomodoro = {
 };
 
 export type Eisenhower = {
-  id: number;
+  id: number | string;
   title: string;
   memo: string;
   dueDate: string;
-  quadrant: 'Q1' | 'Q2' | 'Q3' | 'Q4';
-  type: EisenhowerType;
+  quadrant: Quadrant;
+  type: ActualTaskType;
   order: number;
   isCompleted: boolean;
   createdAt: string;
 };
+
 export type LinkedUnlinkedPomodoro = {
   pomodoro: Pomodoro;
   eisenhower: Eisenhower | null;
 };
 export type PomodoroList = {
   linkedPomodoros: LinkedUnlinkedPomodoro[] | null;
-  unlinkedPomodoros: LinkedUnlinkedPomodoro[]  | null;
+  unlinkedPomodoros: LinkedUnlinkedPomodoro[] | null;
 };
-
-export type EisenhowerType = 'TODO' | 'SCHEDULE' | 'DELEGATE' | 'DELETE';

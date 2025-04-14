@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/Sheet';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
@@ -12,36 +12,49 @@ import {
   X,
 } from 'lucide-react';
 import { format } from 'date-fns';
-import type { TaskDetail } from '@/types/task';
+import type { Task } from '@/types/task';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { SECTION_TITLES } from '@/constants/eisenhower';
 import type { Category } from '@/types/category';
 import { Button } from '@/components/ui/button.tsx';
+import { useNavigate } from 'react-router';
+import { useCreateLinkedMindMap } from '@/store/mindmapListStore';
+import useMatrixStore from '@/store/matrixStore';
+import AddPomodoro from '@/components/ui/Modal/AddPomodoro';
 
 interface TaskDetailSidebarProps {
-  task: TaskDetail | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (task: TaskDetail) => void;
-  onDelete: (taskId: string | number) => void;
   categories: Category[];
   onAddCategory: (name: string) => void;
   onDeleteCategory: (name: string) => void;
 }
 
 export function TaskDetailSidebar({
-  task,
-  isOpen,
-  onClose,
-  onSave,
-
   categories,
   onAddCategory,
   onDeleteCategory,
 }: TaskDetailSidebarProps) {
-  const [editedTask, setEditedTask] = useState<TaskDetail | null>(null);
+  const [editedTask, setEditedTask] = useState<Task | null>(null);
   const [newCategory, setNewCategory] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+
+  const navigate = useNavigate();
+  const createLinkedMindMap = useCreateLinkedMindMap();
+
+  const activeTaskId = useMatrixStore((state) => state.activeTaskId);
+  const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
+  const getActiveTask = useMatrixStore((state) => state.getActiveTask);
+  const saveTask = useMatrixStore((state) => state.saveTask);
+  const deleteTask = useMatrixStore((state) => state.deleteTask);
+
+  const task = useMemo(() => {
+    return getActiveTask();
+  }, [activeTaskId, getActiveTask]);
+
+  const isOpen = activeTaskId !== null;
+
+  const handleClose = () => {
+    setActiveTaskId(null);
+  };
 
   useEffect(() => {
     if (task) {
@@ -52,9 +65,7 @@ export function TaskDetailSidebar({
 
   const handleSave = () => {
     if (editedTask) {
-      onSave(editedTask);
-      setIsEditing(false);
-      onClose();
+      saveTask(editedTask);
     }
   };
 
@@ -62,6 +73,12 @@ export function TaskDetailSidebar({
     if (task) {
       setEditedTask({ ...task });
       setIsEditing(false);
+    }
+  };
+
+  const handleDeleteTask = () => {
+    if (task) {
+      deleteTask(task.id);
     }
   };
 
@@ -74,20 +91,35 @@ export function TaskDetailSidebar({
   };
 
   const selectedCategory = categories.find(
-    (cat) => cat.id === task?.categoryId,
+    (cat) => cat.id === task?.category_id,
   );
+
+  const handleCreateMindmap = () => {
+    if (!task) return;
+
+    setActiveTaskId(null);
+
+    if (task.mindMapId) {
+      navigate(`/mindmap/${task.mindMapId}`);
+
+      return;
+    }
+
+    const newMindmapId = createLinkedMindMap(task);
+    navigate(`/mindmap/${newMindmapId}`);
+  };
 
   if (!task || !editedTask) return null;
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Sheet open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <SheetContent
         side="right"
         className="w-full max-w-[480px] h-screen p-0 overflow-y-auto"
       >
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <button
-            onClick={isEditing ? handleCancelEdit : onClose}
+            onClick={isEditing ? handleCancelEdit : handleClose}
             className="p-2 rounded hover:bg-gray-100"
           >
             <ChevronsLeft />
@@ -133,7 +165,7 @@ export function TaskDetailSidebar({
                 onChange={(e) =>
                   setEditedTask({
                     ...editedTask,
-                    type: e.target.value as TaskDetail['type'],
+                    type: e.target.value as Task['type'],
                   })
                 }
                 className="border rounded px-2 py-1 text-sm"
@@ -151,11 +183,11 @@ export function TaskDetailSidebar({
             <span className="text-sm">카테고리</span>
             {isEditing ? (
               <select
-                value={editedTask.categoryId ?? ''}
+                value={editedTask.category_id ?? ''}
                 onChange={(e) =>
                   setEditedTask({
                     ...editedTask,
-                    categoryId: e.target.value ? Number(e.target.value) : null,
+                    category_id: e.target.value ? Number(e.target.value) : null,
                   })
                 }
                 className="border rounded px-2 py-1 text-sm"
@@ -186,7 +218,7 @@ export function TaskDetailSidebar({
                 onChange={(date) =>
                   setEditedTask({
                     ...editedTask,
-                    dueDate: date,
+                    dueDate: date ?? '',
                   })
                 }
               />
@@ -252,10 +284,10 @@ export function TaskDetailSidebar({
             <>
               <Button
                 variant="outline"
-                onClick={handleCancelEdit}
+                onClick={handleDeleteTask}
                 className="flex-1 border rounded py-2"
               >
-                취소하기
+                삭제하기
               </Button>
               <Button
                 variant="primary"
@@ -269,22 +301,32 @@ export function TaskDetailSidebar({
             <>
               <Button
                 variant="outline"
-                onClick={() => {
-                  // 마인드맵 그리기 로직
-                }}
+                onClick={handleCreateMindmap}
                 className="flex-1 border rounded py-2"
               >
                 마인드맵 그리기
               </Button>
-              <Button
-                variant="primary"
-                onClick={() => {
-                  // 뽀모도로 생성 로직
-                }}
-                className="flex-1 bg-black text-white rounded py-2"
-              >
-                뽀모도로 실행하기
-              </Button>
+              {task.pomodoroId ? (
+                <Button
+                  variant="primary"
+                  className="flex-1 bg-black text-white rounded py-2"
+                  onClick={() => navigate(`/pomodoro/${task.pomodoroId}`)}
+                >
+                  뽀모도로 실행하기
+                </Button>
+              ) : (
+                <AddPomodoro
+                  trigger={
+                    <Button
+                      variant="primary"
+                      className="flex-1 bg-black text-white rounded py-2"
+                    >
+                      뽀모도로 실행하기
+                    </Button>
+                  }
+                  linkedEisenhower={task}
+                />
+              )}
             </>
           )}
         </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { CompletedView } from '@/components/eisenhower/view/CompletedView.tsx';
 import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
@@ -8,13 +8,9 @@ import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import { useTaskFilters } from '@/hooks/useTaskFilters';
 import { useTaskDnD } from '@/hooks/useTaskDnD';
 import { useCategoryStore } from '@/store/useCategoryStore';
-import { Toaster, toast } from 'sonner';
-import type { Task, TaskDetail } from '@/types/task';
+import { Toaster } from 'sonner';
+import type { Task, TaskSections } from '@/types/task';
 import { PriorityView } from '@/components/eisenhower/view/PriorityView';
-import {
-  initialTasks,
-  completedTasks,
-} from '@/components/eisenhower/data/tasks';
 
 import {
   DropdownMenu,
@@ -23,15 +19,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, Grid2X2, Kanban } from 'lucide-react';
-function convertToTaskDetail(task: Task): TaskDetail {
-  return {
-    ...task,
-    isCompleted: false,
-    createdAt: '',
-    mindMapId: null,
-    pomodoroId: null,
-  };
-}
+import useMatrixStore from '@/store/matrixStore';
 
 export default function MatrixPage() {
   const {
@@ -46,61 +34,37 @@ export default function MatrixPage() {
 
   const [view, setView] = useState<'matrix' | 'board'>('matrix');
   const [activeTab, setActiveTab] = useState<'all' | 'completed'>('all');
-  const [tasks, setTasks] = useState<Record<string, Task[]>>(initialTasks);
-  const [doneTasks, setDoneTasks] =
-    useState<Record<string, Task[]>>(completedTasks);
 
-  const [selectedTask, setSelectedTask] = useState<TaskDetail | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { allTasks, addTask, reorderTasks } = useMatrixStore();
 
   const { categories, addCategory, removeCategory } = useCategoryStore();
-  const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD({
-    tasks,
-    setTasks,
-  });
+  const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD();
 
-  const handleTaskClick = (task: TaskDetail) => {
-    setSelectedTask(task);
-    setIsSidebarOpen(true);
+  const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
+
+  const handleTaskClick = (task: Task) => {
+    setActiveTaskId(task.id);
   };
 
-  const handleTaskSave = (updatedTask: TaskDetail) => {
-    const sectionId = updatedTask.quadrant as keyof typeof tasks;
-    const safeTask: Task = {
-      ...updatedTask,
-      dueDate: updatedTask.dueDate ?? '',
-    };
+  const completedTasks = useMemo(
+    () => allTasks.filter((task) => task.isCompleted),
+    [allTasks],
+  );
 
-    setTasks((prev) => ({
-      ...prev,
-      [sectionId]: prev[sectionId].map((t) =>
-        t.id === safeTask.id ? safeTask : t,
-      ),
-    }));
+  const uncompletedTasks = useMemo(
+    () => allTasks.filter((task) => !task.isCompleted),
+    [allTasks],
+  );
 
-    setDoneTasks((prev) => ({
-      ...prev,
-      [sectionId]: prev[sectionId].map((t) =>
-        t.id === safeTask.id ? safeTask : t,
-      ),
-    }));
-
-    setSelectedTask(updatedTask);
-    toast.success('작업이 저장되었습니다.');
-  };
-
-  const handleTaskDelete = (taskId: string | number) => {
-    setTasks((prev) =>
-      Object.fromEntries(
-        Object.entries(prev).map(([key, taskList]) => [
-          key,
-          taskList.filter((task) => task.id !== taskId),
-        ]),
-      ),
-    );
-    setIsSidebarOpen(false);
-    toast.success('작업이 삭제되었습니다.');
-  };
+  const tasksByQuadrant = useMemo<TaskSections>(
+    () => ({
+      Q1: uncompletedTasks.filter((task) => task.quadrant === 'Q1'),
+      Q2: uncompletedTasks.filter((task) => task.quadrant === 'Q2'),
+      Q3: uncompletedTasks.filter((task) => task.quadrant === 'Q3'),
+      Q4: uncompletedTasks.filter((task) => task.quadrant === 'Q4'),
+    }),
+    [uncompletedTasks],
+  );
 
   return (
     <DndContext
@@ -184,42 +148,32 @@ export default function MatrixPage() {
 
         {activeTab === 'all' ? (
           <PriorityView
-            tasks={tasks}
+            tasks={tasksByQuadrant}
             selectedType={selectedType}
             selectedCategory={selectedCategory}
             startDate={startDate}
             endDate={endDate}
             viewMode={view}
-            onTaskClick={(task) => handleTaskClick(convertToTaskDetail(task))}
+            onTaskClick={(task) => handleTaskClick(task)}
             onReorderTask={(sectionId, newTasks) =>
-              setTasks((prev) => ({ ...prev, [sectionId]: newTasks }))
+              reorderTasks(sectionId, newTasks)
             }
-            onCreateTask={(sectionId, newTask) =>
-              setTasks((prev) => ({
-                ...prev,
-                [sectionId]: [...prev[sectionId], newTask],
-              }))
-            }
+            onCreateTask={(newTask) => addTask(newTask)}
           />
         ) : (
           <CompletedView
-            tasks={Object.values(doneTasks).flat()}
+            tasks={completedTasks}
             selectedType={selectedType}
             selectedCategory={selectedCategory}
             startDate={startDate}
             endDate={endDate}
-            onTaskClick={(task) => handleTaskClick(convertToTaskDetail(task))}
+            onTaskClick={(task) => handleTaskClick(task)}
             onCategoryChange={setSelectedCategory}
             onDateChange={setDateRange}
           />
         )}
 
         <TaskDetailSidebar
-          task={selectedTask}
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-          onSave={handleTaskSave}
-          onDelete={handleTaskDelete}
           categories={categories}
           onAddCategory={addCategory}
           onDeleteCategory={(name) => {
@@ -230,16 +184,7 @@ export default function MatrixPage() {
 
         <DragOverlay>
           {activeTask && (
-            <DragOverlayCard
-              title={activeTask.title}
-              categoryId={activeTask.categoryId}
-              dueDate={activeTask.dueDate}
-              quadrant={activeTask.quadrant}
-              type={activeTask.type}
-              order={activeTask.order}
-              categories={categories}
-              memo={activeTask.memo}
-            />
+            <DragOverlayCard task={activeTask} categories={categories} />
           )}
         </DragOverlay>
       </div>

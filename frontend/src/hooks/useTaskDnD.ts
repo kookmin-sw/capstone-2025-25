@@ -6,16 +6,15 @@ import {
   DragStartEvent,
   DragEndEvent,
 } from '@dnd-kit/core';
-import type { Task } from '@/types/task.ts';
+import type { Task, Quadrant } from '@/types/task.ts';
+import useMatrixStore from '@/store/matrixStore';
 
-export function useTaskDnD({
-  tasks,
-  setTasks,
-}: {
-  tasks: Record<string, Task[]>;
-  setTasks: React.Dispatch<React.SetStateAction<Record<string, Task[]>>>;
-}) {
+export function useTaskDnD() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+
+  const tasks = useMatrixStore((state) => state.tasks);
+  const reorderTasks = useMatrixStore((state) => state.reorderTasks);
+  const updateTask = useMatrixStore((state) => state.updateTask);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -23,10 +22,14 @@ export function useTaskDnD({
     }),
   );
 
-  const getSectionIdByTaskId = (taskId: string) =>
-    Object.keys(tasks).find((sectionId) =>
-      tasks[sectionId].some((task) => task.id === taskId),
+  const getSectionIdByTaskId = (
+    taskId: string | number,
+  ): Quadrant | undefined => {
+    const entry = Object.entries(tasks).find(([_, taskList]) =>
+      taskList.some((task) => task.id === taskId),
     );
+    return entry ? (entry[0] as Quadrant) : undefined;
+  };
 
   const handleDragStart = ({ active }: DragStartEvent) => {
     const sectionId = getSectionIdByTaskId(active.id as string);
@@ -43,32 +46,42 @@ export function useTaskDnD({
     const overId = over.id as string;
 
     const sourceSectionId = getSectionIdByTaskId(activeId);
-    const targetSectionId = getSectionIdByTaskId(overId) ?? overId;
+
+    // overId가 Quadrant 타입인지 먼저 확인
+    const isQuadrant = ['Q1', 'Q2', 'Q3', 'Q4'].includes(overId);
+    const targetSectionId = isQuadrant
+      ? (overId as Quadrant)
+      : getSectionIdByTaskId(overId);
 
     if (!sourceSectionId || !targetSectionId) return;
     if (sourceSectionId === targetSectionId && activeId === overId) return;
 
-    setTasks((prev) => {
-      const source = [...prev[sourceSectionId]];
-      const target = [...prev[targetSectionId]];
-      const taskIndex = source.findIndex((t) => t.id === activeId);
-      if (taskIndex === -1) return prev;
+    // 드래그한 작업 찾기
+    const source = [...tasks[sourceSectionId]];
+    const taskIndex = source.findIndex((t) => t.id === activeId);
+    if (taskIndex === -1) return;
 
-      const [task] = source.splice(taskIndex, 1);
-      const updatedTask = { ...task, section: targetSectionId };
+    const taskToMove = source[taskIndex];
+    source.splice(taskIndex, 1);
 
-      if (sourceSectionId === targetSectionId) {
-        const overIndex = target.findIndex((t) => t.id === overId);
-        target.splice(overIndex, 0, updatedTask);
-        return { ...prev, [targetSectionId]: target };
+    // 같은 섹션 내 재정렬
+    if (sourceSectionId === targetSectionId) {
+      const overIndex = source.findIndex((t) => t.id === overId);
+      if (overIndex !== -1) {
+        source.splice(overIndex, 0, taskToMove);
+      } else {
+        source.push(taskToMove);
       }
 
-      return {
-        ...prev,
-        [sourceSectionId]: source,
-        [targetSectionId]: [...target, updatedTask],
-      };
-    });
+      reorderTasks(targetSectionId, source);
+      return;
+    }
+
+    // 다른 섹션으로 이동
+    reorderTasks(sourceSectionId, source);
+
+    const updatedTask = { ...taskToMove, quadrant: targetSectionId };
+    updateTask(targetSectionId, updatedTask.id, updatedTask);
   };
 
   return {

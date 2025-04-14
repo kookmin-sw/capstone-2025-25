@@ -7,6 +7,8 @@ import {
   OnConnectStart,
   OnConnectEnd,
   NodeOrigin,
+  NodeChange,
+  EdgeChange,
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
@@ -85,7 +87,6 @@ function FlowContent({ mindmapId }: FlowContentProps) {
   useEffect(() => {
     if (mindmapId) {
       const mindMapData = loadMindMapData(mindmapId);
-
       if (mindMapData) {
         if (mindMapData.nodes && mindMapData.edges) {
           setInitialData(mindMapData.nodes, mindMapData.edges);
@@ -100,11 +101,19 @@ function FlowContent({ mindmapId }: FlowContentProps) {
     }
   }, [mindmapId, loadMindMapData, setInitialData]);
 
-  useEffect(() => {
-    if (mindmapId && nodes.length > 0) {
-      saveMindMapData(mindmapId, nodes, edges);
-    }
-  }, [nodes, edges, mindmapId, saveMindMapData]);
+  const handleNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      onNodesChange(changes, saveMindMapData, mindmapId);
+    },
+    [onNodesChange, saveMindMapData, mindmapId],
+  );
+
+  const handleEdgesChange = useCallback(
+    (changes: EdgeChange[]) => {
+      onEdgesChange(changes, saveMindMapData, mindmapId);
+    },
+    [onEdgesChange, saveMindMapData, mindmapId],
+  );
 
   const getChildNodePosition = useCallback(
     (event: MouseEvent | TouchEvent) => {
@@ -258,8 +267,8 @@ function FlowContent({ mindmapId }: FlowContentProps) {
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        onNodesChange={handleNodesChange}
+        onEdgesChange={handleEdgesChange}
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
         onPaneClick={onPaneClick}

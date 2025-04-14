@@ -11,17 +11,13 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from '@dnd-kit/sortable';
-import { Button } from '@/components/ui/button';
-import { Modal } from '@/components/common/Modal';
-import { DialogClose } from '@radix-ui/react-dialog';
 import { quadrantTitles } from '@/constants/section';
 import { getCategoryNameById } from '@/utils/category';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { TaskCard } from '@/components/eisenhower/card/TaskCard';
-import { CreateTaskForm } from '@/components/eisenhower/CreateTaskForm';
+import { AddTask } from '@/components/eisenhower/AddTask';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import type { Task, TaskType, Quadrant } from '@/types/task';
-import { Plus } from 'lucide-react';
 
 interface PriorityViewProps {
   tasks: Record<Quadrant, Task[]>;
@@ -30,7 +26,7 @@ interface PriorityViewProps {
   startDate: Date;
   endDate: Date;
   onReorderTask: (quadrant: Quadrant, newTasks: Task[]) => void;
-  onCreateTask: (quadrant: Quadrant, task: Task) => void;
+  onCreateTask: (task: Task) => void;
   onTaskClick: (task: Task) => void;
   viewMode: 'matrix' | 'board';
 }
@@ -62,21 +58,12 @@ export function PriorityView({
   viewMode,
 }: PriorityViewProps) {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [form, setForm] = useState<Omit<Task, 'id'>>({
-    title: '',
-    memo: '',
-    dueDate: new Date().toISOString().split('T')[0],
-    type: 'TODO',
-    categoryId: null,
-    order: 0,
-    quadrant: 'Q1',
-  });
 
   const { fetchCategories, categories } = useCategoryStore();
 
   useEffect(() => {
     if (categories.length === 0) fetchCategories();
-  }, [categories]);
+  }, [categories, fetchCategories]);
 
   const findTaskQuadrant = (taskId: string | number): Quadrant | undefined =>
     (['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).find((q) =>
@@ -164,11 +151,13 @@ export function PriorityView({
       <div className={`grid ${gridClass} gap-2 h-full`}>
         {(Object.keys(tasks) as Quadrant[]).map((quadrant) => {
           const filtered = tasks[quadrant].filter((task) => {
+            if (task.isCompleted) return false;
+
             const matchType =
               selectedType === 'ALL' || task.type === selectedType;
             const matchCategory =
               selectedCategory === 'all' ||
-              getCategoryNameById(task.categoryId, categories) ===
+              getCategoryNameById(task.category_id, categories) ===
                 selectedCategory;
             const taskDate = new Date(task.dueDate || '');
             return (
@@ -195,62 +184,13 @@ export function PriorityView({
                     <div>{filtered.length}</div>
                   </div>
 
-                  <Modal
-                    title="새로운 작업 추가"
-                    description={quadrantTitles[quadrant]}
-                    trigger={
-                      <Button variant="ghost" size="sm" className="text-xs">
-                        <Plus />
-                      </Button>
-                    }
-                    children={
-                      <CreateTaskForm
-                        form={{ ...form, quadrant }}
-                        setForm={(partial) =>
-                          setForm((prev) => ({ ...prev, ...partial }))
-                        }
-                        categoryOptions={categories.map((c) => ({
-                          id: c.id,
-                          name: c.name,
-                        }))}
-                        onCreateTask={() => {}}
-                      />
-                    }
-                    footer={
-                      <div className="flex justify-end gap-2">
-                        <DialogClose asChild>
-                          <Button variant="outline">취소하기</Button>
-                        </DialogClose>
-                        <DialogClose asChild>
-                          <Button
-                            onClick={() => {
-                              const newTask: Task = {
-                                id: Date.now().toString(),
-                                title: form.title,
-                                memo: form.memo,
-                                dueDate: form.dueDate,
-                                type: form.type,
-                                categoryId: form.categoryId,
-                                order: form.order,
-                                quadrant: form.quadrant,
-                              };
-                              onCreateTask(form.quadrant, newTask);
-                              setForm({
-                                title: '',
-                                memo: '',
-                                dueDate: new Date().toISOString().split('T')[0],
-                                type: 'TODO',
-                                categoryId: null,
-                                order: 0,
-                                quadrant: 'Q1',
-                              });
-                            }}
-                          >
-                            생성하기
-                          </Button>
-                        </DialogClose>
-                      </div>
-                    }
+                  <AddTask
+                    quadrant={quadrant}
+                    categoryOptions={categories.map((c) => ({
+                      id: c.id,
+                      name: c.name,
+                    }))}
+                    onCreateTask={onCreateTask}
                   />
                 </div>
 
@@ -262,7 +202,7 @@ export function PriorityView({
                     {filtered.map((task) => (
                       <TaskCard
                         key={String(task.id)}
-                        task={{ ...task, id: String(task.id) }}
+                        task={{ ...task, id: task.id }}
                         onClick={() => onTaskClick(task)}
                         layout={viewMode}
                       />
@@ -277,16 +217,7 @@ export function PriorityView({
 
       <DragOverlay>
         {activeTask && (
-          <DragOverlayCard
-            title={activeTask.title}
-            memo={activeTask.memo}
-            dueDate={activeTask.dueDate ?? ''}
-            type={activeTask.type}
-            categoryId={activeTask.categoryId}
-            order={activeTask.order}
-            quadrant={activeTask.quadrant}
-            categories={categories}
-          />
+          <DragOverlayCard task={activeTask} categories={categories} />
         )}
       </DragOverlay>
     </DndContext>

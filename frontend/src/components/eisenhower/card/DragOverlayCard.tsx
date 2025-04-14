@@ -3,34 +3,22 @@ import type { Category } from '@/types/category';
 import { getCategoryNameById } from '@/utils/category';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
-import { ActualTaskType, Quadrant, TaskType } from '@/types/task.ts';
+import { Task } from '@/types/task.ts';
 
 export interface DragOverlayCardProps {
-  title: string;
-  categoryId: number | null;
-  dueDate: string | null;
-  type: ActualTaskType | TaskType;
-  order: number;
-  memo: string;
+  task: Task;
   categories: Category[];
-  quadrant: Quadrant;
 }
 
-export function DragOverlayCard({
-  title,
-  memo,
-  dueDate,
-  type,
-  categoryId,
-  categories,
-}: DragOverlayCardProps) {
-  const categoryName = getCategoryNameById(categoryId, categories);
+export function DragOverlayCard({ task, categories }: DragOverlayCardProps) {
+  const { title, category_id, dueDate, type, memo } = task;
+  const categoryName = getCategoryNameById(category_id, categories);
 
   return (
     <div className="bg-white rounded-md p-4 shadow-lg w-full flex flex-col">
       <div className="flex mb-2 gap-1">
         <TypeBadge type={type} />
-        {categoryId !== null && <CategoryBadge label={categoryName} />}
+        {category_id !== null && <CategoryBadge label={categoryName} />}
       </div>
 
       <div className="flex items-start mb-2 flex-grow">

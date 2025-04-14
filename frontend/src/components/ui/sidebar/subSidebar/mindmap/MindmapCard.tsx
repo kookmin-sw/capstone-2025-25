@@ -6,8 +6,9 @@ import { useDeleteMindMap } from '@/store/mindmapListStore';
 import { MindMap } from '@/types/mindMap';
 import { Link, X } from 'lucide-react';
 
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { MouseEvent } from 'react';
+import useMatrixStore from '@/store/matrixStore';
 
 type MindmapCardProps = {
   mindmap: MindMap;
@@ -17,8 +18,10 @@ type MindmapCardProps = {
 export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
   const navigate = useNavigate();
   const deleteMindMap = useDeleteMindMap();
+  const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
 
-  const { title, type, id, lastModifiedAt, linked } = mindmap;
+  const { title, type, id, lastModifiedAt, linked, eisenhowerItemDTO } =
+    mindmap;
 
   const statusColor =
     type === 'THINKING'
@@ -41,12 +44,24 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
       return;
     }
 
+    const linkedButton = e.currentTarget.querySelector('.linked-icon');
+    if (linkedButton && linkedButton.contains(e.target as Node)) {
+      return;
+    }
+
     navigate(`/mindmap/${id}`);
   };
 
   const handleDelete = () => {
     deleteMindMap(id);
     navigate('/mindmap');
+  };
+
+  const handleLinkedTaskClick = () => {
+    if (eisenhowerItemDTO?.id) {
+      setActiveTaskId(eisenhowerItemDTO.id);
+      navigate('/matrix');
+    }
   };
 
   return (
@@ -97,9 +112,12 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
       <div className="font-heading-4 font-bold text-[18px]">{title}</div>
 
       {linked && (
-        <div className="flex items-center justify-end gap-1 text-primary-100">
+        <div
+          onClick={handleLinkedTaskClick}
+          className="linked-icon flex items-center justify-end gap-1 text-primary-100"
+        >
           <Link size={14} />
-          <p>linked todo</p>
+          <p>{eisenhowerItemDTO?.title}</p>
         </div>
       )}
 
