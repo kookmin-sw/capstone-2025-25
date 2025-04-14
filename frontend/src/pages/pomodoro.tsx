@@ -37,11 +37,11 @@ export default function Pomodoro() {
     }
   }, [id, data, linkedPomodoros, unlinkedPomodoros, navigate]);
   return (
-    <div className="flex min-h-screen bg-white p-[30px]">
+    <div className="flex min-h-0 flex-1 bg-white p-[30px]">
       <div className="flex-1">
-        <main className="flex flex-col gap-[30px]">
-          <div className="flex-1 flex-col gap-[30px]">
-            <h1 className="text-[32px] font-semibold">뽀모도로 실행</h1>
+        <main className="flex flex-1 min-h-0 flex-col gap-[30px] h-full">
+          <div className=" flex-col gap-[10px] flex">
+            <h1 className="text-[32px] font-semibold h-[32px]">뽀모도로 실행</h1>
             <p className="text-[16px] font-normal text-[#6E726E]">
               성장한 뽀모도로 시간에 맞춰 집중과 휴식을 진행해보세요!
               <br />
@@ -49,7 +49,7 @@ export default function Pomodoro() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center gap-[30px]">
+          <div className="flex flex-col items-center gap-[30px] min-h-0 flex-1 justify-center" >
             {data?.eisenhower ? (
                 <TaskCard task={data?.eisenhower} className='hover:shadow-none cursor-default'/>
             ) : null}
