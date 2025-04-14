@@ -52,10 +52,10 @@ public class Pomodoro {
     @Column(name = "total_executed_time")
     private LocalTime totalExecutedTime;
 
-    @Column(name = "total_executed_working_duration")
+    @Column(name = "total_executed_working_time")
     private LocalTime totalExecutedWorkingTime;
 
-    @Column(name = "total_executed_break_duration")
+    @Column(name = "total_executed_break_time")
     private LocalTime totalExecutedBreakTime;
 
     @JdbcTypeCode(SqlTypes.JSON)
