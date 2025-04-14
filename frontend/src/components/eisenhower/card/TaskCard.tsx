@@ -7,12 +7,14 @@ import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { getCategoryNameById } from '@/utils/category';
 import { format } from 'date-fns';
+import { cn } from '@/lib/utils.ts';
 
 interface TaskCardProps {
   task: Task;
   onClick?: () => void;
   layout?: 'matrix' | 'board';
   dragHandle?: 'full';
+  className?: string;
 }
 
 export function TaskCard({
@@ -20,6 +22,7 @@ export function TaskCard({
   onClick,
   layout = 'matrix',
   dragHandle,
+  className,
 }: TaskCardProps) {
   const { id, title, memo, dueDate, type, categoryId } = task;
   const { categories } = useCategoryStore();
@@ -41,14 +44,14 @@ export function TaskCard({
   };
 
   return (
-    <div className="py-1 group">
+    <div className='py-1 group w-full'>
       <div
         ref={setNodeRef}
         style={style}
         {...attributes}
         {...(dragHandle === 'full' ? listeners : {})}
         onClick={handleClick}
-        className={`bg-white rounded-md p-3 ${
+        className={cn(`bg-white rounded-md p-3 ${
           layout === 'board' ? 'w-full' : ''
         } ${
           isDragging
@@ -58,7 +61,8 @@ export function TaskCard({
           dragHandle === 'full'
             ? 'cursor-grab active:cursor-grabbing'
             : 'cursor-pointer'
-        } hover:shadow-md flex flex-col relative`}
+        } hover:shadow-md flex flex-col relative`,
+          className)}
       >
         {dragHandle !== 'full' && (
           <div

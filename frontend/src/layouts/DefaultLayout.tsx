@@ -9,7 +9,7 @@ export default function DefaultLayout() {
 
       <main className="flex-1 overflow-auto bg-white">
         <Header />
-        <section className="px-10 py-[50px]">
+        <section >
           <Outlet />
         </section>
       </main>
