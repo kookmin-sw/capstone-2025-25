@@ -156,7 +156,7 @@ export default function AnswerInputNode({
     isPending || !isInputFilled || (isDirectQuestion && !isQuestionFilled);
 
   return (
-    <div className="w-[538px] bg-white px-8 py-[30px] border-4 border-[#b3cbfa] rounded-lg">
+    <div className="w-[538px] bg-white px-8 py-[30px] border-3 border-[#8D5CF6] rounded-lg">
       {isDirectQuestion ? (
         <div className="mb-[26px]">
           <Input
