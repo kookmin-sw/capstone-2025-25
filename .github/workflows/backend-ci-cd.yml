@@ -30,6 +30,7 @@ jobs:
           echo "${{ secrets.APPLICATION_SWAGGER }}" > application-swagger.yml
           echo "${{ secrets.APPLICATION_ACTUATOR }}" > application-actuator.yml
           echo "${{ secrets.APPLICATION_OAUTH }}" > application-oauth.yml
+          echo "${{ secrets.APPLICATION_AWS }}" > application-aws.yml
         shell: bash
 
       - name: Setup Gradle
