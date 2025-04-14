@@ -19,10 +19,10 @@ export const initialTasks: TaskSections = {
   Q1: [
     {
       id: 1,
-      title: '할 일 초안 정리',
-      memo: '종이 메모에서 디지털로 정리',
+      title: '운동하기',
+      memo: '축구에 관한 운동',
       dueDate: '2025-03-01',
-      type: 'THINKING',
+      type: 'TODO',
       categoryId: 3,
       quadrant: 'Q1',
       order: 0,
@@ -63,10 +63,10 @@ export const initialTasks: TaskSections = {
   Q3: [
     {
       id: 5,
-      title: '캘린더 오늘 표시 개선',
-      memo: 'isToday 함수로 강조 처리',
+      title: '학습 계획',
+      memo: '프로그래밍 관련 학습 계획',
       dueDate: '2025-03-13',
-      type: 'TODO',
+      type: 'THINKING',
       categoryId: 5,
       quadrant: 'Q3',
       order: 0,
@@ -85,13 +85,13 @@ export const initialTasks: TaskSections = {
     },
     {
       id: 7,
-      title: '타입 분리하기',
-      memo: '타입 분리를 통한 컴포넌트 독립성 향상',
-      dueDate: '',
-      type: 'THINKING',
-      categoryId: 6,
-      quadrant: 'Q4',
+      title: '개발 프로젝트',
+      memo: '깃헙에 푸시해야 함',
+      dueDate: '2025-04-10',
+      quadrant: 'Q1',
+      type: 'TODO',
       order: 1,
+      categoryId: 5,
     },
   ],
 };

@@ -180,6 +180,18 @@ export const mockMindMaps: MindMap[] = [
       },
     ],
     linked: true,
+    eisenhowerItemDTO: {
+      id: 1,
+      title: '운동하기',
+      memo: '축구에 관한 운동',
+      dueDate: '2025-03-01',
+      type: 'TODO',
+      categoryId: 3,
+      quadrant: 'Q1',
+      order: 0,
+      isCompleted: false,
+      createdAt: '2025-03-02',
+    },
   },
 
   {
@@ -485,6 +497,16 @@ export const mockMindMaps: MindMap[] = [
       },
     ],
     linked: true,
+    eisenhowerItemDTO: {
+      id: 5,
+      title: '학습 계획',
+      memo: '프로그래밍 관련 학습 계획',
+      dueDate: '2025-03-13',
+      type: 'THINKING',
+      categoryId: 5,
+      quadrant: 'Q3',
+      order: 0,
+    },
   },
 
   {

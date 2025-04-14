@@ -45,7 +45,7 @@ export const pomodoroMockData: PomodoroList = {
         ],
       },
       eisenhower: {
-        id: 1,
+        id: 7,
         title: '개발 프로젝트',
         memo: '깃헙에 푸시해야 함',
         dueDate: '2025-04-10',
