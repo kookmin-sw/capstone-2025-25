@@ -39,7 +39,7 @@ export default function MindmapPage() {
   }, [id, mindMaps, navigate, setActiveMindMap]);
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }} className="w-full h-full">
+    <div className="h-full">
       {id && <FlowWrapper mindmapId={id} />}
     </div>
   );
