@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button.tsx';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { useState } from 'react';
 import DeletePomodoro from '@/components/ui/Modal/DeletePomodoro.tsx';
-
 export default function PomodoroResult({
   linkedUnlinkedPomodoro,
 }: {
@@ -125,7 +124,8 @@ export default function PomodoroResult({
       <div className="flex w-full justify-end">
         <DeletePomodoro
             trigger = {<Button
-                className="w-[180px] h-[48px] text-[16px] black"
+                size='lg'
+                className=" text-[16px] black"
                 onClick={deletePomodoro}
             >
                 삭제하기
