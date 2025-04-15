@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Bot, Calendar, GripVertical } from 'lucide-react';
+import { Bot, Calendar, Check, GripVertical } from 'lucide-react';
 import type { Task } from '@/types/task';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
@@ -109,16 +109,18 @@ export function TaskCard({
           <div
             onClick={handleTaskComplete}
             className={cn(
-              'check-icon w-[18px] h-[18px] rounded-full border-2 mr-2 flex-shrink-0',
+              'check-icon w-[18px] h-[18px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center',
               variant === 'done'
-                ? 'border-gray-400 bg-[#8D5CF6]'
-                : 'border-[#8D5CF6]',
+                ? 'bg-[color:var(--color-primary-100)] text-white'
+                : 'border border-[#8D5CF6]',
             )}
-          ></div>
+          >
+            {variant === 'done' && <Check className="w-3 h-3" />}
+          </div>
           <div
             className={cn(
               'text-md font-medium line-clamp-2',
-              variant === 'done' && 'text-gray-500 line-through',
+              variant === 'done' && 'text-gray-500',
             )}
           >
             {title}
