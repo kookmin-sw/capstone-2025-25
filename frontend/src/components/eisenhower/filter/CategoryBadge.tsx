@@ -3,20 +3,30 @@ import { X } from 'lucide-react';
 
 interface CategoryBadgeProps {
   label: string;
-  colorClass?: string;
+  bgColor?: string;
+  textColor?: string;
   showDelete?: boolean;
   onDelete?: () => void;
 }
 
 export function CategoryBadge({
   label,
-  colorClass = 'bg-yellow-100 text-yellow-600',
+  bgColor = '#E5E7EB',
+  textColor = '#FFFFFF',
   showDelete,
   onDelete,
 }: CategoryBadgeProps) {
   return (
     <div className="flex items-center">
-      <Badge className={colorClass}>{label}</Badge>
+      <Badge
+        style={{
+          backgroundColor: bgColor,
+          color: textColor,
+        }}
+        className="rounded-full px-3 py-1 text-xs font-semibold"
+      >
+        {label}
+      </Badge>
       {showDelete && onDelete && (
         <button
           onClick={onDelete}

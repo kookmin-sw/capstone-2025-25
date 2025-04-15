@@ -207,7 +207,8 @@ export function PriorityView({
                     quadrant={quadrant}
                     categoryOptions={categories.map((c) => ({
                       id: c.id,
-                      name: c.name,
+                      title: c.title,
+                      color: c.color,
                     }))}
                     onCreateTask={onCreateTask}
                   />

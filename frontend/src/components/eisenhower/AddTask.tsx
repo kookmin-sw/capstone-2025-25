@@ -130,14 +130,15 @@ export function AddTask({
               <option value="">선택 안 함</option>
               {categoryOptions.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.name}
+                  {cat.title}
                 </option>
               ))}
             </select>
             {selectedCategory && (
               <CategoryBadge
-                label={selectedCategory.name}
-                colorClass="bg-yellow-100 text-yellow-600"
+                label={selectedCategory.title}
+                bgColor={selectedCategory.color}
+                textColor={selectedCategory.textColor}
               />
             )}
           </div>

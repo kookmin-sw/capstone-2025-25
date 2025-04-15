@@ -5,7 +5,6 @@ import type { Task } from '@/types/task';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
-import { getCategoryNameById } from '@/utils/category';
 import { format } from 'date-fns';
 import { MouseEvent } from 'react';
 import useMatrixStore from '@/store/matrixStore';
@@ -96,7 +95,9 @@ export function TaskCard({
           <TypeBadge type={type} />
           {category && (
             <CategoryBadge
-              label={getCategoryNameById(category_id, categories)}
+              label={category.title}
+              bgColor={category.color}
+              textColor={category.textColor}
             />
           )}
         </div>

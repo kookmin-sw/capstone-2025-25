@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import type { Category } from '@/types/category';
+import { categoryThemes } from '@/utils/category';
 
 interface CategoryStore {
   categories: Category[];
   fetchCategories: () => void;
-  addCategory: (name: string) => void;
+  addCategory: (title: string) => void;
   removeCategory: (id: number) => void;
 }
 
@@ -13,17 +14,54 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
   fetchCategories: () =>
     set({
       categories: [
-        { id: 1, name: '작업' },
-        { id: 2, name: '공부' },
-        { id: 3, name: '개인' },
-        { id: 4, name: '팀플' },
-        { id: 5, name: '기타' },
+        {
+          id: 1,
+          title: '작업',
+          color: '#D9ECFF',
+          textColor: '#4A90E2',
+        },
+        {
+          id: 2,
+          title: '공부',
+          color: '#FDE4EF',
+          textColor: '#E86CA5',
+        },
+        {
+          id: 3,
+          title: '개인',
+          color: '#FCE1C6',
+          textColor: '#F28C38',
+        },
+        {
+          id: 4,
+          title: '팀플',
+          color: '#FEF3C7',
+          textColor: '#FBBF24',
+        },
+        {
+          id: 5,
+          title: '기타',
+          color: '#E5E5E5',
+          textColor: '#6B7280',
+        },
       ],
     }),
-  addCategory: (name) =>
-    set((state) => ({
-      categories: [...state.categories, { id: Date.now(), name }],
-    })),
+  addCategory: (title) =>
+    set((state) => {
+      const random =
+        categoryThemes[Math.floor(Math.random() * categoryThemes.length)];
+      return {
+        categories: [
+          ...state.categories,
+          {
+            id: Date.now(),
+            title,
+            color: random.bg,
+            textColor: random.text,
+          },
+        ],
+      };
+    }),
   removeCategory: (id) =>
     set((state) => ({
       categories: state.categories.filter((c) => c.id !== id),

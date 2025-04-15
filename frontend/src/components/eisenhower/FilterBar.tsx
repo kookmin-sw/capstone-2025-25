@@ -1,9 +1,9 @@
-// FilterBar.tsx - 카테고리 선택 오류 수정 및 안전 렌더링
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Check } from 'lucide-react';
 import { DateRangePicker } from '@/components/eisenhower/filter/DateRangePicker';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
+import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge.tsx';
 
 interface FilterBarProps {
   selectedType: 'ALL' | 'TODO' | 'THINKING';
@@ -153,20 +153,22 @@ export function FilterBar({
                       <div
                         key={cat.id}
                         className={`px-3 py-2 text-sm rounded-md cursor-pointer ${
-                          selectedCategory === cat.name
+                          selectedCategory === cat.title
                             ? 'bg-gray-100'
                             : 'hover:bg-gray-50'
                         }`}
                         onClick={() => {
-                          onCategoryChange(cat.name);
+                          onCategoryChange(cat.title);
                           setIsCategoryDropdownOpen(false);
                         }}
                       >
-                        <div className="flex items-center">
-                          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-600">
-                            {cat.name}
-                          </span>
-                          {selectedCategory === cat.name && (
+                        <div className="flex items-center gap-2">
+                          <CategoryBadge
+                            label={cat.title}
+                            bgColor={cat.color}
+                            textColor={cat.textColor}
+                          />
+                          {selectedCategory === cat.title && (
                             <Check className="w-4 h-4 ml-auto" />
                           )}
                         </div>

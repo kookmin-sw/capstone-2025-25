@@ -176,8 +176,8 @@ export default function MatrixPage() {
         <TaskDetailSidebar
           categories={categories}
           onAddCategory={addCategory}
-          onDeleteCategory={(name) => {
-            const category = categories.find((c) => c.name === name);
+          onDeleteCategory={(title) => {
+            const category = categories.find((c) => c.title === title);
             if (category) removeCategory(category.id);
           }}
         />

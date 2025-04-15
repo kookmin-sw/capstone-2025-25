@@ -24,8 +24,8 @@ import AddPomodoro from '@/components/ui/Modal/AddPomodoro';
 
 interface TaskDetailSidebarProps {
   categories: Category[];
-  onAddCategory: (name: string) => void;
-  onDeleteCategory: (name: string) => void;
+  onAddCategory: (title: string) => void;
+  onDeleteCategory: (title: string) => void;
 }
 
 export function TaskDetailSidebar({
@@ -84,7 +84,7 @@ export function TaskDetailSidebar({
 
   const handleAddCategory = () => {
     const trimmed = newCategory.trim();
-    if (trimmed && !categories.some((cat) => cat.name === trimmed)) {
+    if (trimmed && !categories.some((cat) => cat.title === trimmed)) {
       onAddCategory(trimmed);
       setNewCategory('');
     }
@@ -195,15 +195,16 @@ export function TaskDetailSidebar({
                 <option value="">없음</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
-                    {cat.name}
+                    {cat.title}
                   </option>
                 ))}
               </select>
             ) : (
               selectedCategory && (
                 <CategoryBadge
-                  label={selectedCategory.name}
-                  colorClass="bg-yellow-100 text-yellow-600"
+                  label={selectedCategory.title}
+                  bgColor={selectedCategory.color}
+                  textColor={selectedCategory.textColor}
                 />
               )
             )}
@@ -270,8 +271,8 @@ export function TaskDetailSidebar({
                   key={cat.id}
                   className="flex items-center justify-between px-2 py-1 border rounded"
                 >
-                  <span className="text-sm">{cat.name}</span>
-                  <button onClick={() => onDeleteCategory(cat.name)}>
+                  <span className="text-sm">{cat.title}</span>
+                  <button onClick={() => onDeleteCategory(cat.title)}>
                     <X className="w-4 h-4 text-red-500" />
                   </button>
                 </div>
