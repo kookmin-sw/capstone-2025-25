@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { tasks, getTasksByQuadrant } from '@/mock/task';
 import type { Task, TaskSections, Quadrant } from '@/types/task';
 import { toast } from 'sonner';
+import { nanoid } from 'nanoid/non-secure';
 
 export type MatrixState = {
   allTasks: Task[];
@@ -11,6 +12,13 @@ export type MatrixState = {
   setTasks: (tasks: Task[]) => void;
   updateTask: (taskId: string | number, updatedTask: Task) => void;
   addTask: (newTask: Task) => void;
+  addTaskFromNode: (
+    title: string,
+    mindmapNodeId: number | string,
+    duDate: string,
+    memo: string,
+    quadrant?: Quadrant,
+  ) => number;
   deleteTask: (taskId: string | number) => void;
   reorderTasks: (sectionId: Quadrant, newTasks: Task[]) => void;
   saveTask: (updatedTask: Task) => void;
@@ -72,6 +80,35 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
         },
       };
     }),
+
+  addTaskFromNode: (title, mindmapId, dueDate, memo, quadrant = 'Q1') => {
+    const { addTask } = get();
+
+    const id = parseInt(nanoid(8), 36) % 10000;
+    const now = new Date();
+    const createdAt = now.toISOString();
+
+    const newTask: Task = {
+      id,
+      title,
+      memo,
+      category_id: 5,
+      quadrant,
+      type: 'TODO',
+      dueDate,
+      order: get().tasksByQuadrant[quadrant].length,
+      isCompleted: false,
+      createdAt,
+      mindMapId: mindmapId,
+      pomodoroId: null,
+    };
+
+    addTask(newTask);
+
+    toast.success('마인드맵에서 작업이 추가되었습니다.');
+
+    return id;
+  },
 
   deleteTask: (taskId) => {
     set((state) => {
