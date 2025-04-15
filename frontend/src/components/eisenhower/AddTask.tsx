@@ -69,13 +69,8 @@ export function AddTask({
           <Plus />
         </button>
       }
-      title="새로운 작업 추가"
-      description={quadrantTitles[quadrant]}
       footer={
         <div className="flex justify-end gap-2">
-          <DialogClose asChild>
-            <Button variant="outline">취소하기</Button>
-          </DialogClose>
           <DialogClose asChild>
             <Button
               onClick={handleCreateTask}
@@ -89,12 +84,13 @@ export function AddTask({
     >
       <div className="p-1">
         {/* 상단 제목 */}
+        <div>{quadrantTitles[quadrant]}</div>
         <div>
           <input
             className="text-3xl font-bold w-full border-b border-transparent focus:border-gray-300 outline-none"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="일정 제목을 입력하세요"
+            placeholder="새로운 일정"
           />
         </div>
 

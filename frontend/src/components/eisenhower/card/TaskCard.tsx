@@ -8,7 +8,9 @@ import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { format } from 'date-fns';
 import { MouseEvent } from 'react';
 import useMatrixStore from '@/store/matrixStore';
-import { cn } from '@/lib/utils.ts';
+import { cn } from '@/lib/utils';
+
+type TaskCardVariant = 'default' | 'inactive' | 'done';
 
 interface TaskCardProps {
   task: Task;
@@ -16,6 +18,7 @@ interface TaskCardProps {
   layout?: 'matrix' | 'board';
   dragHandle?: 'full';
   className?: string;
+  variant?: TaskCardVariant;
 }
 
 export function TaskCard({
@@ -24,6 +27,7 @@ export function TaskCard({
   layout = 'matrix',
   dragHandle,
   className,
+  variant = 'default',
 }: TaskCardProps) {
   const { id, title, memo, dueDate, type, category_id } = task;
   const { categories } = useCategoryStore();
@@ -44,15 +48,12 @@ export function TaskCard({
 
   const handleClick = (e: MouseEvent) => {
     const checkIcon = e.currentTarget.querySelector('.check-icon');
-    if (checkIcon && checkIcon.contains(e.target as Node)) {
-      return;
-    }
-
-    if (!isDragging && onClick) onClick();
+    if (checkIcon && checkIcon.contains(e.target as Node)) return;
+    if (!isDragging && variant === 'default' && onClick) onClick();
   };
 
   const handleTaskComplete = () => {
-    completeTask(id);
+    if (variant === 'default') completeTask(id);
   };
 
   return (
@@ -61,23 +62,23 @@ export function TaskCard({
         ref={setNodeRef}
         style={style}
         {...attributes}
-        {...(dragHandle === 'full' ? listeners : {})}
+        {...(dragHandle === 'full' && variant === 'default' ? listeners : {})}
         onClick={handleClick}
         className={cn(
-          `bg-white rounded-md p-4 ${layout === 'board' ? 'w-full' : ''} ${
-            isDragging
-              ? 'opacity-50 z-10 shadow-lg border-2 border-purple-300'
-              : 'border border-gray-100'
-          } transition-all duration-200 ${
-            dragHandle === 'full'
-              ? 'cursor-grab active:cursor-grabbing'
-              : 'cursor-pointer'
-          } hover:shadow-md flex flex-col relative`,
+          'rounded-md p-4 flex flex-col relative transition-all duration-200',
+          layout === 'board' ? 'w-full' : '',
+          variant === 'default' && !isDragging && 'hover:shadow-md',
+          variant === 'default'
+            ? 'bg-white border border-gray-100 cursor-pointer'
+            : 'bg-muted border border-gray-200 cursor-default shadow-none',
+          isDragging &&
+            'opacity-50 z-10 shadow-lg border-2 border-purple-300 cursor-grabbing',
           className,
         )}
       >
-        <div className="relative group">
-          <div className="absolute top-1 right-1 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* 상단 도구 아이콘 */}
+        {variant === 'default' && (
+          <div className="absolute p-2 top-1 right-1 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <span className="text-gray-400 hover:text-gray-600 transition-colors">
               <Bot />
             </span>
@@ -89,8 +90,9 @@ export function TaskCard({
               </div>
             )}
           </div>
-        </div>
+        )}
 
+        {/* 상단 뱃지 */}
         <div className="flex mb-2 flex-wrap gap-1">
           <TypeBadge type={type} />
           {category && (
@@ -102,22 +104,49 @@ export function TaskCard({
           )}
         </div>
 
-        <div className="flex items-center mb-2 flex-grow ">
+        {/* 제목 + 체크 */}
+        <div className="flex items-center mb-2 flex-grow">
           <div
             onClick={handleTaskComplete}
-            className="check-icon w-[18px] h-[18px] rounded-full border-2 border-[#8d5cf6] mr-2 flex-shrink-0"
+            className={cn(
+              'check-icon w-[18px] h-[18px] rounded-full border-2 mr-2 flex-shrink-0',
+              variant === 'done'
+                ? 'border-gray-400 bg-[#8D5CF6]'
+                : 'border-[#8D5CF6]',
+            )}
           ></div>
-          <div className="text-md font-medium line-clamp-2 text-center">
+          <div
+            className={cn(
+              'text-md font-medium line-clamp-2',
+              variant === 'done' && 'text-gray-500 line-through',
+            )}
+          >
             {title}
           </div>
         </div>
 
+        {/* 메모 */}
         {memo && (
-          <div className="text-xs text-[#6e726e] mb-2 line-clamp-2">{memo}</div>
+          <div
+            className={cn(
+              'text-xs mb-2 line-clamp-2',
+              variant === 'done' ? 'text-gray-400' : 'text-[#6e726e]',
+            )}
+          >
+            {memo}
+          </div>
         )}
 
+        {/* 마감일 */}
         {dueDate && (
-          <div className="text-xs flex items-center mt-auto text-[color:var(--color-primary-100)]">
+          <div
+            className={cn(
+              'text-xs flex items-center mt-auto',
+              variant === 'done'
+                ? 'text-gray-400'
+                : 'text-[color:var(--color-primary-100)]',
+            )}
+          >
             <Calendar className="w-3 h-3 mr-1" />
             <span>{format(new Date(dueDate), 'yyyy.MM.dd')}</span>
           </div>

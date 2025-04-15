@@ -78,10 +78,10 @@ export default function MatrixPage() {
         <div className="flex flex-col justify-between items-start mb-6 w-full gap-4">
           <div className="flex gap-2 w-full justify-between">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="text-2xl font-bold inline-flex items-center gap-1 cursor-pointer">
+              <DropdownMenuTrigger asChild className="flex gap-5">
+                <button className="text-[32px] font-bold inline-flex items-center gap-1 cursor-pointer">
                   {activeTab === 'all' ? '모든 일정' : '완료된 일정'}
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="w-5 h-5" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -130,7 +130,9 @@ export default function MatrixPage() {
             )}
           </div>
           <div>
-            중요도와 긴급도에 따라 정리하고, 우선순위를 정해 실행해보세요!
+            {activeTab === 'completed'
+              ? '완료된 일정을 확인하고, 필요하면 다시 실행할 수 있어요!'
+              : '중요도와 긴급도에 따라 정리하고, 우선순위를 정해 실행해보세요!'}
           </div>
         </div>
 
