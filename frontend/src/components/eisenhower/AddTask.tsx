@@ -94,7 +94,7 @@ export function AddTask({
         <div>{quadrantTitles[quadrant]}</div>
         <div>
           <input
-            className="text-3xl font-bold w-full border-b border-transparent focus:border-gray-300 outline-none"
+            className="text-3xl font-bold w-full border-transparent outline-none placeholder:text-[#CECFCD]"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="새로운 일정"
@@ -108,36 +108,45 @@ export function AddTask({
               <CircleDashed className="w-4 h-4" />
               타입
             </span>
-            <BadgeSelector
-              options={typeOptions}
-              selected={type}
-              onChange={(val) => setType(val as ActualTaskType)}
-              label=""
-              renderBadge={(option) => (
-                <TypeBadge type={option.value as ActualTaskType} />
-              )}
-            />
+            <div className="min-w-[100px]">
+              <BadgeSelector
+                options={typeOptions}
+                selected={type}
+                onChange={(val) => setType(val as ActualTaskType)}
+                renderBadge={(option) => (
+                  <TypeBadge type={option.value as ActualTaskType} />
+                )}
+                displayMode="block" // 아래쪽에만 표시되도록
+              />
+            </div>
           </div>
 
-          {/* 카테고리 선택 */}
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1 text-sm text-gray-500">
               <Tag className="w-4 h-4" />
               카테고리
             </span>
-            <BadgeSelector
-              options={categoryOptionsFormatted}
-              selected={String(category_id ?? '')}
-              onChange={(val) => setCategoryId(val === '' ? null : Number(val))}
-              label=""
-              renderBadge={(option) => (
-                <CategoryBadge
-                  label={option.label}
-                  bgColor={option.bgColor}
-                  textColor={option.textColor}
-                />
-              )}
-            />
+            <div className="min-w-[100px]">
+              <BadgeSelector
+                options={categoryOptionsFormatted}
+                selected={String(category_id ?? '')}
+                onChange={(val) =>
+                  setCategoryId(val === '' ? null : Number(val))
+                }
+                renderBadge={(option) =>
+                  option.value ? (
+                    <CategoryBadge
+                      label={option.label}
+                      bgColor={option.bgColor}
+                      textColor={option.textColor}
+                    />
+                  ) : (
+                    <span className="text-sm text-gray-400">비어있음</span>
+                  )
+                }
+                displayMode="block"
+              />
+            </div>
           </div>
 
           {/* 마감일 */}

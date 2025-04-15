@@ -25,9 +25,10 @@ interface BadgeSelectorProps {
   selected: string;
   onChange: (value: string) => void;
   renderBadge: (option: BadgeOption) => React.ReactNode;
-  label: string;
+  label?: string;
   placeholder?: string;
-  withSearch?: boolean; // ✅ 검색창 표시 여부
+  withSearch?: boolean;
+  displayMode?: 'inline' | 'block'; // ✅ 추가됨
 }
 
 export function BadgeSelector({
@@ -38,23 +39,45 @@ export function BadgeSelector({
   label,
   placeholder = '검색...',
   withSearch = true,
+  displayMode = 'inline',
 }: BadgeSelectorProps) {
   const [open, setOpen] = useState(false);
   const selectedOption = options.find((o) => o.value === selected);
 
   return (
-    <div className="relative w-30">
+    <div className={displayMode === 'inline' ? 'relative w-30' : ''}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <div className="flex items-center space-x-2 cursor-pointer">
-            <span className="text-sm font-medium">{label}</span>
-            <ChevronDown className="w-4 h-4" />
+          <div
+            className={
+              displayMode === 'inline'
+                ? 'flex items-center space-x-2 cursor-pointer'
+                : 'cursor-pointer'
+            }
+          >
+            {displayMode === 'inline' && (
+              <>
+                <span className="text-sm font-medium">{label}</span>
+                <ChevronDown className="w-4 h-4" />
+              </>
+            )}
+
+            {displayMode === 'block' && (
+              <div className="flex items-center gap-1">
+                {selectedOption ? (
+                  renderBadge(selectedOption)
+                ) : (
+                  <span className="text-sm text-gray-400">비어있음</span>
+                )}
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              </div>
+            )}
           </div>
         </PopoverTrigger>
 
-        <div className="mt-2">
-          {selectedOption && renderBadge(selectedOption)}
-        </div>
+        {displayMode === 'inline' && selectedOption && (
+          <div className="mt-2">{renderBadge(selectedOption)}</div>
+        )}
 
         <PopoverContent className="w-52 p-0">
           <Command>
