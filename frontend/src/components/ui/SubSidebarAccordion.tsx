@@ -19,7 +19,7 @@ export function SubSidebarAccordion({
   children,
 }: SubSidebarAccordionProps) {
   return (
-    <Accordion type="single" collapsible>
+    <Accordion type="single" collapsible defaultValue={value}>
       <AccordionItem value={value}>
         <AccordionTrigger className="hover:no-underline cursor-pointer">
           <div className="flex items-center gap-2">

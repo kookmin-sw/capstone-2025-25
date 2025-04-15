@@ -6,6 +6,6 @@ type SidebarState = {
 };
 
 export const useSidebarStore = create<SidebarState>((set) => ({
-  panelVisible: false,
+  panelVisible: true,
   setPanelVisible: (visible) => set({ panelVisible: visible }),
 }));

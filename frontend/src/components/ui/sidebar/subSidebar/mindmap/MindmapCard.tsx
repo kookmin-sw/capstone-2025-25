@@ -109,12 +109,17 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
       </div>
 
       {linked && (
-        <div
-          onClick={handleLinkedTaskClick}
-          className="linked-icon flex items-center justify-end gap-1 text-[#9F4BC9]"
-        >
-          <Link size={14} />
-          <p>{eisenhowerItemDTO?.title}</p>
+        <div className="flex justify-end w-full">
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              handleLinkedTaskClick();
+            }}
+            className="linked-icon items-center gap-1 text-[#9F4BC9] inline-flex"
+          >
+            <Link size={14} />
+            <p>{eisenhowerItemDTO?.title}</p>
+          </div>
         </div>
       )}
 

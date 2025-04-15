@@ -6,7 +6,7 @@ import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from '@/components/ui/tooltip';
+} from '@/components/ui/Tooltip';
 
 type MultiSliderProps = {
   cycles: PomodoroCycle[];
@@ -162,7 +162,8 @@ const MultiSlider = React.forwardRef<
                 fontSize: 'clamp(10px, 2vh, 16px)',
               }}
             >
-              {interval.widthPercent >= 10 ? (<span
+              {interval.widthPercent >= 10 ? (
+                <span
                   style={{
                     color:
                       interval.type === 'focus'

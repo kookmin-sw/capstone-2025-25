@@ -89,14 +89,14 @@ export function PomodoroItem({ item, selected }: PomodoroItemProps) {
       </div>
 
       {item.eisenhower && (
-        <div
-          onClick={handleLinkedTaskClick}
-          className="linked-icon flex justify-end gap-1 w-full items-center"
-        >
-          <Link className="text-[#9F4BC9]" size={14} />
-          <p className="text-[#9F4BC9]  text-[14px]">
-            {item.eisenhower?.title}
-          </p>
+        <div className="flex justify-end w-full">
+          <div
+            onClick={handleLinkedTaskClick}
+            className="linked-icon inline-flex items-center gap-1 text-[#9F4BC9] cursor-pointer"
+          >
+            <Link size={14} />
+            <p className="text-[14px]">{item.eisenhower?.title}</p>
+          </div>
         </div>
       )}
 
