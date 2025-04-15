@@ -1,5 +1,9 @@
 import FlowWrapper from '@/components/reactFlow/FlowWrapper';
 import { useMindMaps, useSetActiveMindMap } from '@/store/mindmapListStore';
+import {
+  useDisableSelectionMode,
+  useIsNodeSelectionMode,
+} from '@/store/nodeSelection';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
@@ -8,6 +12,9 @@ export default function MindmapPage() {
   const setActiveMindMap = useSetActiveMindMap();
   const mindMaps = useMindMaps();
   const navigate = useNavigate();
+
+  const isNodeSelectionMode = useIsNodeSelectionMode();
+  const disableSelectionMode = useDisableSelectionMode();
 
   useEffect(() => {
     if (mindMaps.length === 0) {
@@ -38,9 +45,11 @@ export default function MindmapPage() {
     console.log('표시할 마인드맵이 없습니다');
   }, [id, mindMaps, navigate, setActiveMindMap]);
 
-  return (
-    <div className="h-full">
-      {id && <FlowWrapper mindmapId={id} />}
-    </div>
-  );
+  useEffect(() => {
+    if (isNodeSelectionMode) {
+      disableSelectionMode();
+    }
+  }, [location]);
+
+  return <div className="h-full">{id && <FlowWrapper mindmapId={id} />}</div>;
 }
