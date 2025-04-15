@@ -292,7 +292,7 @@ function FlowWrapper({ mindmapId }: FlowWrapperProps) {
   const isNodeSelectionMode = useIsNodeSelectionMode();
 
   return (
-    <div className="h-screen relative">
+    <div className="relative w-full h-full">
       {isNodeSelectionMode && <NodeSelectionPanel />}
 
       <ReactFlowProvider>

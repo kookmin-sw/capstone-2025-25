@@ -65,49 +65,52 @@ export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
 
   const nodeClass = isNodeSelectionMode
     ? isSelected
-      ? 'border-purple-500 border-2 cursor-pointer'
-      : 'border-1 border-[#b3cbfa] cursor-pointer hover:border-purple-300'
-    : 'border-1 border-[#b3cbfa]';
+      ? 'border-[#8D5CF6] border-2 cursor-pointer'
+      : 'border-1 border-[#414141] cursor-pointer hover:border-[#BDB3F6]'
+    : 'border-1 border-[#414141]';
 
   return (
     <div
-      className={`w-[538px] px-8 py-[30px] flex items-center ${nodeClass} bg-white rounded-lg relative z-100 group`}
-      onClick={handleNodeClick}
+      className={`w-auto flex items-center relative z-100 group gap-[10px] `}
     >
-      <div className="flex-1">
-        <p className="text-[20px] font-semibold">{data.summary}</p>
-      </div>
-
-      {isNodeSelectionMode && isSelected && (
-        <div className="absolute top-2 right-2">
-          <CheckCircle2 size={20} className="text-purple-500" />
-        </div>
-      )}
-
       <div
-        className={`flex items-center gap-4 transition-opacity duration-300 ease-in-out
-            ${isNodeSelectionMode ? 'invisible opacity-0' : 'opacity-0 group-hover:opacity-100'}`}
+        className={`flex items-center  justify-end gap-4 transition-opacity duration-300 ease-in-out shrink-0
+            ${isNodeSelectionMode ? 'invisible opacity-0' : ' invisible opacity-0 group-hover:visible opacity-100'}`}
       >
         <PencilLine
-          size={20}
-          color="#B9B9B7"
+          size={30}
+          color="#414141"
           className="cursor-pointer hover:text-black transition-colors z-20"
           onClick={handleEditClick}
         />
         <CornerDownRight
-          size={20}
-          color="#B9B9B7"
+          size={30}
+          color="#414141"
           className="cursor-pointer hover:text-black transition-colors z-20"
           onClick={handleActiveNodeSelectionMode}
         />
 
         <div className="dragHandle cursor-grab z-20">
           <GripVertical
-            size={20}
-            color="#B9B9B7"
+            size={30}
+            color="#414141"
             className="cursor-pointer hover:text-black transition-colors"
           />
         </div>
+      </div>
+      <div
+        className={`w-auto px-8 py-[30px] flex items-start ${nodeClass} bg-white rounded-lg group flex-col gap-[10px]`}
+        onClick={handleNodeClick}
+      >
+        <div className="flex-1">
+          <p className="text-[24px] font-semibold">{data.summary}</p>
+        </div>
+
+        {isNodeSelectionMode && isSelected && (
+          <div className="absolute top-2 right-2">
+            <CheckCircle2 size={30} className="text-[#8D5CF6]" />
+          </div>
+        )}
       </div>
 
       {<NodeHandles type="full" />}

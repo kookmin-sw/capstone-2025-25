@@ -9,7 +9,7 @@ export default function DefaultLayout() {
 
       <main className="flex flex-col w-full h-screen overflow-auto bg-white scrollbar-hide">
         <Header />
-        <section className="overflow-auto" >
+        <section className="overflow-auto flex-1" >
           <Outlet />
         </section>
       </main>
