@@ -49,7 +49,7 @@ export default function MindmapPage() {
     if (isNodeSelectionMode) {
       disableSelectionMode();
     }
-  }, [location]);
+  }, [location.pathname, id]);
 
   return <div className="h-full">{id && <FlowWrapper mindmapId={id} />}</div>;
 }

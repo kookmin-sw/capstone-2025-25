@@ -2,14 +2,14 @@ import { create } from 'zustand';
 import { nanoid } from 'nanoid/non-secure';
 import { MindMapNode, MindMap, TodoType, MindMapEdge } from '@/types/mindMap';
 import { mockMindMaps } from '@/mock/mindmap';
-import { TaskDetail } from '@/types/task';
+import { Task } from '@/types/task';
 
 export type MindMapListState = {
   mindMaps: MindMap[];
   activeMindMapId: string | null;
 
   createMindMap: (title: string, type: TodoType) => string;
-  createLinkedMindMap: (task: TaskDetail) => string;
+  createLinkedMindMap: (task: Task) => string;
   loadMindMapData: (id: string) => MindMap | null;
   setActiveMindMap: (id: string | null) => void;
   saveMindMapData: (

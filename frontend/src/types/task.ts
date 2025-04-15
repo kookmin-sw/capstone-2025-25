@@ -9,7 +9,7 @@ export interface Task {
   category_id: number | null;
   quadrant: Quadrant;
   type: ActualTaskType;
-  dueDate: string;
+  dueDate: string | null;
   order: number;
   isCompleted: boolean;
   createdAt: string;

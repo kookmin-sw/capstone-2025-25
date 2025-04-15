@@ -15,10 +15,10 @@ export type MatrixState = {
   addTaskFromNode: (
     title: string,
     mindmapNodeId: number | string,
-    duDate: string,
+    duDate: string | null,
     memo: string,
     quadrant?: Quadrant,
-  ) => number;
+  ) => Task;
   deleteTask: (taskId: string | number) => void;
   reorderTasks: (sectionId: Quadrant, newTasks: Task[]) => void;
   saveTask: (updatedTask: Task) => void;
@@ -107,7 +107,7 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
 
     toast.success('마인드맵에서 작업이 추가되었습니다.');
 
-    return id;
+    return newTask;
   },
 
   deleteTask: (taskId) => {

@@ -41,7 +41,7 @@ export function NodeToTaskModal({
   onOpenChange,
   taskData,
 }: NodeToTaskModalProps) {
-  const [dueDate, setDueDate] = useState<string>(
+  const [dueDate, setDueDate] = useState<string | null>(
     new Date().toISOString().split('T')[0],
   );
 
@@ -56,7 +56,7 @@ export function NodeToTaskModal({
 
   const handleConfirmCreateTask = () => {
     if (taskData.id) {
-      const newTaskId = addTaskFromNode(
+      const newTask = addTaskFromNode(
         taskData.title,
         taskData.id,
         dueDate,
@@ -64,9 +64,8 @@ export function NodeToTaskModal({
         priority,
       );
 
-      if (newTaskId) {
-        setActiveTaskId(newTaskId);
-
+      if (newTask) {
+        setActiveTaskId(newTask.id);
         clearSelectedNodes();
         toggleNodeSelectionMode();
 
