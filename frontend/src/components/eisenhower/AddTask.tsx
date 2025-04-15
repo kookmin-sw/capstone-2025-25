@@ -3,11 +3,12 @@ import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { CircleDashed, Tag, Calendar, Plus } from 'lucide-react';
-import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge.tsx';
-import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge.tsx';
-import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker.tsx';
-import type { ActualTaskType, Quadrant, Task } from '@/types/task.ts';
-import type { Category } from '@/types/category.ts';
+import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
+import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
+import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
+import { BadgeSelector } from '@/components/common/BadgeSelector';
+import type { ActualTaskType, Quadrant, Task } from '@/types/task';
+import type { Category } from '@/types/category';
 import { quadrantTitles } from '@/constants/section';
 
 type AddTaskProps = {
@@ -28,10 +29,6 @@ export function AddTask({
   );
   const [type, setType] = useState<ActualTaskType>('TODO');
   const [category_id, setCategoryId] = useState<number | null>(null);
-
-  const selectedCategory = categoryOptions.find(
-    (cat) => cat.id === category_id,
-  );
 
   const resetForm = () => {
     setTitle('');
@@ -61,10 +58,21 @@ export function AddTask({
     resetForm();
   };
 
+  const typeOptions = [
+    { label: 'TODO', value: 'TODO' },
+    { label: 'THINKING', value: 'THINKING' },
+  ];
+
+  const categoryOptionsFormatted = categoryOptions.map((cat) => ({
+    label: cat.title,
+    value: String(cat.id),
+    bgColor: cat.color,
+    textColor: cat.textColor,
+  }));
+
   return (
     <Modal
       trigger={
-        // Button 컴포넌트 사용 시 스타일링 깨짐
         <button className="cursor-pointer">
           <Plus />
         </button>
@@ -83,7 +91,6 @@ export function AddTask({
       }
     >
       <div className="p-1">
-        {/* 상단 제목 */}
         <div>{quadrantTitles[quadrant]}</div>
         <div>
           <input
@@ -94,49 +101,43 @@ export function AddTask({
           />
         </div>
 
-        {/* 타입, 카테고리, 마감일 */}
         <div className="py-2 flex flex-col gap-2">
-          {/* 타입 */}
+          {/* 타입 선택 */}
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1 text-sm text-gray-500">
               <CircleDashed className="w-4 h-4" />
               타입
             </span>
-            <select
-              className="border rounded px-2 py-1 text-sm"
-              value={type}
-              onChange={(e) => setType(e.target.value as ActualTaskType)}
-            >
-              <option value="TODO">TODO</option>
-              <option value="THINKING">THINKING</option>
-            </select>
-            <TypeBadge type={type} />
+            <BadgeSelector
+              options={typeOptions}
+              selected={type}
+              onChange={(val) => setType(val as ActualTaskType)}
+              label=""
+              renderBadge={(option) => (
+                <TypeBadge type={option.value as ActualTaskType} />
+              )}
+            />
           </div>
 
+          {/* 카테고리 선택 */}
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1 text-sm text-gray-500">
               <Tag className="w-4 h-4" />
               카테고리
             </span>
-            <select
-              className="border rounded px-2 py-1 text-sm"
-              value={category_id ?? ''}
-              onChange={(e) => setCategoryId(Number(e.target.value) || null)}
-            >
-              <option value="">선택 안 함</option>
-              {categoryOptions.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.title}
-                </option>
-              ))}
-            </select>
-            {selectedCategory && (
-              <CategoryBadge
-                label={selectedCategory.title}
-                bgColor={selectedCategory.color}
-                textColor={selectedCategory.textColor}
-              />
-            )}
+            <BadgeSelector
+              options={categoryOptionsFormatted}
+              selected={String(category_id ?? '')}
+              onChange={(val) => setCategoryId(val === '' ? null : Number(val))}
+              label=""
+              renderBadge={(option) => (
+                <CategoryBadge
+                  label={option.label}
+                  bgColor={option.bgColor}
+                  textColor={option.textColor}
+                />
+              )}
+            />
           </div>
 
           {/* 마감일 */}
@@ -152,7 +153,7 @@ export function AddTask({
           </div>
         </div>
 
-        {/* 메모 */}
+        {/* 메모 입력 */}
         <div>
           <label className="text-sm block mb-1">메모</label>
           <textarea
