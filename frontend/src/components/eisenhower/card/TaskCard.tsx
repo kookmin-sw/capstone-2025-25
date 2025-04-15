@@ -57,7 +57,7 @@ export function TaskCard({
   };
 
   return (
-    <div className="py-1 group w-full">
+    <div className="group w-full">
       <div
         ref={setNodeRef}
         style={style}

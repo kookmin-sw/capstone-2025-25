@@ -64,9 +64,10 @@ export function AddTask({
   return (
     <Modal
       trigger={
-        <Button variant="ghost" size="sm" className="text-xs">
+        // Button 컴포넌트 사용 시 스타일링 깨짐
+        <button className="cursor-pointer">
           <Plus />
-        </Button>
+        </button>
       }
       title="새로운 작업 추가"
       description={quadrantTitles[quadrant]}

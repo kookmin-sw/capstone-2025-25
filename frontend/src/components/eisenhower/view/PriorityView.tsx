@@ -109,34 +109,51 @@ export function PriorityView({
       : 'grid-cols-1 md:grid-cols-2';
 
   const quadrantIcons: Record<Quadrant, JSX.Element> = {
+    // 보드 숫자 아이콘
     Q1: (
-      <div className="w-6 h-6 rounded-full border border-black text-xs font-bold flex items-center justify-center">
+      <div className="max-w-6 w-full max-h-6 h-full rounded-full border border-black text-sm font-semibold flex items-center justify-center">
         1
       </div>
     ),
     Q2: (
-      <div className="w-6 h-6 rounded-full border border-black text-xs font-bold flex items-center justify-center">
+      <div className="max-w-6 w-full max-h-6 h-full rounded-full border border-black text-sm font-smeibold flex items-center justify-center">
         2
       </div>
     ),
     Q3: (
-      <div className="w-6 h-6 rounded-full border border-black text-xs font-bold flex items-center justify-center">
+      <div className="max-w-6 w-full max-h-6 h-full rounded-full border border-black text-sm font-semibold flex items-center justify-center">
         3
       </div>
     ),
     Q4: (
-      <div className="w-6 h-6 rounded-full border border-black  text-xs font-bold flex items-center justify-center">
+      <div className="max-w-6 w-full max-h-6 h-full rounded-full border border-black  text-sm font-semibold flex items-center justify-center">
         4
       </div>
     ),
   };
 
-  const quadrantColors: Record<Quadrant, string> = {
-    Q1: 'bg-[#F5F1FF]',
-    Q2: 'bg-[#FAF6FF]',
-    Q3: 'bg-[#FAF8FD]',
-    Q4: 'bg-[#FAFAFA]',
+  type ViewMode = 'matrix' | 'board';
+
+  const getQuadrantColors = (viewMode: ViewMode): Record<Quadrant, string> => {
+    if (viewMode === 'matrix') {
+      return {
+        Q1: 'bg-[#F5F1FF] border border-gray-300',
+        Q2: 'bg-[#FAF6FF] border border-t-gray-300 border-r-gray-300 border-b-gray-300',
+        Q3: 'bg-[#FAF8FD] border border-l-gray-300 border-b-gray-300 border-r-gray-300',
+        Q4: 'bg-[#FAFAFA] border border-b-gray-300 border-r-gray-300',
+      };
+    }
+
+    // board view: 전체 동일하게 full border + 색상 조정
+    return {
+      Q1: 'bg-[#F5F1FF] border border-gray-300',
+      Q2: 'bg-[#FAF6FF] border border-t-gray-300 border-r-gray-300 border-b-gray-300',
+      Q3: 'bg-[#FAF8FD] border border-t-gray-300 border-r-gray-300 border-b-gray-300',
+      Q4: 'bg-[#FAFAFA] border border-t-gray-300 border-r-gray-300 border-b-gray-300',
+    };
   };
+
+  const quadrantColors = getQuadrantColors(viewMode);
 
   return (
     <DndContext
@@ -148,7 +165,7 @@ export function PriorityView({
         if (t) setActiveTask(t);
       }}
     >
-      <div className={`grid ${gridClass} gap-2 h-full`}>
+      <div className={`grid ${gridClass} h-full`}>
         {(Object.keys(tasks) as Quadrant[]).map((quadrant) => {
           const filtered = tasks[quadrant].filter((task) => {
             if (task.isCompleted) return false;
@@ -173,15 +190,17 @@ export function PriorityView({
               <div
                 className={`p-4 ${
                   viewMode === 'board' ? 'h-full' : 'h-[400px]'
-                } min-h-[300px] border flex flex-col ${quadrantColors[quadrant]}`}
+                } min-h-[300px] flex flex-col ${quadrantColors[quadrant]}`}
               >
-                <div className="flex justify-between items-center">
-                  <div className="flex gap-2">
-                    <h2 className="font-semibold flex items-center gap-2">
-                      {quadrantIcons[quadrant]}
+                <div className="flex justify-between items-center pb-[14px]">
+                  <div className="flex gap-[5px] items-center">
+                    <div className="w-6 h-6s">{quadrantIcons[quadrant]}</div>
+                    <div className="font-semibold flex items-center gap-[5px] whitespace-nowrap text-xl">
                       {quadrantTitles[quadrant]}
-                    </h2>
-                    <div>{filtered.length}</div>
+                    </div>
+                    <div className="font-sm text-[#6E726E] not-italic">
+                      {filtered.length}
+                    </div>
                   </div>
 
                   <AddTask
@@ -198,7 +217,7 @@ export function PriorityView({
                   items={filtered.map((task) => String(task.id))}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div className="space-y-2 flex-1 overflow-y-auto h-full pr-1">
+                  <div className="space-y-2 flex-1 overflow-y-auto h-full scrollbar-hide">
                     {filtered.map((task) => (
                       <TaskCard
                         key={String(task.id)}
