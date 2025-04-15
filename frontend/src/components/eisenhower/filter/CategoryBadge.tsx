@@ -22,8 +22,9 @@ export function CategoryBadge({
         style={{
           backgroundColor: bgColor,
           color: textColor,
+          border: `1px solid ${textColor}`,
         }}
-        className="rounded-full px-3 py-1 text-xs font-semibold text-sm"
+        className="rounded-full px-3 py-1 text-xs font-semibold text-sm "
       >
         {label}
       </Badge>
