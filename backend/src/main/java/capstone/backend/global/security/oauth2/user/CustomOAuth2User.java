@@ -35,7 +35,7 @@ public class CustomOAuth2User implements OAuth2User {
     // Jwt Token으로 OAuth2User 생성
     public CustomOAuth2User(Member member, Claims claims) {
         this.memberId = member.getId();
-        this.provider = claims.get("provider", String.class);
+        this.provider = member.getProvider();
         this.email = member.getEmail();
         this.role = member.getRole();
         this.name = member.getUsername();

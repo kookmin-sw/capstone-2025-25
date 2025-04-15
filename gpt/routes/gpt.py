@@ -1,10 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from openai import AsyncOpenAI
 from config import OPENAI_API_KEY
-from models.request import GPTRequest, MindMapRequest, NodeSummaryRequest
-import json
-
-from utils.mindmap import build_mindmap_tree, format_tree_for_gpt
+from models.request import GPTRequest, NodeSummaryRequest, ConvertToTaskRequest
 
 router = APIRouter()
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
@@ -116,88 +113,41 @@ async def generate_thought_node(request: GPTRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# 일정 마인드맵을 TODO 리스트로 변환
-@router.post("/convert_schedule_todo")
-async def convert_schedule_to_todo(request: MindMapRequest):
+@router.post("/convert_to_task")
+async def convert_mindmap_nodes_to_task(request: ConvertToTaskRequest):
     try:
-        # 마인드맵 트리 구조 생성
-        mindmap_tree = build_mindmap_tree(request.nodes)
+        # Step 1: 노드 요약 텍스트 생성 (간단하게 연결)
+        summaries = [node.summary for node in request.selectedNodes if node.summary.strip()]
+        if not summaries:
+            raise HTTPException(status_code=400, detail="요약할 노드가 없습니다.")
 
-        # GPT에 전달할 계층형 텍스트 생성
-        mindmap_text = format_tree_for_gpt(mindmap_tree)
+        node_text = "\n".join(f"- {s}" for s in summaries)
 
         prompt = f"""
-        사용자가 아래 일정 마인드맵을 기반으로 일정 계획을 정리하고 있습니다.
-        
-        ** 마인드맵 개요**
-        {mindmap_text}
+        다음은 사용자가 마인드맵에서 선택한 노드들입니다:
 
-        위의 정보를 바탕으로 **실행 가능한 TODO 리스트**를 생성해주세요.
-        - 마인드맵의 부모-자식 관계를 고려하여 논리적으로 구성.
-        - 실천 가능한 액션 아이템 형태로 변환.
-        - 숫자, 기호 없이 순수한 리스트 형태로 반환.
-        - 마인드맵의 데이터를 바탕으로 다른 정보를 추가하지 않고, 주어진 정보만으로 변환.
-        - 바로 데이터로 사용할거니까 제목은 필요없고 내용 리스트만 반환.
-        - "-"와 같은 특수문자, 기호 없이 순수한 내용만 반환.
-        """
+        {node_text}
 
-
-        response = await client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "당신은 일정 계획을 정리하는 도우미입니다."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-
-        generated_text = response.choices[0].message.content
-        todo_list = [item.strip().strip("'\"") for item in generated_text.split("\n") if item.strip()]
-
-        return {"todo_list": todo_list}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# 생각 정리 마인드맵을 Key-Value 리스트로 변환
-@router.post("/convert_thought_list")
-async def convert_thought_to_key_value_list(request: MindMapRequest):
-    try:
-        # 마인드맵 트리 구조 생성
-        mindmap_tree = build_mindmap_tree(request.nodes)
-
-        # GPT에 전달할 계층형 텍스트 생성
-        mindmap_text = format_tree_for_gpt(mindmap_tree)
-
-        prompt = f"""
-        사용자가 아래 생각 정리 마인드맵을 작성하고 있습니다. 
-        
-        **마인드맵 개요**
-        {mindmap_text}
-
-        위의 정보를 바탕으로 **핵심 내용을 Key-Value 리스트로 변환**해주세요.
-        - Key는 주제 (summary), Value는 해당 내용에 대한 짧은 설명.
-        - Key-Value 형태의 JSON 리스트로 변환.
-        - JSON 코드 블록 없이 순수 JSON만 반환.
-        - 마인드맵의 데이터를 바탕으로 다른 정보를 추가하지 않고, 주어진 정보만으로 변환.
-        - 바로 데이터로 사용할거니까 제목은 필요없고 내용만 반환.
+        이 노드들을 기반으로 하나의 할 일(Task)로 만들고자 합니다.
+        이 내용을 바탕으로 **간결하고 핵심적인 하나의 작업 제목**을 생성해주세요.
         """
 
         response = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "당신은 생각 정리를 돕는 도우미입니다."},
+                {"role": "system", "content": "당신은 여러 마인드맵 노드를 하나의 작업으로 변환하는 도우미입니다."},
                 {"role": "user", "content": prompt}
             ]
         )
 
-        raw_response = response.choices[0].message.content
-        clean_json = raw_response.strip("```json").strip("```").strip()  # 불필요한 마크다운 제거
+        task_title = response.choices[0].message.content.strip()
 
-        key_value_list = json.loads(clean_json)  # JSON 변환
 
-        return {"thought_list": key_value_list}
+        new_task = {
+            "title": task_title
+        }
+
+        return {"task": new_task}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -215,7 +165,7 @@ async def summarize_node(request: NodeSummaryRequest):
 
         위의 내용을 한 문장으로 자연스럽게 요약해주세요.
         문장은 **간결하고 핵심적인 내용**만 포함하며, 불필요한 설명을 제거해주세요.
-        
+        질문과 답변이 하나의 문장으로 잘 어우러 지도록 문장을 만들어주세요.
         - 요약 문장은 주어(예시로 "사용자"라는 단어) 없는 완성된 문장으로 작성.
         """
 

@@ -1,24 +1,71 @@
 package capstone.backend.domain.auth.service;
 
-import capstone.backend.domain.auth.dto.response.RefreshAccessTokenResponse;
+import capstone.backend.domain.auth.dto.response.AccessTokenResponse;
+import capstone.backend.domain.auth.dto.response.TokenResponse;
+import capstone.backend.domain.auth.exception.CodeExpiredException;
 import capstone.backend.domain.auth.exception.RefreshTokenExpiredException;
+import capstone.backend.domain.auth.exception.RefreshTokenNotFoundException;
+import capstone.backend.domain.auth.repository.OauthCodeRedisRepository;
+import capstone.backend.domain.auth.repository.RefreshTokenRedisRepository;
+import capstone.backend.domain.auth.schema.OauthCode;
+import capstone.backend.domain.auth.schema.RefreshToken;
 import capstone.backend.global.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthService {
 
+    private final OauthCodeRedisRepository oauthCodeRedisRepository;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final JwtProvider jwtProvider;
 
-    public RefreshAccessTokenResponse refreshAccessToken(String refreshToken) {
-        String newAccessToken = jwtProvider.refreshAccessToken(refreshToken);
+    public void saveRefreshToken(Long memberId, String token) {
+        RefreshToken refreshToken = new RefreshToken(memberId, token, memberId, jwtProvider.getRefreshTokenExpiration());
+        refreshTokenRedisRepository.save(refreshToken);
+    }
 
-        if (newAccessToken != null) {
-            return new RefreshAccessTokenResponse(newAccessToken);
-        } else {
+    // AT 재발급
+    public AccessTokenResponse reissueAccessToken(String refreshToken) {
+        RefreshToken storedToken = refreshTokenRedisRepository.findByToken(refreshToken)
+                .orElseThrow(RefreshTokenNotFoundException::new);
+
+        // 실제 RT가 유효한지 검증 (만료 여부 포함)
+        if (!jwtProvider.validateToken(storedToken.token())) {
             throw new RefreshTokenExpiredException();
         }
+
+        String accessToken = jwtProvider.refreshAccessToken(storedToken.token());
+        return new AccessTokenResponse(accessToken);
+    }
+
+    // 임시 코드 생성 및 저장
+    public String generateOneTimeCode(Long memberId) {
+        String code = UUID.randomUUID().toString();
+        oauthCodeRedisRepository.save(new OauthCode(memberId, code, memberId, 60000));
+        return code;
+    }
+
+    // code를 통한 AT, RT 발급
+    public TokenResponse loginByCode(String code) {
+        Long memberId = oauthCodeRedisRepository.findByCode(code)
+                .map(OauthCode::memberId)
+                .orElseThrow(CodeExpiredException::new);
+
+        oauthCodeRedisRepository.deleteByCode(code);  // 재사용 방지
+
+        String accessToken = jwtProvider.generateAccessToken(memberId.toString());
+        String refreshToken = jwtProvider.generateRefreshToken(memberId.toString());
+
+        saveRefreshToken(memberId, refreshToken);  // Redis에 RT 저장
+
+        return new TokenResponse(accessToken, refreshToken);
     }
 }

@@ -1,18 +1,20 @@
 package capstone.backend.domain.mindmap.service;
 
+import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
+import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
+import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
+import capstone.backend.domain.member.exception.MemberNotFoundException;
+import capstone.backend.domain.member.repository.MemberRepository;
+import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
-import capstone.backend.domain.mindmap.dto.request.UpdateMindMapOrderRequest;
+import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
+import capstone.backend.domain.mindmap.dto.response.SidebarMindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
-import capstone.backend.domain.mindmap.entity.MindMapType;
-import capstone.backend.domain.mindmap.exception.InvalidMindMapDateException;
 import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
 import capstone.backend.domain.mindmap.repository.MindMapRepository;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,82 +24,71 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MindMapService {
     private final MindMapRepository mindMapRepository;
+    private final MemberRepository memberRepository;
+    private final EisenhowerItemRepository eisenhowerItemRepository;
 
+    //마인드맵 생성
     @Transactional
-    public Long createMindMap(MindMapRequest mindMapRequest) {
-        MindMap mindMap = MindMap.createMindMap(mindMapRequest);
+    public Long createMindMap(Long memberId, MindMapRequest mindMapRequest) {
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        MindMap mindMap = MindMap.createMindMap(mindMapRequest, member);
+
+        Optional.ofNullable(mindMapRequest.eisenhowerId())
+            .ifPresent(eisenhowerId -> {
+                EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(eisenhowerId)
+                    .orElseThrow(EisenhowerItemNotFoundException::new);
+                eisenhowerItem.connectMindMap(mindMap);
+                eisenhowerItemRepository.save(eisenhowerItem);
+            });
         mindMapRepository.save(mindMap);
-        return mindMap.getMindmapId();
+
+        return mindMap.getId();
     }
 
-    public MindMapResponse getMindMapById(Long id){
-        return mindMapRepository.findById(id)
+    //마인드맵 상세 조회
+    public MindMapResponse getMindMapById(Long memberId, Long mindMapId){
+        return mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
             .map(MindMapResponse::fromEntity)
             .orElseThrow(MindMapNotFoundException::new);
     }
 
+    //마인드맵 삭제
     @Transactional
-    public void deleteMindMap(Long id) {
-        if (!mindMapRepository.existsById(id)) {
-            throw new MindMapNotFoundException(id);
-        }
+    public void deleteMindMap(Long memberId, Long mindMapId) {
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
+            .orElseThrow(MindMapNotFoundException::new);
 
-        mindMapRepository.deleteById(id);
+        mindMapRepository.delete(mindMap);
     }
 
-    public List<MindMapResponse> getMindMaps(LocalDate date, MindMapType type) {
-        List<MindMap> mindMaps = mindMapRepository.findAllByToDoDateAndTypeOrderByOrderIndexAsc(date, type);
-
-        if (mindMaps.isEmpty()) {
-            throw new MindMapNotFoundException();
-        }
-
-        return mindMaps.stream()
-            .map(MindMapResponse::fromEntity)
-            .toList();
-    }
-
+    //마인드맵 노드 수정, 하위노드, 엣지 삭제
     @Transactional
-    public void updateMindMap(Long id, MindMapRequest mindMapRequest) {
-        MindMap mindMap = mindMapRepository.findById(id)
-            .orElseThrow(() -> new MindMapNotFoundException(id));
+    public void updateMindMap(Long memberId, Long mindMapId, MindMapRequest mindMapRequest) {
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
+            .orElseThrow(MindMapNotFoundException::new);
 
         mindMap.update(mindMapRequest);
     }
 
+    //마인드맵 제목 수정
     @Transactional
-    public void updateMindMapOrder(UpdateMindMapOrderRequest updateMindMapOrderRequest){
-        Map<Long, MindMap> mindMapMap = fetchMindMapsAsMap(updateMindMapOrderRequest);
+    public void updateMindMapTitle(Long memberId, Long mindMapId, UpdateMindMapTitleRequest request){
+        MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
+            .orElseThrow(MindMapNotFoundException::new);
 
-        for (UpdateMindMapOrderRequest.MindMapOrder order : updateMindMapOrderRequest.orderList()) {
-            MindMap mindMap = mindMapMap.get(order.mindMapId());
-
-            validateMindMapExists(mindMap, order.mindMapId());
-            validateToDoDateMatch(mindMap, updateMindMapOrderRequest.toDoDate());
-
-            mindMap.setOrderIndex(order.orderIndex());
-        }
+        mindMap.updateTitle(request.title());
     }
 
-    private Map<Long, MindMap> fetchMindMapsAsMap(UpdateMindMapOrderRequest updateMindMapOrderRequest) {
-        List<Long> ids = updateMindMapOrderRequest.orderList().stream()
-            .map(UpdateMindMapOrderRequest.MindMapOrder::mindMapId)
+
+    //마인드맵 리스트 조회
+    public List<SidebarMindMapResponse> getMindMapList(Long memberId){
+        List<Object[]> results = mindMapRepository.findMindMapWithEisenhowerByMemberId(memberId);
+        return results.stream()
+            .map(row -> {
+                MindMap mindMap = (MindMap) row[0];
+                EisenhowerItem eisenhowerItem = (EisenhowerItem) row[1]; // null 가능
+                return SidebarMindMapResponse.from(mindMap, eisenhowerItem);
+            })
             .toList();
-
-        return mindMapRepository.findAllById(ids).stream()
-            .collect(Collectors.toMap(MindMap::getMindmapId, Function.identity()));
     }
-
-    private void validateMindMapExists(MindMap mindMap, Long mindMapId) {
-        if (mindMap == null) {
-            throw new MindMapNotFoundException(mindMapId);
-        }
-    }
-
-    private void validateToDoDateMatch(MindMap mindMap, LocalDate expectedDate) {
-        if (!mindMap.getToDoDate().equals(expectedDate)) {
-            throw new InvalidMindMapDateException(mindMap.getMindmapId(), expectedDate);
-        }
-    }
-
 }

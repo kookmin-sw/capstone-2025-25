@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 public class RefreshTokenExpiredException extends ApiException {
 
     public RefreshTokenExpiredException() {
-      super(HttpStatus.FORBIDDEN, "Refresh token이 만료되었습니다.");
+        super(HttpStatus.FORBIDDEN, "Refresh Token이 만료되었습니다.");
     }
 }

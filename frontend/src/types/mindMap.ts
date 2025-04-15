@@ -1,3 +1,4 @@
+import { TaskDetail } from '@/types/task';
 import { Node as ReactFlowNode, Edge as ReactFlowEdge } from '@xyflow/react';
 
 export type TodoType = 'TODO' | 'THINKING';
@@ -10,6 +11,8 @@ export type MindMapNodeData = {
   summary?: string | null;
   depth: number;
   recommendedQuestions?: string[];
+  isPending?: boolean;
+  isEditing?: boolean;
 };
 
 export type RootNodeType = ReactFlowNode<MindMapNodeData, 'root'>;
@@ -26,14 +29,12 @@ export type MindMapNode =
 export type MindMapEdge = ReactFlowEdge;
 
 export type MindMap = {
-  id: number;
-  order: number;
-  type: TodoType;
-  todoTime: string;
-  toDoDate: string;
+  id: string;
   title: string;
+  type: TodoType;
   lastModifiedAt: string;
-  user_id: number;
   nodes: MindMapNode[];
   edges: MindMapEdge[];
+  linked: boolean;
+  eisenhowerItemDTO?: TaskDetail;
 };

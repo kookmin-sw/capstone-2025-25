@@ -1,15 +1,21 @@
 package capstone.backend.domain.mindmap.repository;
 
 import capstone.backend.domain.mindmap.entity.MindMap;
-import capstone.backend.domain.mindmap.entity.MindMapType;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-@Repository
 public interface MindMapRepository extends JpaRepository<MindMap, Long> {
-    List<MindMap> findAllByToDoDateAndTypeOrderByOrderIndexAsc(
-        LocalDate date,
-        MindMapType type);
+    Optional<MindMap> findByIdAndMemberId(Long id, Long memberId);
+
+    @Query("""
+            SELECT m, e
+            FROM MindMap m
+            LEFT JOIN EisenhowerItem e ON e.mindMap.id = m.id
+            WHERE m.member.id = :memberId
+            ORDER BY m.lastModifiedAt DESC
+        """)
+    List<Object[]> findMindMapWithEisenhowerByMemberId(@Param("memberId") Long memberId);
 }

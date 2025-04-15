@@ -30,7 +30,7 @@ export default function Root() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <Outlet />;
+      <Outlet />
     </QueryClientProvider>
   );
 }

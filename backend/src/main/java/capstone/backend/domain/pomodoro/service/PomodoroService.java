@@ -2,29 +2,28 @@ package capstone.backend.domain.pomodoro.service;
 
 import static capstone.backend.domain.pomodoro.util.PomodoroTimeUtils.*;
 
+import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
 import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
-import capstone.backend.domain.eisenhower.schema.EisenhowerItem;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
-import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.request.CreatePomodoroRequest;
-import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
+import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.response.SidebarPomodoroResponse;
+import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
 import capstone.backend.domain.pomodoro.exception.PomodoroNotFoundException;
 import capstone.backend.domain.pomodoro.repository.PomodoroRepository;
 import capstone.backend.domain.pomodoro.schema.Pomodoro;
 import capstone.backend.domain.pomodoro.schema.PomodoroCycle;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -60,7 +59,7 @@ public class PomodoroService {
                     // 한번 더 유효성 검사
                     EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(eisenhowerId)
                             .orElseThrow(EisenhowerItemNotFoundException::new);
-                    eisenhowerItem.setPomodoro(pomodoro); // 연관관계 설정
+                    eisenhowerItem.connectPomodoro(pomodoro); // 연관관계 설정
                     eisenhowerItemRepository.save(eisenhowerItem);
                 });
 
@@ -93,7 +92,7 @@ public class PomodoroService {
         Pomodoro pomodoro = pomodoroRepository.findByIdAndMemberId(pomodoroId, memberId).orElseThrow(PomodoroNotFoundException::new);
 
         // EisenhowerItem에서 연결 끊기 (만약 존재한다면)
-        eisenhowerItemRepository.findById(pomodoroId).ifPresent(eisenhowerItem -> eisenhowerItem.setPomodoro(null));
+        eisenhowerItemRepository.findById(pomodoroId).ifPresent(eisenhowerItem -> eisenhowerItem.connectPomodoro(null));
 
         pomodoroRepository.delete(pomodoro);
     }
