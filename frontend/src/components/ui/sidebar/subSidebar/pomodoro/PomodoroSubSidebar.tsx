@@ -15,15 +15,16 @@ export default function PomodoroSubSidebar() {
     <CommonSubSidebarWrapper
       title="뽀모도로"
       addButton={
-        <AddPomodoro trigger={<Plus size={24} className="cursor-pointer" />} />
+        <AddPomodoro trigger={<Plus size={22} className="cursor-pointer" />} />
       }
     >
-      <div>
+      <div className="flex flex-col gap-5">
         <SubSidebarAccordion
           value="linked"
           icon={<LinkIcon className="w-4 h-4" />}
           title="연결된 뽀모도로"
         >
+          <div className=" space-y-2">
           {pomodoros.linkedPomodoros?.map((item) => (
             <PomodoroItem
               key={item.pomodoro.id}
@@ -31,12 +32,14 @@ export default function PomodoroSubSidebar() {
               selected={item.pomodoro.id === Number(id)}
             />
           ))}
+      </div>
         </SubSidebarAccordion>
         <SubSidebarAccordion
           value="unlinked"
           icon={<Unlink className="w-4 h-4" />}
           title="자유로운 뽀모도로"
         >
+          <div className=" space-y-2">
           {pomodoros.unlinkedPomodoros?.map((item) => (
             <PomodoroItem
               key={item.pomodoro.id}
@@ -44,6 +47,7 @@ export default function PomodoroSubSidebar() {
               selected={item.pomodoro.id === Number(id)}
             />
           ))}
+          </div>
         </SubSidebarAccordion>
       </div>
     </CommonSubSidebarWrapper>

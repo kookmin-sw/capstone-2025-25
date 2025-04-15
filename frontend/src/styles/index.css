@@ -54,3 +54,7 @@
   --color-question-input-hover: rgba(0, 0, 0, 0.02);
   --color-question-input-active: rgba(0, 0, 0, 0.05);
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

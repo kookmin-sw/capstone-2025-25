@@ -17,37 +17,39 @@ export default function MindmapSubSidebar() {
 
   return (
     <CommonSubSidebarWrapper title="마인드맵" addButton={<MindmapAddButton />}>
-      <SubSidebarAccordion
-        value="linked"
-        icon={<Link className="w-4 h-4" />}
-        title="연결된 마인드맵"
-      >
-        <div className="space-y-4">
-          {connectedMindMaps.map((mindmap) => (
-            <MindmapCard
-              key={mindmap.id}
-              mindmap={mindmap}
-              selected={id === mindmap.id}
-            />
-          ))}
-        </div>
-      </SubSidebarAccordion>
+      <div className="flex flex-col gap-5">
+        <SubSidebarAccordion
+          value=" linked"
+          icon={<Link className=" w-4 h-4" />}
+          title=" 연결된 마인드맵"
+        >
+          <div className=" space-y-2">
+            {connectedMindMaps.map((mindmap) => (
+              <MindmapCard
+                key={mindmap.id}
+                mindmap={mindmap}
+                selected={id === mindmap.id}
+              />
+            ))}
+          </div>
+        </SubSidebarAccordion>
 
-      <SubSidebarAccordion
-        value="unlinked"
-        icon={<Unlink className="w-4 h-4" />}
-        title="자유로운 마인드맵"
-      >
-        <div className="space-y-4">
-          {freeMindMaps.map((mindmap) => (
-            <MindmapCard
-              key={mindmap.id}
-              mindmap={mindmap}
-              selected={id === mindmap.id}
-            />
-          ))}
-        </div>
-      </SubSidebarAccordion>
+        <SubSidebarAccordion
+          value=" unlinked"
+          icon={<Unlink className=" w-4 h-4" />}
+          title=" 자유로운 마인드맵"
+        >
+          <div className=" space-y-2">
+            {freeMindMaps.map((mindmap) => (
+              <MindmapCard
+                key={mindmap.id}
+                mindmap={mindmap}
+                selected={id === mindmap.id}
+              />
+            ))}
+          </div>
+        </SubSidebarAccordion>
+      </div>
     </CommonSubSidebarWrapper>
   );
 }

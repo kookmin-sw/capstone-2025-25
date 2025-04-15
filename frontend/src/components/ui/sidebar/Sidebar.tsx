@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import {
   Network,
@@ -13,13 +12,7 @@ import { useSidebarStore } from '@/store/sidebarStore';
 import SubSidebar from '@/components/ui/sidebar/subSidebar/SubSidebar';
 
 const navItems = [
-  {
-    id: 'todayList',
-    icon: <LayoutDashboard size={24} />,
-    label: '오늘의 할 일',
-    route: '/today',
-    hasPanel: false,
-  },
+
   {
     id: 'matrix',
     icon: <Grid2x2 size={24} />,
@@ -68,15 +61,15 @@ export default function Sidebar() {
   return (
     <div className="flex h-screen">
       <div className="flex h-full relative">
-        <aside className="w-[250px] bg-white border-r border-gray-300 px-[22px] py-[20px]">
-          <div className="flex items-center gap-2 mb-6">
+        <aside className="w-[230px] bg-white border-r border-gray-[#E5E5E5] px-[15px] py-[10px] flex flex-col gap-[20px]">
+          <div className="flex items-center gap-2  h-[45px] pl-[12px] pt-[5px]">
             <div className="w-8 h-8 bg-black rounded-xl flex items-center justify-center">
               <span className="text-white font-bold">★</span>
             </div>
-            <span className="text-lg font-semibold">Flowin</span>
+            <span className="text-lg font-semibold">AHZ</span>
           </div>
 
-          <div className="overflow-hidden">
+          <div className="overflow-hidden flex flex-col gap-[5px]">
             {navItems.map((item) => (
               <button
                 key={item.id}
@@ -84,7 +77,7 @@ export default function Sidebar() {
                 className={cn(
                   'flex items-center w-full px-4 py-3 gap-2 text-left transition rounded-md cursor-pointer relative group',
                   activeId === item.id
-                    ? 'bg-[#8F5AFF] text-white font-semibold'
+                    ? 'bg-[#8F5AFF] text-white'
                     : 'text-black hover:bg-gray-50',
                 )}
               >
@@ -104,8 +97,8 @@ export default function Sidebar() {
         {activeItemHasPanel && (
           <div
             className={cn(
-              'h-full bg-white border-r border-gray-300 transition-all duration-300 ease-in-out overflow-hidden',
-              panelVisible ? 'w-[300px] opacity-100' : 'w-0 opacity-0',
+              'h-full bg-white transition-all duration-300 ease-in-out overflow-hidden border-none',
+              panelVisible ? 'w-[300px] opacity-100' : 'w-0 opacity-0 border-r border-gray-300',
             )}
           >
             {activeId && <SubSidebar activeId={activeId} />}
