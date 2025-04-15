@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "react-router dev",
     "typecheck": "react-router typegen && tsc",
-    "build": "tsc --noEmit false && vite build",
+    "build": "tsc --noEmit false && react-router build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
