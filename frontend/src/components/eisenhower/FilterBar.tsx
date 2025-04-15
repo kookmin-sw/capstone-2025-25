@@ -48,10 +48,7 @@ export function FilterBar({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const getCategoryColor = (title: string) =>
-    title === 'all'
-      ? 'bg-gray-200 text-gray-600'
-      : 'bg-yellow-100 text-yellow-600';
+  // const getCategoryColor = (title: string) => (title === 'all' ? '' : '');
 
   return (
     <div className="bg-white rounded-lg p-4">
@@ -107,6 +104,7 @@ export function FilterBar({
           </div>
 
           {/* 카테고리 필터 */}
+          {/* 카테고리 필터 */}
           <div className="relative" ref={categoryRef}>
             <div
               className="flex items-center space-x-2 cursor-pointer"
@@ -115,17 +113,39 @@ export function FilterBar({
               <span className="text-sm font-medium">카테고리</span>
               <ChevronDown className="w-4 h-4" />
             </div>
-            <div
-              className={`mt-2 inline-flex items-center px-3 py-1 rounded-full text-xs ${getCategoryColor(selectedCategory)}`}
-            >
-              {selectedCategory === 'all' ? '모든 카테고리' : selectedCategory}
+
+            {/* 현재 선택된 카테고리 뱃지 */}
+            <div className="mt-2">
+              {selectedCategory === 'all' ? (
+                <CategoryBadge
+                  label="모든 카테고리"
+                  bgColor="#E5E5E5"
+                  textColor="#6B7280"
+                />
+              ) : (
+                (() => {
+                  const selected = categories.find(
+                    (cat) => cat.title === selectedCategory,
+                  );
+                  return (
+                    <CategoryBadge
+                      label={selected?.title || selectedCategory}
+                      bgColor={selected?.color}
+                      textColor={selected?.textColor}
+                    />
+                  );
+                })()
+              )}
             </div>
+
             {isCategoryDropdownOpen && (
               <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 w-64 max-h-80 overflow-y-auto">
                 <div className="p-3">
                   <div className="flex justify-between items-center mb-3">
                     <h4 className="text-sm font-medium">카테고리</h4>
                   </div>
+
+                  {/* 모든 카테고리 항목 */}
                   <div
                     className={`px-3 py-2 text-sm rounded-md cursor-pointer ${
                       selectedCategory === 'all'
@@ -137,17 +157,19 @@ export function FilterBar({
                       setIsCategoryDropdownOpen(false);
                     }}
                   >
-                    <div className="flex items-center">
-                      <span
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${getCategoryColor('all')}`}
-                      >
-                        모든 카테고리
-                      </span>
+                    <div className="flex items-center gap-2">
+                      <CategoryBadge
+                        label="모든 카테고리"
+                        bgColor="#E5E5E5"
+                        textColor="#6B7280"
+                      />
                       {selectedCategory === 'all' && (
                         <Check className="w-4 h-4 ml-auto" />
                       )}
                     </div>
                   </div>
+
+                  {/* 카테고리 리스트 */}
                   <div className="grid grid-cols-1 gap-1 mt-1">
                     {categories.map((cat) => (
                       <div
