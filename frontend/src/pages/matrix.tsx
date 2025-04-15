@@ -37,7 +37,7 @@ export default function MatrixPage() {
 
   const { allTasks, addTask, reorderTasks } = useMatrixStore();
 
-  const { categories, addCategory, removeCategory } = useCategoryStore();
+  const { categories } = useCategoryStore();
   const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD();
 
   const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
@@ -183,14 +183,7 @@ export default function MatrixPage() {
               />
             )}
 
-            <TaskDetailSidebar
-              categories={categories}
-              onAddCategory={addCategory}
-              onDeleteCategory={(title) => {
-                const category = categories.find((c) => c.title === title);
-                if (category) removeCategory(category.id);
-              }}
-            />
+            <TaskDetailSidebar categories={categories} />
 
             <DragOverlay>
               {activeTask && (
