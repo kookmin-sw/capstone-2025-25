@@ -23,8 +23,6 @@ function formatToHourMin(timeObj: TotalTime): string {
   return parts.join(' ');
 }
 
-const deletePomodoro = () => {};
-
 export function PomodoroItem({ item, selected }: PomodoroItemProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
@@ -63,6 +61,7 @@ export function PomodoroItem({ item, selected }: PomodoroItemProps) {
       navigate('/matrix');
     }
   };
+
   const cardBg = selected ? 'bg-[#ECE5FF] rounded-lg' : 'bg-white';
 
   return (
@@ -79,7 +78,6 @@ export function PomodoroItem({ item, selected }: PomodoroItemProps) {
           trigger={
             <button
               className={'close-button cursor-pointer hidden group-hover:block'}
-              onClick={deletePomodoro}
             >
               <X className=" text-gray-700" size={18} />
             </button>

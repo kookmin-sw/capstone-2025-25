@@ -18,9 +18,13 @@ import { SECTION_TITLES } from '@/constants/eisenhower';
 import type { Category } from '@/types/category';
 import { Button } from '@/components/ui/button.tsx';
 import { useNavigate } from 'react-router';
-import { useCreateLinkedMindMap } from '@/store/mindmapListStore';
+import {
+  useCreateLinkedMindMap,
+  useDisconnectMindmapTask,
+} from '@/store/mindmapListStore';
 import useMatrixStore from '@/store/matrixStore';
 import AddPomodoro from '@/components/ui/Modal/AddPomodoro';
+import { useDisconnectPomodoroTask } from '@/store/pomodoro';
 
 interface TaskDetailSidebarProps {
   categories: Category[];
@@ -45,6 +49,12 @@ export function TaskDetailSidebar({
   const getActiveTask = useMatrixStore((state) => state.getActiveTask);
   const saveTask = useMatrixStore((state) => state.saveTask);
   const deleteTask = useMatrixStore((state) => state.deleteTask);
+  const connectTaskToMindMap = useMatrixStore(
+    (state) => state.connectTaskToMindMap,
+  );
+
+  const disconnectMindMapTask = useDisconnectMindmapTask();
+  const disconnectPomodoroTask = useDisconnectPomodoroTask();
 
   const task = useMemo(() => {
     return getActiveTask();
@@ -78,7 +88,16 @@ export function TaskDetailSidebar({
 
   const handleDeleteTask = () => {
     if (task) {
-      deleteTask(task.id);
+      const { mindMapId, pomodoroId } = deleteTask(task.id);
+
+      if (mindMapId) {
+        disconnectMindMapTask(mindMapId);
+      }
+
+      // 포모도로 연결 해제
+      if (pomodoroId) {
+        disconnectPomodoroTask(pomodoroId as number);
+      }
     }
   };
 
@@ -106,6 +125,7 @@ export function TaskDetailSidebar({
     }
 
     const newMindmapId = createLinkedMindMap(task);
+    connectTaskToMindMap(task.id, newMindmapId);
     navigate(`/mindmap/${newMindmapId}`);
   };
 

@@ -7,6 +7,7 @@ import { DialogClose } from '@radix-ui/react-dialog';
 import { ReactNode } from 'react';
 import { useDeletePomodoro } from '@/store/pomodoro';
 import { useNavigate } from 'react-router';
+import useMatrixStore from '@/store/matrixStore';
 
 export default function DeletePomodoro({
   trigger,
@@ -26,10 +27,13 @@ export default function DeletePomodoro({
   const navigate = useNavigate();
 
   const deletePomodoro = useDeletePomodoro();
+  const disconnectTaskFromPomodoro = useMatrixStore(
+    (state) => state.disconnectTaskFromPomodoro,
+  );
 
   const handleDeletePomodoro = () => {
-    // 삭제 api 추가
     deletePomodoro(pomodoro.id);
+    disconnectTaskFromPomodoro(eisenhower.id);
     navigate('/pomodoro');
   };
 

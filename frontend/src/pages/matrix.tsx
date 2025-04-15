@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { CompletedView } from '@/components/eisenhower/view/CompletedView.tsx';
 import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
@@ -65,6 +65,10 @@ export default function MatrixPage() {
     }),
     [uncompletedTasks],
   );
+
+  useEffect(() => {
+    setActiveTaskId(null);
+  }, [location.pathname]);
 
   return (
     <DndContext

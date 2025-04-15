@@ -2,6 +2,12 @@ import { create } from 'zustand';
 import { tasks, getTasksByQuadrant } from '@/mock/task';
 import type { Task, TaskSections, Quadrant } from '@/types/task';
 import { toast } from 'sonner';
+import { nanoid } from 'nanoid/non-secure';
+
+type DeleteTaskResult = {
+  mindMapId: string | number | null;
+  pomodoroId: string | number | null;
+};
 
 export type MatrixState = {
   allTasks: Task[];
@@ -11,10 +17,27 @@ export type MatrixState = {
   setTasks: (tasks: Task[]) => void;
   updateTask: (taskId: string | number, updatedTask: Task) => void;
   addTask: (newTask: Task) => void;
-  deleteTask: (taskId: string | number) => void;
+  addTaskFromNode: (
+    title: string,
+    mindmapNodeId: number | string,
+    duDate: string | null,
+    memo: string,
+    quadrant?: Quadrant,
+  ) => Task;
+  deleteTask: (taskId: string | number) => DeleteTaskResult;
   reorderTasks: (sectionId: Quadrant, newTasks: Task[]) => void;
   saveTask: (updatedTask: Task) => void;
   completeTask: (taskId: string | number) => void;
+  connectTaskToMindMap: (
+    taskId: string | number | null,
+    mindmapId: string | number | null,
+  ) => void;
+  connectTaskToPomodoro: (
+    taskId: string | number | null,
+    mindmapId: string | number | null,
+  ) => void;
+  disconnectTaskFromMindMap: (taskId: string) => void;
+  disconnectTaskFromPomodoro: (taskId: string) => void;
 
   setActiveTaskId: (taskId: string | number | null) => void;
   getActiveTask: () => Task | null;
@@ -73,7 +96,41 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
       };
     }),
 
+  addTaskFromNode: (title, mindmapId, dueDate, memo, quadrant = 'Q1') => {
+    const { addTask } = get();
+
+    const id = parseInt(nanoid(8), 36) % 10000;
+    const now = new Date();
+    const createdAt = now.toISOString();
+
+    const newTask: Task = {
+      id,
+      title,
+      memo,
+      category_id: 5,
+      quadrant,
+      type: 'TODO',
+      dueDate,
+      order: get().tasksByQuadrant[quadrant].length,
+      isCompleted: false,
+      createdAt,
+      mindMapId: mindmapId,
+      pomodoroId: null,
+    };
+
+    addTask(newTask);
+
+    toast.success('마인드맵에서 작업이 추가되었습니다.');
+
+    return newTask;
+  },
+
   deleteTask: (taskId) => {
+    const taskToDelete = get().allTasks.find((task) => task.id === taskId);
+
+    const mindMapId = taskToDelete?.mindMapId || null;
+    const pomodoroId = taskToDelete?.pomodoroId || null;
+
     set((state) => {
       const updatedTasks = state.allTasks.filter((task) => task.id !== taskId);
 
@@ -90,6 +147,11 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
     });
 
     toast.success('작업이 삭제되었습니다.');
+
+    return {
+      mindMapId,
+      pomodoroId,
+    };
   },
 
   reorderTasks: (sectionId, newTasks) =>
@@ -137,6 +199,78 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
         allTasks: updatedTasks,
       };
     }),
+
+  connectTaskToMindMap: (taskId, mindMapId) => {
+    set((state) => {
+      const updatedTasks = state.allTasks.map((task) =>
+        task.id === taskId ? { ...task, mindMapId } : task,
+      );
+
+      return {
+        allTasks: updatedTasks,
+        tasksByQuadrant: {
+          Q1: updatedTasks.filter((task) => task.quadrant === 'Q1'),
+          Q2: updatedTasks.filter((task) => task.quadrant === 'Q2'),
+          Q3: updatedTasks.filter((task) => task.quadrant === 'Q3'),
+          Q4: updatedTasks.filter((task) => task.quadrant === 'Q4'),
+        },
+      };
+    });
+  },
+
+  connectTaskToPomodoro: (taskId, pomodoroId) => {
+    set((state) => {
+      const updatedTasks = state.allTasks.map((task) =>
+        task.id === taskId ? { ...task, pomodoroId } : task,
+      );
+
+      return {
+        allTasks: updatedTasks,
+        tasksByQuadrant: {
+          Q1: updatedTasks.filter((task) => task.quadrant === 'Q1'),
+          Q2: updatedTasks.filter((task) => task.quadrant === 'Q2'),
+          Q3: updatedTasks.filter((task) => task.quadrant === 'Q3'),
+          Q4: updatedTasks.filter((task) => task.quadrant === 'Q4'),
+        },
+      };
+    });
+  },
+
+  disconnectTaskFromMindMap: (taskId) => {
+    set((state) => {
+      const updatedTasks = state.allTasks.map((task) =>
+        task.id === taskId ? { ...task, mindMapId: null } : task,
+      );
+
+      return {
+        allTasks: updatedTasks,
+        tasksByQuadrant: {
+          Q1: updatedTasks.filter((task) => task.quadrant === 'Q1'),
+          Q2: updatedTasks.filter((task) => task.quadrant === 'Q2'),
+          Q3: updatedTasks.filter((task) => task.quadrant === 'Q3'),
+          Q4: updatedTasks.filter((task) => task.quadrant === 'Q4'),
+        },
+      };
+    });
+  },
+
+  disconnectTaskFromPomodoro: (taskId) => {
+    set((state) => {
+      const updatedTasks = state.allTasks.map((task) =>
+        task.id === taskId ? { ...task, pomodoroId: null } : task,
+      );
+
+      return {
+        allTasks: updatedTasks,
+        tasksByQuadrant: {
+          Q1: updatedTasks.filter((task) => task.quadrant === 'Q1'),
+          Q2: updatedTasks.filter((task) => task.quadrant === 'Q2'),
+          Q3: updatedTasks.filter((task) => task.quadrant === 'Q3'),
+          Q4: updatedTasks.filter((task) => task.quadrant === 'Q4'),
+        },
+      };
+    });
+  },
 
   getTasksByQuadrant: () => {
     const { allTasks } = get();
