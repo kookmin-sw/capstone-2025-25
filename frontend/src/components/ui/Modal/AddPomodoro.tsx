@@ -3,15 +3,17 @@ import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp, Timer, RotateCw } from 'lucide-react';
 import { useState, useEffect, ChangeEvent, ReactNode } from 'react';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
-import { PomodoroCycle, Eisenhower } from '@/types/pomodoro';
+import { PomodoroCycle } from '@/types/pomodoro';
 import { Input } from '@/components/ui/Input.tsx';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { useCreatePomodoro } from '@/store/pomodoro';
 import { useNavigate } from 'react-router';
+import { Task } from '@/types/task';
+import useMatrixStore from '@/store/matrixStore';
 
 type Props = {
   trigger: ReactNode;
-  linkedEisenhower?: Eisenhower;
+  linkedEisenhower?: Task;
 };
 
 export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
@@ -25,6 +27,10 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
   const navigate = useNavigate();
 
   const createPomodoro = useCreatePomodoro();
+
+  const connectTaskToPomodoro = useMatrixStore(
+    (state) => state.connectTaskToPomodoro,
+  );
 
   // 세션 간격 추천
   const generateSliderValuesFromTime = (hours: number, minutes: number) => {
@@ -97,6 +103,13 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
   };
 
   const handleCreatePomodoro = () => {
+    console.log('linkedEisenhower', linkedEisenhower);
+    if (linkedEisenhower?.pomodoroId) {
+      navigate(`/mindmap/${linkedEisenhower?.pomodoroId}`);
+
+      return;
+    }
+
     const newPomodoroId = createPomodoro({
       title: linkedEisenhower?.title || title,
       plannedCycles: cycleValue,
@@ -108,6 +121,7 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
       },
       eisenhower: linkedEisenhower || null,
     });
+    connectTaskToPomodoro(linkedEisenhower?.id, newPomodoroId);
 
     navigate(`/pomodoro/${newPomodoroId}`);
 
@@ -157,7 +171,7 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
               </Button>
               <DialogClose asChild>
                 <Button
-                    size="sm"
+                  size="sm"
                   className=" w-full flex-1"
                   onClick={handleCreatePomodoro}
                 >

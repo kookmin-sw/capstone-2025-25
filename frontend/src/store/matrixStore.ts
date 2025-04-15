@@ -28,6 +28,14 @@ export type MatrixState = {
   reorderTasks: (sectionId: Quadrant, newTasks: Task[]) => void;
   saveTask: (updatedTask: Task) => void;
   completeTask: (taskId: string | number) => void;
+  connectTaskToMindMap: (
+    taskId: string | number | null,
+    mindmapId: string | number | null,
+  ) => void;
+  connectTaskToPomodoro: (
+    taskId: string | number | null,
+    mindmapId: string | number | null,
+  ) => void;
 
   setActiveTaskId: (taskId: string | number | null) => void;
   getActiveTask: () => Task | null;
@@ -189,6 +197,42 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
         allTasks: updatedTasks,
       };
     }),
+
+  connectTaskToMindMap: (taskId, mindMapId) => {
+    set((state) => {
+      const updatedTasks = state.allTasks.map((task) =>
+        task.id === taskId ? { ...task, mindMapId } : task,
+      );
+
+      return {
+        allTasks: updatedTasks,
+        tasksByQuadrant: {
+          Q1: updatedTasks.filter((task) => task.quadrant === 'Q1'),
+          Q2: updatedTasks.filter((task) => task.quadrant === 'Q2'),
+          Q3: updatedTasks.filter((task) => task.quadrant === 'Q3'),
+          Q4: updatedTasks.filter((task) => task.quadrant === 'Q4'),
+        },
+      };
+    });
+  },
+
+  connectTaskToPomodoro: (taskId, pomodoroId) => {
+    set((state) => {
+      const updatedTasks = state.allTasks.map((task) =>
+        task.id === taskId ? { ...task, pomodoroId } : task,
+      );
+
+      return {
+        allTasks: updatedTasks,
+        tasksByQuadrant: {
+          Q1: updatedTasks.filter((task) => task.quadrant === 'Q1'),
+          Q2: updatedTasks.filter((task) => task.quadrant === 'Q2'),
+          Q3: updatedTasks.filter((task) => task.quadrant === 'Q3'),
+          Q4: updatedTasks.filter((task) => task.quadrant === 'Q4'),
+        },
+      };
+    });
+  },
 
   getTasksByQuadrant: () => {
     const { allTasks } = get();

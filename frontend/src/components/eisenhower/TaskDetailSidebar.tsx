@@ -49,6 +49,9 @@ export function TaskDetailSidebar({
   const getActiveTask = useMatrixStore((state) => state.getActiveTask);
   const saveTask = useMatrixStore((state) => state.saveTask);
   const deleteTask = useMatrixStore((state) => state.deleteTask);
+  const connectTaskToMindMap = useMatrixStore(
+    (state) => state.connectTaskToMindMap,
+  );
 
   const disconnectMindMapTask = useDisconnectMindmapTask();
   const disconnectPomodoroTask = useDisconnectPomodoroTask();
@@ -122,6 +125,7 @@ export function TaskDetailSidebar({
     }
 
     const newMindmapId = createLinkedMindMap(task);
+    connectTaskToMindMap(task.id, newMindmapId);
     navigate(`/mindmap/${newMindmapId}`);
   };
 
