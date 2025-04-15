@@ -27,13 +27,11 @@ export function DragOverlayCard({ task, categories }: DragOverlayCardProps) {
       </div>
 
       {memo && (
-        <div className="text-xs text-[#6e726e] ml-7 mb-2 line-clamp-2">
-          {memo}
-        </div>
+        <div className="text-xs text-[#6e726e]  mb-2 line-clamp-2">{memo}</div>
       )}
 
       {dueDate && (
-        <div className="text-xs text-[#6e726e] ml-7 flex items-center mt-auto">
+        <div className="text-xs text-[#6e726e] flex items-center mt-auto">
           <Calendar className="w-3 h-3 mr-1" />
           <span>{dueDate}</span>
         </div>
