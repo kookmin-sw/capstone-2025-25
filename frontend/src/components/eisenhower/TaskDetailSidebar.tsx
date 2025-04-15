@@ -7,12 +7,10 @@ import {
   ChevronsLeft,
   CircleDashed,
   PencilLine,
-  Plus,
   Tag,
-  X,
 } from 'lucide-react';
 import { format } from 'date-fns';
-import type { Task } from '@/types/task';
+import type { Task, ActualTaskType } from '@/types/task';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { SECTION_TITLES } from '@/constants/eisenhower';
 import type { Category } from '@/types/category';
@@ -25,20 +23,15 @@ import {
 import useMatrixStore from '@/store/matrixStore';
 import AddPomodoro from '@/components/ui/Modal/AddPomodoro';
 import { useDisconnectPomodoroTask } from '@/store/pomodoro';
+import DeleteTaskModal from '@/components/ui/Modal/DeleteTask';
+import { BadgeSelector } from '@/components/common/BadgeSelector';
 
 interface TaskDetailSidebarProps {
   categories: Category[];
-  onAddCategory: (name: string) => void;
-  onDeleteCategory: (name: string) => void;
 }
 
-export function TaskDetailSidebar({
-  categories,
-  onAddCategory,
-  onDeleteCategory,
-}: TaskDetailSidebarProps) {
+export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
   const [editedTask, setEditedTask] = useState<Task | null>(null);
-  const [newCategory, setNewCategory] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   const navigate = useNavigate();
@@ -101,14 +94,6 @@ export function TaskDetailSidebar({
     }
   };
 
-  const handleAddCategory = () => {
-    const trimmed = newCategory.trim();
-    if (trimmed && !categories.some((cat) => cat.name === trimmed)) {
-      onAddCategory(trimmed);
-      setNewCategory('');
-    }
-  };
-
   const selectedCategory = categories.find(
     (cat) => cat.id === task?.category_id,
   );
@@ -120,7 +105,6 @@ export function TaskDetailSidebar({
 
     if (task.mindMapId) {
       navigate(`/mindmap/${task.mindMapId}`);
-
       return;
     }
 
@@ -128,6 +112,18 @@ export function TaskDetailSidebar({
     connectTaskToMindMap(task.id, newMindmapId);
     navigate(`/mindmap/${newMindmapId}`);
   };
+
+  const typeOptions = [
+    { label: 'TODO', value: 'TODO' },
+    { label: 'THINKING', value: 'THINKING' },
+  ];
+
+  const categoryOptions = categories.map((cat) => ({
+    label: cat.title,
+    value: String(cat.id),
+    bgColor: cat.color,
+    textColor: cat.textColor,
+  }));
 
   if (!task || !editedTask) return null;
 
@@ -145,10 +141,10 @@ export function TaskDetailSidebar({
             <ChevronsLeft />
           </button>
           <SheetTitle className="text-base font-semibold">
-            {isEditing ? '작업 편집' : '작업 상세'}
+            {isEditing ? '일정 편집' : '일정 상세'}
           </SheetTitle>
           {isEditing ? (
-            <div className="p-2"></div>
+            <div className="w-9 h-9"></div>
           ) : (
             <button
               onClick={() => setIsEditing(true)}
@@ -180,19 +176,23 @@ export function TaskDetailSidebar({
             <CircleDashed className="w-4 h-4" />
             <span className="text-sm">타입</span>
             {isEditing ? (
-              <select
-                value={editedTask.type}
-                onChange={(e) =>
-                  setEditedTask({
-                    ...editedTask,
-                    type: e.target.value as Task['type'],
-                  })
-                }
-                className="border rounded px-2 py-1 text-sm"
-              >
-                <option value="TODO">TODO</option>
-                <option value="THINKING">THINKING</option>
-              </select>
+              <div className="min-w-[100px]">
+                <BadgeSelector
+                  options={typeOptions}
+                  selected={editedTask.type}
+                  onChange={(val) =>
+                    setEditedTask({
+                      ...editedTask,
+                      type: val as ActualTaskType,
+                    })
+                  }
+                  renderBadge={(option) => (
+                    <TypeBadge type={option.value as ActualTaskType} />
+                  )}
+                  displayMode="block"
+                  withSearch={false}
+                />
+              </div>
             ) : (
               <TypeBadge type={task.type} />
             )}
@@ -202,28 +202,33 @@ export function TaskDetailSidebar({
             <Tag className="w-4 h-4" />
             <span className="text-sm">카테고리</span>
             {isEditing ? (
-              <select
-                value={editedTask.category_id ?? ''}
-                onChange={(e) =>
-                  setEditedTask({
-                    ...editedTask,
-                    category_id: e.target.value ? Number(e.target.value) : null,
-                  })
-                }
-                className="border rounded px-2 py-1 text-sm"
-              >
-                <option value="">없음</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
+              <div className="min-w-[100px]">
+                <BadgeSelector
+                  options={categoryOptions}
+                  selected={String(editedTask.category_id ?? '')}
+                  onChange={(val) =>
+                    setEditedTask({
+                      ...editedTask,
+                      category_id: val === '' ? null : Number(val),
+                    })
+                  }
+                  renderBadge={(option) => (
+                    <CategoryBadge
+                      label={option.label}
+                      bgColor={option.bgColor}
+                      textColor={option.textColor}
+                    />
+                  )}
+                  displayMode="block"
+                  withSearch={false}
+                />
+              </div>
             ) : (
               selectedCategory && (
                 <CategoryBadge
-                  label={selectedCategory.name}
-                  colorClass="bg-yellow-100 text-yellow-600"
+                  label={selectedCategory.title}
+                  bgColor={selectedCategory.color}
+                  textColor={selectedCategory.textColor}
                 />
               )
             )}
@@ -267,48 +272,21 @@ export function TaskDetailSidebar({
           </div>
         </div>
 
-        {isEditing && (
-          <div className="p-4 border-t">
-            <div className="flex gap-2 mt-2">
-              <input
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAddCategory()}
-                placeholder="새 카테고리"
-                className="border px-2 py-1 text-sm rounded w-full"
-              />
-              <button
-                onClick={handleAddCategory}
-                className="bg-purple-100 text-purple-600 px-2 rounded hover:bg-purple-200"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="grid grid-cols-2 gap-2 mt-2">
-              {categories.map((cat) => (
-                <div
-                  key={cat.id}
-                  className="flex items-center justify-between px-2 py-1 border rounded"
-                >
-                  <span className="text-sm">{cat.name}</span>
-                  <button onClick={() => onDeleteCategory(cat.name)}>
-                    <X className="w-4 h-4 text-red-500" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
         <div className="p-4 border-t flex gap-2">
           {isEditing ? (
             <>
-              <Button
-                variant="outline"
-                onClick={handleDeleteTask}
-                className="flex-1 border rounded py-2"
-              >
-                삭제하기
-              </Button>
+              <DeleteTaskModal
+                task={task}
+                onDelete={handleDeleteTask}
+                trigger={
+                  <Button
+                    variant="outline"
+                    className="flex-1 border rounded py-2"
+                  >
+                    삭제하기
+                  </Button>
+                }
+              />
               <Button
                 variant="primary"
                 onClick={handleSave}

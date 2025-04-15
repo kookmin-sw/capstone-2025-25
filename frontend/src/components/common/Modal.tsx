@@ -11,7 +11,7 @@ import {
 
 type ModalProps = {
   trigger?: ReactNode;
-  title: string;
+  title?: string;
   description?: string;
   children: ReactNode;
   footer?: ReactNode;
