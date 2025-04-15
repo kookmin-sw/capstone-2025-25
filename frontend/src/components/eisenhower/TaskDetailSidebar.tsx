@@ -118,7 +118,7 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
             {isEditing ? '일정 편집' : '일정 상세'}
           </SheetTitle>
           {isEditing ? (
-            <div className="p-2"></div>
+            <div className="w-9 h-9"></div>
           ) : (
             <button
               onClick={() => setIsEditing(true)}
