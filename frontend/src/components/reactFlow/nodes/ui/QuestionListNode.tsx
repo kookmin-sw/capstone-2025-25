@@ -8,9 +8,9 @@ import { X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function QuestionListNode({
-                                           id,
-                                           data,
-                                         }: NodeProps<QuestionNodeType>) {
+  id,
+  data,
+}: NodeProps<QuestionNodeType>) {
   const nodes = useNodes();
   const edges = useEdges();
   const setNode = useSetNode();
@@ -20,13 +20,14 @@ export default function QuestionListNode({
   const isPending = data.isPending;
 
   const [displayedQuestions, setDisplayedQuestions] = useState<
-      Array<{
-        id: number;
-        text: string;
-        animating: boolean;
-      }>
+    Array<{
+      id: number;
+      text: string;
+      animating: boolean;
+    }>
   >([]);
   const [questionQueue, setQuestionQueue] = useState<string[]>([]);
+  const [hasFewQuestions, setHasFewQuestions] = useState(false);
 
   const handleQuestionClick = (selectedQuestion: string) => {
     const currentNode = nodes.find((node) => node.id === id);
@@ -44,6 +45,12 @@ export default function QuestionListNode({
   };
 
   useEffect(() => {
+    if (questions && questions.length <= 3) {
+      setHasFewQuestions(true);
+    } else {
+      setHasFewQuestions(false);
+    }
+
     if (questions && questions.length > 0) {
       const initial = questions.slice(0, 3).map((text, index) => ({
         id: index,
@@ -57,7 +64,7 @@ export default function QuestionListNode({
 
   const handleRemoveQuestion = (id: number) => {
     setDisplayedQuestions((prev) =>
-        prev.map((q) => (q.id === id ? { ...q, animating: true } : q)),
+      prev.map((q) => (q.id === id ? { ...q, animating: true } : q)),
     );
 
     setTimeout(() => {
@@ -103,67 +110,69 @@ export default function QuestionListNode({
 
   if (isPending) {
     return (
-        <div className="bg-white px-8 py-[30px] border-[1px] border-[#414141] rounded-[7px]">
-          <h3 className="text-[20px] font-semibold mb-5">질문 생성 중...</h3>
-          <ul className="flex flex-col gap-[10px]">
-            {[1, 2, 3].map((index) => (
-                <li
-                    key={index}
-                    className="w-[576px] p-4 border-[1px] border-[#414141] rounded-[7px] flex justify-between items-center"
-                >
-                  <Skeleton className="w-full h-6" />
-                </li>
-            ))}
-            <li className="p-4 border-[1px] border-[#414141] rounded-[7px] flex justify-between items-center opacity-50">
-              <span>직접 입력하기</span>
+      <div className="bg-white px-8 py-[30px] border-[1px] border-[#414141] rounded-[7px]">
+        <h3 className="text-[20px] font-semibold mb-5">질문 생성 중...</h3>
+        <ul className="flex flex-col gap-[10px]">
+          {[1, 2, 3].map((index) => (
+            <li
+              key={index}
+              className="w-[576px] p-4 border-[1px] border-[#414141] rounded-[7px] flex justify-between items-center"
+            >
+              <Skeleton className="w-full h-6" />
             </li>
-          </ul>
+          ))}
+          <li className="p-4 border-[1px] border-[#414141] rounded-[7px] flex justify-between items-center opacity-50">
+            <span>직접 입력하기</span>
+          </li>
+        </ul>
 
-          <NodeHandles />
-        </div>
+        <NodeHandles />
+      </div>
     );
   }
 
   return (
-      <>
-        <div className="bg-white px-8 py-[30px] border-[1px] border-[#414141] rounded-[7px]">
-          <h3 className="text-[20px] font-semibold mb-5">
-            다음 질문을 선택해주세요
-          </h3>
-          <ul className="flex flex-col gap-[10px]">
-            {displayedQuestions.map((question) => (
-                <li
-                    key={question.id}
-                    className={`w-[576px] p-4 border-[1px] border-[#414141] rounded-[7px] flex justify-between items-center transition-all duration-300 hover:bg-question-input-hover active:bg-question-input-active cursor-pointer ${
-                        question.animating
-                            ? 'opacity-0 transform -translate-x-2'
-                            : 'opacity-100'
-                    }`}
-                    onClick={() => handleQuestionClick(question.text)}
-                >
-                  <span>{question.text}</span>
-                  <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemoveQuestion(question.id);
-                      }}
-                      className="cursor-pointer"
-                      disabled={question.animating}
-                  >
-                    <X size={24} color="#414141" />
-                  </button>
-                </li>
-            ))}
+    <>
+      <div className="bg-white px-8 py-[30px] border-[1px] border-[#414141] rounded-[7px]">
+        <h3 className="text-[20px] font-semibold mb-5">
+          다음 질문을 선택해주세요
+        </h3>
+        <ul className="flex flex-col gap-[10px]">
+          {displayedQuestions.map((question) => (
             <li
-                onClick={activateDirectInputMode}
-                className="p-4 border-[1px] border-[#414141] rounded-[7px] flex justify-between items-center cursor-pointer"
+              key={question.id}
+              className={`w-[576px] p-4 border-[1px] border-[#414141] rounded-[7px] flex justify-between items-center transition-all duration-300 hover:bg-question-input-hover active:bg-question-input-active cursor-pointer ${
+                question.animating
+                  ? 'opacity-0 transform -translate-x-2'
+                  : 'opacity-100'
+              }`}
+              onClick={() => handleQuestionClick(question.text)}
             >
-              <span>직접 입력하기</span>
+              <span>{question.text}</span>
+              {!hasFewQuestions && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveQuestion(question.id);
+                  }}
+                  className="cursor-pointer"
+                  disabled={question.animating}
+                >
+                  <X size={24} color="#414141" />
+                </button>
+              )}
             </li>
-          </ul>
+          ))}
+          <li
+            onClick={activateDirectInputMode}
+            className="p-4 border-[1px] border-[#414141] rounded-[7px] flex justify-between items-center cursor-pointer"
+          >
+            <span>직접 입력하기</span>
+          </li>
+        </ul>
 
-          <NodeHandles />
-        </div>
-      </>
+        <NodeHandles />
+      </div>
+    </>
   );
 }
