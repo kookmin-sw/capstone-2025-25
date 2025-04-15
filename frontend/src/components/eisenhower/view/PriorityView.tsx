@@ -109,34 +109,50 @@ export function PriorityView({
       : 'grid-cols-1 md:grid-cols-2';
 
   const quadrantIcons: Record<Quadrant, JSX.Element> = {
+    // 보드 숫자 아이콘
     Q1: (
-      <div className="w-6 h-6 rounded-full border border-black text-xs font-bold flex items-center justify-center">
+      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
         1
       </div>
     ),
     Q2: (
-      <div className="w-6 h-6 rounded-full border border-black text-xs font-bold flex items-center justify-center">
+      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
         2
       </div>
     ),
     Q3: (
-      <div className="w-6 h-6 rounded-full border border-black text-xs font-bold flex items-center justify-center">
+      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
         3
       </div>
     ),
     Q4: (
-      <div className="w-6 h-6 rounded-full border border-black  text-xs font-bold flex items-center justify-center">
+      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
         4
       </div>
     ),
   };
 
-  const quadrantColors: Record<Quadrant, string> = {
-    Q1: 'bg-[#F5F1FF]',
-    Q2: 'bg-[#FAF6FF]',
-    Q3: 'bg-[#FAF8FD]',
-    Q4: 'bg-[#FAFAFA]',
+  type ViewMode = 'matrix' | 'board';
+
+  const getQuadrantColors = (viewMode: ViewMode): Record<Quadrant, string> => {
+    if (viewMode === 'matrix') {
+      return {
+        Q1: 'bg-[#F5F1FF] border-gray-300 border rounded-tl-md',
+        Q2: 'bg-[#FAF6FF] border-t border-r border-b border-gray-300 rounded-tr-md',
+        Q3: 'bg-[#FAF8FD] border-l border-b border-r border-gray-300 rounded-bl-md',
+        Q4: 'bg-[#FAFAFA] border-b border-r border-gray-300 rounded-br-md',
+      };
+    }
+
+    return {
+      Q1: 'bg-[#F5F1FF] border border-gray-300',
+      Q2: 'bg-[#FAF6FF] border-t border-r border-b border-gray-300',
+      Q3: 'bg-[#FAF8FD] border-t border-r border-b border-gray-300',
+      Q4: 'bg-[#FAFAFA] border-t border-r border-b border-gray-300',
+    };
   };
+
+  const quadrantColors = getQuadrantColors(viewMode);
 
   return (
     <DndContext
@@ -148,7 +164,7 @@ export function PriorityView({
         if (t) setActiveTask(t);
       }}
     >
-      <div className={`grid ${gridClass} gap-2 h-full`}>
+      <div className={`grid ${gridClass} h-full`}>
         {(Object.keys(tasks) as Quadrant[]).map((quadrant) => {
           const filtered = tasks[quadrant].filter((task) => {
             if (task.isCompleted) return false;
@@ -171,24 +187,38 @@ export function PriorityView({
           return (
             <Droppable key={quadrant} id={quadrant}>
               <div
-                className={`p-4 ${
-                  viewMode === 'board' ? 'h-full' : 'h-[400px]'
-                } min-h-[300px] border flex flex-col ${quadrantColors[quadrant]}`}
+                className={`px-4 py-5 ${
+                  viewMode === 'board' ? 'h-full' : 'min-h-[400px] h-full'
+                } min-h-[300px] flex flex-col ${quadrantColors[quadrant]}`}
               >
-                <div className="flex justify-between items-center">
-                  <div className="flex gap-2">
-                    <h2 className="font-semibold flex items-center gap-2">
+                <div className="flex justify-between items-center pb-[14px]">
+                  <div className="flex gap-[5px] items-center justify-center">
+                    <div
+                      className={`${
+                        viewMode === 'board' ? 'w-5 h-5' : 'w-6 h-6'
+                      } `}
+                    >
                       {quadrantIcons[quadrant]}
+                    </div>
+                    <div
+                      className={`${
+                        viewMode === 'board' ? 'text-lg' : 'text-xl'
+                      } font-semibold flex items-center gap-[5px] max-w-[300px] w-full`}
+                    >
                       {quadrantTitles[quadrant]}
-                    </h2>
-                    <div>{filtered.length}</div>
+                    </div>
+                    <div className="font-sm text-[#6E726E] not-italic">
+                      {filtered.length}
+                    </div>
                   </div>
 
                   <AddTask
                     quadrant={quadrant}
                     categoryOptions={categories.map((c) => ({
                       id: c.id,
-                      name: c.name,
+                      title: c.title,
+                      bgColor: c.color,
+                      textColor: c.textColor,
                     }))}
                     onCreateTask={onCreateTask}
                   />
@@ -198,7 +228,7 @@ export function PriorityView({
                   items={filtered.map((task) => String(task.id))}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div className="space-y-2 flex-1 overflow-y-auto h-full pr-1">
+                  <div className="space-y-2 flex-1 overflow-y-auto h-full scrollbar-hide">
                     {filtered.map((task) => (
                       <TaskCard
                         key={String(task.id)}

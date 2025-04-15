@@ -13,25 +13,37 @@ export const TypeBadge = ({
   withDot = true,
   className,
 }: TypeBadgeProps) => {
-  const isAll = type === 'ALL';
+  const styleMap = {
+    ALL: {
+      colorClass: 'border border-gray-300 text-gray-500 bg-white',
+      dotColor: 'bg-gray-400',
+      label: '모든 타입',
+    },
+    TODO: {
+      colorClass: 'border border-[#8D5CF6] text-[#8D5CF6] bg-white',
+      dotColor: 'bg-[#8D5CF6]',
+      label: 'Todo',
+    },
+    THINKING: {
+      colorClass: 'bg-[#E9DDFF] text-[#8D5CF6]',
+      dotColor: 'bg-[#8D5CF6]',
+      label: 'Thinking',
+    },
+  };
 
-  const colorClass = isAll
-    ? 'border border-gray-300 text-gray-500 bg-white'
-    : 'border border-[#E9DDFF] text-[#8D5CF6] bg-[#F5F0FF]';
-
-  const dotColor = isAll ? 'bg-gray-400' : 'bg-[#8D5CF6]';
+  const { colorClass, dotColor, label } = styleMap[type];
 
   return (
     <Badge
       variant="outline"
       className={cn(
-        'inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full',
+        'inline-flex items-center text-sm font-semibold px-3 py-1 rounded-full gap-[5px]',
         colorClass,
         className,
       )}
     >
-      {withDot && <span className={`w-2 h-2 rounded-full mr-1 ${dotColor}`} />}
-      {type === 'ALL' ? '모든 타입' : type}
+      {withDot && <span className={`w-2 h-2 rounded-full ${dotColor}`} />}
+      {label}
     </Badge>
   );
 };
