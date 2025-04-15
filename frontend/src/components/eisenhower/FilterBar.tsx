@@ -55,7 +55,8 @@ export function FilterBar({
       <div className="flex flex-col md:flex-row justify-between gap-3">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
           {/* 타입 필터 */}
-          <div className="relative" ref={typeRef}>
+          {/* 타입 필터 */}
+          <div className="relative w-22" ref={typeRef}>
             <div
               className="flex items-center space-x-2 cursor-pointer"
               onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
@@ -64,24 +65,14 @@ export function FilterBar({
               <ChevronDown className="w-4 h-4" />
             </div>
 
-            <div
-              className={`mt-2 inline-flex items-center px-3 py-1 rounded-full border text-xs font-medium ${
-                selectedType === 'ALL'
-                  ? 'border-gray-300 text-gray-500'
-                  : 'border-[#8D5CF6] text-[#8D5CF6]'
-              }`}
-            >
-              <span
-                className={`w-2 h-2 rounded-full mr-2 ${
-                  selectedType === 'ALL' ? 'bg-gray-400' : 'bg-[#8D5CF6]'
-                }`}
-              ></span>
-              {selectedType === 'ALL' ? '모든 타입' : selectedType}
+            {/* 현재 선택된 타입 뱃지 */}
+            <div className="mt-2">
+              <TypeBadge type={selectedType} />
             </div>
 
             {isTypeDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 w-40">
-                <div className="p-2 space-y-1">
+              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 w-30">
+                <div className="p-1 space-y-1">
                   {(['ALL', 'TODO', 'THINKING'] as const).map((type) => (
                     <div
                       key={type}
@@ -104,8 +95,7 @@ export function FilterBar({
           </div>
 
           {/* 카테고리 필터 */}
-          {/* 카테고리 필터 */}
-          <div className="relative" ref={categoryRef}>
+          <div className="relative w-30" ref={categoryRef}>
             <div
               className="flex items-center space-x-2 cursor-pointer"
               onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
@@ -139,12 +129,8 @@ export function FilterBar({
             </div>
 
             {isCategoryDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 w-64 max-h-80 overflow-y-auto">
-                <div className="p-3">
-                  <div className="flex justify-between items-center mb-3">
-                    <h4 className="text-sm font-medium">카테고리</h4>
-                  </div>
-
+              <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-md z-10 w-40 max-h-80 overflow-y-auto">
+                <div className="p-1">
                   {/* 모든 카테고리 항목 */}
                   <div
                     className={`px-3 py-2 text-sm rounded-md cursor-pointer ${
