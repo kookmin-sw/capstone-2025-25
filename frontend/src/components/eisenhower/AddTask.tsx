@@ -107,6 +107,97 @@ export function AddTask({
           <Plus />
         </button>
       }
+      children={
+        <div className="p-1">
+          <div className="mb-1 text-[18px]">{quadrantTitles[quadrant]}</div>
+
+          {/* 제목 */}
+          <div>
+            <input
+              className="text-3xl font-bold w-full border-transparent outline-none placeholder:text-[#CECFCD]"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="새로운 일정"
+            />
+          </div>
+
+          <div className="py-2 flex flex-col gap-2">
+            {/* 타입 선택 */}
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-2 text-sm">
+                <CircleDashed className="w-4 h-4" />
+                타입
+              </span>
+              <div className="min-w-[100px]">
+                <BadgeSelector
+                  options={typeOptions}
+                  selected={type}
+                  onChange={(val) => setType(val as ActualTaskType)}
+                  renderBadge={(option) => (
+                    <TypeBadge type={option.value as ActualTaskType} />
+                  )}
+                  displayMode="block"
+                />
+              </div>
+            </div>
+
+            {/* 카테고리 선택 */}
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-2 text-sm">
+                <Tag className="w-4 h-4" />
+                카테고리
+              </span>
+              <div className="min-w-[100px]">
+                <BadgeSelector
+                  options={categories.map((cat) => ({
+                    label: cat.title,
+                    value: String(cat.id),
+                    bgColor: cat.color,
+                    textColor: cat.textColor,
+                  }))}
+                  selected={category_id ? String(category_id) : ''}
+                  onChange={(val) => setCategoryId(val ? Number(val) : null)}
+                  onCreateOption={handleAddCategory}
+                  onDeleteOption={handleDeleteCategory}
+                  renderBadge={(opt) => (
+                    <CategoryBadge
+                      label={opt.label}
+                      bgColor={opt.bgColor}
+                      textColor={opt.textColor}
+                    />
+                  )}
+                  label="카테고리"
+                  withSearch
+                  displayMode="block"
+                />
+              </div>
+            </div>
+
+            {/* 마감일 */}
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-2 text-sm whitespace-nowrap">
+                <Calendar className="w-4 h-4" />
+                마감일
+              </span>
+              <SingleDatePicker
+                date={dueDate}
+                onChange={(date) => setDueDate(date)}
+              />
+            </div>
+          </div>
+
+          {/* 메모 입력 */}
+          <div>
+            <label className="text-sm block mb-1">메모</label>
+            <textarea
+              className="w-full min-h-[100px] border border-gray-300 rounded-[7px] px-3 py-2 text-sm placeholder:text-gray-400"
+              placeholder="일정에 관한 메모를 입력하세요."
+              value={memo}
+              onChange={(e) => setMemo(e.target.value)}
+            />
+          </div>
+        </div>
+      }
       footer={
         <div className="flex justify-end gap-2">
           <DialogClose asChild>
@@ -119,96 +210,6 @@ export function AddTask({
           </DialogClose>
         </div>
       }
-    >
-      <div className="p-1">
-        <div>{quadrantTitles[quadrant]}</div>
-
-        {/* 제목 */}
-        <div>
-          <input
-            className="text-3xl font-bold w-full border-transparent outline-none placeholder:text-[#CECFCD]"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="새로운 일정"
-          />
-        </div>
-
-        <div className="py-2 flex flex-col gap-2">
-          {/* 타입 선택 */}
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1 text-sm text-gray-500">
-              <CircleDashed className="w-4 h-4" />
-              타입
-            </span>
-            <div className="min-w-[100px]">
-              <BadgeSelector
-                options={typeOptions}
-                selected={type}
-                onChange={(val) => setType(val as ActualTaskType)}
-                renderBadge={(option) => (
-                  <TypeBadge type={option.value as ActualTaskType} />
-                )}
-                displayMode="block"
-              />
-            </div>
-          </div>
-
-          {/* 카테고리 선택 */}
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1 text-sm text-gray-500">
-              <Tag className="w-4 h-4" />
-              카테고리
-            </span>
-            <div className="min-w-[100px]">
-              <BadgeSelector
-                options={categories.map((cat) => ({
-                  label: cat.title,
-                  value: String(cat.id),
-                  bgColor: cat.color,
-                  textColor: cat.textColor,
-                }))}
-                selected={category_id ? String(category_id) : ''}
-                onChange={(val) => setCategoryId(val ? Number(val) : null)}
-                onCreateOption={handleAddCategory}
-                onDeleteOption={handleDeleteCategory}
-                renderBadge={(opt) => (
-                  <CategoryBadge
-                    label={opt.label}
-                    bgColor={opt.bgColor}
-                    textColor={opt.textColor}
-                  />
-                )}
-                label="카테고리"
-                withSearch
-                displayMode="block"
-              />
-            </div>
-          </div>
-
-          {/* 마감일 */}
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1 text-sm text-gray-500 whitespace-nowrap">
-              <Calendar className="w-4 h-4" />
-              마감일
-            </span>
-            <SingleDatePicker
-              date={dueDate}
-              onChange={(date) => setDueDate(date)}
-            />
-          </div>
-        </div>
-
-        {/* 메모 입력 */}
-        <div>
-          <label className="text-sm block mb-1">메모</label>
-          <textarea
-            className="w-full min-h-[120px] border rounded px-3 py-2 text-sm placeholder:text-gray-400"
-            placeholder="일정에 관한 메모를 입력하세요."
-            value={memo}
-            onChange={(e) => setMemo(e.target.value)}
-          />
-        </div>
-      </div>
-    </Modal>
+    ></Modal>
   );
 }
