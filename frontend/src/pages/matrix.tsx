@@ -65,10 +65,11 @@ export default function MatrixPage() {
     }),
     [uncompletedTasks],
   );
-
   useEffect(() => {
-    setActiveTaskId(null);
-  }, [location.pathname]);
+    if (!location.pathname.includes('/matrix')) {
+      setActiveTaskId(null);
+    }
+  }, [location, setActiveTaskId]);
 
   return (
     <DndContext

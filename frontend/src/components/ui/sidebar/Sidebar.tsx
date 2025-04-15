@@ -1,18 +1,12 @@
 import { cn } from '@/lib/utils';
-import {
-  Network,
-  LayoutDashboard,
-  Grid2x2,
-  TimerReset,
-  ChevronsRight,
-} from 'lucide-react';
+import { Network, Grid2x2, TimerReset, ChevronsRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router';
 
 import { useSidebarStore } from '@/store/sidebarStore';
 import SubSidebar from '@/components/ui/sidebar/subSidebar/SubSidebar';
+import { useEffect } from 'react';
 
 const navItems = [
-
   {
     id: 'matrix',
     icon: <Grid2x2 size={24} />,
@@ -45,6 +39,12 @@ export default function Sidebar() {
     navItems.find((item) => location.pathname.includes(item.route)) || null;
   const activeId = activeItem?.id || null;
   const activeItemHasPanel = activeItem?.hasPanel || false;
+
+  useEffect(() => {
+    if (activeItemHasPanel) {
+      setPanelVisible(true);
+    }
+  }, [location.pathname, activeItemHasPanel, setPanelVisible]);
 
   const handleNavItemClick = (e: React.MouseEvent, route: string) => {
     const target = e.target as HTMLElement;
@@ -98,7 +98,9 @@ export default function Sidebar() {
           <div
             className={cn(
               'h-full bg-white transition-all duration-300 ease-in-out overflow-hidden border-none',
-              panelVisible ? 'w-[300px] opacity-100' : 'w-0 opacity-0 border-r border-gray-300',
+              panelVisible
+                ? 'w-[300px] opacity-100'
+                : 'w-0 opacity-0 border-r border-gray-300',
             )}
           >
             {activeId && <SubSidebar activeId={activeId} />}
