@@ -103,7 +103,6 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
   };
 
   const handleCreatePomodoro = () => {
-    console.log('linkedEisenhower', linkedEisenhower);
     if (linkedEisenhower?.pomodoroId) {
       navigate(`/mindmap/${linkedEisenhower?.pomodoroId}`);
 

@@ -20,14 +20,12 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
   const navigate = useNavigate();
   const deleteMindMap = useDeleteMindMap();
   const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
+  const disconnectTaskFromMindMap = useMatrixStore(
+    (state) => state.disconnectTaskFromMindMap,
+  );
 
   const { title, type, id, lastModifiedAt, linked, eisenhowerItemDTO } =
     mindmap;
-
-  const statusColor =
-    type === 'THINKING'
-      ? 'bg-purple-100 text-primary-100'
-      : 'bg-white border border-primary-100 text-primary-100';
 
   const cardBg = selected ? 'bg-[#ECE5FF] rounded-lg' : 'bg-white';
 
@@ -55,6 +53,7 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
 
   const handleDelete = () => {
     deleteMindMap(id);
+    disconnectTaskFromMindMap(eisenhowerItemDTO?.id);
     navigate('/mindmap');
   };
 
@@ -85,12 +84,18 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
           title="이 마인드맵을 삭제할까요?"
           description="해야 할 일이나 생각이 떠올랐다면 여기 적어보세요!
             질문을 통해 더 깊이 고민할 수 있도록 도와줄게요"
-          footer={<Button size='sm' onClick={handleDelete}>삭제하기</Button>}
+          footer={
+            <Button size="sm" onClick={handleDelete}>
+              삭제하기
+            </Button>
+          }
         >
           <div className="border-[1px] border-[#E5E5E5] p-[20px] rounded-[7px] flex flex-col gap-[10px]">
             <TypeBadge type={type} />
 
-            <div className="font-heading-4 font-semibold text-[18px] h-[18px]">{title}</div>
+            <div className="font-heading-4 font-semibold text-[18px] h-[18px]">
+              {title}
+            </div>
 
             <p className="text-[14px] text-[#6E726E]">
               최종 수정: {formatDate(lastModifiedAt)}
