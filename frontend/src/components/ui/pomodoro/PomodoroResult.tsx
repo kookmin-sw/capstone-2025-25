@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button.tsx';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { useState } from 'react';
 import DeletePomodoro from '@/components/ui/Modal/DeletePomodoro.tsx';
-
 export default function PomodoroResult({
   linkedUnlinkedPomodoro,
 }: {
@@ -43,7 +42,7 @@ export default function PomodoroResult({
           <h2 className="font-semibold text-[18px]">계획 실행 시간</h2>
           <div className="px-[17px] py-[20px] bg-[#F2F2F2] rounded-[10px] w-full">
             <div
-              className="flex gap-1.25 h-[66px]"
+              className="flex gap-1.25 h-[50px]"
               style={{ width: `${plannedTimeRatio * 100}%` }}
             >
               <MultiSlider
@@ -61,7 +60,7 @@ export default function PomodoroResult({
           <h2 className="font-semibold text-[18px]">실제 실행 시간</h2>
           <div className="px-[17px] py-[20px] bg-[#F2F2F2] rounded-[10px] w-full">
             <div
-              className="flex gap-1.25 h-[66px]"
+              className="flex gap-1.25 h-[50px]"
               style={{ width: `${executedTimeRatio * 100}%` }}
             >
               <MultiSlider
@@ -125,7 +124,8 @@ export default function PomodoroResult({
       <div className="flex w-full justify-end">
         <DeletePomodoro
             trigger = {<Button
-                className="w-[180px] h-[48px] text-[16px] black"
+                size='lg'
+                className=" text-[16px] black"
                 onClick={deletePomodoro}
             >
                 삭제하기

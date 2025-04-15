@@ -124,8 +124,17 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
         <div className="w-full flex justify-end">
           {page === 0 ? (
             <Button
-              className="px-8"
+              size="sm"
               onClick={() => setPage(1)}
+              variant={
+                linkedEisenhower?.id
+                  ? hours !== 0 || minutes !== 0
+                    ? 'black'
+                    : 'disabled'
+                  : title?.trim() && (hours !== 0 || minutes !== 0)
+                    ? 'black'
+                    : 'disabled'
+              }
               disabled={
                 linkedEisenhower?.id
                   ? hours === 0 && minutes === 0
@@ -137,8 +146,9 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
           ) : (
             <div className="flex w-full justify-between gap-4">
               <Button
+                size="sm"
                 variant="white"
-                className="px-8 flex-1"
+                className="flex-1"
                 onClick={() => {
                   setPage(0);
                 }}
@@ -147,7 +157,8 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
               </Button>
               <DialogClose asChild>
                 <Button
-                  className="px-8 w-full flex-1"
+                    size="sm"
+                  className=" w-full flex-1"
                   onClick={handleCreatePomodoro}
                 >
                   다음
@@ -227,11 +238,11 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
             ) : (
               <div className="flex px-4 py-4 border-1 border-[#E5E5E5] gap-2.5 rounded-[10px]">
                 <Timer className="text-primary-100" />
-                <p className="text-[16px] font-semibold">{title}</p>
+                <p className="text-[16px] h-[18px] font-semibold">{title}</p>
               </div>
             )}
             <div className="flex flex-col gap-[10px]">
-              <div className=" bg-[#F2F2F2] rounded-[10px] px-[25px] py-[20px] h-[87px]">
+              <div className=" bg-[#F2F2F2] rounded-[7px] px-[25px] py-[20px] h-[87px]">
                 <MultiSlider
                   min={0}
                   max={totalTime}

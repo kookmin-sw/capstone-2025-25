@@ -285,7 +285,7 @@ export function PomodoroTimer({
   return (
     <div className="flex flex-col items-center">
       <>
-        <div className="relative w-[340px] h-[340px] mb-8">
+        <div className="relative w-[320px] h-[320px] mb-8">
           {/* Canvas로 타이머 그리기 */}
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
