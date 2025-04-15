@@ -117,24 +117,12 @@ export function TaskCard({
           >
             {variant === 'done' && <Check className="w-3 h-3" />}
           </div>
-          <div
-            className={cn(
-              'text-md font-medium line-clamp-2',
-              variant === 'done' && 'text-gray-500',
-            )}
-          >
-            {title}
-          </div>
+          <div className={cn('text-md font-medium line-clamp-2')}>{title}</div>
         </div>
 
         {/* 메모 */}
         {memo && (
-          <div
-            className={cn(
-              'text-xs mb-2 line-clamp-2',
-              variant === 'done' ? 'text-gray-400' : 'text-[#6e726e]',
-            )}
-          >
+          <div className={cn('text-xs mb-2 line-clamp-2 text-gray-700')}>
             {memo}
           </div>
         )}
@@ -143,14 +131,13 @@ export function TaskCard({
         {dueDate && (
           <div
             className={cn(
-              'text-xs flex items-center mt-auto',
-              variant === 'done'
-                ? 'text-gray-400'
-                : 'text-[color:var(--color-primary-100)]',
+              'text-xs flex items-center mt-auto text-[color:var(--color-primary-100)]',
             )}
           >
             <Calendar className="w-3 h-3 mr-1" />
-            <span>{format(new Date(dueDate), 'yyyy.MM.dd')}</span>
+            <span className="text-ceter">
+              {format(new Date(dueDate), 'yyyy.MM.dd')}
+            </span>
           </div>
         )}
       </div>

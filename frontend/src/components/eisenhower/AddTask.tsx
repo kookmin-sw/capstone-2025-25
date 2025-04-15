@@ -8,20 +8,15 @@ import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { BadgeSelector } from '@/components/common/BadgeSelector';
 import type { ActualTaskType, Quadrant, Task } from '@/types/task';
-import type { Category } from '@/types/category';
 import { quadrantTitles } from '@/constants/section';
+import { useCategoryStore } from '@/store/useCategoryStore';
 
 type AddTaskProps = {
   quadrant: Quadrant;
-  categoryOptions: Category[];
   onCreateTask: (task: Task) => void;
 };
 
-export function AddTask({
-  quadrant,
-  categoryOptions,
-  onCreateTask,
-}: AddTaskProps) {
+export function AddTask({ quadrant, onCreateTask }: AddTaskProps) {
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
   const [dueDate, setDueDate] = useState<string | null>(
@@ -29,6 +24,8 @@ export function AddTask({
   );
   const [type, setType] = useState<ActualTaskType>('TODO');
   const [category_id, setCategoryId] = useState<number | null>(null);
+
+  const { categories, addCategory, removeCategory } = useCategoryStore();
 
   const resetForm = () => {
     setTitle('');
@@ -58,17 +55,40 @@ export function AddTask({
     resetForm();
   };
 
+  const handleAddCategory = (title: string) => {
+    const trimmed = title.trim();
+    const alreadyExists = categories.some((cat) => cat.title === trimmed);
+    if (!trimmed || alreadyExists) return;
+
+    addCategory(trimmed);
+
+    // 방금 추가한 카테고리 선택
+    setTimeout(() => {
+      const added = useCategoryStore
+        .getState()
+        .categories.find((c) => c.title === trimmed);
+      if (added) setCategoryId(added.id);
+    }, 0);
+  };
+
+  const handleDeleteCategory = (value: string) => {
+    const id = Number(value);
+
+    // 삭제 실행
+    removeCategory(id);
+
+    const current = useCategoryStore
+      .getState()
+      .categories.find((c) => c.id === id);
+    if (!current && category_id === id) {
+      setCategoryId(null);
+    }
+  };
+
   const typeOptions = [
     { label: 'TODO', value: 'TODO' },
     { label: 'THINKING', value: 'THINKING' },
   ];
-
-  const categoryOptionsFormatted = categoryOptions.map((cat) => ({
-    label: cat.title,
-    value: String(cat.id),
-    bgColor: cat.color,
-    textColor: cat.textColor,
-  }));
 
   return (
     <Modal
@@ -92,6 +112,8 @@ export function AddTask({
     >
       <div className="p-1">
         <div>{quadrantTitles[quadrant]}</div>
+
+        {/* 제목 */}
         <div>
           <input
             className="text-3xl font-bold w-full border-transparent outline-none placeholder:text-[#CECFCD]"
@@ -116,11 +138,12 @@ export function AddTask({
                 renderBadge={(option) => (
                   <TypeBadge type={option.value as ActualTaskType} />
                 )}
-                displayMode="block" // 아래쪽에만 표시되도록
+                displayMode="block"
               />
             </div>
           </div>
 
+          {/* 카테고리 선택 */}
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1 text-sm text-gray-500">
               <Tag className="w-4 h-4" />
@@ -128,22 +151,25 @@ export function AddTask({
             </span>
             <div className="min-w-[100px]">
               <BadgeSelector
-                options={categoryOptionsFormatted}
-                selected={String(category_id ?? '')}
-                onChange={(val) =>
-                  setCategoryId(val === '' ? null : Number(val))
-                }
-                renderBadge={(option) =>
-                  option.value ? (
-                    <CategoryBadge
-                      label={option.label}
-                      bgColor={option.bgColor}
-                      textColor={option.textColor}
-                    />
-                  ) : (
-                    <span className="text-sm text-gray-400">비어있음</span>
-                  )
-                }
+                options={categories.map((cat) => ({
+                  label: cat.title,
+                  value: String(cat.id),
+                  bgColor: cat.color,
+                  textColor: cat.textColor,
+                }))}
+                selected={category_id ? String(category_id) : ''}
+                onChange={(val) => setCategoryId(val ? Number(val) : null)}
+                onCreateOption={handleAddCategory}
+                onDeleteOption={handleDeleteCategory}
+                renderBadge={(opt) => (
+                  <CategoryBadge
+                    label={opt.label}
+                    bgColor={opt.bgColor}
+                    textColor={opt.textColor}
+                  />
+                )}
+                label="카테고리"
+                withSearch
                 displayMode="block"
               />
             </div>

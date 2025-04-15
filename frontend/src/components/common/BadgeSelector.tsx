@@ -10,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Check, ChevronDown } from 'lucide-react';
+import { Check, ChevronDown, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface BadgeOption {
@@ -28,7 +28,9 @@ interface BadgeSelectorProps {
   label?: string;
   placeholder?: string;
   withSearch?: boolean;
-  displayMode?: 'inline' | 'block'; // ✅ 추가됨
+  displayMode?: 'inline' | 'block';
+  onCreateOption?: (label: string) => void;
+  onDeleteOption?: (value: string) => void;
 }
 
 export function BadgeSelector({
@@ -40,9 +42,38 @@ export function BadgeSelector({
   placeholder = '검색...',
   withSearch = true,
   displayMode = 'inline',
+  onCreateOption,
+  onDeleteOption,
 }: BadgeSelectorProps) {
   const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const selectedOption = options.find((o) => o.value === selected);
+
+  const handleSelect = (value: string) => {
+    onChange(value);
+    setOpen(false);
+  };
+
+  const handleCreate = () => {
+    if (onCreateOption && searchValue.trim()) {
+      onCreateOption(searchValue.trim());
+      setSearchValue('');
+      setOpen(false);
+    }
+  };
+
+  const handleDelete = (e: React.MouseEvent, value: string) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (onDeleteOption) {
+      onDeleteOption(value);
+    }
+  };
+
+  const filtered = options.filter((opt) =>
+    opt.label.toLowerCase().includes(searchValue.toLowerCase()),
+  );
+  const noResult = withSearch && searchValue && filtered.length === 0;
 
   return (
     <div className={displayMode === 'inline' ? 'relative w-30' : ''}>
@@ -82,31 +113,59 @@ export function BadgeSelector({
         <PopoverContent className="w-52 p-0">
           <Command>
             {withSearch && (
-              <>
-                <CommandInput placeholder={placeholder} className="h-9" />
-                <CommandEmpty>결과 없음</CommandEmpty>
-              </>
+              <CommandInput
+                value={searchValue}
+                onValueChange={setSearchValue}
+                placeholder={placeholder}
+                className="h-9"
+              />
             )}
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.label}
-                  onSelect={() => {
-                    onChange(option.value);
-                    setOpen(false);
-                  }}
-                  className="cursor-pointer"
+
+            {noResult ? (
+              <CommandEmpty>
+                <button
+                  className="w-full flex items-center justify-start gap-2 p-2 hover:bg-gray-100 text-sm"
+                  onClick={handleCreate}
                 >
-                  <div className="flex items-center justify-between w-full">
-                    {renderBadge(option)}
-                    {selected === option.value && (
-                      <Check className="w-4 h-4 text-muted-foreground" />
-                    )}
-                  </div>
-                </CommandItem>
-              ))}
-            </CommandGroup>
+                  <Plus className="w-4 h-4" />
+                  <span>“{searchValue}” 추가하기</span>
+                </button>
+              </CommandEmpty>
+            ) : (
+              <CommandGroup>
+                {filtered.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    value={option.label}
+                    onSelect={() => handleSelect(option.value)}
+                    className="cursor-pointer group"
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      {renderBadge(option)}
+                      <div className="flex items-center gap-1">
+                        {selected === option.value && (
+                          <Check className="w-4 h-4 text-muted-foreground" />
+                        )}
+
+                        {withSearch && onDeleteOption && (
+                          <button
+                            type="button"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleDelete(e, option.value);
+                            }}
+                          >
+                            <X className="w-4 h-4 text-muted-foreground" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
           </Command>
         </PopoverContent>
       </Popover>

@@ -33,7 +33,7 @@ export function CompletedView({
   });
 
   return (
-    <div className="bg-white rounded-lg p-4 border border-[#e5e5e5]">
+    <div className="bg-gray-100 rounded-lg p-4">
       {filteredTasks.length > 0 ? (
         <div className="space-y-2">
           {filteredTasks.map((task) => (

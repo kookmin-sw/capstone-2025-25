@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-@theme {
+:root {
     /* 공통 색상 */
     --color-border-gray: #e3e3e3;
 

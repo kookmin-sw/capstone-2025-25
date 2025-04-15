@@ -47,12 +47,12 @@ export function FilterBar({
   ];
 
   return (
-    <div className="bg-white rounded-lg p-4">
+    <div className="bg-white rounded-lg p-4 border border-gray-300">
       <div className="flex flex-col md:flex-row justify-between gap-3">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
           {/* 타입 필터 */}
           <BadgeSelector
-            options={typeOptions as unknown as any}
+            options={typeOptions as unknown as never}
             selected={selectedType}
             onChange={(value) =>
               onTypeChange(value as 'ALL' | 'TODO' | 'THINKING')
