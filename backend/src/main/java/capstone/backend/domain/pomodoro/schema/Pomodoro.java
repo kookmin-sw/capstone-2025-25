@@ -43,14 +43,20 @@ public class Pomodoro {
     @Column(name = "total_planned_time", nullable = false)
     private LocalTime totalPlannedTime;
 
+    @Column(name = "total_planned_working_time", nullable = false)
+    private LocalTime totalPlannedWorkingTime;
+
+    @Column(name = "total_planned_break_time", nullable = false)
+    private LocalTime totalPlannedBreakTime;
+
     @Column(name = "total_executed_time")
     private LocalTime totalExecutedTime;
 
-    @Column(name = "total_working_duration")
-    private LocalTime totalWorkingTime;
+    @Column(name = "total_executed_working_time")
+    private LocalTime totalExecutedWorkingTime;
 
-    @Column(name = "total_break_duration")
-    private LocalTime totalBreakTime;
+    @Column(name = "total_executed_break_time")
+    private LocalTime totalExecutedBreakTime;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb", nullable = false, name = "planned_cycles")
@@ -64,13 +70,17 @@ public class Pomodoro {
             Member member,
             String title,
             LocalTime totalPlannedTime,
-            List<PomodoroCycle> pomodoroCycles
+            List<PomodoroCycle> pomodoroCycles,
+            LocalTime totalPlannedWorkingTime,
+            LocalTime totalPlannedBreakTime
     ) {
         return Pomodoro.builder()
                 .title(title)
                 .member(member)
                 .totalPlannedTime(totalPlannedTime)
                 .plannedCycles(pomodoroCycles)
+                .totalPlannedWorkingTime(totalPlannedWorkingTime)
+                .totalPlannedBreakTime(totalPlannedBreakTime)
                 .build();
     }
 
@@ -81,19 +91,19 @@ public class Pomodoro {
     }
 
     // 총 실행 시간 업데이트
-    public void updateTotalWorkingTime(LocalTime workingTime) {
+    public void updateTotalExecutedWorkingTime(LocalTime workingTime) {
         if (workingTime == null || workingTime.isBefore(LocalTime.of(0, 0, 0))) {
             throw new PomodoroDurationException();
         }
-        this.totalWorkingTime = workingTime;
+        this.totalExecutedWorkingTime = workingTime;
     }
 
     // 총 휴식 시간 업데이트
-    public void updateTotalBreakTime(LocalTime breakTime) {
+    public void updateTotalExecutedBreakTime(LocalTime breakTime) {
         if (breakTime == null || breakTime.isBefore(LocalTime.of(0, 0, 0))) {
             throw new PomodoroDurationException();
         }
-        this.totalBreakTime = breakTime;
+        this.totalExecutedBreakTime = breakTime;
     }
 
     // 총 이용 시간

@@ -1,7 +1,6 @@
 package capstone.backend.domain.pomodoro.service;
 
-import static capstone.backend.domain.pomodoro.util.PomodoroTimeUtils.calculateTotalTimeSummary;
-import static capstone.backend.domain.pomodoro.util.PomodoroTimeUtils.convertSecondsToLocalTime;
+import static capstone.backend.domain.pomodoro.util.PomodoroTimeUtils.*;
 
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
@@ -42,11 +41,16 @@ public class PomodoroService {
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
+        // 총 계획 시간 파싱 (times[0] = 집중시간, times[1] = 휴식시간)
+        int[] times = calculateTotalTimeSummary(request.plannedCycles());
+
         Pomodoro pomodoro = Pomodoro.create(
                 member,
                 request.title(),
                 LocalTime.parse(request.totalPlannedTime()),
-                request.plannedCycles()
+                request.plannedCycles(),
+                convertSecondsToLocalTime(times[0]),
+                convertSecondsToLocalTime(times[1])
         );
 
         // eisenhowerId가 있으면 매핑
@@ -106,8 +110,8 @@ public class PomodoroService {
         int[] times = calculateTotalTimeSummary(executedCycles);
 
         // Pomodoro 객체 업데이트 (JPA Dirty Checking)
-        pomodoro.updateTotalWorkingTime(convertSecondsToLocalTime(times[0]));
-        pomodoro.updateTotalBreakTime(convertSecondsToLocalTime(times[1]));
+        pomodoro.updateTotalExecutedWorkingTime(convertSecondsToLocalTime(times[0]));
+        pomodoro.updateTotalExecutedBreakTime(convertSecondsToLocalTime(times[1]));
         pomodoro.updateTotalExecutedTime(convertSecondsToLocalTime(times[2]));
 
         // 일일 뽀모도로 총 시간 업데이트
