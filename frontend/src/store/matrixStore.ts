@@ -4,6 +4,11 @@ import type { Task, TaskSections, Quadrant } from '@/types/task';
 import { toast } from 'sonner';
 import { nanoid } from 'nanoid/non-secure';
 
+type DeleteTaskResult = {
+  mindMapId: string | number | null;
+  pomodoroId: string | number | null;
+};
+
 export type MatrixState = {
   allTasks: Task[];
   tasksByQuadrant: TaskSections;
@@ -19,7 +24,7 @@ export type MatrixState = {
     memo: string,
     quadrant?: Quadrant,
   ) => Task;
-  deleteTask: (taskId: string | number) => void;
+  deleteTask: (taskId: string | number) => DeleteTaskResult;
   reorderTasks: (sectionId: Quadrant, newTasks: Task[]) => void;
   saveTask: (updatedTask: Task) => void;
   completeTask: (taskId: string | number) => void;
@@ -111,6 +116,11 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
   },
 
   deleteTask: (taskId) => {
+    const taskToDelete = get().allTasks.find((task) => task.id === taskId);
+
+    const mindMapId = taskToDelete?.mindMapId || null;
+    const pomodoroId = taskToDelete?.pomodoroId || null;
+
     set((state) => {
       const updatedTasks = state.allTasks.filter((task) => task.id !== taskId);
 
@@ -127,6 +137,11 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
     });
 
     toast.success('작업이 삭제되었습니다.');
+
+    return {
+      mindMapId,
+      pomodoroId,
+    };
   },
 
   reorderTasks: (sectionId, newTasks) =>

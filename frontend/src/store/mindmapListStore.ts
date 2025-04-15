@@ -18,6 +18,7 @@ export type MindMapListState = {
     edges: MindMapEdge[],
   ) => void;
   deleteMindMap: (id: string) => void;
+  disconnectMindmapTask: (mindMapId: string | number) => void;
 };
 
 const useStore = create<MindMapListState>((set, get) => ({
@@ -122,6 +123,21 @@ const useStore = create<MindMapListState>((set, get) => ({
       activeMindMapId: newActiveMindMapId,
     });
   },
+
+  disconnectMindmapTask: (mindMapId) => {
+    const mindMapIndex = get().mindMaps.findIndex((m) => m.id === mindMapId);
+
+    if (mindMapIndex !== -1) {
+      const updatedMindMaps = [...get().mindMaps];
+      updatedMindMaps[mindMapIndex] = {
+        ...updatedMindMaps[mindMapIndex],
+        linked: false,
+        eisenhowerItemDTO: undefined,
+      };
+
+      set({ mindMaps: updatedMindMaps });
+    }
+  },
 }));
 
 export const useMindMaps = () => useStore((state) => state.mindMaps);
@@ -138,5 +154,7 @@ export const useSetActiveMindMap = () =>
 export const useSaveMindMapData = () =>
   useStore((state) => state.saveMindMapData);
 export const useDeleteMindMap = () => useStore((state) => state.deleteMindMap);
+export const useDisconnectMindmapTask = () =>
+  useStore((state) => state.disconnectMindmapTask);
 
 export default useStore;

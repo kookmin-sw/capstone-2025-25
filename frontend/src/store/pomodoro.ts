@@ -20,6 +20,7 @@ export type PomodoroListState = {
     eisenhower: Eisenhower | null;
   }) => string;
   deletePomodoro: (id: number) => void;
+  disconnectPomodoroTask: (pomodoroId: number) => void;
 };
 
 const useStore = create<PomodoroListState>((set) => ({
@@ -104,6 +105,39 @@ const useStore = create<PomodoroListState>((set) => ({
       return { pomodoros: updatedPomodoros };
     });
   },
+
+  disconnectPomodoroTask: (pomodoroId) => {
+    set((state) => {
+      const updatedPomodoros = { ...state.pomodoros };
+
+      if (updatedPomodoros.linkedPomodoros) {
+        const pomodoroIndex = updatedPomodoros.linkedPomodoros.findIndex(
+          (item) => item.pomodoro.id === pomodoroId,
+        );
+
+        if (pomodoroIndex !== -1) {
+          const pomodoro = updatedPomodoros.linkedPomodoros[pomodoroIndex];
+
+          const unlinkedPomodoro = {
+            pomodoro: pomodoro.pomodoro,
+            eisenhower: null,
+          };
+
+          updatedPomodoros.linkedPomodoros =
+            updatedPomodoros.linkedPomodoros.filter(
+              (item) => item.pomodoro.id !== pomodoroId,
+            );
+
+          updatedPomodoros.unlinkedPomodoros = [
+            ...(updatedPomodoros.unlinkedPomodoros || []),
+            unlinkedPomodoro,
+          ];
+        }
+      }
+
+      return { pomodoros: updatedPomodoros };
+    });
+  },
 }));
 
 export const usePomodoros = () => useStore((state) => state.pomodoros);
@@ -111,5 +145,7 @@ export const useCreatePomodoro = () =>
   useStore((state) => state.createPomodoro);
 export const useDeletePomodoro = () =>
   useStore((state) => state.deletePomodoro);
+export const useDisconnectPomodoroTask = () =>
+  useStore((state) => state.disconnectPomodoroTask);
 
 export default useStore;
