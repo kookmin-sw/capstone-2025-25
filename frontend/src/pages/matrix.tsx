@@ -67,7 +67,7 @@ export default function MatrixPage() {
   );
 
   return (
-    <div className="flex min-h-0 flex-1 bg-white p-[30px]">
+    <div className="flex min-h-0 flex-1 bg-white p-[30px] h-full">
       <div className="flex-1">
         <DndContext
           sensors={sensors}

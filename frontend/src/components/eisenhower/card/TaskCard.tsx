@@ -70,7 +70,7 @@ export function TaskCard({
           variant === 'default' && !isDragging && 'hover:shadow-md',
           variant === 'default'
             ? 'bg-white border border-gray-100 cursor-pointer'
-            : 'bg-muted border border-gray-200 cursor-default shadow-none',
+            : 'bg-muted border border-gray-300 cursor-default shadow-none',
           isDragging &&
             'opacity-50 z-10 shadow-lg border-2 border-purple-300 cursor-grabbing',
           className,
@@ -111,8 +111,8 @@ export function TaskCard({
             className={cn(
               'check-icon w-[18px] h-[18px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center',
               variant === 'done'
-                ? 'bg-[color:var(--color-primary-100)] text-white'
-                : 'border border-[#8D5CF6]',
+                ? 'bg-primary-100 text-white'
+                : 'border border-primary-100',
             )}
           >
             {variant === 'done' && <Check className="w-3 h-3" />}

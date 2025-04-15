@@ -47,7 +47,7 @@ export function CompletedView({
         </div>
       ) : (
         <div className="text-center py-8 text-gray-500">
-          완료된 작업이 없습니다.
+          완료된 일정이 없습니다.
         </div>
       )}
     </div>

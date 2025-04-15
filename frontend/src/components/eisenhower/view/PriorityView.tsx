@@ -111,22 +111,22 @@ export function PriorityView({
   const quadrantIcons: Record<Quadrant, JSX.Element> = {
     // 보드 숫자 아이콘
     Q1: (
-      <div className="max-w-6 w-full max-h-6 h-full rounded-full border border-black text-sm font-semibold flex items-center justify-center">
+      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
         1
       </div>
     ),
     Q2: (
-      <div className="max-w-6 w-full max-h-6 h-full rounded-full border border-black text-sm font-smeibold flex items-center justify-center">
+      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
         2
       </div>
     ),
     Q3: (
-      <div className="max-w-6 w-full max-h-6 h-full rounded-full border border-black text-sm font-semibold flex items-center justify-center">
+      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
         3
       </div>
     ),
     Q4: (
-      <div className="max-w-6 w-full max-h-6 h-full rounded-full border border-black  text-sm font-semibold flex items-center justify-center">
+      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
         4
       </div>
     ),
@@ -192,9 +192,19 @@ export function PriorityView({
                 } min-h-[300px] flex flex-col ${quadrantColors[quadrant]}`}
               >
                 <div className="flex justify-between items-center pb-[14px]">
-                  <div className="flex gap-[5px] items-center">
-                    <div className="w-6 h-6s">{quadrantIcons[quadrant]}</div>
-                    <div className="font-semibold flex items-center gap-[5px] whitespace-nowrap text-xl">
+                  <div className="flex gap-[5px] items-center justify-center">
+                    <div
+                      className={`${
+                        viewMode === 'board' ? 'w-5 h-5' : 'w-6 h-6'
+                      } `}
+                    >
+                      {quadrantIcons[quadrant]}
+                    </div>
+                    <div
+                      className={`${
+                        viewMode === 'board' ? 'text-lg' : 'text-xl'
+                      } font-semibold flex items-center gap-[5px] max-w-[300px] w-full`}
+                    >
                       {quadrantTitles[quadrant]}
                     </div>
                     <div className="font-sm text-[#6E726E] not-italic">
@@ -207,7 +217,8 @@ export function PriorityView({
                     categoryOptions={categories.map((c) => ({
                       id: c.id,
                       title: c.title,
-                      color: c.color,
+                      bgColor: c.color,
+                      textColor: c.textColor,
                     }))}
                     onCreateTask={onCreateTask}
                   />

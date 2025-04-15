@@ -16,7 +16,7 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
       categories: [
         {
           id: 1,
-          title: '작업',
+          title: '일정',
           color: '#D9ECFF',
           textColor: '#4A90E2',
         },

@@ -14,9 +14,19 @@ import { useCategoryStore } from '@/store/useCategoryStore';
 type AddTaskProps = {
   quadrant: Quadrant;
   onCreateTask: (task: Task) => void;
+  categoryOptions?: {
+    bgColor: string;
+    id: number;
+    title: string;
+    textColor: string | undefined;
+  }[];
 };
 
-export function AddTask({ quadrant, onCreateTask }: AddTaskProps) {
+export function AddTask({
+  quadrant,
+  onCreateTask,
+  // categoryOptions,
+}: AddTaskProps) {
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
   const [dueDate, setDueDate] = useState<string | null>(
