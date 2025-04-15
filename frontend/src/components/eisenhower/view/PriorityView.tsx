@@ -137,19 +137,19 @@ export function PriorityView({
   const getQuadrantColors = (viewMode: ViewMode): Record<Quadrant, string> => {
     if (viewMode === 'matrix') {
       return {
-        Q1: 'bg-[#F5F1FF] border border-gray-300',
-        Q2: 'bg-[#FAF6FF] border border-t-gray-300 border-r-gray-300 border-b-gray-300',
-        Q3: 'bg-[#FAF8FD] border border-l-gray-300 border-b-gray-300 border-r-gray-300',
-        Q4: 'bg-[#FAFAFA] border border-b-gray-300 border-r-gray-300',
+        Q1: 'bg-[#F5F1FF] border-gray-300 border',
+        Q2: 'bg-[#FAF6FF] border-t border-r border-b border-gray-300',
+        Q3: 'bg-[#FAF8FD] border-l border-b border-r border-gray-300',
+        Q4: 'bg-[#FAFAFA] border-b border-r border-gray-300',
       };
     }
 
     // board view: 전체 동일하게 full border + 색상 조정
     return {
       Q1: 'bg-[#F5F1FF] border border-gray-300',
-      Q2: 'bg-[#FAF6FF] border border-t-gray-300 border-r-gray-300 border-b-gray-300',
-      Q3: 'bg-[#FAF8FD] border border-t-gray-300 border-r-gray-300 border-b-gray-300',
-      Q4: 'bg-[#FAFAFA] border border-t-gray-300 border-r-gray-300 border-b-gray-300',
+      Q2: 'bg-[#FAF6FF] border-t border-r border-b border-gray-300',
+      Q3: 'bg-[#FAF8FD] border-t border-r border-b border-gray-300',
+      Q4: 'bg-[#FAFAFA] border-t border-r border-b border-gray-300',
     };
   };
 
@@ -189,7 +189,7 @@ export function PriorityView({
             <Droppable key={quadrant} id={quadrant}>
               <div
                 className={`p-4 ${
-                  viewMode === 'board' ? 'h-full' : 'h-[400px]'
+                  viewMode === 'board' ? 'h-full' : 'min-h-[400px] h-full'
                 } min-h-[300px] flex flex-col ${quadrantColors[quadrant]}`}
               >
                 <div className="flex justify-between items-center pb-[14px]">
