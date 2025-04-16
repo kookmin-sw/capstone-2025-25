@@ -1,4 +1,4 @@
-import { JSX, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   DndContext,
   rectIntersection,
@@ -108,30 +108,6 @@ export function PriorityView({
       ? 'grid-cols-1 md:grid-cols-4'
       : 'grid-cols-1 md:grid-cols-2';
 
-  const quadrantIcons: Record<Quadrant, JSX.Element> = {
-    // 보드 숫자 아이콘
-    Q1: (
-      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
-        1
-      </div>
-    ),
-    Q2: (
-      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
-        2
-      </div>
-    ),
-    Q3: (
-      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
-        3
-      </div>
-    ),
-    Q4: (
-      <div className="w-6 h-6 rounded-full border border-black flex items-center justify-center font-semibold text-sm">
-        4
-      </div>
-    ),
-  };
-
   type ViewMode = 'matrix' | 'board';
 
   const getQuadrantColors = (viewMode: ViewMode): Record<Quadrant, string> => {
@@ -192,22 +168,17 @@ export function PriorityView({
                 } min-h-[300px] flex flex-col ${quadrantColors[quadrant]}`}
               >
                 <div className="flex justify-between items-center pb-[14px]">
-                  <div className="flex gap-[5px] items-center justify-center">
-                    <div
-                      className={`${
-                        viewMode === 'board' ? 'w-5 h-5' : 'w-6 h-6'
-                      } `}
-                    >
-                      {quadrantIcons[quadrant]}
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-full border border-black text-sm font-semibold leading-none">
+                      {quadrant.replace('Q', '')}
                     </div>
+
                     <div
-                      className={`${
-                        viewMode === 'board' ? 'text-lg' : 'text-xl'
-                      } font-semibold flex items-center gap-[5px] max-w-[300px] w-full`}
+                      className={`${viewMode === 'board' ? 'text-lg' : 'text-xl'} font-semibold`}
                     >
                       {quadrantTitles[quadrant]}
                     </div>
-                    <div className="font-sm text-[#6E726E] not-italic">
+                    <div className="text-sm text-[#6E726E]">
                       {filtered.length}
                     </div>
                   </div>
