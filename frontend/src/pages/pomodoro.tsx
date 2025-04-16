@@ -41,7 +41,9 @@ export default function Pomodoro() {
       <div className="flex-1">
         <main className="flex flex-1 min-h-0 flex-col gap-[30px] h-full">
           <div className=" flex-col gap-[15px] flex">
-            <h1 className="text-[32px] font-semibold h-[32px]">뽀모도로 실행</h1>
+            <h1 className="text-[32px] font-semibold h-[32px]">
+              뽀모도로 실행
+            </h1>
             <p className="text-[16px] font-normal text-[#6E726E]">
               성장한 뽀모도로 시간에 맞춰 집중과 휴식을 진행해보세요!
               <br />
@@ -49,9 +51,13 @@ export default function Pomodoro() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center gap-[30px] min-h-0 flex-1 justify-center" >
+          <div className="flex flex-col items-center gap-[30px] min-h-0 flex-1 justify-center">
             {data?.eisenhower ? (
-                <TaskCard task={data?.eisenhower} className='hover:shadow-none cursor-default'/>
+              <TaskCard
+                task={data?.eisenhower}
+                className="hover:shadow-none cursor-default"
+                variant="inactive"
+              />
             ) : null}
             {data?.pomodoro?.executedCycles?.length ? (
               <PomodoroResult linkedUnlinkedPomodoro={data} />

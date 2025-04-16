@@ -111,7 +111,7 @@ export function NodeToTaskModal({
               <div className="flex items-center gap-1">
                 <div className="w-24 flex items-center gap-1">
                   <Calendar size={15} />
-                  <label className="text-[14px]">마감일</label>
+                  <label className="text-[14px] pt-1">마감일</label>
                 </div>
                 <SingleDatePicker
                   date={dueDate}

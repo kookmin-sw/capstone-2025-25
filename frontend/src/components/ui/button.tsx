@@ -12,7 +12,7 @@ const buttonVariants = cva(
         /* 커스텀 variants */
         black: 'bg-black text-white hover:bg-black/90',
         white: 'bg-white text-black border hover:bg-gray-100',
-        primary: 'bg-button-primary text-white hover:bg-button-primary/90',
+        primary: 'bg-button-primary text-white hover:bg-primary-100',
         disabled: 'bg-button-disabled text-white hover:bg-[#CECFCD]',
 
         /* shadcn/ui 기본 variants */

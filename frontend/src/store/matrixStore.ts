@@ -28,6 +28,7 @@ export type MatrixState = {
   reorderTasks: (sectionId: Quadrant, newTasks: Task[]) => void;
   saveTask: (updatedTask: Task) => void;
   completeTask: (taskId: string | number) => void;
+  toggleCompleteTask: (taskId: string | number) => void;
   connectTaskToMindMap: (
     taskId: string | number | null,
     mindmapId: string | number | null,
@@ -183,7 +184,7 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
     const { updateTask } = get();
     updateTask(updatedTask.id, updatedTask);
 
-    set({ activeTaskId: null });
+    // set({ activeTaskId: null });
     toast.success('작업이 저장되었습니다.');
   },
 
@@ -199,6 +200,31 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
         allTasks: updatedTasks,
       };
     }),
+
+  toggleCompleteTask: (taskId: string | number) => {
+    set((state) => {
+      const task = state.allTasks.find((t) => t.id === taskId);
+      const newStatus = !task?.isCompleted;
+
+      const updatedTasks = state.allTasks.map((task) =>
+        task.id === taskId ? { ...task, isCompleted: newStatus } : task,
+      );
+
+      toast.success(
+        newStatus ? '일정을 완료했습니다.' : '일정 완료를 취소했습니다.',
+      );
+
+      return {
+        allTasks: updatedTasks,
+        tasksByQuadrant: {
+          Q1: updatedTasks.filter((task) => task.quadrant === 'Q1'),
+          Q2: updatedTasks.filter((task) => task.quadrant === 'Q2'),
+          Q3: updatedTasks.filter((task) => task.quadrant === 'Q3'),
+          Q4: updatedTasks.filter((task) => task.quadrant === 'Q4'),
+        },
+      };
+    });
+  },
 
   connectTaskToMindMap: (taskId, mindMapId) => {
     set((state) => {
