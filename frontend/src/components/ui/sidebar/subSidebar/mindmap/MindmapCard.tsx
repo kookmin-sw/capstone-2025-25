@@ -53,7 +53,9 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
 
   const handleDelete = () => {
     deleteMindMap(id);
-    disconnectTaskFromMindMap(eisenhowerItemDTO?.id);
+    if (eisenhowerItemDTO) {
+      disconnectTaskFromMindMap(eisenhowerItemDTO.id);
+    }
     navigate('/mindmap');
   };
 

@@ -1,5 +1,5 @@
+import { TaskType } from '@/types/commonTypes';
 import { useState } from 'react';
-import type { TaskType } from '@/types/task.ts';
 
 export function useTaskFilters() {
   const [selectedType, setSelectedType] = useState<TaskType>('ALL');

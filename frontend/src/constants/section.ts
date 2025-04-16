@@ -1,4 +1,4 @@
-import { Quadrant } from '@/types/task.ts';
+import { Quadrant } from '@/types/commonTypes';
 
 export const quadrantTitles: Record<Quadrant, string> = {
   Q1: '긴급하고 중요한 일',

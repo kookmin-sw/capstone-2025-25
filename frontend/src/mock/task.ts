@@ -11,8 +11,8 @@ export const tasks: Task[] = [
     quadrant: 'Q1',
     order: 0,
     isCompleted: false,
-    createdAt: '2025-04-20',
-    mindMapId: 'hrgRaTSuSTxaBIGNbqm1c',
+    createdAt: '2025-02-20',
+    mindMapId: 23123123,
     pomodoroId: null,
   },
   {
@@ -69,8 +69,8 @@ export const tasks: Task[] = [
     quadrant: 'Q3',
     order: 0,
     isCompleted: false,
-    createdAt: '2025-04-19',
-    mindMapId: 'skNCDUchOkmewQ',
+    createdAt: '2025-02-28',
+    mindMapId: 4920304,
     pomodoroId: null,
   },
 

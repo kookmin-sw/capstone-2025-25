@@ -3,14 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import { cn } from '@/lib/utils';
 import { useCreateMindMap } from '@/store/mindmapListStore';
-import { TodoType } from '@/types/mindMap';
+import { ActualTaskType } from '@/types/commonTypes';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Plus } from 'lucide-react';
 import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 export default function MindmapAddButton() {
-  const [selectedType, setSelectedType] = useState<TodoType>('TODO');
+  const [selectedType, setSelectedType] = useState<ActualTaskType>('TODO');
   const [subject, setSubject] = useState('');
   const createMindmap = useCreateMindMap();
   const navigate = useNavigate();
@@ -32,7 +32,11 @@ export default function MindmapAddButton() {
         질문을 통해 더 깊이 고민할 수 있도록 도와줄게요`}
       footer={
         <DialogClose asChild>
-          <Button size="sm" onClick={handleCreateClick} variant={selectedType && subject ? 'black': 'disabled'}  >
+          <Button
+            size="sm"
+            onClick={handleCreateClick}
+            variant={selectedType && subject ? 'black' : 'disabled'}
+          >
             생성하기
           </Button>
         </DialogClose>

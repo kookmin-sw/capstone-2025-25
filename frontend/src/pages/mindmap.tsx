@@ -1,4 +1,5 @@
 import FlowWrapper from '@/components/reactFlow/FlowWrapper';
+import { parseIdParam } from '@/lib/parseIdParam';
 import { useMindMaps, useSetActiveMindMap } from '@/store/mindmapListStore';
 import {
   useDisableSelectionMode,
@@ -9,6 +10,7 @@ import { useNavigate, useParams } from 'react-router';
 
 export default function MindmapPage() {
   const { id } = useParams();
+  const numericId = parseIdParam(id);
   const setActiveMindMap = useSetActiveMindMap();
   const mindMaps = useMindMaps();
   const navigate = useNavigate();
@@ -22,10 +24,11 @@ export default function MindmapPage() {
       return;
     }
 
-    const isValidId = id && mindMaps.some((mindmap) => mindmap.id === id);
+    const isValidId =
+      id && mindMaps.some((mindmap) => mindmap.id === numericId);
 
     if (id && isValidId) {
-      setActiveMindMap(id);
+      setActiveMindMap(numericId);
       return;
     }
 
@@ -51,5 +54,7 @@ export default function MindmapPage() {
     }
   }, [location.pathname, id]);
 
-  return <div className="h-full">{id && <FlowWrapper mindmapId={id} />}</div>;
+  return (
+    <div className="h-full">{id && <FlowWrapper mindmapId={numericId} />}</div>
+  );
 }

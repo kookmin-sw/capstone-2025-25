@@ -1,7 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Bot, Calendar, Check, GripVertical } from 'lucide-react';
-import type { Task } from '@/types/task';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
@@ -9,11 +8,12 @@ import { format } from 'date-fns';
 import { MouseEvent } from 'react';
 import useMatrixStore from '@/store/matrixStore';
 import { cn } from '@/lib/utils';
+import { EisenhowerBase } from '@/types/commonTypes';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
 interface TaskCardProps {
-  task: Task;
+  task: EisenhowerBase & { category_id?: number | null };
   onClick?: () => void;
   layout?: 'matrix' | 'board';
   dragHandle?: 'full';
@@ -31,7 +31,9 @@ export function TaskCard({
 }: TaskCardProps) {
   const { id, title, memo, dueDate, type, category_id } = task;
   const { categories } = useCategoryStore();
-  const category = categories.find((cat) => cat.id === category_id);
+  const category = category_id
+    ? categories.find((cat) => cat.id === category_id)
+    : null;
 
   const {
     attributes,

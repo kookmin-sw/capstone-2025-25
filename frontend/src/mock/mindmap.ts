@@ -2,7 +2,7 @@ import { MindMap } from '@/types/mindMap';
 
 export const mockMindMaps: MindMap[] = [
   {
-    id: 'hrgRaTSuSTxaBIGNbqm1c',
+    id: 23123123,
     title: '운동하기',
     type: 'TODO',
     lastModifiedAt: '2025-04-12T04:16:18.018Z',
@@ -186,7 +186,6 @@ export const mockMindMaps: MindMap[] = [
       memo: '축구에 관한 운동',
       dueDate: '2025-03-01',
       type: 'TODO',
-      categoryId: 3,
       quadrant: 'Q1',
       order: 0,
       isCompleted: false,
@@ -195,7 +194,7 @@ export const mockMindMaps: MindMap[] = [
   },
 
   {
-    id: 'zmdLOCSTxaasZQlp',
+    id: 1045253,
     title: '여행 계획',
     type: 'TODO',
     lastModifiedAt: '2025-04-12T04:16:18.018Z',
@@ -347,7 +346,7 @@ export const mockMindMaps: MindMap[] = [
   },
 
   {
-    id: 'skNCDUchOkmewQ',
+    id: 4920304,
     title: '학습 계획',
     type: 'TODO',
     lastModifiedAt: '2025-04-12T04:16:18.018Z',
@@ -502,15 +501,16 @@ export const mockMindMaps: MindMap[] = [
       title: '학습 계획',
       memo: '프로그래밍 관련 학습 계획',
       dueDate: '2025-03-13',
-      type: 'THINKING',
-      categoryId: 5,
       quadrant: 'Q3',
+      type: 'THINKING',
       order: 0,
+      isCompleted: false,
+      createdAt: '2025-03-02',
     },
   },
 
   {
-    id: 'tKfkQfkdXpTmzs',
+    id: 126433,
     title: '취미 생활',
     type: 'THINKING',
     lastModifiedAt: '2025-04-12T04:16:18.018Z',

@@ -8,7 +8,7 @@ export default function PomodoroResult({
 }: {
   linkedUnlinkedPomodoro: LinkedUnlinkedPomodoro;
 }) {
-  const { pomodoro, eisenhower } = linkedUnlinkedPomodoro;
+  const { pomodoro } = linkedUnlinkedPomodoro;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const convertToTotalMinutes = (time: TotalTime): number => {

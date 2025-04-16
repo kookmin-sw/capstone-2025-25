@@ -5,9 +5,11 @@ import { useParams, useNavigate } from 'react-router';
 import { useEffect } from 'react';
 import { usePomodoros } from '@/store/pomodoro';
 import { TaskCard } from '@/components/eisenhower/card/TaskCard.tsx';
+import { parseIdParam } from '@/lib/parseIdParam';
 
 export default function Pomodoro() {
   const { id } = useParams();
+  const numericId = parseIdParam(id);
   const navigate = useNavigate();
 
   const pomodoros = usePomodoros();
@@ -20,7 +22,7 @@ export default function Pomodoro() {
   ];
   // id에 따른 예시 데이터
   const data = id
-    ? (allPomodoros.find((item) => item.pomodoro.id === Number(id)) ?? null)
+    ? (allPomodoros.find((item) => item.pomodoro.id === numericId) ?? null)
     : null;
 
   useEffect(() => {

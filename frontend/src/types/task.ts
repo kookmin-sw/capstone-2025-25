@@ -1,21 +1,9 @@
-export type ActualTaskType = 'TODO' | 'THINKING';
-export type TaskType = ActualTaskType | 'ALL';
-export type Quadrant = 'Q1' | 'Q2' | 'Q3' | 'Q4';
+import { EisenhowerBase, Quadrant } from '@/types/commonTypes';
 
-export interface Task {
-  id: string | number;
-  title: string;
-  memo: string;
+export interface Task extends EisenhowerBase {
   category_id: number | null;
-  quadrant: Quadrant;
-  type: ActualTaskType;
-  dueDate: string | null;
-  order: number;
-  isCompleted: boolean;
-  createdAt: string;
-  mindMapId: string | number | null;
-  pomodoroId: string | number | null;
+  mindMapId: number | null;
+  pomodoroId: number | null;
 }
 
-// Tasks organized by quadrant
 export type TaskSections = Record<Quadrant, Task[]>;

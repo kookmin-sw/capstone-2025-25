@@ -20,19 +20,19 @@ import {
   useClearSelectedNodes,
   useToggleNodeSelectionMode,
 } from '@/store/nodeSelection';
-import { Quadrant } from '@/types/task';
 
 import q1Image from '@/assets/q1.svg';
 import q2Image from '@/assets/q2.svg';
 import q3Image from '@/assets/q3.svg';
 import q4Image from '@/assets/q4.svg';
+import { Quadrant } from '@/types/commonTypes';
 
 type NodeToTaskModalProps = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   taskData: {
     title: string;
-    id: string | number | null;
+    id: number | null;
   };
 };
 
@@ -102,10 +102,7 @@ export function NodeToTaskModal({
                   <Tag size={15} />
                   <label className="text-[14px]">카테고리</label>
                 </div>
-                <CategoryBadge
-                  label="기타"
-                  colorClass="bg-yellow-100 text-yellow-600"
-                />
+                <CategoryBadge label="기타" />
               </div>
 
               <div className="flex items-center gap-1">

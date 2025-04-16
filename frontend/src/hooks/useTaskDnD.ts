@@ -6,8 +6,9 @@ import {
   DragStartEvent,
   DragEndEvent,
 } from '@dnd-kit/core';
-import type { Task, Quadrant } from '@/types/task.ts';
+import type { Task } from '@/types/task.ts';
 import useMatrixStore from '@/store/matrixStore';
+import { Quadrant } from '@/types/commonTypes';
 
 export function useTaskDnD() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);

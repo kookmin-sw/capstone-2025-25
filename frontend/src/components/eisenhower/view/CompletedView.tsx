@@ -1,7 +1,8 @@
-import type { ActualTaskType, Task, TaskType } from '@/types/task.ts';
+import type { Task } from '@/types/task.ts';
 import { TaskCard } from '../card/TaskCard.tsx';
 import { getCategoryNameById } from '@/utils/category';
 import { useCategoryStore } from '@/store/useCategoryStore';
+import { ActualTaskType, TaskType } from '@/types/commonTypes.ts';
 
 interface CompletedScheduleViewProps {
   tasks: Task[];

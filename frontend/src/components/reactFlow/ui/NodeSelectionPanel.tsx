@@ -16,16 +16,18 @@ import useConvertScheduleToTodo from '@/hooks/queries/mindmap/useConvertSchedule
 import { ConvertedToTaskReq } from '@/types/api/mindmap';
 import { useParams } from 'react-router';
 import { NodeToTaskModal } from '@/components/ui/Modal/NodeTaskModal';
+import { parseIdParam } from '@/lib/parseIdParam';
 
 export function NodeSelectionPanel() {
   const [isOpen, setIsOpen] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [taskData, setTaskData] = useState<{
     title: string;
-    id: string | number | null;
+    id: number | null;
   }>({ title: '', id: null });
 
   const { id } = useParams<{ id: string }>();
+  const numericId = parseIdParam(id);
 
   const selectedNodes = useSelectedNodes();
   const removeSelectedNode = useRemoveSelectedNode();
@@ -52,7 +54,7 @@ export function NodeSelectionPanel() {
         if (id) {
           setTaskData({
             title: data.task.title,
-            id: id,
+            id: numericId,
           });
 
           setIsDialogOpen(true);

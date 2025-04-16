@@ -1,3 +1,4 @@
+import { generateNumericId } from '@/lib/generateNumericId';
 import { pomodoroMockData } from '@/mock/pomorodo';
 import {
   PomodoroList,
@@ -8,7 +9,6 @@ import {
   TotalTime,
 } from '@/types/pomodoro';
 import { create } from 'zustand';
-import { nanoid } from 'nanoid/non-secure';
 
 export type PomodoroListState = {
   pomodoros: PomodoroList;
@@ -18,7 +18,7 @@ export type PomodoroListState = {
     plannedCycles: PomodoroCycle[];
     totalPlannedTime: TotalTime;
     eisenhower: Eisenhower | null;
-  }) => string;
+  }) => number;
   deletePomodoro: (id: number) => void;
   disconnectPomodoroTask: (pomodoroId: number) => void;
 };
@@ -27,7 +27,7 @@ const useStore = create<PomodoroListState>((set) => ({
   pomodoros: pomodoroMockData,
 
   createPomodoro: (newPomodoroData) => {
-    const newId = parseInt(nanoid(8), 36) % 10000;
+    const newId = generateNumericId();
     const now = new Date().toISOString();
 
     const newPomodoro: Pomodoro = {

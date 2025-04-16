@@ -10,7 +10,7 @@ import {
   Tag,
 } from 'lucide-react';
 import { format } from 'date-fns';
-import type { Task, ActualTaskType } from '@/types/task';
+import type { Task } from '@/types/task';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { SECTION_TITLES } from '@/constants/eisenhower';
 import type { Category } from '@/types/category';
@@ -25,6 +25,7 @@ import AddPomodoro from '@/components/ui/Modal/AddPomodoro';
 import { useDisconnectPomodoroTask } from '@/store/pomodoro';
 import DeleteTaskModal from '@/components/ui/Modal/DeleteTask';
 import { BadgeSelector } from '@/components/common/BadgeSelector';
+import { ActualTaskType } from '@/types/commonTypes';
 
 interface TaskDetailSidebarProps {
   categories: Category[];

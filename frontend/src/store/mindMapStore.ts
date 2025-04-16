@@ -1,16 +1,14 @@
 import {
   EdgeChange,
   NodeChange,
-  OnNodesChange,
-  OnEdgesChange,
   applyNodeChanges,
   applyEdgeChanges,
   XYPosition,
 } from '@xyflow/react';
 import { create } from 'zustand';
-import { nanoid } from 'nanoid/non-secure';
 import { MindMapEdge, MindMapNode, MindMapNodeData } from '@/types/mindMap';
 import { filterNodesAndEdges, findChildNodes } from '@/lib/mindMap';
+import { generateStringId } from '@/lib/generateNumericId';
 
 type ActiveState = {
   nodeId: string;
@@ -27,21 +25,21 @@ export type RFState = {
   onNodesChange: (
     changes: NodeChange[],
     saveMindMapData?: (
-      id: string,
+      id: number,
       nodes: MindMapNode[],
       edges: MindMapEdge[],
     ) => void,
-    activeMindMapId?: string | null,
+    activeMindMapId?: number | null,
   ) => void;
 
   onEdgesChange: (
     changes: EdgeChange[],
     saveMindMapData?: (
-      id: string,
+      id: number,
       nodes: MindMapNode[],
       edges: MindMapEdge[],
     ) => void,
-    activeMindMapId?: string | null,
+    activeMindMapId?: number | null,
   ) => void;
   addChildNode: (
     selectedNode: MindMapNode,
@@ -94,7 +92,7 @@ const useStore = create<RFState>((set, get) => ({
     isPending = false,
   ) => {
     const parentDepth = (selectedNode.data as MindMapNodeData)?.depth || 0;
-    const newNodeId = nanoid();
+    const newNodeId = generateStringId();
 
     const newNode: MindMapNode = {
       id: newNodeId,
