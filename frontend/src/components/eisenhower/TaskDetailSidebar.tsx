@@ -70,6 +70,7 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
     if (editedTask) {
       saveTask(editedTask);
     }
+    setIsEditing(false);
   };
 
   const handleCancelEdit = () => {
@@ -136,7 +137,7 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
         <div className="flex items-center justify-between px-4 py-3 ">
           <button
             onClick={isEditing ? handleCancelEdit : handleClose}
-            className="p-2 rounded hover:bg-gray-100"
+            className="p-2 rounded hover:bg-gray-100 cursor-pointer"
           >
             <ChevronsLeft />
           </button>
@@ -148,7 +149,7 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="p-2 rounded hover:bg-gray-100"
+              className="p-2 rounded hover:bg-gray-100 cursor-pointer"
             >
               <PencilLine className="w-5 h-5" />
             </button>

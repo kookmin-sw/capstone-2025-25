@@ -183,7 +183,7 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
     const { updateTask } = get();
     updateTask(updatedTask.id, updatedTask);
 
-    set({ activeTaskId: null });
+    // set({ activeTaskId: null });
     toast.success('작업이 저장되었습니다.');
   },
 
