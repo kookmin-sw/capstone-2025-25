@@ -1,7 +1,5 @@
-import { Task } from '@/types/task';
+import { ActualTaskType, EisenhowerBase } from '@/types/commonTypes';
 import { Node as ReactFlowNode, Edge as ReactFlowEdge } from '@xyflow/react';
-
-export type TodoType = 'TODO' | 'THINKING';
 
 export type MindMapNodeType = 'root' | 'question' | 'answer' | 'summary';
 
@@ -31,10 +29,10 @@ export type MindMapEdge = ReactFlowEdge;
 export type MindMap = {
   id: string;
   title: string;
-  type: TodoType;
+  type: ActualTaskType;
   lastModifiedAt: string;
   nodes: MindMapNode[];
   edges: MindMapEdge[];
   linked: boolean;
-  eisenhowerItemDTO?: Task;
+  eisenhowerItemDTO?: EisenhowerBase;
 };

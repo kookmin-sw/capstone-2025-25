@@ -1,4 +1,4 @@
-import { ActualTaskType, Quadrant } from '@/types/task';
+import { EisenhowerBase } from '@/types/commonTypes';
 
 export type TotalTime = {
   hour: number;
@@ -27,17 +27,7 @@ export type Pomodoro = {
   executedCycles: PomodoroCycle[];
 };
 
-export type Eisenhower = {
-  id: number | string;
-  title: string;
-  memo: string;
-  dueDate: string;
-  quadrant: Quadrant;
-  type: ActualTaskType;
-  order: number;
-  isCompleted: boolean;
-  createdAt: string;
-};
+export type Eisenhower = EisenhowerBase;
 
 export type LinkedUnlinkedPomodoro = {
   pomodoro: Pomodoro;
