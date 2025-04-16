@@ -6,41 +6,41 @@ import { Quadrant } from '@/types/commonTypes';
 import { generateNumericId } from '@/lib/generateNumericId';
 
 type DeleteTaskResult = {
-  mindMapId: string | number | null;
-  pomodoroId: string | number | null;
+  mindMapId: number | null;
+  pomodoroId: number | null;
 };
 
 export type MatrixState = {
   allTasks: Task[];
   tasksByQuadrant: TaskSections;
-  activeTaskId: string | number | null;
+  activeTaskId: number | null;
 
   setTasks: (tasks: Task[]) => void;
-  updateTask: (taskId: string | number, updatedTask: Task) => void;
+  updateTask: (taskId: number, updatedTask: Task) => void;
   addTask: (newTask: Task) => void;
   addTaskFromNode: (
     title: string,
-    mindmapNodeId: number | string,
-    duDate: string | null,
+    mindmapNodeId: number,
+    dueDate: string | null,
     memo: string,
     quadrant?: Quadrant,
   ) => Task;
-  deleteTask: (taskId: string | number) => DeleteTaskResult;
+  deleteTask: (taskId: number) => DeleteTaskResult;
   reorderTasks: (sectionId: Quadrant, newTasks: Task[]) => void;
   saveTask: (updatedTask: Task) => void;
-  completeTask: (taskId: string | number) => void;
+  completeTask: (taskId: number) => void;
   connectTaskToMindMap: (
-    taskId: string | number | null,
-    mindmapId: string | number | null,
+    taskId: number | null,
+    mindmapId: number | null,
   ) => void;
   connectTaskToPomodoro: (
-    taskId: string | number | null,
-    mindmapId: string | number | null,
+    taskId: number | undefined,
+    pomodoroId: number,
   ) => void;
-  disconnectTaskFromMindMap: (taskId: string) => void;
-  disconnectTaskFromPomodoro: (taskId: string) => void;
+  disconnectTaskFromMindMap: (taskId: number) => void;
+  disconnectTaskFromPomodoro: (taskId: number | undefined) => void;
 
-  setActiveTaskId: (taskId: string | number | null) => void;
+  setActiveTaskId: (taskId: number | null) => void;
   getActiveTask: () => Task | null;
 
   getTasksByQuadrant: () => TaskSections;

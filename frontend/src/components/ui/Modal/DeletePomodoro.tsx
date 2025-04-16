@@ -33,7 +33,7 @@ export default function DeletePomodoro({
 
   const handleDeletePomodoro = () => {
     deletePomodoro(pomodoro.id);
-    disconnectTaskFromPomodoro(eisenhower.id);
+    disconnectTaskFromPomodoro(eisenhower?.id);
     navigate('/pomodoro');
   };
 

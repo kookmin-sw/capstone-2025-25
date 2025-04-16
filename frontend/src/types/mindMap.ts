@@ -27,7 +27,7 @@ export type MindMapNode =
 export type MindMapEdge = ReactFlowEdge;
 
 export type MindMap = {
-  id: string;
+  id: number;
   title: string;
   type: ActualTaskType;
   lastModifiedAt: string;

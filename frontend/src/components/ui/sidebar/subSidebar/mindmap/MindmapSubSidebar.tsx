@@ -6,6 +6,7 @@ import { useMindMaps } from '@/store/mindmapListStore';
 import { SubSidebarAccordion } from '@/components/ui/SubSidebarAccordion';
 import CommonSubSidebarWrapper from '@/components/ui/sidebar/subSidebar/CommonSubSidebarWrapper';
 import { useParams } from 'react-router';
+import { parseIdParam } from '@/lib/parseIdParam';
 
 export default function MindmapSubSidebar() {
   const mindMaps = useMindMaps();
@@ -14,6 +15,7 @@ export default function MindmapSubSidebar() {
   const freeMindMaps = mindMaps.filter((mindmap) => !mindmap.linked);
 
   const { id } = useParams<{ id: string }>();
+  const numericId = parseIdParam(id);
 
   return (
     <CommonSubSidebarWrapper title="마인드맵" addButton={<MindmapAddButton />}>
@@ -28,7 +30,7 @@ export default function MindmapSubSidebar() {
               <MindmapCard
                 key={mindmap.id}
                 mindmap={mindmap}
-                selected={id === mindmap.id}
+                selected={numericId === mindmap.id}
               />
             ))}
           </div>
@@ -44,7 +46,7 @@ export default function MindmapSubSidebar() {
               <MindmapCard
                 key={mindmap.id}
                 mindmap={mindmap}
-                selected={id === mindmap.id}
+                selected={numericId === mindmap.id}
               />
             ))}
           </div>

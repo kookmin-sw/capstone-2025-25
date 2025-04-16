@@ -18,7 +18,7 @@ export type PomodoroListState = {
     plannedCycles: PomodoroCycle[];
     totalPlannedTime: TotalTime;
     eisenhower: Eisenhower | null;
-  }) => string;
+  }) => number;
   deletePomodoro: (id: number) => void;
   disconnectPomodoroTask: (pomodoroId: number) => void;
 };

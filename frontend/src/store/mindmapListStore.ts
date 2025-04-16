@@ -1,24 +1,25 @@
 import { create } from 'zustand';
-import { MindMapNode, MindMap, TodoType, MindMapEdge } from '@/types/mindMap';
+import { MindMapNode, MindMap, MindMapEdge } from '@/types/mindMap';
 import { mockMindMaps } from '@/mock/mindmap';
 import { Task } from '@/types/task';
-import { generateNumericId } from '@/lib/generateNumericId';
+import { generateNumericId, generateStringId } from '@/lib/generateNumericId';
+import { ActualTaskType } from '@/types/commonTypes';
 
 export type MindMapListState = {
   mindMaps: MindMap[];
-  activeMindMapId: string | null;
+  activeMindMapId: number | null;
 
-  createMindMap: (title: string, type: TodoType) => string;
-  createLinkedMindMap: (task: Task) => string;
-  loadMindMapData: (id: string) => MindMap | null;
-  setActiveMindMap: (id: string | null) => void;
+  createMindMap: (title: string, type: ActualTaskType) => number;
+  createLinkedMindMap: (task: Task) => number;
+  loadMindMapData: (id: number) => MindMap | null;
+  setActiveMindMap: (id: number | null) => void;
   saveMindMapData: (
-    id: string,
+    id: number,
     nodes: MindMapNode[],
     edges: MindMapEdge[],
   ) => void;
-  deleteMindMap: (id: string) => void;
-  disconnectMindmapTask: (mindMapId: string | number) => void;
+  deleteMindMap: (id: number) => void;
+  disconnectMindmapTask: (mindMapId: number) => void;
 };
 
 const useStore = create<MindMapListState>((set, get) => ({
@@ -30,7 +31,7 @@ const useStore = create<MindMapListState>((set, get) => ({
 
     const initialNodes: MindMapNode[] = [
       {
-        id: generateNumericId(),
+        id: generateStringId(),
         type: 'root',
         data: { label: title, depth: 0 },
         position: { x: 0, y: 0 },
@@ -62,7 +63,7 @@ const useStore = create<MindMapListState>((set, get) => ({
 
     const initialNodes: MindMapNode[] = [
       {
-        id: generateNumericId(),
+        id: generateStringId(),
         type: 'root',
         data: { label: title, depth: 0 },
         position: { x: 0, y: 0 },

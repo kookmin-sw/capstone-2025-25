@@ -6,7 +6,7 @@ export interface EisenhowerBase {
   id: number;
   title: string;
   memo: string;
-  dueDate: string;
+  dueDate: string | null;
   quadrant: Quadrant;
   type: ActualTaskType;
   order: number;

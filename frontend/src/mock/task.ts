@@ -12,7 +12,7 @@ export const tasks: Task[] = [
     order: 0,
     isCompleted: false,
     createdAt: '2025-02-20',
-    mindMapId: 'hrgRaTSuSTxaBIGNbqm1c',
+    mindMapId: 23123123,
     pomodoroId: null,
   },
   {
@@ -70,7 +70,7 @@ export const tasks: Task[] = [
     order: 0,
     isCompleted: false,
     createdAt: '2025-02-28',
-    mindMapId: 'skNCDUchOkmewQ',
+    mindMapId: 4920304,
     pomodoroId: null,
   },
 

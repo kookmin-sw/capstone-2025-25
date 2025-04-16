@@ -123,16 +123,18 @@ export default function PomodoroResult({
       </div>
       <div className="flex w-full justify-end">
         <DeletePomodoro
-            trigger = {<Button
-                size='lg'
-                className=" text-[16px] black"
-                onClick={deletePomodoro}
+          trigger={
+            <Button
+              size="lg"
+              className=" text-[16px] black"
+              onClick={deletePomodoro}
             >
-                삭제하기
-            </Button>}
-            linkedUnlinkedPomodoro={linkedUnlinkedPomodoro}
-            isOpen={isModalOpen}
-            onOpenChange={setIsModalOpen}
+              삭제하기
+            </Button>
+          }
+          linkedUnlinkedPomodoro={linkedUnlinkedPomodoro}
+          isOpen={isModalOpen}
+          onOpenChange={setIsModalOpen}
         />
       </div>
     </div>

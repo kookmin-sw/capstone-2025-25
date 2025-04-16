@@ -32,7 +32,7 @@ type NodeToTaskModalProps = {
   onOpenChange: (open: boolean) => void;
   taskData: {
     title: string;
-    id: string | number | null;
+    id: number | null;
   };
 };
 
@@ -102,10 +102,7 @@ export function NodeToTaskModal({
                   <Tag size={15} />
                   <label className="text-[14px]">카테고리</label>
                 </div>
-                <CategoryBadge
-                  label="기타"
-                  colorClass="bg-yellow-100 text-yellow-600"
-                />
+                <CategoryBadge label="기타" />
               </div>
 
               <div className="flex items-center gap-1">
