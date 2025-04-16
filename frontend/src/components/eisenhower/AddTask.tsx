@@ -173,7 +173,6 @@ export function AddTask({
               </div>
             </div>
 
-            {/* 마감일 */}
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-2 text-sm whitespace-nowrap">
                 <Calendar className="w-4 h-4" />
@@ -186,7 +185,6 @@ export function AddTask({
             </div>
           </div>
 
-          {/* 메모 입력 */}
           <div>
             <label className="text-sm block mb-1">메모</label>
             <textarea

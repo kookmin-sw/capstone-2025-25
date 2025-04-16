@@ -37,7 +37,7 @@ export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
           mode="single"
           selected={parsedDate ?? undefined}
           onSelect={(selected) => {
-            onChange(selected ? selected.toISOString().split('T')[0] : null);
+            onChange(selected ? format(selected, 'yyyy-MM-dd') : null);
           }}
           locale={ko}
         />
