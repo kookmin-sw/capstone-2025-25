@@ -7,9 +7,10 @@ import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { BadgeSelector } from '@/components/common/BadgeSelector';
-import type { ActualTaskType, Quadrant, Task } from '@/types/task';
+import type { Task } from '@/types/task';
 import { quadrantTitles } from '@/constants/section';
 import { useCategoryStore } from '@/store/useCategoryStore';
+import { ActualTaskType, Quadrant } from '@/types/commonTypes';
 
 type AddTaskProps = {
   quadrant: Quadrant;

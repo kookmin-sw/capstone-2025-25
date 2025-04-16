@@ -20,12 +20,12 @@ import {
   useClearSelectedNodes,
   useToggleNodeSelectionMode,
 } from '@/store/nodeSelection';
-import { Quadrant } from '@/types/task';
 
 import q1Image from '@/assets/q1.svg';
 import q2Image from '@/assets/q2.svg';
 import q3Image from '@/assets/q3.svg';
 import q4Image from '@/assets/q4.svg';
+import { Quadrant } from '@/types/commonTypes';
 
 type NodeToTaskModalProps = {
   isOpen: boolean;

@@ -17,7 +17,8 @@ import { useCategoryStore } from '@/store/useCategoryStore';
 import { TaskCard } from '@/components/eisenhower/card/TaskCard';
 import { AddTask } from '@/components/eisenhower/AddTask';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
-import type { Task, TaskType, Quadrant } from '@/types/task';
+import type { Task } from '@/types/task';
+import { Quadrant, TaskType } from '@/types/commonTypes';
 
 interface PriorityViewProps {
   tasks: Record<Quadrant, Task[]>;

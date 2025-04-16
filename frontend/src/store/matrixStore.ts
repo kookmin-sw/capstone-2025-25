@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { tasks, getTasksByQuadrant } from '@/mock/task';
-import type { Task, TaskSections, Quadrant } from '@/types/task';
+import type { Task, TaskSections } from '@/types/task';
 import { toast } from 'sonner';
 import { nanoid } from 'nanoid/non-secure';
+import { Quadrant } from '@/types/commonTypes';
 
 type DeleteTaskResult = {
   mindMapId: string | number | null;
