@@ -35,7 +35,7 @@ export function FilterBar({
     {
       label: '모든 카테고리',
       value: 'all',
-      bgColor: '#E5E5E5',
+      bgColor: '#FFFFFF',
       textColor: '#6B7280',
     },
     ...categories.map((cat) => ({
@@ -82,7 +82,7 @@ export function FilterBar({
 
           {/* 날짜 필터 */}
           <div className="relative">
-            <div className="flex items-center space-x-2 cursor-pointer">
+            <div className="flex items-center space-x-2 cursor-pointer pb-3">
               <span className="text-sm font-medium">날짜</span>
             </div>
             <DateRangePicker

@@ -42,7 +42,7 @@ export function TaskCard({
     isDragging,
   } = useSortable({ id, data: { ...task } });
 
-  const completeTask = useMatrixStore((state) => state.completeTask);
+  // const completeTask = useMatrixStore((state) => state.completeTask);
 
   const style = { transform: CSS.Transform.toString(transform), transition };
 
@@ -52,8 +52,18 @@ export function TaskCard({
     if (!isDragging && variant === 'default' && onClick) onClick();
   };
 
+  // const handleTaskComplete = () => {
+  //   if (variant === 'default') completeTask(id);
+  // };
+
+  const toggleCompleteTask = useMatrixStore(
+    (state) => state.toggleCompleteTask,
+  );
+
   const handleTaskComplete = () => {
-    if (variant === 'default') completeTask(id);
+    if (variant === 'default' || variant === 'done') {
+      toggleCompleteTask(id);
+    }
   };
 
   return (
@@ -79,9 +89,13 @@ export function TaskCard({
         {/* 상단 도구 아이콘 */}
         {variant === 'default' && (
           <div className="absolute p-2 top-1 right-1 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="text-gray-400 hover:text-gray-600 transition-colors">
+            <div
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+              onClick={(e) => e.stopPropagation()} // 카드 클릭 이벤트 막기
+            >
               <Bot />
-            </span>
+            </div>
+
             {dragHandle !== 'full' && (
               <div {...listeners} className="cursor-move">
                 <span className="text-xs text-gray-400">
@@ -109,7 +123,7 @@ export function TaskCard({
           <div
             onClick={handleTaskComplete}
             className={cn(
-              'check-icon w-[18px] h-[18px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center',
+              'check-icon w-[18px] h-[18px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center cursor-pointer',
               variant === 'done'
                 ? 'bg-primary-100 text-white'
                 : 'border border-primary-100',
@@ -117,7 +131,14 @@ export function TaskCard({
           >
             {variant === 'done' && <Check className="w-3 h-3" />}
           </div>
-          <div className={cn('text-md font-medium line-clamp-2')}>{title}</div>
+          <div
+            className={cn(
+              'text-md font-medium line-clamp-2',
+              variant === 'done' ? 'text-gray-500' : 'text-black',
+            )}
+          >
+            {title}
+          </div>
         </div>
 
         {/* 메모 */}
@@ -135,7 +156,7 @@ export function TaskCard({
             )}
           >
             <Calendar className="w-3 h-3 mr-1" />
-            <span className="text-ceter">
+            <span className="text-ceter pt-[2px]">
               {format(new Date(dueDate), 'yyyy.MM.dd')}
             </span>
           </div>

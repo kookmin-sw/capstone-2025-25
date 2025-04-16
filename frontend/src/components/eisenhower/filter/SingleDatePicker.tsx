@@ -5,7 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 
 type SingleDatePickerProps = {
@@ -19,10 +18,7 @@ export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="primary"
-          className="flex items-center justify-between w-full md:w-auto min-w-[160px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer"
-        >
+        <button className="flex items-center justify-between w-full md:w-auto min-w-[160px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer">
           <div className="flex items-center">
             <span className="text-sm">
               {parsedDate && isValid(parsedDate)
@@ -30,14 +26,14 @@ export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
                 : '날짜 없음'}
             </span>
           </div>
-        </Button>
+        </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <CalendarComponent
           mode="single"
           selected={parsedDate ?? undefined}
           onSelect={(selected) => {
-            onChange(selected ? selected.toISOString().split('T')[0] : null);
+            onChange(selected ? format(selected, 'yyyy-MM-dd') : null);
           }}
           locale={ko}
         />

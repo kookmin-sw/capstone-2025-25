@@ -70,6 +70,7 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
     if (editedTask) {
       saveTask(editedTask);
     }
+    setIsEditing(false);
   };
 
   const handleCancelEdit = () => {
@@ -133,10 +134,10 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
         side="right"
         className="w-full max-w-[480px] h-screen p-0 overflow-y-auto"
       >
-        <div className="flex items-center justify-between px-4 py-3 border-b">
+        <div className="flex items-center justify-between px-4 py-3 ">
           <button
             onClick={isEditing ? handleCancelEdit : handleClose}
-            className="p-2 rounded hover:bg-gray-100"
+            className="p-2 rounded hover:bg-gray-100 cursor-pointer"
           >
             <ChevronsLeft />
           </button>
@@ -148,81 +149,81 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="p-2 rounded hover:bg-gray-100"
+              className="p-2 rounded hover:bg-gray-100 cursor-pointer"
             >
               <PencilLine className="w-5 h-5" />
             </button>
           )}
         </div>
 
-        <div className="flex flex-col p-6 h-full gap-6">
+        <div className="flex flex-col px-6 h-full gap-6">
           <p className="text-sm text-gray-500 mb-1">
             {SECTION_TITLES[task.quadrant]}
           </p>
 
           {isEditing ? (
             <input
-              className="text-3xl font-bold w-full border-b py-1"
+              className="text-3xl font-bold w-full py-1"
               value={editedTask.title}
               onChange={(e) =>
                 setEditedTask({ ...editedTask, title: e.target.value })
               }
             />
           ) : (
-            <h1 className="text-3xl font-bold">{task.title}</h1>
+            <h1 className="text-3xl font-bold py-1">{task.title}</h1>
           )}
 
-          <div className="flex items-center gap-3">
-            <CircleDashed className="w-4 h-4" />
-            <span className="text-sm">타입</span>
+          <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4">
+            {/* 타입 */}
+            <div className="flex items-center gap-2 text-sm">
+              <CircleDashed className="w-4 h-4" />
+              <span>타입</span>
+            </div>
             {isEditing ? (
-              <div className="min-w-[100px]">
-                <BadgeSelector
-                  options={typeOptions}
-                  selected={editedTask.type}
-                  onChange={(val) =>
-                    setEditedTask({
-                      ...editedTask,
-                      type: val as ActualTaskType,
-                    })
-                  }
-                  renderBadge={(option) => (
-                    <TypeBadge type={option.value as ActualTaskType} />
-                  )}
-                  displayMode="block"
-                  withSearch={false}
-                />
-              </div>
+              <BadgeSelector
+                options={typeOptions}
+                selected={editedTask.type}
+                onChange={(val) =>
+                  setEditedTask({
+                    ...editedTask,
+                    type: val as ActualTaskType,
+                  })
+                }
+                renderBadge={(option) => (
+                  <TypeBadge type={option.value as ActualTaskType} />
+                )}
+                displayMode="block"
+                withSearch={false}
+              />
             ) : (
               <TypeBadge type={task.type} />
             )}
-          </div>
 
-          <div className="flex items-center gap-3">
-            <Tag className="w-4 h-4" />
-            <span className="text-sm">카테고리</span>
+            {/* 카테고리 */}
+            <div className="flex items-center gap-2 text-sm">
+              <Tag className="w-4 h-4" />
+              <span>카테고리</span>
+            </div>
             {isEditing ? (
-              <div className="min-w-[100px]">
-                <BadgeSelector
-                  options={categoryOptions}
-                  selected={String(editedTask.category_id ?? '')}
-                  onChange={(val) =>
-                    setEditedTask({
-                      ...editedTask,
-                      category_id: val === '' ? null : Number(val),
-                    })
-                  }
-                  renderBadge={(option) => (
-                    <CategoryBadge
-                      label={option.label}
-                      bgColor={option.bgColor}
-                      textColor={option.textColor}
-                    />
-                  )}
-                  displayMode="block"
-                  withSearch={false}
-                />
-              </div>
+              <BadgeSelector
+                options={categoryOptions}
+                selected={String(editedTask.category_id ?? '')}
+                onChange={(val) =>
+                  setEditedTask({
+                    ...editedTask,
+                    category_id: val === '' ? null : Number(val),
+                  })
+                }
+                renderBadge={(option) => (
+                  <CategoryBadge
+                    label={option.label}
+                    bgColor={option.bgColor}
+                    textColor={option.textColor}
+                  />
+                )}
+                displayMode="block"
+                withSearch={false}
+              />
             ) : (
               selectedCategory && (
                 <CategoryBadge
@@ -232,11 +233,12 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
                 />
               )
             )}
-          </div>
 
-          <div className="flex items-center gap-3">
-            <CalendarIcon className="w-4 h-4" />
-            <span className="text-sm">마감일</span>
+            {/* 마감일 */}
+            <div className="flex items-center gap-2 text-sm whitespace-nowrap">
+              <CalendarIcon className="w-4 h-4" />
+              <span className="pt-1">마감일</span>
+            </div>
             {isEditing ? (
               <SingleDatePicker
                 date={editedTask.dueDate ?? null}
@@ -272,7 +274,7 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
           </div>
         </div>
 
-        <div className="p-4 border-t flex gap-2">
+        <div className="p-4 flex gap-2">
           {isEditing ? (
             <>
               <DeleteTaskModal
@@ -302,8 +304,9 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
                 onClick={handleCreateMindmap}
                 className="flex-1 border rounded py-2"
               >
-                마인드맵 그리기
+                {task.mindMapId ? '마인드맵 이동하기' : '마인드맵 그리기'}
               </Button>
+
               {task.pomodoroId ? (
                 <Button
                   variant="primary"
