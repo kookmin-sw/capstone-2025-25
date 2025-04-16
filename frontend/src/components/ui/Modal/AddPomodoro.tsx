@@ -187,7 +187,7 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
       {page === 0 && (
         <div className="flex flex-col gap-[33px]">
           {linkedEisenhower?.id ? (
-            <div className="px-4 py-4 border border-[#E5E5E5] rounded-[10px]">
+            <div className=" rounded-[10px]">
               <TaskCard
                 task={linkedEisenhower}
                 variant="inactive"
