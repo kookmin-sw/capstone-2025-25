@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Sheet, SheetContent, SheetTitle } from '@/components/ui/Sheet';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/Sheet.tsx';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import {
@@ -157,21 +157,22 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
         </div>
 
         <div className="flex flex-col px-6 h-full gap-6">
-          <p className="text-sm text-gray-500 mb-1">
-            {SECTION_TITLES[task.quadrant]}
-          </p>
-
-          {isEditing ? (
-            <input
-              className="text-3xl font-bold w-full py-1"
-              value={editedTask.title}
-              onChange={(e) =>
-                setEditedTask({ ...editedTask, title: e.target.value })
-              }
-            />
-          ) : (
-            <h1 className="text-3xl font-bold py-1">{task.title}</h1>
-          )}
+          <div>
+            <p className="text-sm text-gray-500 ">
+              {SECTION_TITLES[task.quadrant]}
+            </p>
+            {isEditing ? (
+              <input
+                className="text-3xl font-bold w-full py-1"
+                value={editedTask.title}
+                onChange={(e) =>
+                  setEditedTask({ ...editedTask, title: e.target.value })
+                }
+              />
+            ) : (
+              <h1 className="text-3xl font-bold py-1">{task.title}</h1>
+            )}
+          </div>
 
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4">
             {/* 타입 */}
