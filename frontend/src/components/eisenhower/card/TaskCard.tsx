@@ -89,9 +89,13 @@ export function TaskCard({
         {/* 상단 도구 아이콘 */}
         {variant === 'default' && (
           <div className="absolute p-2 top-1 right-1 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="text-gray-400 hover:text-gray-600 transition-colors">
+            <div
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+              onClick={(e) => e.stopPropagation()} // 카드 클릭 이벤트 막기
+            >
               <Bot />
-            </span>
+            </div>
+
             {dragHandle !== 'full' && (
               <div {...listeners} className="cursor-move">
                 <span className="text-xs text-gray-400">
