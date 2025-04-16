@@ -10,6 +10,7 @@ import { useCreatePomodoro } from '@/store/pomodoro';
 import { useNavigate } from 'react-router';
 import { Task } from '@/types/task';
 import useMatrixStore from '@/store/matrixStore';
+import { TaskCard } from '@/components/eisenhower/card/TaskCard.tsx';
 
 type Props = {
   trigger: ReactNode;
@@ -186,19 +187,20 @@ export default function AddPomodoro({ trigger, linkedEisenhower }: Props) {
       {page === 0 && (
         <div className="flex flex-col gap-[33px]">
           {linkedEisenhower?.id ? (
-            <div className="h-[153px] border-1">{linkedEisenhower.title}</div>
-          ) : (
-            <div>
-              <label className="text-[14px] block mb-2">뽀모도로 이름</label>
-              <Input
-                placeholder="주제를 입력하세요"
-                value={title}
-                onChange={handleInputChange}
-                onClick={(e) => e.stopPropagation()}
-                className="h-12"
+            <div className="px-4 py-4 border border-[#E5E5E5] rounded-[10px]">
+              <TaskCard
+                task={linkedEisenhower}
+                variant="inactive"
+                layout="matrix"
               />
             </div>
+          ) : (
+            <div className="flex px-4 py-4 border border-[#E5E5E5] gap-2.5 rounded-[10px]">
+              <Timer className="text-primary-100" />
+              <p className="text-[16px] h-[18px] font-semibold">{title}</p>
+            </div>
           )}
+
           <div className="flex justify-center items-center gap-[30px]">
             <div className="flex items-center gap-[10px]">
               <div className="flex flex-col items-center gap-6">
