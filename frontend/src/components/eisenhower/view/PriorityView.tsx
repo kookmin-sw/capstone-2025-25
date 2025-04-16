@@ -121,10 +121,10 @@ export function PriorityView({
     }
 
     return {
-      Q1: 'bg-[#F5F1FF] border border-gray-300',
+      Q1: 'bg-[#F5F1FF] border border-gray-300 rounded-tl-md rounded-bl-md',
       Q2: 'bg-[#FAF6FF] border-t border-r border-b border-gray-300',
       Q3: 'bg-[#FAF8FD] border-t border-r border-b border-gray-300',
-      Q4: 'bg-[#FAFAFA] border-t border-r border-b border-gray-300',
+      Q4: 'bg-[#FAFAFA] border-t border-r border-b border-gray-300 rounded-tr-md rounded-br-md',
     };
   };
 
