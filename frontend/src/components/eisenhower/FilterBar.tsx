@@ -85,11 +85,13 @@ export function FilterBar({
             <div className="flex items-center space-x-2 cursor-pointer pb-3">
               <span className="text-sm font-medium">날짜</span>
             </div>
-            <DateRangePicker
-              startDate={startDate}
-              endDate={endDate}
-              onDateChange={onDateChange}
-            />
+            <div className="pb-1">
+              <DateRangePicker
+                startDate={startDate}
+                endDate={endDate}
+                onDateChange={onDateChange}
+              />
+            </div>
           </div>
         </div>
       </div>
