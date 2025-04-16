@@ -20,7 +20,6 @@ export function PomodoroTimer({
   const [currentCycleIndex, setCurrentCycleIndex] = useState(0); //현재 사이클 인덱스
   const [pomodoroResult, setPomodoroResult] = useState<PomodoroCycle[]>([]);
   const [previewResult, setPreviewResult] = useState<PomodoroCycle[]>([]); // 임시 결과 (모달)
-  const [didConfirm, setDidConfirm] = useState(false); // 모달에서 완료처리를 하였는가
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -343,8 +342,9 @@ export function PomodoroTimer({
             }
             cycles={previewResult}
             eisenhower={eisenhower}
-            handleContinue={()=>{setIsRunning(true)}}
-
+            handleContinue={() => {
+              setIsRunning(true);
+            }}
           />
         </div>
 

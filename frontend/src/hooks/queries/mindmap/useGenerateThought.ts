@@ -1,11 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import { mindmapService } from '@/services/mindmapService';
-import { GeneratedThoughtReq } from '@/types/api/mindmap';
+import { GenerateReq } from '@/types/api/mindmap';
 
 const useGenerateThought = () => {
   const { mutate, isPending, isError, error, data, reset } = useMutation({
-    mutationFn: (data: GeneratedThoughtReq) =>
-      mindmapService.generateThought(data),
+    mutationFn: (data: GenerateReq) => mindmapService.generateThought(data),
   });
 
   return {
