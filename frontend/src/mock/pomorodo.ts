@@ -21,14 +21,14 @@ export const pomodoroMockData: PomodoroList = {
           nano: 0,
         },
         totalWorkingTime: {
-          hour: 0,
-          minute: 0,
+          hour: 1,
+          minute: 20,
           second: 0,
           nano: 0,
         },
         totalBreakTime: {
           hour: 0,
-          minute: 0,
+          minute: 10,
           second: 0,
           nano: 0,
         },
@@ -62,7 +62,7 @@ export const pomodoroMockData: PomodoroList = {
     {
       pomodoro: {
         id: 2,
-        title: '자유',
+        title: '책읽기',
         createdAt: '2025-04-04T19:43:41.849539',
         completedAt: '2025-04-05T09:00:00',
         totalPlannedTime: {
