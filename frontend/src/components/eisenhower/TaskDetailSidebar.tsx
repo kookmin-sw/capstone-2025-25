@@ -302,8 +302,9 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
                 onClick={handleCreateMindmap}
                 className="flex-1 border rounded py-2"
               >
-                마인드맵 그리기
+                {task.mindMapId ? '마인드맵 이동하기' : '마인드맵 그리기'}
               </Button>
+
               {task.pomodoroId ? (
                 <Button
                   variant="primary"
