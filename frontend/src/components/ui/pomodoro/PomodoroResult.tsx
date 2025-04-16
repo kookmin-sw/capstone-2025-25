@@ -17,6 +17,36 @@ export default function PomodoroResult({
     return totalSeconds;
   };
 
+  const calculateTotalDurations = (
+    cycles: { workDuration: number; breakDuration: number }[],
+  ) => {
+    const initialValue = { totalWork: 0, totalBreak: 0 };
+
+    return cycles.reduce((acc, cycle) => {
+      return {
+        totalWork: acc.totalWork + cycle.workDuration,
+        totalBreak: acc.totalBreak + cycle.breakDuration,
+      };
+    }, initialValue);
+  };
+
+  const minutesToTotalTime = (minutes: number): TotalTime => {
+    const hour = Math.floor(minutes / 60);
+    const minute = minutes % 60;
+    return {
+      hour,
+      minute,
+      second: 0,
+      nano: 0,
+    };
+  };
+
+  const { totalWork: plannedWorkMinutes, totalBreak: plannedBreakMinutes } =
+    calculateTotalDurations(pomodoro.plannedCycles);
+
+  const plannedWorkTime = minutesToTotalTime(plannedWorkMinutes);
+  const plannedBreakTime = minutesToTotalTime(plannedBreakMinutes);
+
   // 슬라이더 전체 길이 비율 계산
   const maxTime = Math.max(
     convertToTotalMinutes(pomodoro.totalPlannedTime),
@@ -90,12 +120,11 @@ export default function PomodoroResult({
               </div>
               <div className="flex justify-between">
                 <span>집중 시간 :</span>
-                {/*이 부분 백엔드 바뀌면 수정*/}
-                {/*<span>{formatTimeDisplay(pomodoro.totalPlannedTime)}</span>*/}
+                <span>{formatTimeDisplay(plannedWorkTime)}</span>
               </div>
               <div className="flex justify-between">
                 <span>휴식 시간 :</span>
-                {/*<span>{formatTimeDisplay(pomodoro.totalPlannedTime)}</span>*/}
+                <span>{formatTimeDisplay(plannedBreakTime)}</span>
               </div>
             </div>
           </div>
@@ -123,16 +152,18 @@ export default function PomodoroResult({
       </div>
       <div className="flex w-full justify-end">
         <DeletePomodoro
-            trigger = {<Button
-                size='lg'
-                className=" text-[16px] black"
-                onClick={deletePomodoro}
+          trigger={
+            <Button
+              size="lg"
+              className=" text-[16px] black"
+              onClick={deletePomodoro}
             >
-                삭제하기
-            </Button>}
-            linkedUnlinkedPomodoro={linkedUnlinkedPomodoro}
-            isOpen={isModalOpen}
-            onOpenChange={setIsModalOpen}
+              삭제하기
+            </Button>
+          }
+          linkedUnlinkedPomodoro={linkedUnlinkedPomodoro}
+          isOpen={isModalOpen}
+          onOpenChange={setIsModalOpen}
         />
       </div>
     </div>
