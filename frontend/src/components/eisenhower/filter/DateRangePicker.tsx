@@ -7,7 +7,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 
 type DateRangePickerProps = {
@@ -53,15 +52,12 @@ export function DateRangePicker({
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="primary"
-          className="flex items-center w-full md:w-auto min-w-[200px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer"
-        >
-          <div className="flex items-center gap-2 px-3 py-2">
+        <button className="flex items-center w-full md:w-auto min-w-[200px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer">
+          <div className="flex items-center gap-2">
             <CalendarIcon className="w-4 h-4 text-[#6e726e] mb-1" />
             <span className="text-sm leading-none">{formatDateRange()}</span>
           </div>
-        </Button>
+        </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <div className="flex flex-col md:flex-row">

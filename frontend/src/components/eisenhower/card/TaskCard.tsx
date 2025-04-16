@@ -135,7 +135,7 @@ export function TaskCard({
             )}
           >
             <Calendar className="w-3 h-3 mr-1" />
-            <span className="text-ceter">
+            <span className="text-ceter pt-[2px]">
               {format(new Date(dueDate), 'yyyy.MM.dd')}
             </span>
           </div>

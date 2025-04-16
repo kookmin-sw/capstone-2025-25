@@ -112,7 +112,7 @@ export function AddTask({
           <div className="mb-1 text-[18px]">{quadrantTitles[quadrant]}</div>
 
           {/* 제목 */}
-          <div>
+          <div className="pb-1">
             <input
               className="text-3xl font-bold w-full border-transparent outline-none placeholder:text-[#CECFCD]"
               value={title}
@@ -121,68 +121,59 @@ export function AddTask({
             />
           </div>
 
-          <div className="py-2 flex flex-col gap-2">
-            {/* 타입 선택 */}
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-2 text-sm">
-                <CircleDashed className="w-4 h-4" />
-                타입
-              </span>
-              <div className="min-w-[100px]">
-                <BadgeSelector
-                  options={typeOptions}
-                  selected={type}
-                  onChange={(val) => setType(val as ActualTaskType)}
-                  renderBadge={(option) => (
-                    <TypeBadge type={option.value as ActualTaskType} />
-                  )}
-                  displayMode="block"
-                />
-              </div>
+          <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3 pb-1">
+            {/* 타입 */}
+            <div className="flex items-center gap-2 text-sm leading-none">
+              <CircleDashed className="w-4 h-4" />
+              <span className="pt-1">타입</span>
             </div>
+            <BadgeSelector
+              options={typeOptions}
+              selected={type}
+              onChange={(val) => setType(val as ActualTaskType)}
+              renderBadge={(option) => (
+                <TypeBadge type={option.value as ActualTaskType} />
+              )}
+              displayMode="block"
+            />
 
-            {/* 카테고리 선택 */}
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-2 text-sm">
-                <Tag className="w-4 h-4" />
-                카테고리
-              </span>
-              <div className="min-w-[100px]">
-                <BadgeSelector
-                  options={categories.map((cat) => ({
-                    label: cat.title,
-                    value: String(cat.id),
-                    bgColor: cat.color,
-                    textColor: cat.textColor,
-                  }))}
-                  selected={category_id ? String(category_id) : ''}
-                  onChange={(val) => setCategoryId(val ? Number(val) : null)}
-                  onCreateOption={handleAddCategory}
-                  onDeleteOption={handleDeleteCategory}
-                  renderBadge={(opt) => (
-                    <CategoryBadge
-                      label={opt.label}
-                      bgColor={opt.bgColor}
-                      textColor={opt.textColor}
-                    />
-                  )}
-                  label="카테고리"
-                  withSearch
-                  displayMode="block"
+            {/* 카테고리 */}
+            <div className="flex items-center gap-2 text-sm leading-none">
+              <Tag className="w-4 h-4" />
+              <span className="pt-1">카테고리</span>
+            </div>
+            <BadgeSelector
+              options={categories.map((cat) => ({
+                label: cat.title,
+                value: String(cat.id),
+                bgColor: cat.color,
+                textColor: cat.textColor,
+              }))}
+              selected={category_id ? String(category_id) : ''}
+              onChange={(val) => setCategoryId(val ? Number(val) : null)}
+              onCreateOption={handleAddCategory}
+              onDeleteOption={handleDeleteCategory}
+              renderBadge={(opt) => (
+                <CategoryBadge
+                  label={opt.label}
+                  bgColor={opt.bgColor}
+                  textColor={opt.textColor}
                 />
-              </div>
-            </div>
+              )}
+              label="카테고리"
+              withSearch
+              displayMode="block"
+            />
 
-            <div className="flex items-center gap-3">
-              <span className="flex items-center gap-2 text-sm whitespace-nowrap">
-                <Calendar className="w-4 h-4" />
-                마감일
-              </span>
-              <SingleDatePicker
-                date={dueDate}
-                onChange={(date) => setDueDate(date)}
-              />
+            {/* 마감일 */}
+            <div className="flex items-center gap-2 text-sm whitespace-nowrap leading-none ">
+              <Calendar className="w-4 h-4" />
+              <span className="pt-1">마감일</span>
             </div>
+            <SingleDatePicker
+              date={dueDate}
+              onChange={(date) => setDueDate(date)}
+            />
           </div>
 
           <div>
