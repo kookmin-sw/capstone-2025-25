@@ -174,7 +174,7 @@ export function PriorityView({
                     </div>
 
                     <div
-                      className={`${viewMode === 'board' ? 'text-lg' : 'text-xl'} font-semibold`}
+                      className={`${viewMode === 'board' ? 'text-[16px]' : 'text-xl'} font-semibold`}
                     >
                       {quadrantTitles[quadrant]}
                     </div>
