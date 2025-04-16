@@ -20,13 +20,14 @@ type MultiSliderProps = {
     fontColor?: string;
     bgColor?: string;
   };
+  dir?: 'ltr' | 'rtl';
 } & Omit<
   React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>,
   'onValueChange'
 >;
 
 const MultiSlider = React.forwardRef<
-  React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>,
+  React.ComponentRef<typeof SliderPrimitive.Root>,
   MultiSliderProps
 >(
   (
