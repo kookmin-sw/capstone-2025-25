@@ -59,7 +59,7 @@ const edgeTypes = {
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
 type FlowContentProps = {
-  mindmapId?: string;
+  mindmapId?: number | null;
 };
 
 function FlowContent({ mindmapId }: FlowContentProps) {
@@ -285,7 +285,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
 }
 
 type FlowWrapperProps = {
-  mindmapId?: string;
+  mindmapId?: number | null;
 };
 
 function FlowWrapper({ mindmapId }: FlowWrapperProps) {
