@@ -133,7 +133,7 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
         side="right"
         className="w-full max-w-[480px] h-screen p-0 overflow-y-auto"
       >
-        <div className="flex items-center justify-between px-4 py-3 border-b">
+        <div className="flex items-center justify-between px-4 py-3 ">
           <button
             onClick={isEditing ? handleCancelEdit : handleClose}
             className="p-2 rounded hover:bg-gray-100"
@@ -155,21 +155,21 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
           )}
         </div>
 
-        <div className="flex flex-col p-6 h-full gap-6">
+        <div className="flex flex-col px-6 h-full gap-6">
           <p className="text-sm text-gray-500 mb-1">
             {SECTION_TITLES[task.quadrant]}
           </p>
 
           {isEditing ? (
             <input
-              className="text-3xl font-bold w-full border-b py-1"
+              className="text-3xl font-bold w-full py-1"
               value={editedTask.title}
               onChange={(e) =>
                 setEditedTask({ ...editedTask, title: e.target.value })
               }
             />
           ) : (
-            <h1 className="text-3xl font-bold">{task.title}</h1>
+            <h1 className="text-3xl font-bold py-1">{task.title}</h1>
           )}
 
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4">
@@ -273,7 +273,7 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
           </div>
         </div>
 
-        <div className="p-4 border-t flex gap-2">
+        <div className="p-4 flex gap-2">
           {isEditing ? (
             <>
               <DeleteTaskModal
