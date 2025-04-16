@@ -42,7 +42,7 @@ export function TaskCard({
     isDragging,
   } = useSortable({ id, data: { ...task } });
 
-  const completeTask = useMatrixStore((state) => state.completeTask);
+  // const completeTask = useMatrixStore((state) => state.completeTask);
 
   const style = { transform: CSS.Transform.toString(transform), transition };
 
@@ -52,8 +52,18 @@ export function TaskCard({
     if (!isDragging && variant === 'default' && onClick) onClick();
   };
 
+  // const handleTaskComplete = () => {
+  //   if (variant === 'default') completeTask(id);
+  // };
+
+  const toggleCompleteTask = useMatrixStore(
+    (state) => state.toggleCompleteTask,
+  );
+
   const handleTaskComplete = () => {
-    if (variant === 'default') completeTask(id);
+    if (variant === 'default' || variant === 'done') {
+      toggleCompleteTask(id);
+    }
   };
 
   return (
@@ -109,7 +119,7 @@ export function TaskCard({
           <div
             onClick={handleTaskComplete}
             className={cn(
-              'check-icon w-[18px] h-[18px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center',
+              'check-icon w-[18px] h-[18px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center cursor-pointer',
               variant === 'done'
                 ? 'bg-primary-100 text-white'
                 : 'border border-primary-100',
