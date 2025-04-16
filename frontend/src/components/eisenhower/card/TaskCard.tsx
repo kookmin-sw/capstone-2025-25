@@ -131,7 +131,14 @@ export function TaskCard({
           >
             {variant === 'done' && <Check className="w-3 h-3" />}
           </div>
-          <div className={cn('text-md font-medium line-clamp-2')}>{title}</div>
+          <div
+            className={cn(
+              'text-md font-medium line-clamp-2',
+              variant === 'done' ? 'text-gray-500' : 'text-black',
+            )}
+          >
+            {title}
+          </div>
         </div>
 
         {/* 메모 */}
