@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { tasks, getTasksByQuadrant } from '@/mock/task';
 import type { Task, TaskSections } from '@/types/task';
 import { toast } from 'sonner';
-import { nanoid } from 'nanoid/non-secure';
 import { Quadrant } from '@/types/commonTypes';
+import { generateNumericId } from '@/lib/generateNumericId';
 
 type DeleteTaskResult = {
   mindMapId: string | number | null;
@@ -100,7 +100,7 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
   addTaskFromNode: (title, mindmapId, dueDate, memo, quadrant = 'Q1') => {
     const { addTask } = get();
 
-    const id = parseInt(nanoid(8), 36) % 10000;
+    const id = generateNumericId();
     const now = new Date();
     const createdAt = now.toISOString();
 

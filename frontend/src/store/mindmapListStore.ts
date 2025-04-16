@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import { nanoid } from 'nanoid/non-secure';
 import { MindMapNode, MindMap, TodoType, MindMapEdge } from '@/types/mindMap';
 import { mockMindMaps } from '@/mock/mindmap';
 import { Task } from '@/types/task';
+import { generateNumericId } from '@/lib/generateNumericId';
 
 export type MindMapListState = {
   mindMaps: MindMap[];
@@ -26,11 +26,11 @@ const useStore = create<MindMapListState>((set, get) => ({
   activeMindMapId: null,
 
   createMindMap: (title, type) => {
-    const id = nanoid();
+    const id = generateNumericId();
 
     const initialNodes: MindMapNode[] = [
       {
-        id: nanoid(),
+        id: generateNumericId(),
         type: 'root',
         data: { label: title, depth: 0 },
         position: { x: 0, y: 0 },
@@ -56,13 +56,13 @@ const useStore = create<MindMapListState>((set, get) => ({
   },
 
   createLinkedMindMap: (task) => {
-    const id = nanoid();
+    const id = generateNumericId();
 
     const { title, type } = task;
 
     const initialNodes: MindMapNode[] = [
       {
-        id: nanoid(),
+        id: generateNumericId(),
         type: 'root',
         data: { label: title, depth: 0 },
         position: { x: 0, y: 0 },
