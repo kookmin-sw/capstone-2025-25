@@ -55,11 +55,11 @@ export function DateRangePicker({
       <PopoverTrigger asChild>
         <Button
           variant="primary"
-          className="flex items-center justify-between w-full md:w-auto min-w-[200px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer"
+          className="flex items-center w-full md:w-auto min-w-[200px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer"
         >
-          <div className="flex items-center">
-            <CalendarIcon className="mr-2 h-4 w-4 text-[#6e726e]" />
-            <span className="text-sm">{formatDateRange()}</span>
+          <div className="flex items-center gap-2 px-3 py-2">
+            <CalendarIcon className="w-4 h-4 text-[#6e726e] mb-1" />
+            <span className="text-sm leading-none">{formatDateRange()}</span>
           </div>
         </Button>
       </PopoverTrigger>
