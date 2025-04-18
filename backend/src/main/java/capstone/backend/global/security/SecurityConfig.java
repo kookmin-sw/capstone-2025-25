@@ -1,5 +1,6 @@
 package capstone.backend.global.security;
 
+import capstone.backend.global.property.CorsProperty;
 import capstone.backend.global.security.jwt.JwtAuthenticationFilter;
 import capstone.backend.global.security.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import capstone.backend.global.security.oauth2.handler.OAuth2AuthenticationSuccessHandler;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CorsProperty corsProperty;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
@@ -67,7 +69,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedOrigins(corsProperty.getBase().getClientList());
         configuration.addAllowedHeader("*");
         configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
