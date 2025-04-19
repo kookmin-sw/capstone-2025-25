@@ -9,13 +9,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record SidebarMindMapResponse(
-    MindMap mindMap,
+    Long id,
+    String title,
+    TaskType type,
+    LocalDateTime lastModifiedAt,
     SidebarEisenhowerItemDTO eisenhowerItemDTO,
     boolean linked
 ){
     public static SidebarMindMapResponse from(MindMap mindMap, EisenhowerItem eisenhowerItem){
         return new SidebarMindMapResponse(
-            mindMap,
+            mindMap.getId(),
+            mindMap.getTitle(),
+            mindMap.getType(),
+            mindMap.getLastModifiedAt(),
             eisenhowerItem != null ? new SidebarEisenhowerItemDTO(eisenhowerItem) : null,
             eisenhowerItem != null
         );

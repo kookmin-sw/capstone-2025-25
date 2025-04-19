@@ -25,10 +25,8 @@ public record MindMapResponse(
         String summary,
         int depth,
         List<String> recommendedQuestions,
-        int x,
-        int y,
-        int width,
-        int height
+        PositionResponse position,
+        MeasuredResponse measured
     ) {
         public static NodeResponse fromEntity(Node node){
             return new NodeResponse(
@@ -39,12 +37,12 @@ public record MindMapResponse(
                 node.getData().getSummary(),
                 node.getData().getDepth(),
                 node.getData().getRecommendedQuestions(),
-                node.getPosition().getX(),
-                node.getPosition().getY(),
-                node.getMeasured().getWidth(),
-                node.getMeasured().getHeight()
+                new PositionResponse(node.getPosition().getX(), node.getPosition().getY()),
+                new MeasuredResponse(node.getMeasured().getWidth(), node.getMeasured().getHeight())
             );
         }
+        public record PositionResponse(int x, int y){}
+        public record MeasuredResponse(int width, int height){}
     }
 
     public record EdgeResponse(
