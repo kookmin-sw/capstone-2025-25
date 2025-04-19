@@ -36,3 +36,21 @@ export type MindMap = {
   linked: boolean;
   eisenhowerItemDTO?: EisenhowerBase;
 };
+
+export type MindMapSummary = {
+  id: number;
+  title: string;
+  type: ActualTaskType;
+  lastModifiedAt: string;
+  linked: boolean;
+  eisenhowerItemDTO: EisenhowerBase | null;
+};
+
+export type MindMapDetail = {
+  id: number;
+  title: string;
+  type: ActualTaskType;
+  lastModifiedAt: string;
+  nodes: MindMapNode[];
+  edges: MindMapEdge[];
+};
