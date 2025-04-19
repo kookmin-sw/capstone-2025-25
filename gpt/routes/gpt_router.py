@@ -9,8 +9,8 @@ from utils.gpt_helper import build_mindmap_context_text, clean_question_lines, b
 router = APIRouter()
 gpt_service = GPTService(api_key=OPENAI_API_KEY)
 
-@router.post("/generate_schedule")
-async def generate_schedule_node(request: GPTRequest):
+@router.post("/generate_todo_questions")
+async def generate_todo_questions(request: GPTRequest):
     try:
         if not request.mainNode or not request.mainNode.summary.strip():
             raise HTTPException(status_code=400, detail="mainNode.summary 값이 비어 있거나 잘못되었습니다.")
@@ -35,8 +35,8 @@ async def generate_schedule_node(request: GPTRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/generate_thought")
-async def generate_thought_node(request: GPTRequest):
+@router.post("/generate_thinking_questions")
+async def generate_thinking_questions(request: GPTRequest):
     try:
         if not request.mainNode or not request.mainNode.summary or not request.mainNode.summary.strip():
             raise HTTPException(status_code=400, detail="mainNode.summary 값이 비어 있거나 잘못되었습니다.")
@@ -63,7 +63,7 @@ async def generate_thought_node(request: GPTRequest):
 
 
 @router.post("/convert_to_task")
-async def convert_mindmap_nodes_to_task(request: ConvertToTaskRequest):
+async def convert_to_task(request: ConvertToTaskRequest):
     try:
         node_text = build_node_summary_text(request)
 
@@ -101,3 +101,4 @@ async def summarize_node(request: NodeSummaryRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
