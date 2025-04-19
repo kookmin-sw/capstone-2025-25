@@ -94,4 +94,4 @@ jobs:
             sudo docker image prune -f
       
             # 환경 변수로 LOG_STREAM_ID 전달하며 compose 실행
-            sudo --preserve-env=LOG_STREAM_ID,DOCKER_USERNAME docker-compose --env-file .env up -d --force-recreate --remove-orphans
+            sudo -E docker-compose up -d --force-recreate --remove-orphans
