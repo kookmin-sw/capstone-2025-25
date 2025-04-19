@@ -1,3 +1,5 @@
+import { MindMapSummary } from '@/types/mindMap';
+
 export type GeneratedScheduleRes = {
   generated_questions: string[];
 };
@@ -17,7 +19,13 @@ export type SummarizedNodeRes = {
 };
 
 export type CreateRootNodeRes = {
-  content: number;
   error: string | null;
   statusCode: number;
+  content: number;
+};
+
+export type GetMindmapListRes = {
+  statusCode: number;
+  error: string | null;
+  content: MindMapSummary[];
 };

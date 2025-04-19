@@ -10,6 +10,7 @@ import {
   SummarizedNodeRes,
   CreateRootNodeReq,
   CreateRootNodeRes,
+  GetMindmapListRes,
 } from '@/types/api/mindmap';
 
 export const mindmapService = {
@@ -57,6 +58,13 @@ export const mindmapService = {
     const response = await apiClient.post<CreateRootNodeRes>(
       ENDPOINTS.MINDMAP.CREATE_ROOT_NODE,
       data,
+    );
+    return response.data;
+  },
+
+  getList: async (): Promise<GetMindmapListRes> => {
+    const response = await apiClient.get<GetMindmapListRes>(
+      ENDPOINTS.MINDMAP.GET_LIST,
     );
     return response.data;
   },

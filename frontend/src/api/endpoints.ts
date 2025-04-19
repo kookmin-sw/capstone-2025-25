@@ -1,5 +1,3 @@
-/* API 엔드포인트 상수 관리 */
-
 export const ENDPOINTS = {
   /* 마인드맵 관련 엔드포인트 */
   MINDMAP: {
@@ -9,7 +7,10 @@ export const ENDPOINTS = {
     SUMMARIZE_NODE: '/api/gpt/summarize_node',
 
     CREATE_ROOT_NODE: '/api/mindmap/root',
+    GET_LIST: '/api/mindmap/list',
   },
+
+  /* 인증 관련 엔드포인트 */
   AUTH: {
     ACCESS_TOKEN: '/api/auth/token',
     REFRESH_TOKEN: '/api/auth/reissue',
