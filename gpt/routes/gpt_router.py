@@ -12,7 +12,7 @@ router = APIRouter()
 gpt_service = GPTService(api_key=OPENAI_API_KEY)
 
 
-@router.post("/generate_todo_questions", response_model=GeneratedQuestionsResponse)
+@router.post("/generate-todo-questions", response_model=GeneratedQuestionsResponse)
 @safe_gpt_handler
 async def generate_todo_questions(request: MindmapNodeContextRequest):
     if not request.mainNode or not request.mainNode.summary.strip():
@@ -33,7 +33,7 @@ async def generate_todo_questions(request: MindmapNodeContextRequest):
     return GeneratedQuestionsResponse(generated_questions=refined_questions)
 
 
-@router.post("/generate_thinking_questions", response_model=GeneratedQuestionsResponse)
+@router.post("/generate-thinking-questions", response_model=GeneratedQuestionsResponse)
 @safe_gpt_handler
 async def generate_thinking_questions(request: MindmapNodeContextRequest):
     if not request.mainNode or not request.mainNode.summary or not request.mainNode.summary.strip():
@@ -54,7 +54,7 @@ async def generate_thinking_questions(request: MindmapNodeContextRequest):
     return GeneratedQuestionsResponse(generated_questions=refined_questions)
 
 
-@router.post("/convert_to_task", response_model=ConvertedTaskResponse)
+@router.post("/convert-to-task", response_model=ConvertedTaskResponse)
 @safe_gpt_handler
 async def convert_to_task(request: ConvertToTaskRequest):
     node_text = build_node_summary_text(request)
@@ -72,7 +72,7 @@ async def convert_to_task(request: ConvertToTaskRequest):
     return ConvertedTaskResponse(title=refined_text)
 
 
-@router.post("/summarize_node", response_model=SummarizedNodeResponse)
+@router.post("/summarize-node", response_model=SummarizedNodeResponse)
 @safe_gpt_handler
 async def summarize_node(request: NodeSummaryRequest):
     user_prompt = load_prompt_template("prompts/summarize_prompt.txt", {
