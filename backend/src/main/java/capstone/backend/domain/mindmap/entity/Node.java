@@ -11,4 +11,10 @@ public class Node {
     private NodeData data;
     private Position position;
     private Measured measured;
+
+    public void sanitizeMeasured() {
+        if (this.measured == null) {
+            this.measured = new Measured();
+        }
+    }
 }
