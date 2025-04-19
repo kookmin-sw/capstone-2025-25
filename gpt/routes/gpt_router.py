@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from config import OPENAI_API_KEY
 from models.request import GPTRequest, NodeSummaryRequest, ConvertToTaskRequest
+from models.response import GeneratedQuestionsResponse, ConvertedTaskResponse, SummarizedNodeResponse
 from services.gpt_service import GPTService
 from utils.prompt_loader import load_prompt_template
 from utils.gpt_helper import build_mindmap_context_text, clean_question_lines, build_node_summary_text, \
@@ -9,7 +10,7 @@ from utils.gpt_helper import build_mindmap_context_text, clean_question_lines, b
 router = APIRouter()
 gpt_service = GPTService(api_key=OPENAI_API_KEY)
 
-@router.post("/generate_todo_questions")
+@router.post("/generate_todo_questions", response_model=GeneratedQuestionsResponse)
 async def generate_todo_questions(request: GPTRequest):
     try:
         if not request.mainNode or not request.mainNode.summary.strip():
@@ -27,7 +28,7 @@ async def generate_todo_questions(request: GPTRequest):
 
         refined_questions = clean_question_lines(gpt_output)
 
-        return {"generated_questions": refined_questions}
+        return GeneratedQuestionsResponse(generated_questions=refined_questions)
 
     except HTTPException as e:
         raise e
@@ -35,7 +36,7 @@ async def generate_todo_questions(request: GPTRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/generate_thinking_questions")
+@router.post("/generate_thinking_questions", response_model=GeneratedQuestionsResponse)
 async def generate_thinking_questions(request: GPTRequest):
     try:
         if not request.mainNode or not request.mainNode.summary or not request.mainNode.summary.strip():
@@ -53,7 +54,7 @@ async def generate_thinking_questions(request: GPTRequest):
 
         refined_questions = clean_question_lines(gpt_output)
 
-        return {"generated_questions": refined_questions}
+        return GeneratedQuestionsResponse(generated_questions=refined_questions)
 
     except HTTPException as e:
         raise e
@@ -62,7 +63,7 @@ async def generate_thinking_questions(request: GPTRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/convert_to_task")
+@router.post("/convert_to_task", response_model=ConvertedTaskResponse)
 async def convert_to_task(request: ConvertToTaskRequest):
     try:
         node_text = build_node_summary_text(request)
@@ -77,13 +78,13 @@ async def convert_to_task(request: ConvertToTaskRequest):
 
         refined_text = clean_single_line(gpt_output)
 
-        return {"title": refined_text}
+        return ConvertedTaskResponse(title=refined_text)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/summarize_node")
+@router.post("/summarize_node", response_model=SummarizedNodeResponse)
 async def summarize_node(request: NodeSummaryRequest):
     try:
         user_prompt = load_prompt_template("prompts/summarize_prompt.txt", {
@@ -97,8 +98,7 @@ async def summarize_node(request: NodeSummaryRequest):
 
         refined_text = clean_single_line(gpt_output)
 
-        return {"summary": refined_text}
+        return SummarizedNodeResponse(summary=refined_text)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
