@@ -11,6 +11,7 @@ import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
 import capstone.backend.domain.mindmap.dto.response.SidebarMindMapResponse;
 import capstone.backend.domain.mindmap.entity.MindMap;
+import capstone.backend.domain.mindmap.entity.Node;
 import capstone.backend.domain.mindmap.exception.MindMapNotFoundException;
 import capstone.backend.domain.mindmap.repository.MindMapRepository;
 import java.util.List;
@@ -27,10 +28,20 @@ public class MindMapService {
     private final MemberRepository memberRepository;
     private final EisenhowerItemRepository eisenhowerItemRepository;
 
+    // measured 초기화
+    private void sanitizeMindMapRequest(MindMapRequest request) {
+        if (request.nodes() != null) {
+            request.nodes().forEach(Node::sanitizeMeasured);
+        }
+    }
+
     //마인드맵 생성
     @Transactional
     public Long createMindMap(Long memberId, MindMapRequest mindMapRequest) {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+        sanitizeMindMapRequest(mindMapRequest);
+
         MindMap mindMap = MindMap.createMindMap(mindMapRequest, member);
 
         Optional.ofNullable(mindMapRequest.eisenhowerId())
@@ -48,7 +59,12 @@ public class MindMapService {
     //마인드맵 상세 조회
     public MindMapResponse getMindMapById(Long memberId, Long mindMapId){
         return mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
-            .map(MindMapResponse::fromEntity)
+            .map(mindMap -> {
+                if (mindMap.getNodes() != null) {
+                    mindMap.getNodes().forEach(Node::sanitizeMeasured);
+                }
+                return MindMapResponse.fromEntity(mindMap);
+            })
             .orElseThrow(MindMapNotFoundException::new);
     }
 
@@ -66,6 +82,8 @@ public class MindMapService {
     public void updateMindMap(Long memberId, Long mindMapId, MindMapRequest mindMapRequest) {
         MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
             .orElseThrow(MindMapNotFoundException::new);
+
+        sanitizeMindMapRequest(mindMapRequest);
 
         mindMap.update(mindMapRequest);
     }

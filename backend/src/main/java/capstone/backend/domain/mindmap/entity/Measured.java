@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Measured {
-    int width;
-    int height;
+    int width = 250;
+    int height = 122;
 }
