@@ -2,13 +2,19 @@ version: "3.8"
 
 services:
   app:
-    container_name: spring-app
+    container_name: web-server
     image: "${DOCKER_USERNAME}/iambohyun:latest"
     restart: always
     ports:
       - "8080:8080"
     depends_on:
       - redis
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: ahz-web-server-log
+        awslogs-region: ap-northeast-2
+        awslogs-stream: "ahz-web-server-${LOG_STREAM_ID}"
 
   redis:
     container_name: redis
