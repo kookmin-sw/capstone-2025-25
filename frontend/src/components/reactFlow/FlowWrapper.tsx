@@ -46,10 +46,10 @@ import useGenerateThought from '@/hooks/queries/mindmap/useGenerateThought';
 import { NodeSelectionPanel } from '@/components/reactFlow/ui/NodeSelectionPanel';
 
 const nodeTypes = {
-  root: RootNode,
-  summary: SummaryNode,
-  answer: AnswerInputNode,
-  question: QuestionListNode,
+  ROOT: RootNode,
+  SUMMARY: SummaryNode,
+  ANSWER: AnswerInputNode,
+  QUESTION: QuestionListNode,
 };
 
 const edgeTypes = {
@@ -148,7 +148,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
       const childNodePosition = getChildNodePosition(event as MouseEvent);
 
       if (childNodePosition && connectingNodeId.current) {
-        const mainNode = nodes.find((node) => node.type === 'root');
+        const mainNode = nodes.find((node) => node.type === 'ROOT');
         const selectedNode = nodes.find(
           (node) => node.id === connectingNodeId.current,
         );
@@ -177,8 +177,8 @@ function FlowContent({ mindmapId }: FlowContentProps) {
           -> null로 처리
           */
           const requestData: GenerateReq = {
-            mainNode: mainNode?.data?.label
-              ? { summary: mainNode.data.label }
+            mainNode: mainNode?.data?.summary
+              ? { summary: mainNode.data.summary }
               : null,
             parentNode:
               parentNode?.id !== mainNode?.id && parentNode?.data?.summary
@@ -256,7 +256,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
 
     if (activeState) {
       const node = nodes.find((n) => n.id === activeState.nodeId);
-      if (node && (node.type === 'question' || node.type === 'answer')) {
+      if (node && (node.type === 'QUESTION' || node.type === 'ANSWER')) {
         restoreActiveState();
       }
     }

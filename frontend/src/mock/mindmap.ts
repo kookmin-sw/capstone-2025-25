@@ -9,7 +9,7 @@ export const mockMindMaps: MindMap[] = [
     nodes: [
       {
         id: '1',
-        type: 'root',
+        type: 'ROOT',
         data: {
           label: '운동하기',
           depth: 0,
@@ -30,7 +30,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'uxlQN81Ebq0PlGHsrKdze',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '운동을 위해 원하는 운동 종류는 무엇인가요?',
           depth: 1,
@@ -57,7 +57,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'B2VExZjto9WGhC-mbXOKx',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '운동을 시작하기 위한 최적의 시간을 언제로 정할 수 있을까요?',
           depth: 2,
@@ -78,7 +78,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'Nnl3RXHcCgf-EW2xAhLr5',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '주당 몇 번 운동할 계획인가요?',
           depth: 1,
@@ -106,7 +106,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'TKs3tPQueLJx-3Tqha_Lm',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '운동을 혼자 할 것인가, 친구나 그룹과 함께 할 것인가요?',
           depth: 2,
@@ -127,7 +127,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: '53so4XZQyzfUDm-8hwnMp',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '운동을 할 수 있는 장소는 어디인가요?',
           depth: 1,
@@ -201,7 +201,7 @@ export const mockMindMaps: MindMap[] = [
     nodes: [
       {
         id: '1',
-        type: 'root',
+        type: 'ROOT',
         data: {
           label: '여행 계획',
           depth: 0,
@@ -222,7 +222,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'destinationNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '어떤 나라나 도시로 여행을 가고 싶으신가요?',
           depth: 1,
@@ -249,7 +249,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'tripDurationNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '여행 기간은 얼마나 계획하고 계신가요?',
           depth: 1,
@@ -275,7 +275,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'transportationNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '교통수단은 어떻게 계획하고 계신가요?',
           depth: 2,
@@ -296,7 +296,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'budgetNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '여행 예산은 어느 정도로 생각하고 계신가요?',
           depth: 1,
@@ -353,7 +353,7 @@ export const mockMindMaps: MindMap[] = [
     nodes: [
       {
         id: '1',
-        type: 'root',
+        type: 'ROOT',
         data: {
           label: '학습 계획',
           depth: 0,
@@ -374,7 +374,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'subjectNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '어떤 과목이나 분야를 공부하고 싶으신가요?',
           depth: 1,
@@ -401,7 +401,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'programmingLanguageNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '어떤 프로그래밍 언어에 관심이 있으신가요?',
           depth: 2,
@@ -422,7 +422,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'studyTimeNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '하루에 얼마나 공부할 계획인가요?',
           depth: 1,
@@ -449,7 +449,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'studyMethodNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '어떤 방식으로 공부할 계획인가요?',
           depth: 1,
@@ -517,7 +517,7 @@ export const mockMindMaps: MindMap[] = [
     nodes: [
       {
         id: '1',
-        type: 'root',
+        type: 'ROOT',
         data: {
           label: '취미 생활',
           depth: 0,
@@ -538,7 +538,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'hobbyTypeNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '어떤 취미에 관심이 있으신가요?',
           depth: 1,
@@ -565,7 +565,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'artStyleNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '어떤 그림 스타일에 관심이 있으신가요?',
           depth: 2,
@@ -586,7 +586,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'hobbyTimeNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '취미 활동에 투자할 수 있는 시간은 얼마나 되나요?',
           depth: 1,
@@ -612,7 +612,7 @@ export const mockMindMaps: MindMap[] = [
       },
       {
         id: 'hobbyGoalNode',
-        type: 'summary',
+        type: 'SUMMARY',
         data: {
           label: '취미 활동을 통해 얻고 싶은 것은 무엇인가요?',
           depth: 1,

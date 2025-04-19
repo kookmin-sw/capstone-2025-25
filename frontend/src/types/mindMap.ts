@@ -1,22 +1,22 @@
 import { ActualTaskType, EisenhowerBase } from '@/types/commonTypes';
 import { Node as ReactFlowNode, Edge as ReactFlowEdge } from '@xyflow/react';
 
-export type MindMapNodeType = 'root' | 'question' | 'answer' | 'summary';
+export type MindMapNodeType = 'ROOT' | 'QUESTION' | 'ANSWER' | 'SUMMARY';
 
 export type MindMapNodeData = {
-  label: string;
+  question?: string | null;
   answer?: string | null;
-  summary?: string | null;
+  summary: string | null;
   depth: number;
-  recommendedQuestions?: string[];
+  recommendedQuestions?: string[] | null;
   isPending?: boolean;
   isEditing?: boolean;
 };
 
-export type RootNodeType = ReactFlowNode<MindMapNodeData, 'root'>;
-export type QuestionNodeType = ReactFlowNode<MindMapNodeData, 'question'>;
-export type AnswerNodeType = ReactFlowNode<MindMapNodeData, 'answer'>;
-export type SummaryNodeType = ReactFlowNode<MindMapNodeData, 'summary'>;
+export type RootNodeType = ReactFlowNode<MindMapNodeData, 'ROOT'>;
+export type QuestionNodeType = ReactFlowNode<MindMapNodeData, 'QUESTION'>;
+export type AnswerNodeType = ReactFlowNode<MindMapNodeData, 'ANSWER'>;
+export type SummaryNodeType = ReactFlowNode<MindMapNodeData, 'SUMMARY'>;
 
 export type MindMapNode =
   | RootNodeType
