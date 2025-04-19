@@ -15,3 +15,9 @@ export type ConvertedToTaskRes = {
 export type SummarizedNodeRes = {
   summary: string;
 };
+
+export type CreateRootNodeRes = {
+  content: number;
+  error: string | null;
+  statusCode: number;
+};

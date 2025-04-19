@@ -1,8 +1,10 @@
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
+import useCreateRootNode from '@/hooks/queries/mindmap/useCreateRootNode';
+import { generateStringId } from '@/lib/generateNumericId';
 import { cn } from '@/lib/utils';
-import { useCreateMindMap } from '@/store/mindmapListStore';
+import { CreateRootNodeReq } from '@/types/api/mindmap';
 import { ActualTaskType } from '@/types/commonTypes';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Plus } from 'lucide-react';
@@ -12,12 +14,41 @@ import { useNavigate } from 'react-router';
 export default function MindmapAddButton() {
   const [selectedType, setSelectedType] = useState<ActualTaskType>('TODO');
   const [subject, setSubject] = useState('');
-  const createMindmap = useCreateMindMap();
   const navigate = useNavigate();
 
+  const { createRootNodeMutation } = useCreateRootNode();
+
   const handleCreateClick = () => {
-    const newMindmapId = createMindmap(subject, selectedType);
-    navigate(`/mindmap/${newMindmapId}`);
+    const requestData: CreateRootNodeReq = {
+      eisenhowerId: null,
+      title: subject,
+      type: selectedType,
+      nodes: [
+        {
+          id: generateStringId(),
+          type: 'ROOT',
+          data: {
+            question: null,
+            answer: null,
+            summary: subject,
+            depth: 0,
+            recommendedQuestions: null,
+          },
+          position: { x: 0, y: 0 },
+          measured: { width: 250, height: 122 },
+        },
+      ],
+      edges: [],
+    };
+
+    createRootNodeMutation(requestData, {
+      onSuccess: (data) => {
+        navigate(`/mindmap/${data.content}`);
+      },
+      onError: (error) => {
+        console.error('요약 생성 중 오류가 발생했습니다:', error);
+      },
+    });
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {

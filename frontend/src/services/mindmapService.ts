@@ -1,4 +1,4 @@
-import { gptClient } from '@/api/client';
+import { apiClient, gptClient } from '@/api/client';
 import { ENDPOINTS } from '@/api/endpoints';
 import {
   GenerateReq,
@@ -8,6 +8,8 @@ import {
   ConvertedToTaskRes,
   SummarizedNodeReq,
   SummarizedNodeRes,
+  CreateRootNodeReq,
+  CreateRootNodeRes,
 } from '@/types/api/mindmap';
 
 export const mindmapService = {
@@ -44,6 +46,16 @@ export const mindmapService = {
   ): Promise<SummarizedNodeRes> => {
     const response = await gptClient.post<SummarizedNodeRes>(
       ENDPOINTS.MINDMAP.SUMMARIZE_NODE,
+      data,
+    );
+    return response.data;
+  },
+
+  createRootNode: async (
+    data: CreateRootNodeReq,
+  ): Promise<CreateRootNodeRes> => {
+    const response = await apiClient.post<CreateRootNodeRes>(
+      ENDPOINTS.MINDMAP.CREATE_ROOT_NODE,
       data,
     );
     return response.data;

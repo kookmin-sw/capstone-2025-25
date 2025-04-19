@@ -7,6 +7,8 @@ export const ENDPOINTS = {
     GENERATE_THOUGHT: '/api/gpt/generate_thought',
     CONVERT_TO_TASK: '/api/gpt/convert_to_task',
     SUMMARIZE_NODE: '/api/gpt/summarize_node',
+
+    CREATE_ROOT_NODE: '/api/mindmap/root',
   },
   AUTH: {
     ACCESS_TOKEN: '/api/auth/token',
