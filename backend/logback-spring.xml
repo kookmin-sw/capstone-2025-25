@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
-    <conversionRule conversionWord="wex"
-                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
-    <conversionRule conversionWord="wEx"
-                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
     <property name="LOG_PATTERN"
               value="${LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){blue} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
     <springProperty name="AWS_ACCESS_KEY" source="cloud.aws.credentials.accessKey"/>
     <springProperty name="AWS_SECRET_KEY" source="cloud.aws.credentials.secretKey"/>
 
+    <!-- 콘솔 로그 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>${LOG_PATTERN}</Pattern>
         </layout>
     </appender>
 
+    <!-- CloudWatch 로그 -->
     <appender name="aws_cloud_watch_log" class="ca.pjer.logback.AwsLogsAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
+            <level>INFO</level>
         </filter>
         <layout>
             <pattern>[%thread] [%date] [%level] [%file:%line] - %msg%n</pattern>
@@ -35,34 +36,19 @@
         <secretAccessKey>${AWS_SECRET_KEY}</secretAccessKey>
     </appender>
 
-    <springProfile name="local,dev">
+    <!-- local 프로필: 콘솔만 출력 -->
+    <springProfile name="local">
         <root level="info">
             <appender-ref ref="CONSOLE"/>
-        </root>
-
-        <logger name="com.amazonaws.util.EC2MetadataUtils" level="error" additivity="false">
-        </logger>
-
-        <logger name="mashup.spring.jsmr" level="debug" additivity="false">
-            <appender-ref ref="CONSOLE"/>
-        </logger>
-
-        <logger name="mashup.spring.jsmr" level="error" additivity="false">
-            <appender-ref ref="CONSOLE"/>
             <appender-ref ref="aws_cloud_watch_log"/>
-        </logger>
+        </root>
     </springProfile>
 
+    <!-- prod 프로필: 콘솔 + CloudWatch (INFO 이상) -->
     <springProfile name="prod">
         <root level="info">
             <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="aws_cloud_watch_log"/>
         </root>
-
-        <logger name="com.amazonaws.util.EC2MetadataUtils" level="error" additivity="false">
-        </logger>
-
-        <logger name="mashup.spring.jsmr" level="debug" additivity="false">
-            <appender-ref ref="CONSOLE"/>
-        </logger>
     </springProfile>
 </configuration>
