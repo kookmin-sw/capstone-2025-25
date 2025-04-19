@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from config import OPENAI_API_KEY
-from models.request import GPTRequest, NodeSummaryRequest, ConvertToTaskRequest
+from models.request import MindmapNodeContextRequest, NodeSummaryRequest, ConvertToTaskRequest
 from models.response import GeneratedQuestionsResponse, ConvertedTaskResponse, SummarizedNodeResponse
 from services.gpt_service import GPTService
 from utils.prompt_loader import load_prompt_template
@@ -11,7 +11,7 @@ router = APIRouter()
 gpt_service = GPTService(api_key=OPENAI_API_KEY)
 
 @router.post("/generate_todo_questions", response_model=GeneratedQuestionsResponse)
-async def generate_todo_questions(request: GPTRequest):
+async def generate_todo_questions(request: MindmapNodeContextRequest):
     try:
         if not request.mainNode or not request.mainNode.summary.strip():
             raise HTTPException(status_code=400, detail="mainNode.summary 값이 비어 있거나 잘못되었습니다.")
@@ -37,7 +37,7 @@ async def generate_todo_questions(request: GPTRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/generate_thinking_questions", response_model=GeneratedQuestionsResponse)
-async def generate_thinking_questions(request: GPTRequest):
+async def generate_thinking_questions(request: MindmapNodeContextRequest):
     try:
         if not request.mainNode or not request.mainNode.summary or not request.mainNode.summary.strip():
             raise HTTPException(status_code=400, detail="mainNode.summary 값이 비어 있거나 잘못되었습니다.")

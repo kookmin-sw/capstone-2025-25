@@ -2,10 +2,10 @@ import re
 
 from fastapi import HTTPException
 
-from models.request import GPTRequest, ConvertToTaskRequest
+from models.request import MindmapNodeContextRequest, ConvertToTaskRequest
 
 
-def build_mindmap_context_text(request: GPTRequest) -> str:
+def build_mindmap_context_text(request: MindmapNodeContextRequest) -> str:
     """마인드맵 흐름 정리 텍스트 생성"""
     parts = [f"전체 주제: **{request.mainNode.summary}**"]
     if request.parentNode:

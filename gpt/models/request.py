@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class NodeSummaryData(BaseModel):
     summary: Optional[str] = None
-class GPTRequest(BaseModel):
+class MindmapNodeContextRequest(BaseModel):
     mainNode: NodeSummaryData
     parentNode: Optional[NodeSummaryData] = None
     selectedNode: Optional[NodeSummaryData] = None
