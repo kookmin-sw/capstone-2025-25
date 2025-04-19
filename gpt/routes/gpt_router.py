@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from config import OPENAI_API_KEY
-from models.request import MindmapNodeContextRequest, NodeSummaryRequest, ConvertToTaskRequest
-from models.response import GeneratedQuestionsResponse, ConvertedTaskResponse, SummarizedNodeResponse
+from models.request import MindmapNodeContextRequest, NodeSummaryRequest, ConvertToTaskRequest, EisenhowerTaskRequest
+from models.response import GeneratedQuestionsResponse, ConvertedTaskResponse, SummarizedNodeResponse, \
+    EisenhowerRecommendationResponse
 from services.gpt_service import GPTService
 from utils.exception_handler import safe_gpt_handler
 from utils.prompt_loader import load_prompt_template
@@ -87,3 +88,28 @@ async def summarize_node(request: NodeSummaryRequest):
     refined_text = clean_single_line(gpt_output)
 
     return SummarizedNodeResponse(summary=refined_text)
+
+@router.post("/eisenhower-order-recommendation", response_model=EisenhowerRecommendationResponse)
+@safe_gpt_handler
+async def order_recommendation(request: EisenhowerTaskRequest):
+    from datetime import datetime
+    user_prompt = load_prompt_template("prompts/eisenhower_order_prompt.txt", {
+        "title": request.title,
+        "currentQuadrant": request.currentQuadrant,
+        "dueDate": request.dueDate.strftime("%Y-%m-%d") if request.dueDate else None,
+        "today": datetime.now().strftime("%Y-%m-%d")
+    })
+
+    system_prompt = "당신은 아이젠하워 매트릭스를 기준으로 작업을 사분면에 분류해주는 도우미입니다."
+
+    gpt_output = await gpt_service.ask(system_prompt, user_prompt)
+
+    lines = gpt_output.split("\n")
+    quadrant = clean_single_line(lines[0])
+    reason = clean_single_line(" ".join(lines[1:]))
+
+    return EisenhowerRecommendationResponse(
+        recommendedQuadrant=quadrant,
+        reason=reason,
+        isSameAsCurrent=(quadrant == request.currentQuadrant)
+    )
