@@ -1,4 +1,6 @@
-fastapi
+fastapi~=0.115.11
 uvicorn
-openai
-python-dotenv
+openai~=1.66.3
+python-dotenv~=1.0.1
+Jinja2~=3.1.6
+pydantic~=2.10.6
