@@ -66,32 +66,32 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          # EC2에 환경 변수 저장
-          mkdir -p ~/deploy
-          cd ~/deploy
-    
-          # 현재 날짜/시간을 기준으로 스트림 ID 생성
-          LOG_STREAM_ID=$(date +"%Y%m%d-%H%M%S")  # 예: 20250414-123456
-          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
-          echo "LOG_STREAM_ID=${LOG_STREAM_ID}" >> .env  # 날짜/시간 기반 스트림 ID
-    
-          # Docker 로그인
-          echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-    
-          # 기존 컨테이너 제거
-          if [ -f "docker-compose.yml" ]; then
-            sudo docker-compose down
-          fi
-    
-          # 최신 docker-compose.yml 받아오기
-          curl -O https://raw.githubusercontent.com/${{ github.repository }}/develop/backend/docker-compose.yml
-    
-          # 최신 이미지 pull
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/iambohyun:latest
-    
-          # 오래된 이미지 정리
-          sudo docker image prune -f
-    
-          # 환경 변수로 LOG_STREAM_ID 전달하며 compose 실행
-          sudo --preserve-env=LOG_STREAM_ID,DOCKER_USERNAME docker-compose --env-file .env up -d --force-recreate --remove-orphans
+          script: |
+            # EC2에 환경 변수 저장
+            mkdir -p ~/deploy
+            cd ~/deploy
+      
+            # 현재 날짜/시간을 기준으로 스트림 ID 생성
+            LOG_STREAM_ID=$(date +"%Y%m%d-%H%M%S")  # 예: 20250414-123456
+            echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" > .env
+            echo "LOG_STREAM_ID=${LOG_STREAM_ID}" >> .env  # 날짜/시간 기반 스트림 ID
+      
+            # Docker 로그인
+            echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      
+            # 기존 컨테이너 제거
+            if [ -f "docker-compose.yml" ]; then
+              sudo docker-compose down
+            fi
+      
+            # 최신 docker-compose.yml 받아오기
+            curl -O https://raw.githubusercontent.com/${{ github.repository }}/develop/backend/docker-compose.yml
+      
+            # 최신 이미지 pull
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/iambohyun:latest
+      
+            # 오래된 이미지 정리
+            sudo docker image prune -f
+      
+            # 환경 변수로 LOG_STREAM_ID 전달하며 compose 실행
+            sudo --preserve-env=LOG_STREAM_ID,DOCKER_USERNAME docker-compose --env-file .env up -d --force-recreate --remove-orphans
