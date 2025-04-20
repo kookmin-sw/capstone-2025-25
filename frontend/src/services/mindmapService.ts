@@ -20,7 +20,7 @@ export const mindmapService = {
     data: GenerateReq,
   ): Promise<GeneratedScheduleRes> => {
     const response = await gptClient.post<GeneratedScheduleRes>(
-      ENDPOINTS.MINDMAP.GENERATE_SCHEDULE,
+      ENDPOINTS.MINDMAP.GENERATE_TODO,
       data,
     );
     return response.data;
