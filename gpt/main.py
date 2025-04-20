@@ -2,11 +2,12 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import CORS_ORIGINS
-from routes import gpt
+from routes import gpt_router
 from utils.logging import setup_logging
 
 app = FastAPI()
 
+app.include_router(gpt_router.router, prefix="/api/gpt")
 
 # CORS 설정 적용
 app.add_middleware(
@@ -20,7 +21,6 @@ app.add_middleware(
 # 로깅 설정
 logger = setup_logging()
 
-app.include_router(gpt.router, prefix="/api/gpt")
 
 # 요청 실행 시간 로깅 미들웨어
 @app.middleware("http")
