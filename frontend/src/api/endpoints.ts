@@ -8,6 +8,7 @@ export const ENDPOINTS = {
 
     CREATE_ROOT_NODE: '/api/mindmap/root',
     GET_LIST: '/api/mindmap/list',
+    DETAIL: (id: number) => `/api/mindmap/${id}`,
   },
 
   /* 인증 관련 엔드포인트 */

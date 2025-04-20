@@ -11,6 +11,7 @@ import {
   CreateRootNodeReq,
   CreateRootNodeRes,
   GetMindmapListRes,
+  GetMindmapDetailRes,
 } from '@/types/api/mindmap';
 
 export const mindmapService = {
@@ -65,6 +66,13 @@ export const mindmapService = {
   getList: async (): Promise<GetMindmapListRes> => {
     const response = await apiClient.get<GetMindmapListRes>(
       ENDPOINTS.MINDMAP.GET_LIST,
+    );
+    return response.data;
+  },
+
+  getDetail: async (id: number): Promise<GetMindmapDetailRes> => {
+    const response = await apiClient.get<GetMindmapDetailRes>(
+      ENDPOINTS.MINDMAP.DETAIL(id),
     );
     return response.data;
   },

@@ -13,7 +13,7 @@ export default function RootNode({ data, selected }: NodeProps<RootNodeType>) {
       <div className="dragHandle absolute top-3 right-1 z-20 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <GripVertical size={32} color="#B9B9B7" />
       </div>
-      <p className="text-[32px] font-semibold">{data.label}</p>
+      <p className="text-[32px] font-semibold">{data?.summary}</p>
 
       <NodeHandles type="full" />
     </div>

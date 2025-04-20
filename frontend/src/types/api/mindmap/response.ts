@@ -1,4 +1,4 @@
-import { MindMapSummary } from '@/types/mindMap';
+import { MindMapDetail, MindMapSummary } from '@/types/mindMap';
 
 export type GeneratedScheduleRes = {
   generated_questions: string[];
@@ -28,4 +28,10 @@ export type GetMindmapListRes = {
   statusCode: number;
   error: string | null;
   content: MindMapSummary[];
+};
+
+export type GetMindmapDetailRes = {
+  statusCode: number;
+  error: string | null;
+  content: MindMapDetail;
 };

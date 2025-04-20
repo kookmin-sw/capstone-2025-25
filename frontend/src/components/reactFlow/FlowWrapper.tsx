@@ -12,7 +12,7 @@ import {
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import {
   useNodes,
@@ -22,7 +22,6 @@ import {
   useNodesChange,
   useUpdateNodeQuestions,
   useUpdateNodePending,
-  useSetInitialData,
   useActiveState,
   useRestoreActiveState,
 } from '@/store/mindMapStore';
@@ -58,11 +57,11 @@ const edgeTypes = {
 
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
-type FlowContentProps = {
-  mindmapId?: number | null;
+type FlowWrapperProps = {
+  mindmapId?: number;
 };
 
-function FlowContent({ mindmapId }: FlowContentProps) {
+function FlowContent({ mindmapId }: FlowWrapperProps) {
   const nodes = useNodes();
   const edges = useEdges();
   const onNodesChange = useNodesChange();
@@ -70,7 +69,6 @@ function FlowContent({ mindmapId }: FlowContentProps) {
   const addChildNode = useAddChildNode();
   const updateNodeQuestions = useUpdateNodeQuestions();
   const updateNodePending = useUpdateNodePending();
-  const setInitialData = useSetInitialData();
   const activeState = useActiveState();
   const restoreActiveState = useRestoreActiveState();
 
@@ -83,23 +81,6 @@ function FlowContent({ mindmapId }: FlowContentProps) {
   const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
   const ignoreNextPaneClick = useRef(false);
-
-  useEffect(() => {
-    if (mindmapId) {
-      const mindMapData = loadMindMapData(mindmapId);
-      if (mindMapData) {
-        if (mindMapData.nodes && mindMapData.edges) {
-          setInitialData(mindMapData.nodes, mindMapData.edges);
-        }
-      }
-
-      if (!mindMapData) {
-        console.error(
-          `마인드맵 ID ${mindmapId}에 해당하는 데이터를 찾을 수 없습니다.`,
-        );
-      }
-    }
-  }, [mindmapId, loadMindMapData, setInitialData]);
 
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -264,29 +245,27 @@ function FlowContent({ mindmapId }: FlowContentProps) {
 
   return (
     <div className="w-full h-full">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={handleNodesChange}
-        onEdgesChange={handleEdgesChange}
-        onConnectStart={onConnectStart}
-        onConnectEnd={onConnectEnd}
-        onPaneClick={onPaneClick}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        nodeOrigin={nodeOrigin}
-        connectionLineType={ConnectionLineType.Straight}
-        fitView
-      >
-        <Controls showInteractive={false} />
-      </ReactFlow>
+      {
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={handleNodesChange}
+          onEdgesChange={handleEdgesChange}
+          onConnectStart={onConnectStart}
+          onConnectEnd={onConnectEnd}
+          onPaneClick={onPaneClick}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          nodeOrigin={nodeOrigin}
+          connectionLineType={ConnectionLineType.Straight}
+          fitView
+        >
+          <Controls showInteractive={false} />
+        </ReactFlow>
+      }
     </div>
   );
 }
-
-type FlowWrapperProps = {
-  mindmapId?: number | null;
-};
 
 function FlowWrapper({ mindmapId }: FlowWrapperProps) {
   const isNodeSelectionMode = useIsNodeSelectionMode();
