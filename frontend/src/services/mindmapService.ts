@@ -12,6 +12,7 @@ import {
   CreateRootNodeRes,
   GetMindmapListRes,
   GetMindmapDetailRes,
+  DeleteMindmapRes,
 } from '@/types/api/mindmap';
 
 export const mindmapService = {
@@ -72,6 +73,13 @@ export const mindmapService = {
 
   getDetail: async (id: number): Promise<GetMindmapDetailRes> => {
     const response = await apiClient.get<GetMindmapDetailRes>(
+      ENDPOINTS.MINDMAP.DETAIL(id),
+    );
+    return response.data;
+  },
+
+  delete: async (id: number): Promise<DeleteMindmapRes> => {
+    const response = await apiClient.delete<DeleteMindmapRes>(
       ENDPOINTS.MINDMAP.DETAIL(id),
     );
     return response.data;

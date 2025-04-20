@@ -23,7 +23,6 @@ export type MindMapListState = {
     nodes: MindMapNode[],
     edges: MindMapEdge[],
   ) => void;
-  deleteMindMap: (id: number) => void;
   disconnectMindmapTask: (mindMapId: number) => void;
 };
 
@@ -118,18 +117,6 @@ const useStore = create<MindMapListState>((set, get) => ({
 
       set({ mindMaps: updatedMindMaps });
     }
-  },
-
-  deleteMindMap: (id) => {
-    const { mindMaps, activeMindMapId } = get();
-    const updatedMindMaps = mindMaps.filter((mindMap) => mindMap.id !== id);
-
-    const newActiveMindMapId = activeMindMapId === id ? null : activeMindMapId;
-
-    set({
-      mindMaps: updatedMindMaps,
-      activeMindMapId: newActiveMindMapId,
-    });
   },
 
   disconnectMindmapTask: (mindMapId) => {

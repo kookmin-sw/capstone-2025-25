@@ -35,3 +35,9 @@ export type GetMindmapDetailRes = {
   error: string | null;
   content: MindMapDetail;
 };
+
+export type DeleteMindmapRes = {
+  statusCode: number;
+  error: string | null;
+  content: string;
+};
