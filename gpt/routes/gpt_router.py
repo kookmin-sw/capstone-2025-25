@@ -8,6 +8,7 @@ from utils.exception_handler import safe_gpt_handler
 from utils.prompt_loader import load_prompt_template
 from utils.gpt_helper import build_mindmap_context_text, clean_question_lines, build_node_summary_text, \
     clean_single_line
+from datetime import datetime
 
 router = APIRouter()
 gpt_service = GPTService(api_key=OPENAI_API_KEY)
@@ -89,10 +90,10 @@ async def summarize_node(request: NodeSummaryRequest):
 
     return SummarizedNodeResponse(summary=refined_text)
 
+
 @router.post("/eisenhower-order-recommendation", response_model=EisenhowerRecommendationResponse)
 @safe_gpt_handler
-async def order_recommendation(request: EisenhowerTaskRequest):
-    from datetime import datetime
+async def eisenhower_order_recommendation(request: EisenhowerTaskRequest):
     user_prompt = load_prompt_template("prompts/eisenhower_order_prompt.txt", {
         "title": request.title,
         "currentQuadrant": request.currentQuadrant,
