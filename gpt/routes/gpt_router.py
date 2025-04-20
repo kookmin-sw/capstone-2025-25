@@ -14,7 +14,7 @@ router = APIRouter()
 gpt_service = GPTService(api_key=OPENAI_API_KEY)
 
 
-@router.post("/generate-todo-questions", response_model=GeneratedQuestionsResponse)
+@router.post("/generate/todo-questions", response_model=GeneratedQuestionsResponse)
 @safe_gpt_handler
 async def generate_todo_questions(request: MindmapNodeContextRequest):
     if not request.mainNode or not request.mainNode.summary.strip():
@@ -35,7 +35,7 @@ async def generate_todo_questions(request: MindmapNodeContextRequest):
     return GeneratedQuestionsResponse(generated_questions=refined_questions)
 
 
-@router.post("/generate-thinking-questions", response_model=GeneratedQuestionsResponse)
+@router.post("/generate/thinking-questions", response_model=GeneratedQuestionsResponse)
 @safe_gpt_handler
 async def generate_thinking_questions(request: MindmapNodeContextRequest):
     if not request.mainNode or not request.mainNode.summary or not request.mainNode.summary.strip():
