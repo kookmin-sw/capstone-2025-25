@@ -26,7 +26,7 @@ export default function AnswerInputNode({
 }: NodeProps<AnswerNodeType>) {
   const initialAnswer = data.answer || '';
   const isEditing = data.isEditing || false;
-  const isDirectQuestion = data.label === '직접 입력하기';
+  const isDirectQuestion = data.question === '직접 입력하기';
 
   const [answer, setAnswer] = useState(initialAnswer);
   const [customQuestion, setCustomQuestion] = useState('');
@@ -75,10 +75,10 @@ export default function AnswerInputNode({
       const currentNode = nodes.find((node) => node.id === id);
       if (currentNode) {
         // 직접 입력 모드일 때는 사용자가 입력한 질문을, 아닐 때는 원래 레이블을 사용
-        const questionText = isDirectQuestion ? customQuestion : data.label;
+        const questionText = isDirectQuestion ? customQuestion : data.question;
 
         const requestData: SummarizedNodeReq = {
-          question: questionText,
+          question: questionText || '',
           answer,
         };
 
@@ -86,10 +86,10 @@ export default function AnswerInputNode({
           onSuccess: (data) => {
             setNode(id, {
               ...currentNode,
-              type: 'summary',
+              type: 'SUMMARY',
               data: {
                 ...currentNode.data,
-                label: questionText,
+                question: questionText,
                 answer,
                 summary: data.summary,
               },
@@ -100,7 +100,7 @@ export default function AnswerInputNode({
             if (parentNode) {
               const filteredQuestions = parentNode.data.recommendedQuestions
                 ? parentNode.data.recommendedQuestions.filter(
-                    (q) => q !== currentNode.data.label,
+                    (q) => q !== currentNode.data.question,
                   )
                 : [];
 
@@ -120,10 +120,10 @@ export default function AnswerInputNode({
       const currentNode = nodes.find((node) => node.id === id);
       if (currentNode) {
         // 직접 입력 모드일 때는 사용자가 입력한 질문을, 아닐 때는 원래 레이블을 사용
-        const questionText = isDirectQuestion ? customQuestion : data.label;
+        const questionText = isDirectQuestion ? customQuestion : data.question;
 
         const requestData: SummarizedNodeReq = {
-          question: questionText,
+          question: questionText || '',
           answer,
         };
 
@@ -134,7 +134,7 @@ export default function AnswerInputNode({
                 ...currentNode,
                 data: {
                   ...currentNode.data,
-                  label: questionText,
+                  question: questionText,
                   answer,
                   summary: data.summary,
                 },
@@ -167,7 +167,7 @@ export default function AnswerInputNode({
           />
         </div>
       ) : (
-        <p className="text-[20px] font-semibold mb-[15px]">{data.label}</p>
+        <p className="text-[20px] font-semibold mb-[15px]">{data.question}</p>
       )}
 
       <div className="mb-[20px]">
@@ -260,9 +260,9 @@ export default function AnswerInputNode({
             >
               <div className="rounded-[7px] px-6 py-4 border-1 border-[#AAAAAA]">
                 <p className="font-semibold text-[18px] mb-1">
-                  {isDirectQuestion ? customQuestion : data.label}
+                  {isDirectQuestion ? customQuestion : data.question}
                 </p>
-                <p className='font-normal text-[16px]'>{answer}</p>
+                <p className="font-normal text-[16px]">{answer}</p>
               </div>
             </Modal>
           </>

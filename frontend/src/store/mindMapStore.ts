@@ -96,9 +96,9 @@ const useStore = create<RFState>((set, get) => ({
 
     const newNode: MindMapNode = {
       id: newNodeId,
-      type: 'question',
+      type: 'QUESTION',
       data: {
-        label: '다음 질문을 선택해주세요',
+        question: '다음 질문을 선택해주세요',
         depth: parentDepth + 1,
         recommendedQuestions: [],
         isPending,

@@ -43,6 +43,7 @@ import { findParentNode } from '@/lib/mindMap';
 import useGenerateThought from '@/hooks/queries/mindmap/useGenerateThought';
 
 import { NodeSelectionPanel } from '@/components/reactFlow/ui/NodeSelectionPanel';
+import { MindMapDetail } from '@/types/mindMap';
 
 const nodeTypes = {
   ROOT: RootNode,
@@ -58,10 +59,10 @@ const edgeTypes = {
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
 type FlowWrapperProps = {
-  mindmapId?: number;
+  mindmap?: MindMapDetail;
 };
 
-function FlowContent({ mindmapId }: FlowWrapperProps) {
+function FlowContent({ mindmap }: FlowWrapperProps) {
   const nodes = useNodes();
   const edges = useEdges();
   const onNodesChange = useNodesChange();
@@ -81,6 +82,8 @@ function FlowContent({ mindmapId }: FlowWrapperProps) {
   const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
   const ignoreNextPaneClick = useRef(false);
+
+  const mindmapId = mindmap?.id;
 
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -173,9 +176,7 @@ function FlowContent({ mindmapId }: FlowWrapperProps) {
           const newNodeId = addChildNode(selectedNode, childNodePosition, true);
 
           if (mindmapId) {
-            const mindMapData = loadMindMapData(mindmapId);
-
-            if (mindMapData?.type === 'TODO') {
+            if (mindmap?.type === 'TODO') {
               generateScheduleMutation(requestData, {
                 onSuccess: (data) => {
                   updateNodeQuestions(
@@ -191,7 +192,7 @@ function FlowContent({ mindmapId }: FlowWrapperProps) {
               });
             }
 
-            if (mindMapData?.type === 'THINKING') {
+            if (mindmap?.type === 'THINKING') {
               generateThoughtMutation(requestData, {
                 onSuccess: (data) => {
                   updateNodeQuestions(
@@ -267,7 +268,7 @@ function FlowContent({ mindmapId }: FlowWrapperProps) {
   );
 }
 
-function FlowWrapper({ mindmapId }: FlowWrapperProps) {
+function FlowWrapper({ mindmap }: FlowWrapperProps) {
   const isNodeSelectionMode = useIsNodeSelectionMode();
 
   return (
@@ -275,7 +276,7 @@ function FlowWrapper({ mindmapId }: FlowWrapperProps) {
       {isNodeSelectionMode && <NodeSelectionPanel />}
 
       <ReactFlowProvider>
-        <FlowContent mindmapId={mindmapId} />
+        <FlowContent mindmap={mindmap} />
       </ReactFlowProvider>
     </div>
   );

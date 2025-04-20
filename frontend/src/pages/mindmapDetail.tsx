@@ -18,7 +18,7 @@ export default function MindmapDetailPage() {
   const disableSelectionMode = useDisableSelectionMode();
 
   // 마인드맵 상세 데이터 가져오기
-  const { mindmapDetail } = useGetMindmapDetail(numericId);
+  const { mindmapDetail } = useGetMindmapDetail(numericId as number);
 
   useEffect(() => {
     if (isNodeSelectionMode) {
@@ -34,7 +34,7 @@ export default function MindmapDetailPage() {
 
   return (
     <div className="h-full">
-      {mindmapDetail && <FlowWrapper mindmapId={mindmapDetail.id} />}
+      {mindmapDetail && <FlowWrapper mindmap={mindmapDetail} />}
     </div>
   );
 }

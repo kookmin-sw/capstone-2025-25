@@ -35,10 +35,10 @@ export default function QuestionListNode({
     if (currentNode) {
       setNode(id, {
         ...currentNode,
-        type: 'answer',
+        type: 'ANSWER',
         data: {
           ...currentNode.data,
-          label: selectedQuestion,
+          question: selectedQuestion,
         },
       });
     }
@@ -99,10 +99,10 @@ export default function QuestionListNode({
     if (currentNode) {
       setNode(id, {
         ...currentNode,
-        type: 'answer',
+        type: 'ANSWER',
         data: {
           ...currentNode.data,
-          label: '직접 입력하기',
+          question: '직접 입력하기',
         },
       });
     }
