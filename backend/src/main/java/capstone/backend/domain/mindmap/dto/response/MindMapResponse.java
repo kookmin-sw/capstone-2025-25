@@ -3,6 +3,7 @@ package capstone.backend.domain.mindmap.dto.response;
 import capstone.backend.domain.mindmap.entity.Edge;
 import capstone.backend.domain.mindmap.entity.MindMap;
 import capstone.backend.domain.mindmap.entity.Node;
+import capstone.backend.domain.mindmap.entity.NodeData;
 import capstone.backend.domain.mindmap.exception.NodeNotFoundException;
 import java.util.Optional;
 import lombok.Builder;
@@ -20,11 +21,7 @@ public record MindMapResponse(
     public record NodeResponse(
         String id,
         String type,
-        String question,
-        String answer,
-        String summary,
-        int depth,
-        List<String> recommendedQuestions,
+        NodeData data,
         PositionResponse position,
         MeasuredResponse measured
     ) {
@@ -32,11 +29,7 @@ public record MindMapResponse(
             return new NodeResponse(
                 node.getId(),
                 node.getType().name(),
-                node.getData().getQuestion(),
-                node.getData().getAnswer(),
-                node.getData().getSummary(),
-                node.getData().getDepth(),
-                node.getData().getRecommendedQuestions(),
+                node.getData(),
                 new PositionResponse(node.getPosition().getX(), node.getPosition().getY()),
                 new MeasuredResponse(node.getMeasured().getWidth(), node.getMeasured().getHeight())
             );
