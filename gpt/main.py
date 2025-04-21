@@ -4,10 +4,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import CORS_ORIGINS
 from routes import gpt_router
 from utils.logging import setup_logging
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
 app.include_router(gpt_router.router, prefix="/api/gpt")
+
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/docs")  # FastAPI의 Swagger UI로 리다이렉트
 
 # CORS 설정 적용
 app.add_middleware(

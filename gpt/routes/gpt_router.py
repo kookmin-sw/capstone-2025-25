@@ -17,9 +17,6 @@ gpt_service = GPTService(api_key=OPENAI_API_KEY)
 @router.post("/generate/todo-questions", response_model=GeneratedQuestionsResponse)
 @safe_gpt_handler
 async def generate_todo_questions(request: MindmapNodeContextRequest):
-    if not request.mainNode or not request.mainNode.summary.strip():
-        raise HTTPException(status_code=400, detail="mainNode.summary 값이 비어 있거나 잘못되었습니다.")
-
     path_text = build_mindmap_context_text(request)
 
     user_prompt = load_prompt_template("prompts/todo_prompt.txt", {
@@ -38,9 +35,6 @@ async def generate_todo_questions(request: MindmapNodeContextRequest):
 @router.post("/generate/thinking-questions", response_model=GeneratedQuestionsResponse)
 @safe_gpt_handler
 async def generate_thinking_questions(request: MindmapNodeContextRequest):
-    if not request.mainNode or not request.mainNode.summary or not request.mainNode.summary.strip():
-        raise HTTPException(status_code=400, detail="mainNode.summary 값이 비어 있거나 잘못되었습니다.")
-
     path_text = build_mindmap_context_text(request)
 
     user_prompt = load_prompt_template("prompts/thinking_prompt.txt", {
