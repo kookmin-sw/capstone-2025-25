@@ -6,11 +6,13 @@ import capstone.backend.domain.auth.service.AuthService;
 import capstone.backend.global.api.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "인증/인가", description = "JWT 관련 API")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
