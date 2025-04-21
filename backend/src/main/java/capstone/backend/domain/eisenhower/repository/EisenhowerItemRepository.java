@@ -14,4 +14,6 @@ public interface EisenhowerItemRepository extends JpaRepository<EisenhowerItem, 
     Page<EisenhowerItem> findByMemberIdAndTitleContaining(Long memberId, String keyword, Pageable pageable);
 
     List<EisenhowerItem> findAllByDueDateAndIsCompleted(LocalDate today, boolean isCompleted);
+
+    Optional<EisenhowerItem> findByMindMap_IdAndMemberId(Long mindMapId, Long memberId);
 }
