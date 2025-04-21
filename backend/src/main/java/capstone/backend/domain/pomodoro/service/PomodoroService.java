@@ -10,6 +10,7 @@ import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.pomodoro.dto.request.CreatePomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
+import capstone.backend.domain.pomodoro.dto.response.PomodoroDTO;
 import capstone.backend.domain.pomodoro.dto.response.SidebarPomodoroResponse;
 import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
 import capstone.backend.domain.pomodoro.exception.PomodoroNotFoundException;
@@ -37,7 +38,7 @@ public class PomodoroService {
 
     // 뽀모도로 생성
     @Transactional
-    public void createPomodoro(Long memberId, CreatePomodoroRequest request) {
+    public PomodoroDTO createPomodoro(Long memberId, CreatePomodoroRequest request) {
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
@@ -63,7 +64,8 @@ public class PomodoroService {
                     eisenhowerItemRepository.save(eisenhowerItem);
                 });
 
-        pomodoroRepository.save(pomodoro);
+        Pomodoro save = pomodoroRepository.save(pomodoro);
+        return new PomodoroDTO(save.getId());
     }
 
     // (언링크 + 링크) 뽀모도로 전체 조회
