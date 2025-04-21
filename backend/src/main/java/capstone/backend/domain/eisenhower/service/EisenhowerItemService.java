@@ -10,6 +10,7 @@ import capstone.backend.domain.eisenhower.entity.EisenhowerCategory;
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.exception.CategoryNotFoundException;
 import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
+import capstone.backend.domain.eisenhower.exception.MindMapNotLinkedToEisenhowerException;
 import capstone.backend.domain.eisenhower.repository.EisenhowerCategoryRepository;
 import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
@@ -103,9 +104,9 @@ public class EisenhowerItemService {
 
     //마인드맵 추출 시, 연관된 아이젠하워 카테고리 조회
     public EisenhowerCategoryResponse getCategoryByMindMapId(Long mindMapId, Long memberId){
-        return eisenhowerItemRepository.findByMindMap_IdAndMemberId(mindMapId, memberId)
-            .map(EisenhowerItem::getCategory)
-            .map(EisenhowerCategoryResponse::from)
-            .orElse(null);
+        EisenhowerItem item = eisenhowerItemRepository.findByMemberIdAndMindMapId(memberId, mindMapId)
+            .orElseThrow(MindMapNotLinkedToEisenhowerException::new);
+
+        return EisenhowerCategoryResponse.from(item.getCategory());
     }
 }
