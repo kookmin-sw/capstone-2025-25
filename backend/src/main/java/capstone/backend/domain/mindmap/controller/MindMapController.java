@@ -1,5 +1,7 @@
 package capstone.backend.domain.mindmap.controller;
 
+import capstone.backend.domain.eisenhower.dto.response.EisenhowerCategoryResponse;
+import capstone.backend.domain.eisenhower.service.EisenhowerItemService;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
 import capstone.backend.domain.mindmap.dto.response.SidebarMindMapResponse;
@@ -24,6 +26,7 @@ import java.util.List;
 public class MindMapController {
 
     private final MindMapService mindMapService;
+    private final EisenhowerItemService eisenhowerItemService;
 
     @PostMapping("/root")
     @Operation(summary = "마인드맵 루트 노드 생성")
@@ -85,5 +88,16 @@ public class MindMapController {
         @AuthenticationPrincipal CustomOAuth2User user
     ) {
         return ApiResponse.ok(mindMapService.getMindMapList(user.getMemberId()));
+    }
+
+    @GetMapping("/category/{id}")
+    @Operation(summary = "마인드맵 추출 시, 연관된 아이젠하워 카테고리 조회")
+    public ApiResponse<EisenhowerCategoryResponse> getCategoryByMindMapId(
+        @Parameter(description = "마인드맵 ID", required = true, in = ParameterIn.PATH)
+        @PathVariable Long id,
+        @AuthenticationPrincipal CustomOAuth2User user
+    ){
+        EisenhowerCategoryResponse category = eisenhowerItemService.getCategoryByMindMapId(id, user.getMemberId());
+        return ApiResponse.ok(category);
     }
 }
