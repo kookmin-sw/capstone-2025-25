@@ -1,5 +1,6 @@
 package capstone.backend.domain.mindmap.controller;
 
+import capstone.backend.domain.mindmap.dto.request.UpdateMindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
 import capstone.backend.domain.mindmap.dto.response.SidebarMindMapResponse;
 import capstone.backend.global.api.dto.ApiResponse;
@@ -59,7 +60,7 @@ public class MindMapController {
     public ApiResponse<String> updateMindMap(
         @Parameter(name = "id", description = "수정 마인드맵 ID", required = true, in = ParameterIn.PATH)
         @PathVariable Long id,
-        @Valid @RequestBody MindMapRequest mindMapRequest,
+        @Valid @RequestBody UpdateMindMapRequest mindMapRequest,
         @AuthenticationPrincipal CustomOAuth2User user
     ){
         mindMapService.updateMindMap(user.getMemberId(), id, mindMapRequest);

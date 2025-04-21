@@ -3,6 +3,7 @@ package capstone.backend.domain.mindmap.entity;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
+import capstone.backend.domain.mindmap.dto.request.UpdateMindMapRequest;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import lombok.*;
@@ -62,9 +63,7 @@ public class MindMap {
             .build();
     }
 
-    public void update(MindMapRequest mindMapRequest) {
-        this.title = mindMapRequest.title();
-        this.type = mindMapRequest.type();
+    public void update(UpdateMindMapRequest mindMapRequest) {
         this.nodes = mindMapRequest.nodes() != null ? new ArrayList<>(mindMapRequest.nodes()) : null;
         this.edges = mindMapRequest.edges() != null ? new ArrayList<>(mindMapRequest.edges()) : null;
     }

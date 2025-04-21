@@ -7,6 +7,7 @@ import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
+import capstone.backend.domain.mindmap.dto.request.UpdateMindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;
 import capstone.backend.domain.mindmap.dto.response.MindMapResponse;
 import capstone.backend.domain.mindmap.dto.response.SidebarMindMapResponse;
@@ -79,11 +80,9 @@ public class MindMapService {
 
     //마인드맵 노드 수정, 하위노드, 엣지 삭제
     @Transactional
-    public void updateMindMap(Long memberId, Long mindMapId, MindMapRequest mindMapRequest) {
+    public void updateMindMap(Long memberId, Long mindMapId, UpdateMindMapRequest mindMapRequest) {
         MindMap mindMap = mindMapRepository.findByIdAndMemberId(mindMapId, memberId)
             .orElseThrow(MindMapNotFoundException::new);
-
-        sanitizeMindMapRequest(mindMapRequest);
 
         mindMap.update(mindMapRequest);
     }
