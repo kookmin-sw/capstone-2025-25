@@ -3,6 +3,7 @@ package capstone.backend.domain.pomodoro.controller;
 
 import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.request.CreatePomodoroRequest;
+import capstone.backend.domain.pomodoro.dto.response.PomodoroDTO;
 import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
 import capstone.backend.domain.pomodoro.schema.Pomodoro;
 import capstone.backend.domain.pomodoro.service.PomodoroService;
@@ -25,12 +26,11 @@ public class PomodoroController {
 
     @PostMapping("/create")
     @Operation(summary = "뽀모도로 생성")
-    public ApiResponse<Void> createUnlink(
+    public ApiResponse<PomodoroDTO> createUnlink(
             @AuthenticationPrincipal CustomOAuth2User user,
             @Valid @RequestBody CreatePomodoroRequest request
     ) {
-        pomodoroService.createPomodoro(user.getMemberId(), request);
-        return ApiResponse.ok();
+        return ApiResponse.ok(pomodoroService.createPomodoro(user.getMemberId(), request));
     }
 
     @GetMapping
