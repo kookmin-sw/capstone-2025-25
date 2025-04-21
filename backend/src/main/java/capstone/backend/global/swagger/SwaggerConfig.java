@@ -16,9 +16,9 @@ import java.util.List;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "Flowin",
-                version = "1.0",
-                description = "ADHD 환자를 위한 디지털 치료 솔루션 서비스"
+                title = "AHZ (ADHD Zone)",
+                version = "1.0.0",
+                description = "흩어진 생각을 정리하고, 일상 흐름을 바로 잡아주는 ADHD 맞춤형 서비스"
         ),
         security = @SecurityRequirement(name = "JWT")
 )

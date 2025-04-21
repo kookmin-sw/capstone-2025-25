@@ -12,11 +12,13 @@ import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "뽀모도로 타이머", description = "뽀모도로 타이머 관련 API")
 @RestController
 @RequestMapping("/api/pomodoro")
 @RequiredArgsConstructor

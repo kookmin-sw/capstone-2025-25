@@ -7,20 +7,16 @@ import capstone.backend.domain.pomodoro.service.DailyPomodoroSummaryService;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Validated
+@Tag(name = "데이터 분석 - 뽀모도로 타이머", description = "뽀모도로 타이머 이용량 관련 API")
 @RestController
 @RequestMapping("/api/data/pomodoro")
 @RequiredArgsConstructor
