@@ -29,3 +29,8 @@ export type CreateRootNodeReq = {
   nodes: MindMapNode[];
   edges: MindMapEdge[];
 };
+
+export type UpdateMindmapReq = {
+  nodes: MindMapNode[];
+  edges: MindMapEdge[];
+};

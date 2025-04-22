@@ -18,11 +18,6 @@ export type MindMapListState = {
   createLinkedMindMap: (task: Task) => number;
   loadMindMapData: (id: number) => MindMap | null;
   setActiveMindMap: (id: number | null) => void;
-  saveMindMapData: (
-    id: number,
-    nodes: MindMapNode[],
-    edges: MindMapEdge[],
-  ) => void;
   disconnectMindmapTask: (mindMapId: number) => void;
 };
 
@@ -104,21 +99,6 @@ const useStore = create<MindMapListState>((set, get) => ({
     set({ activeMindMapId: id });
   },
 
-  saveMindMapData: (id, nodes, edges) => {
-    const mindMapIndex = get().mindMaps.findIndex((m) => m.id === id);
-
-    if (mindMapIndex !== -1) {
-      const updatedMindMaps = [...get().mindMaps];
-      updatedMindMaps[mindMapIndex] = {
-        ...updatedMindMaps[mindMapIndex],
-        nodes,
-        edges,
-      };
-
-      set({ mindMaps: updatedMindMaps });
-    }
-  },
-
   disconnectMindmapTask: (mindMapId) => {
     const mindMapIndex = get().mindMaps.findIndex((m) => m.id === mindMapId);
 
@@ -147,9 +127,6 @@ export const useLoadMindMapData = () =>
   useStore((state) => state.loadMindMapData);
 export const useSetActiveMindMap = () =>
   useStore((state) => state.setActiveMindMap);
-export const useSaveMindMapData = () =>
-  useStore((state) => state.saveMindMapData);
-export const useDeleteMindMap = () => useStore((state) => state.deleteMindMap);
 export const useDisconnectMindmapTask = () =>
   useStore((state) => state.disconnectMindmapTask);
 

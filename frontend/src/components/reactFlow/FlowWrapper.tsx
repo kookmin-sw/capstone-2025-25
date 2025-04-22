@@ -12,7 +12,7 @@ import {
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import {
   useNodes,
@@ -25,10 +25,7 @@ import {
   useActiveState,
   useRestoreActiveState,
 } from '@/store/mindMapStore';
-import {
-  useLoadMindMapData,
-  useSaveMindMapData,
-} from '@/store/mindmapListStore';
+import { useLoadMindMapData } from '@/store/mindmapListStore';
 import { useIsNodeSelectionMode } from '@/store/nodeSelection';
 
 import MindMapEdge from '@/components/reactFlow/edges';
@@ -44,6 +41,7 @@ import useGenerateThought from '@/hooks/queries/mindmap/useGenerateThought';
 
 import { NodeSelectionPanel } from '@/components/reactFlow/ui/NodeSelectionPanel';
 import { MindMapDetail } from '@/types/mindMap';
+import { useDebounceMindmapUpdate } from '@/hooks/useDebounceMindmapUpdate';
 
 const nodeTypes = {
   ROOT: RootNode,
@@ -74,7 +72,8 @@ function FlowContent({ mindmap }: FlowWrapperProps) {
   const restoreActiveState = useRestoreActiveState();
 
   const loadMindMapData = useLoadMindMapData();
-  const saveMindMapData = useSaveMindMapData();
+
+  const { debounceSave, forceSave } = useDebounceMindmapUpdate(mindmap?.id);
 
   const { generateScheduleMutation } = useGenerateSchedule();
   const { generateThoughtMutation } = useGenerateThought();
@@ -85,20 +84,30 @@ function FlowContent({ mindmap }: FlowWrapperProps) {
 
   const mindmapId = mindmap?.id;
 
+  useEffect(() => {
+    return () => {
+      if (mindmapId && nodes.length > 0) {
+        forceSave(nodes, edges);
+      }
+    };
+  }, []); // 빈 의존성 배열
+
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
-      onNodesChange(changes, saveMindMapData, mindmapId);
+      onNodesChange(changes);
+      console.log(nodes, edges);
+      debounceSave(nodes, edges);
     },
-    [onNodesChange, saveMindMapData, mindmapId],
+    [onNodesChange, nodes, edges, debounceSave],
   );
 
   const handleEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
-      onEdgesChange(changes, saveMindMapData, mindmapId);
+      onEdgesChange(changes);
+      debounceSave(nodes, edges);
     },
-    [onEdgesChange, saveMindMapData, mindmapId],
+    [onEdgesChange, nodes, edges, debounceSave],
   );
-
   const getChildNodePosition = useCallback(
     (event: MouseEvent | TouchEvent) => {
       const { clientX, clientY } =
