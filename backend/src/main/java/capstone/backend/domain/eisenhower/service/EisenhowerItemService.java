@@ -4,11 +4,13 @@ import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateReques
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemFilterRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemOrderUpdateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemUpdateRequest;
+import capstone.backend.domain.eisenhower.dto.response.EisenhowerCategoryResponse;
 import capstone.backend.domain.eisenhower.dto.response.EisenhowerItemResponse;
 import capstone.backend.domain.eisenhower.entity.EisenhowerCategory;
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.exception.CategoryNotFoundException;
 import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
+import capstone.backend.domain.eisenhower.exception.MindMapNotLinkedToEisenhowerException;
 import capstone.backend.domain.eisenhower.repository.EisenhowerCategoryRepository;
 import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
@@ -98,5 +100,13 @@ public class EisenhowerItemService {
     public Page<EisenhowerItemResponse> searchItems(Long memberId, String keyword, Pageable pageable) {
         return eisenhowerItemRepository.findByMemberIdAndTitleContaining(memberId, keyword, pageable)
                 .map(EisenhowerItemResponse::from);
+    }
+
+    //마인드맵 추출 시, 연관된 아이젠하워 카테고리 조회
+    public EisenhowerCategoryResponse getCategoryByMindMapId(Long mindMapId, Long memberId){
+        EisenhowerItem item = eisenhowerItemRepository.findByMemberIdAndMindMapId(memberId, mindMapId)
+            .orElseThrow(MindMapNotLinkedToEisenhowerException::new);
+
+        return EisenhowerCategoryResponse.from(item.getCategory());
     }
 }
