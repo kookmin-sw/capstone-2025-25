@@ -90,12 +90,11 @@ function FlowContent({ mindmap }: FlowWrapperProps) {
         forceSave(nodes, edges);
       }
     };
-  }, []); // 빈 의존성 배열
+  }, []);
 
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
       onNodesChange(changes);
-      console.log(nodes, edges);
       debounceSave(nodes, edges);
     },
     [onNodesChange, nodes, edges, debounceSave],
