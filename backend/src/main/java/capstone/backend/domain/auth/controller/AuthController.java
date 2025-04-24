@@ -7,7 +7,6 @@ import capstone.backend.global.api.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -41,11 +40,17 @@ public class AuthController {
         TokenResponse tokenResponse = authService.loginByCode(code);
 
         // RT 쿠키 설정
-        Cookie refreshTokenCookie = new Cookie("refreshToken", tokenResponse.refreshToken());
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(336 * 3600);
-        response.addCookie(refreshTokenCookie);
+        /*
+          https 환경에서 secure = true로 설정할 경우 samesite=None으로 설정해줘야 함
+          브라우저가 크로스 도메인 요청에서 SameSite=Lax 또는 미지정 쿠키를 거부함.
+          따라서, SameSite=None & Secure=True 설정을 같이 적용해줘야 함.
+         */
+        String cookieValue = String.format(
+                "refreshToken=%s; Path=/; Max-Age=%d; HttpOnly; Secure; SameSite=None",
+                tokenResponse.refreshToken(),
+                336 * 3600
+        );
+        response.addHeader("Set-Cookie", cookieValue);
 
         // AT는 body에 담아 응답
         return ApiResponse.ok(new AccessTokenResponse(tokenResponse.accessToken()));
