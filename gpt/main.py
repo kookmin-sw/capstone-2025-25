@@ -2,13 +2,14 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import CORS_ORIGINS
-from routes import gpt_router
+from routes import gpt_router, temporary_router
 from utils.logging import setup_logging
 from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
 app.include_router(gpt_router.router, prefix="/api/gpt")
+app.include_router(temporary_router.router, prefix="/api/gpt")
 
 @app.get("/")
 async def root():
