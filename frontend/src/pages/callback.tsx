@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/api/client.ts';
-import { authService } from '@/services/loginService';
+import { authService } from '@/services/authService.ts';
 import { ENDPOINTS } from '@/api/endpoints.ts';
 
 export default function OAuthCallbackPage() {
@@ -22,29 +22,39 @@ export default function OAuthCallbackPage() {
       });
       return res.data;
     },
+
     onSuccess: (data) => {
-      const token = data?.content?.accessToken;
+      console.log('백엔드 응답:', data);
+      const token =
+        data?.content?.accessToken ?? data?.accessToken ?? data?.token;
+
       if (!token) {
-        throw new Error('토큰 누락');
+        console.error('accessToken 없음', data);
+        return;
       }
+
       authService.login(token);
-      navigate('/dashboard');
+      navigate('/matrix');
     },
-    onError: () => {
-      setTimeout(() => navigate('/login'), 1500);
+
+    onError: (error) => {
+      console.error('토큰 발급 실패:', error);
+      navigate('/login');
     },
   });
 
   useEffect(() => {
-    if (code) {
+    if (!code) {
+      navigate('/login');
+    } else {
       mutate(code);
     }
   }, [code, mutate]);
 
   return (
-    <p className="text-center mt-10 text-red-500">
+    <p className="text-center mt-10">
       {error
-        ? `토큰 발급 실패: ${error instanceof Error ? error.message : '오류'}`
+        ? `토큰 발급 실패: ${error.message}`
         : isPending
           ? '로그인 처리 중입니다...'
           : ''}
