@@ -101,20 +101,11 @@ public class PomodoroService {
 
     // 뽀모도로 완료 기록
     @Transactional
-    public void recordPomodoro(Long memberId, Long pomodoroId, RecordPomodoroRequest request) {
-        Pomodoro pomodoro = pomodoroRepository.findByIdAndMemberId(pomodoroId, memberId)
-                .orElseThrow(PomodoroNotFoundException::new);
-
+    public void recordPomodoro(Long memberId, RecordPomodoroRequest request) {
         List<PomodoroCycle> executedCycles = request.executedCycles();
-        pomodoro.recordCompletedAt(executedCycles);
 
         // 최적화된 시간 계산
         int[] times = calculateTotalTimeSummary(executedCycles);
-
-        // Pomodoro 객체 업데이트 (JPA Dirty Checking)
-        pomodoro.updateTotalExecutedWorkingTime(convertSecondsToLocalTime(times[0]));
-        pomodoro.updateTotalExecutedBreakTime(convertSecondsToLocalTime(times[1]));
-        pomodoro.updateTotalExecutedTime(convertSecondsToLocalTime(times[2]));
 
         // 일일 뽀모도로 총 시간 업데이트
         dailyPomodoroSummaryService.updateDailyPomodoroSummary(memberId, times[2]);

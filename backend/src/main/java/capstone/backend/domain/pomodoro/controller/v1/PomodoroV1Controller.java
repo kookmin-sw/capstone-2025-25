@@ -1,7 +1,6 @@
-package capstone.backend.domain.pomodoro.controller;
+package capstone.backend.domain.pomodoro.controller.v1;
 
 
-import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.request.CreatePomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.response.PomodoroDTO;
 import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
@@ -18,11 +17,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "뽀모도로 타이머", description = "뽀모도로 타이머 관련 API")
+@Tag(name = "(미사용) 뽀모도로 타이머 V1", description = "Version 1. 뽀모도로 타이머 관련 API")
 @RestController
-@RequestMapping("/api/pomodoro")
+@RequestMapping("/api/pomodoro/v1")
 @RequiredArgsConstructor
-public class PomodoroController {
+public class PomodoroV1Controller {
 
     private final PomodoroService pomodoroService;
 
@@ -51,18 +50,6 @@ public class PomodoroController {
             @AuthenticationPrincipal CustomOAuth2User user
     ) {
         return ApiResponse.ok(pomodoroService.findById(user.getMemberId(), id));
-    }
-
-    @PatchMapping("/{id}")
-    @Operation(summary = "뽀모도로 완료 및 기록")
-    public ApiResponse<Void> setPomodoro(
-            @Parameter(name = "id", description = "뽀모도로 ID", required = true, in = ParameterIn.PATH)
-            @PathVariable Long id,
-            @Valid @RequestBody RecordPomodoroRequest request,
-            @AuthenticationPrincipal CustomOAuth2User user
-    ) {
-        pomodoroService.recordPomodoro(user.getMemberId(), id, request);
-        return ApiResponse.ok();
     }
 
     @DeleteMapping("/{id}")
