@@ -1,3 +1,6 @@
+import { ActualTaskType } from '@/types/commonTypes';
+import { MindMapEdge, MindMapNode } from '@/types/mindMap';
+
 export type GenerateReq = {
   mainNode: {
     summary: string;
@@ -17,4 +20,17 @@ export type ConvertedToTaskReq = {
 export type SummarizedNodeReq = {
   question: string;
   answer: string;
+};
+
+export type CreateRootNodeReq = {
+  eisenhowerId: number | null;
+  title: string;
+  type: ActualTaskType;
+  nodes: MindMapNode[];
+  edges: MindMapEdge[];
+};
+
+export type UpdateMindmapReq = {
+  nodes: MindMapNode[];
+  edges: MindMapEdge[];
 };

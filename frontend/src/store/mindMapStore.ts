@@ -22,25 +22,9 @@ export type RFState = {
   edges: MindMapEdge[];
   activeState: ActiveState | null;
 
-  onNodesChange: (
-    changes: NodeChange[],
-    saveMindMapData?: (
-      id: number,
-      nodes: MindMapNode[],
-      edges: MindMapEdge[],
-    ) => void,
-    activeMindMapId?: number | null,
-  ) => void;
+  onNodesChange: (changes: NodeChange[]) => void;
+  onEdgesChange: (changes: EdgeChange[]) => void;
 
-  onEdgesChange: (
-    changes: EdgeChange[],
-    saveMindMapData?: (
-      id: number,
-      nodes: MindMapNode[],
-      edges: MindMapEdge[],
-    ) => void,
-    activeMindMapId?: number | null,
-  ) => void;
   addChildNode: (
     selectedNode: MindMapNode,
     position: XYPosition,
@@ -63,27 +47,16 @@ const useStore = create<RFState>((set, get) => ({
   edges: initialEdges,
   activeState: null,
 
-  onNodesChange: (changes, saveMindMapData, activeMindMapId) => {
-    const updatedNodes = applyNodeChanges(
-      changes,
-      get().nodes,
-    ) as MindMapNode[];
-
-    set({ nodes: updatedNodes });
-
-    if (saveMindMapData && activeMindMapId) {
-      saveMindMapData(activeMindMapId, updatedNodes, get().edges);
-    }
+  onNodesChange: (changes: NodeChange[]) => {
+    set({
+      nodes: applyNodeChanges(changes, get().nodes) as MindMapNode[],
+    });
   },
 
-  onEdgesChange: (changes, saveMindMapData, activeMindMapId) => {
-    const updatedEdges = applyEdgeChanges(changes, get().edges);
-
-    set({ edges: updatedEdges });
-
-    if (saveMindMapData && activeMindMapId) {
-      saveMindMapData(activeMindMapId, get().nodes, updatedEdges);
-    }
+  onEdgesChange: (changes: EdgeChange[]) => {
+    set({
+      edges: applyEdgeChanges(changes, get().edges),
+    });
   },
 
   addChildNode: (
@@ -96,9 +69,9 @@ const useStore = create<RFState>((set, get) => ({
 
     const newNode: MindMapNode = {
       id: newNodeId,
-      type: 'question',
+      type: 'QUESTION',
       data: {
-        label: '다음 질문을 선택해주세요',
+        question: '다음 질문을 선택해주세요',
         depth: parentDepth + 1,
         recommendedQuestions: [],
         isPending,

@@ -22,14 +22,10 @@ import {
   useNodesChange,
   useUpdateNodeQuestions,
   useUpdateNodePending,
-  useSetInitialData,
   useActiveState,
   useRestoreActiveState,
 } from '@/store/mindMapStore';
-import {
-  useLoadMindMapData,
-  useSaveMindMapData,
-} from '@/store/mindmapListStore';
+import { useLoadMindMapData } from '@/store/mindmapListStore';
 import { useIsNodeSelectionMode } from '@/store/nodeSelection';
 
 import MindMapEdge from '@/components/reactFlow/edges';
@@ -44,12 +40,14 @@ import { findParentNode } from '@/lib/mindMap';
 import useGenerateThought from '@/hooks/queries/mindmap/useGenerateThought';
 
 import { NodeSelectionPanel } from '@/components/reactFlow/ui/NodeSelectionPanel';
+import { MindMapDetail } from '@/types/mindMap';
+import { useDebounceMindmapUpdate } from '@/hooks/useDebounceMindmapUpdate';
 
 const nodeTypes = {
-  root: RootNode,
-  summary: SummaryNode,
-  answer: AnswerInputNode,
-  question: QuestionListNode,
+  ROOT: RootNode,
+  SUMMARY: SummaryNode,
+  ANSWER: AnswerInputNode,
+  QUESTION: QuestionListNode,
 };
 
 const edgeTypes = {
@@ -58,11 +56,11 @@ const edgeTypes = {
 
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
-type FlowContentProps = {
-  mindmapId?: number | null;
+type FlowWrapperProps = {
+  mindmap?: MindMapDetail;
 };
 
-function FlowContent({ mindmapId }: FlowContentProps) {
+function FlowContent({ mindmap }: FlowWrapperProps) {
   const nodes = useNodes();
   const edges = useEdges();
   const onNodesChange = useNodesChange();
@@ -70,12 +68,12 @@ function FlowContent({ mindmapId }: FlowContentProps) {
   const addChildNode = useAddChildNode();
   const updateNodeQuestions = useUpdateNodeQuestions();
   const updateNodePending = useUpdateNodePending();
-  const setInitialData = useSetInitialData();
   const activeState = useActiveState();
   const restoreActiveState = useRestoreActiveState();
 
   const loadMindMapData = useLoadMindMapData();
-  const saveMindMapData = useSaveMindMapData();
+
+  const { debounceSave, forceSave } = useDebounceMindmapUpdate(mindmap?.id);
 
   const { generateScheduleMutation } = useGenerateSchedule();
   const { generateThoughtMutation } = useGenerateThought();
@@ -84,37 +82,31 @@ function FlowContent({ mindmapId }: FlowContentProps) {
   const connectingNodeId = useRef<string | null>(null);
   const ignoreNextPaneClick = useRef(false);
 
-  useEffect(() => {
-    if (mindmapId) {
-      const mindMapData = loadMindMapData(mindmapId);
-      if (mindMapData) {
-        if (mindMapData.nodes && mindMapData.edges) {
-          setInitialData(mindMapData.nodes, mindMapData.edges);
-        }
-      }
+  const mindmapId = mindmap?.id;
 
-      if (!mindMapData) {
-        console.error(
-          `마인드맵 ID ${mindmapId}에 해당하는 데이터를 찾을 수 없습니다.`,
-        );
+  useEffect(() => {
+    return () => {
+      if (mindmapId && nodes.length > 0) {
+        forceSave(nodes, edges);
       }
-    }
-  }, [mindmapId, loadMindMapData, setInitialData]);
+    };
+  }, []);
 
   const handleNodesChange = useCallback(
     (changes: NodeChange[]) => {
-      onNodesChange(changes, saveMindMapData, mindmapId);
+      onNodesChange(changes);
+      debounceSave(nodes, edges);
     },
-    [onNodesChange, saveMindMapData, mindmapId],
+    [onNodesChange, nodes, edges, debounceSave],
   );
 
   const handleEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
-      onEdgesChange(changes, saveMindMapData, mindmapId);
+      onEdgesChange(changes);
+      debounceSave(nodes, edges);
     },
-    [onEdgesChange, saveMindMapData, mindmapId],
+    [onEdgesChange, nodes, edges, debounceSave],
   );
-
   const getChildNodePosition = useCallback(
     (event: MouseEvent | TouchEvent) => {
       const { clientX, clientY } =
@@ -148,7 +140,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
       const childNodePosition = getChildNodePosition(event as MouseEvent);
 
       if (childNodePosition && connectingNodeId.current) {
-        const mainNode = nodes.find((node) => node.type === 'root');
+        const mainNode = nodes.find((node) => node.type === 'ROOT');
         const selectedNode = nodes.find(
           (node) => node.id === connectingNodeId.current,
         );
@@ -177,8 +169,8 @@ function FlowContent({ mindmapId }: FlowContentProps) {
           -> null로 처리
           */
           const requestData: GenerateReq = {
-            mainNode: mainNode?.data?.label
-              ? { summary: mainNode.data.label }
+            mainNode: mainNode?.data?.summary
+              ? { summary: mainNode.data.summary }
               : null,
             parentNode:
               parentNode?.id !== mainNode?.id && parentNode?.data?.summary
@@ -192,9 +184,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
           const newNodeId = addChildNode(selectedNode, childNodePosition, true);
 
           if (mindmapId) {
-            const mindMapData = loadMindMapData(mindmapId);
-
-            if (mindMapData?.type === 'TODO') {
+            if (mindmap?.type === 'TODO') {
               generateScheduleMutation(requestData, {
                 onSuccess: (data) => {
                   updateNodeQuestions(
@@ -210,7 +200,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
               });
             }
 
-            if (mindMapData?.type === 'THINKING') {
+            if (mindmap?.type === 'THINKING') {
               generateThoughtMutation(requestData, {
                 onSuccess: (data) => {
                   updateNodeQuestions(
@@ -256,7 +246,7 @@ function FlowContent({ mindmapId }: FlowContentProps) {
 
     if (activeState) {
       const node = nodes.find((n) => n.id === activeState.nodeId);
-      if (node && (node.type === 'question' || node.type === 'answer')) {
+      if (node && (node.type === 'QUESTION' || node.type === 'ANSWER')) {
         restoreActiveState();
       }
     }
@@ -264,31 +254,29 @@ function FlowContent({ mindmapId }: FlowContentProps) {
 
   return (
     <div className="w-full h-full">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={handleNodesChange}
-        onEdgesChange={handleEdgesChange}
-        onConnectStart={onConnectStart}
-        onConnectEnd={onConnectEnd}
-        onPaneClick={onPaneClick}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        nodeOrigin={nodeOrigin}
-        connectionLineType={ConnectionLineType.Straight}
-        fitView
-      >
-        <Controls showInteractive={false} />
-      </ReactFlow>
+      {
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={handleNodesChange}
+          onEdgesChange={handleEdgesChange}
+          onConnectStart={onConnectStart}
+          onConnectEnd={onConnectEnd}
+          onPaneClick={onPaneClick}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          nodeOrigin={nodeOrigin}
+          connectionLineType={ConnectionLineType.Straight}
+          fitView
+        >
+          <Controls showInteractive={false} />
+        </ReactFlow>
+      }
     </div>
   );
 }
 
-type FlowWrapperProps = {
-  mindmapId?: number | null;
-};
-
-function FlowWrapper({ mindmapId }: FlowWrapperProps) {
+function FlowWrapper({ mindmap }: FlowWrapperProps) {
   const isNodeSelectionMode = useIsNodeSelectionMode();
 
   return (
@@ -296,7 +284,7 @@ function FlowWrapper({ mindmapId }: FlowWrapperProps) {
       {isNodeSelectionMode && <NodeSelectionPanel />}
 
       <ReactFlowProvider>
-        <FlowContent mindmapId={mindmapId} />
+        <FlowContent mindmap={mindmap} />
       </ReactFlowProvider>
     </div>
   );

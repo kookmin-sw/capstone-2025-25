@@ -1,4 +1,4 @@
-import { gptClient } from '@/api/client';
+import { apiClient, gptClient } from '@/api/client';
 import { ENDPOINTS } from '@/api/endpoints';
 import {
   GenerateReq,
@@ -8,6 +8,13 @@ import {
   ConvertedToTaskRes,
   SummarizedNodeReq,
   SummarizedNodeRes,
+  CreateRootNodeReq,
+  CreateRootNodeRes,
+  GetMindmapListRes,
+  GetMindmapDetailRes,
+  DeleteMindmapRes,
+  UpdateMindmapReq,
+  UpdateMindmapRes,
 } from '@/types/api/mindmap';
 
 export const mindmapService = {
@@ -15,7 +22,7 @@ export const mindmapService = {
     data: GenerateReq,
   ): Promise<GeneratedScheduleRes> => {
     const response = await gptClient.post<GeneratedScheduleRes>(
-      ENDPOINTS.MINDMAP.GENERATE_SCHEDULE,
+      ENDPOINTS.MINDMAP.GENERATE_TODO,
       data,
     );
     return response.data;
@@ -44,6 +51,48 @@ export const mindmapService = {
   ): Promise<SummarizedNodeRes> => {
     const response = await gptClient.post<SummarizedNodeRes>(
       ENDPOINTS.MINDMAP.SUMMARIZE_NODE,
+      data,
+    );
+    return response.data;
+  },
+
+  createRootNode: async (
+    data: CreateRootNodeReq,
+  ): Promise<CreateRootNodeRes> => {
+    const response = await apiClient.post<CreateRootNodeRes>(
+      ENDPOINTS.MINDMAP.CREATE_ROOT_NODE,
+      data,
+    );
+    return response.data;
+  },
+
+  getList: async (): Promise<GetMindmapListRes> => {
+    const response = await apiClient.get<GetMindmapListRes>(
+      ENDPOINTS.MINDMAP.GET_LIST,
+    );
+    return response.data;
+  },
+
+  getDetail: async (id: number): Promise<GetMindmapDetailRes> => {
+    const response = await apiClient.get<GetMindmapDetailRes>(
+      ENDPOINTS.MINDMAP.DETAIL(id),
+    );
+    return response.data;
+  },
+
+  delete: async (id: number): Promise<DeleteMindmapRes> => {
+    const response = await apiClient.delete<DeleteMindmapRes>(
+      ENDPOINTS.MINDMAP.DETAIL(id),
+    );
+    return response.data;
+  },
+
+  update: async (
+    id: number,
+    data: UpdateMindmapReq,
+  ): Promise<UpdateMindmapRes> => {
+    const response = await apiClient.put<UpdateMindmapRes>(
+      ENDPOINTS.MINDMAP.DETAIL(id),
       data,
     );
     return response.data;

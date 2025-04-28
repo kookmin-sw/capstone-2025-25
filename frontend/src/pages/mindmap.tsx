@@ -1,60 +1,41 @@
-import FlowWrapper from '@/components/reactFlow/FlowWrapper';
-import { parseIdParam } from '@/lib/parseIdParam';
-import { useMindMaps, useSetActiveMindMap } from '@/store/mindmapListStore';
-import {
-  useDisableSelectionMode,
-  useIsNodeSelectionMode,
-} from '@/store/nodeSelection';
+import useGetMindmapList from '@/hooks/queries/mindmap/useGetMindmapList';
+import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router';
 
 export default function MindmapPage() {
-  const { id } = useParams();
-  const numericId = parseIdParam(id);
-  const setActiveMindMap = useSetActiveMindMap();
-  const mindMaps = useMindMaps();
   const navigate = useNavigate();
-
-  const isNodeSelectionMode = useIsNodeSelectionMode();
-  const disableSelectionMode = useDisableSelectionMode();
+  const { mindmapList, isLoading, error } = useGetMindmapList();
 
   useEffect(() => {
-    if (mindMaps.length === 0) {
-      navigate('/mindmap');
+    if (isLoading) return;
+
+    if (error) {
+      console.error('마인드맵 목록을 불러오는데 실패했습니다:', error);
       return;
     }
 
-    const isValidId =
-      id && mindMaps.some((mindmap) => mindmap.id === numericId);
-
-    if (id && isValidId) {
-      setActiveMindMap(numericId);
+    if (!mindmapList || mindmapList.length === 0) {
       return;
     }
 
-    const linkedMindMaps = mindMaps.filter((mindmap) => mindmap.linked);
+    // 연결된 마인드맵이 있으면 그걸로 이동
+    const linkedMindMaps = mindmapList.filter((mindmap) => mindmap.linked);
     if (linkedMindMaps.length > 0) {
       navigate(`/mindmap/${linkedMindMaps[0].id}`, { replace: true });
       return;
     }
 
-    const freeMindMaps = mindMaps.filter((mindmap) => !mindmap.linked);
+    // 없으면 첫 번째 마인드맵으로 이동
+    const freeMindMaps = mindmapList.filter((mindmap) => !mindmap.linked);
     if (freeMindMaps.length > 0) {
       navigate(`/mindmap/${freeMindMaps[0].id}`, { replace: true });
       return;
     }
-
-    // 추후 디자인 나오면 대체할 예정
-    console.log('표시할 마인드맵이 없습니다');
-  }, [id, mindMaps, navigate, setActiveMindMap]);
-
-  useEffect(() => {
-    if (isNodeSelectionMode) {
-      disableSelectionMode();
-    }
-  }, [location.pathname, id]);
+  }, [mindmapList, isLoading, error, navigate]);
 
   return (
-    <div className="h-full">{id && <FlowWrapper mindmapId={numericId} />}</div>
+    <div className="h-full">
+      <h1>마인드맵 목록</h1>
+    </div>
   );
 }

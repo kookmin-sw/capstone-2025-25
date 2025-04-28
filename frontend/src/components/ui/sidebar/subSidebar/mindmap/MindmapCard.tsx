@@ -2,14 +2,14 @@ import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/formatDate';
 import { cn } from '@/lib/utils';
-import { useDeleteMindMap } from '@/store/mindmapListStore';
 import { MindMap } from '@/types/mindMap';
-import { Link, X } from 'lucide-react';
+import { Link, Loader2, X } from 'lucide-react';
 import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 
 import { useNavigate } from 'react-router';
 import { MouseEvent } from 'react';
 import useMatrixStore from '@/store/matrixStore';
+import useDeleteMindmap from '@/hooks/queries/mindmap/useDeleteMindmap';
 
 type MindmapCardProps = {
   mindmap: MindMap;
@@ -18,11 +18,12 @@ type MindmapCardProps = {
 
 export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
   const navigate = useNavigate();
-  const deleteMindMap = useDeleteMindMap();
   const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
   const disconnectTaskFromMindMap = useMatrixStore(
     (state) => state.disconnectTaskFromMindMap,
   );
+
+  const { deleteMindmapMutation, isPending } = useDeleteMindmap();
 
   const { title, type, id, lastModifiedAt, linked, eisenhowerItemDTO } =
     mindmap;
@@ -52,11 +53,19 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
   };
 
   const handleDelete = () => {
-    deleteMindMap(id);
-    if (eisenhowerItemDTO) {
-      disconnectTaskFromMindMap(eisenhowerItemDTO.id);
-    }
-    navigate('/mindmap');
+    deleteMindmapMutation(id, {
+      onSuccess: () => {
+        if (eisenhowerItemDTO) {
+          disconnectTaskFromMindMap(eisenhowerItemDTO.id);
+        }
+
+        navigate('/mindmap');
+      },
+
+      onError: (error) => {
+        console.error('마인드맵 삭제 중 오류가 발생했습니다: ', error);
+      },
+    });
   };
 
   const handleLinkedTaskClick = () => {
@@ -88,7 +97,14 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
             질문을 통해 더 깊이 고민할 수 있도록 도와줄게요"
           footer={
             <Button size="sm" onClick={handleDelete}>
-              삭제하기
+              {isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  수정 중...
+                </>
+              ) : (
+                '수정하기'
+              )}
             </Button>
           }
         >

@@ -33,7 +33,7 @@ export default function SummaryNode({ id, data }: NodeProps<SummaryNodeType>) {
     if (currentNode) {
       setNode(id, {
         ...currentNode,
-        type: 'answer',
+        type: 'ANSWER',
         data: {
           ...currentNode.data,
           isEditing: true,
