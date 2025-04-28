@@ -3,8 +3,8 @@ from typing import Tuple, List
 from fastapi import APIRouter
 
 from config import OPENAI_API_KEY
-from models.temporary_request import BrainStormingRequest, BrainStormingChunkRequest
-from models.temporary_response import BrainStormingResponse, ChunkAnalysisResponse
+from models.temporary_request import BrainStormingRequest, BrainStormingChunkRequest, RewriteChunkRequest
+from models.temporary_response import BrainStormingResponse, ChunkAnalysisResponse, MindmapToChunkResponse
 from services.gpt_service import GPTService
 from utils.exception_handler import safe_gpt_handler
 from utils.gpt_helper import clean_question_lines
@@ -57,4 +57,20 @@ async def analyze_chunk(request: BrainStormingChunkRequest):
     return ChunkAnalysisResponse(
         ambiguous_points=ambiguous_points,
         clarifying_questions=questions
+    )
+
+@router.post("/brainstorming/rewrite/chunk", response_model=MindmapToChunkResponse)
+@safe_gpt_handler
+async def rewrite_chunk(request: RewriteChunkRequest):
+    user_prompt = load_prompt_template("prompts/mindmap_to_chunk_prompt.txt", {
+        "existing_chunk": request.existing_chunk,
+        "mindmap_data": [node.context for node in request.mindmap_data]
+    })
+
+    system_prompt = "당신은 생각 정리 코치입니다. 사용자가 작성한 청크를 마인드맵 데이터를 참고해 더 명확하고 구체적으로 다듬는 역할입니다."
+
+    gpt_output = await gpt_service.ask(system_prompt, user_prompt)
+
+    return MindmapToChunkResponse(
+        new_chunk=gpt_output.strip()
     )
