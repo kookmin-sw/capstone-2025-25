@@ -26,7 +26,6 @@ async def extract_chucks(request: BrainStormingRequest):
 
     refined_questions = clean_question_lines(gpt_output)
 
-    print(f"Extracted chunks: {refined_questions}")
     return BrainStormingResponse(extracted_chunks=refined_questions)
 
 
