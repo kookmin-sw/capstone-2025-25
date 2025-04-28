@@ -16,3 +16,9 @@ class ChunkAnalysisResponse(BaseModel):
     clarifying_questions: List[str] = Field(
         ..., description="청크에 대한 명확한 질문 목록"
     )
+
+
+class MindmapToChunkResponse(BaseModel):
+    new_chunk: str = Field(
+        ..., description="마인드맵 데이터를 청크로 변환한 결과"
+    )
