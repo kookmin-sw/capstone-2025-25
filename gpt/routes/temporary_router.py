@@ -1,12 +1,13 @@
+from typing import Tuple, List
+
 from fastapi import APIRouter
 
 from config import OPENAI_API_KEY
-from models.response import GeneratedQuestionsResponse
-from models.temporary_request import BrainStormingRequest
-from models.temporary_response import BrainStormingResponse
+from models.temporary_request import BrainStormingRequest, BrainStormingChunkRequest
+from models.temporary_response import BrainStormingResponse, ChunkAnalysisResponse
 from services.gpt_service import GPTService
 from utils.exception_handler import safe_gpt_handler
-from utils.gpt_helper import build_mindmap_context_text, clean_question_lines
+from utils.gpt_helper import clean_question_lines
 from utils.prompt_loader import load_prompt_template
 
 router = APIRouter()
@@ -27,3 +28,34 @@ async def extract_chucks(request: BrainStormingRequest):
 
     print(f"Extracted chunks: {refined_questions}")
     return BrainStormingResponse(extracted_chunks=refined_questions)
+
+
+def parse_chunk_analysis(gpt_output: str) -> Tuple[List[str], List[str]]:
+    sections = gpt_output.strip().split("[구체화 질문]")
+    ambiguous_section = sections[0].replace("[모호한 점]", "").strip()
+    questions_section = sections[1].strip() if len(sections) > 1 else ""
+
+    ambiguous_points = [line.strip("- ").strip() for line in ambiguous_section.split("\n") if line.strip()]
+    questions = [line.strip("- ").strip() for line in questions_section.split("\n") if line.strip()]
+
+    return ambiguous_points, questions
+
+
+@router.post("/brainstorming/analyze/chunk", response_model=ChunkAnalysisResponse)
+@safe_gpt_handler
+async def analyze_chunk(request: BrainStormingChunkRequest):
+    user_prompt = load_prompt_template("prompts/chunk_analysis_prompt.txt", {
+        "chunk": request.chunk
+    })
+
+    system_prompt = "당신은 생각 정리 코치입니다. 사용자가 주제를 더 명확히 정의하고 구조화할 수 있도록 도와주는 역할입니다."
+
+    gpt_output = await gpt_service.ask(system_prompt, user_prompt)
+
+    # 파싱 유틸 함수로 분리
+    ambiguous_points, questions = parse_chunk_analysis(gpt_output)
+
+    return ChunkAnalysisResponse(
+        ambiguous_points=ambiguous_points,
+        clarifying_questions=questions
+    )
