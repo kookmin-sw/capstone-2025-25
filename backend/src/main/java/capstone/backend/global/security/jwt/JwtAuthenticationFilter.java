@@ -76,6 +76,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
 
         String uri  = request.getRequestURI();
-        return Stream.of("/api/auth/refresh-token").anyMatch(uri::equalsIgnoreCase);
+        return Stream.of("/api/auth/reissue").anyMatch(uri::equalsIgnoreCase);
     }
 }
