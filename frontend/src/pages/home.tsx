@@ -1,13 +1,7 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 export default function HomePage() {
-  const navigate = useNavigate();
-
-  // 임시로 matrix로 이동하도록 처리
-  useEffect(() => {
-    navigate('/matrix');
-  }, [navigate]);
+  useAuthRedirect();
 
   return <div>메인 페이지</div>;
 }

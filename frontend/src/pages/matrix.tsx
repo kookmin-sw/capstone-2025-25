@@ -69,7 +69,7 @@ export default function MatrixPage() {
     if (!location.pathname.includes('/matrix')) {
       setActiveTaskId(null);
     }
-  }, [location, setActiveTaskId]);
+  }, [setActiveTaskId]);
 
   return (
     <div className="flex min-h-0 flex-1 bg-white p-[30px] overflow-auto">

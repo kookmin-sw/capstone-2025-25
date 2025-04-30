@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { ENDPOINTS } from '@/api/endpoints.ts';
 import { BASE_URL, GPT_BASE_URL } from '@/constants/auth.ts';
+import { getCookie } from '@/utils/cookie.ts';
+
 /*
 백엔드 API 클라이언트
 TODO: 백엔드 API 주소 나오면 설정 예정
@@ -10,6 +12,7 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 /*
@@ -26,17 +29,13 @@ export const gptClient = axios.create({
 백엔드 API 요청 인터셉터 설정 (토큰 추가, 에러 처리 등)
 TODO: 추후에 토큰 로직 결정되면 그에 맞게 수정 필요.
 */
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error),
-);
-
+apiClient.interceptors.request.use((config) => {
+  const token = getCookie('accessToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 /*
 백엔드 API 응답 인터셉터 설정 (오류 처리 등)
 TODO: 추후 인증 관련 로직 결정되면 그에 맞게 수정 필요.
@@ -61,9 +60,6 @@ apiClient.interceptors.response.use(
 
         const newAccessToken = res.data?.content?.accessToken;
         if (!newAccessToken) throw new Error('재발급 실패: accessToken 없음');
-
-        localStorage.setItem('token', newAccessToken);
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return apiClient(originalRequest);
       } catch (reissueError) {

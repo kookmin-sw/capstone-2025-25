@@ -4,7 +4,6 @@ import { ChevronDown, ChevronUp, Timer, RotateCw } from 'lucide-react';
 import { useState, useEffect, ChangeEvent, ReactNode } from 'react';
 import { MultiSlider } from '@/components/ui/MultiSlider.tsx';
 import { PomodoroCycle } from '@/types/pomodoro';
-// import { Input } from '@/components/ui/Input.tsx';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { useCreatePomodoro } from '@/store/pomodoro';
 import { useNavigate } from 'react-router';

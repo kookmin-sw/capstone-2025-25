@@ -165,7 +165,9 @@ export function PriorityView({
             <Droppable key={quadrant} id={quadrant}>
               <div
                 className={`px-4 py-5 ${
-                  viewMode === 'board' ? 'h-full' : 'min-h-[400px] h-full'
+                  viewMode === 'board'
+                    ? 'h-full h-screen'
+                    : 'min-h-[400px] h-full'
                 } min-h-[300px] flex flex-col ${quadrantColors[quadrant]}`}
               >
                 <div className="flex justify-between items-center pb-[14px]">
