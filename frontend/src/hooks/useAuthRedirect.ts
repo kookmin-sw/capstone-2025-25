@@ -16,19 +16,21 @@ export const useAuthRedirect = () => {
   const { token, setToken } = useAuthStore();
 
   useEffect(() => {
-    if (!token) {
-      const cookieToken = getAccessTokenFromCookie();
-      if (cookieToken) {
-        setToken(cookieToken);
-        navigate('/matrix');
-        return;
-      }
-    }
-
+    // 스토어에 토큰이 있는 경우
     if (token) {
       navigate('/matrix');
-    } else {
-      navigate('/login');
+      return;
     }
+
+    // 스토어에 토큰이 없지만 쿠키에 토큰이 있는 경우
+    const cookieToken = getAccessTokenFromCookie();
+    if (cookieToken) {
+      setToken(cookieToken);
+      navigate('/matrix');
+      return;
+    }
+
+    // 토큰이 어디에도 없는 경우
+    navigate('/login');
   }, [token, setToken, navigate]);
 };
