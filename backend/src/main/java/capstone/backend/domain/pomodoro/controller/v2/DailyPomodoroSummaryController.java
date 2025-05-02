@@ -1,4 +1,4 @@
-package capstone.backend.domain.pomodoro.controller;
+package capstone.backend.domain.pomodoro.controller.v2;
 
 
 import capstone.backend.domain.pomodoro.dto.request.MonthlyParamsDTO;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@Tag(name = "데이터 분석 - 뽀모도로 타이머", description = "뽀모도로 타이머 이용량 관련 API")
+@Tag(name = "데이터 분석 - 뽀모도로 타이머 V2", description = "뽀모도로 타이머 이용량 관련 API")
 @RestController
-@RequestMapping("/api/data/pomodoro")
+@RequestMapping("/api/data/pomodoro/v2")
 @RequiredArgsConstructor
 public class DailyPomodoroSummaryController {
 
