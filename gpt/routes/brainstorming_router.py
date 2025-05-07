@@ -21,7 +21,8 @@ async def extract_chucks(request: BrainStormingRequest):
         "text": request.text
     })
 
-    system_prompt = "당신은 ADHD 사용자의 복잡한 생각을 주제 단위로 분리해주는 도우미입니다. 추측 없이 원문을 기준으로 문맥을 나누어주세요."
+    # system_prompt = "당신은 ADHD 사용자의 복잡한 생각을 주제 단위로 분리해주는 도우미입니다. 추측 없이 원문을 기준으로 문맥을 나누어주세요."
+    system_prompt = "You are an assistant helping ADHD users organize their thoughts by breaking them into topic-based chunks. Do not make assumptions. Only use the original input."
     gpt_output = await gpt_service.ask(system_prompt, user_prompt)
 
     refined_questions = clean_question_lines(gpt_output)
