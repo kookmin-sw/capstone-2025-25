@@ -31,14 +31,12 @@ async def extract_chucks(request: BrainStormingRequest):
 
 
 def parse_chunk_analysis(gpt_output: str) -> Tuple[List[str], List[str]]:
-    sections = gpt_output.strip().split("[구체화 질문]")
-    ambiguous_section = sections[0].replace("[모호한 점]", "").strip()
+    sections = gpt_output.strip().split("[Clarifying Questions]")
     questions_section = sections[1].strip() if len(sections) > 1 else ""
 
-    ambiguous_points = [line.strip("- ").strip() for line in ambiguous_section.split("\n") if line.strip()]
     questions = [line.strip("- ").strip() for line in questions_section.split("\n") if line.strip()]
 
-    return ambiguous_points, questions
+    return questions
 
 
 @router.post("/analyze/chunk", response_model=ChunkAnalysisResponse)
@@ -48,15 +46,14 @@ async def analyze_chunk(request: BrainStormingChunkRequest):
         "chunk": request.chunk
     })
 
-    system_prompt = "당신은 생각 정리 코치입니다. 사용자가 주제를 더 명확히 정의하고 구조화할 수 있도록 도와주는 역할입니다."
+    system_prompt = "You are a thought organization coach. Your role is to help users clarify and structure their ideas by identifying vague points and asking helpful questions."
 
     gpt_output = await gpt_service.ask(system_prompt, user_prompt)
 
     # 파싱 유틸 함수로 분리
-    ambiguous_points, questions = parse_chunk_analysis(gpt_output)
+    questions = parse_chunk_analysis(gpt_output)
 
     return ChunkAnalysisResponse(
-        ambiguous_points=ambiguous_points,
         clarifying_questions=questions
     )
 

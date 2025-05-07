@@ -10,9 +10,6 @@ class BrainStormingResponse(BaseModel):
 
 
 class ChunkAnalysisResponse(BaseModel):
-    ambiguous_points: List[str] = Field(
-        ..., description="청크에서 모호한 점을 분석한 결과"
-    )
     clarifying_questions: List[str] = Field(
         ..., description="청크에 대한 명확한 질문 목록"
     )
