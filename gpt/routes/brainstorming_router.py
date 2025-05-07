@@ -65,7 +65,7 @@ async def rewrite_chunk(request: RewriteChunkRequest):
         "mindmap_data": [node.context for node in request.mindmap_data]
     })
 
-    system_prompt = "당신은 생각 정리 코치입니다. 사용자가 작성한 청크를 마인드맵 데이터를 참고해 더 명확하고 구체적으로 다듬는 역할입니다."
+    system_prompt = "You are a thought refinement coach. You help users make their written thoughts more specific and structured by referencing related mindmap data."
 
     gpt_output = await gpt_service.ask(system_prompt, user_prompt)
 
