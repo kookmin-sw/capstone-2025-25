@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 @Slf4j
 public class WebFluxService {
 
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient webClient;
     private final BubbleRepository bubbleRepository;
 
     @Value("${url.path.model.prompt}")
@@ -35,28 +36,25 @@ public class WebFluxService {
     public Mono<List<BubbleDTO>> createBubbles(PromptRequest request, Member member) {
         log.info("GPT API 호출");
 
-        WebClient webClient = webClientBuilder.build();
-
         return webClient.post()
                 .uri(gptServerEndpoint)
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(PromptResponse.class)
-                .map(response -> {
-                    // 요청 결과를 Bubble 엔티티로 변환
-                    List<Bubble> bubbles = response.chunks().stream()
-                            .map(title -> Bubble.create(title, member))
-                            .toList();
-
-                    // 저장
-                    bubbleRepository.saveAll(bubbles);
-
-                    log.info("Bubbles 저장 완료: count = {}", bubbles.size());
-
-                    // DTO 변환
-                    return bubbles.stream()
-                            .map(BubbleDTO::new)
-                            .toList();
-                });
+                .flatMapMany(response -> {
+                    List<String> chunks = response.chunks();
+                    if (chunks == null || chunks.isEmpty()) {
+                        log.warn("GPT 응답의 chunks가 null 또는 비어있음: response = {}", response);
+                        return Flux.empty();
+                    }
+                    return Flux.fromIterable(chunks)
+                            .map(chunk -> {
+                                Bubble bubble = Bubble.create(chunk, member);
+                                bubbleRepository.save(bubble);
+                                log.info("Bubble 저장 완료: bubble = {}", chunk);
+                                return new BubbleDTO(bubble);
+                            });
+                })
+                .collectList();
     }
 }

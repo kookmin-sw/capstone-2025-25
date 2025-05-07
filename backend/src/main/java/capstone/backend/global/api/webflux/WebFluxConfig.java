@@ -23,7 +23,7 @@ public class WebFluxConfig {
     private String gptServerDomain;
 
     @Bean
-    public WebClient.Builder webClientBuilder() {
+    public WebClient webClient() {
         HttpClient httpClient = HttpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000) // 5초 동안 연결 안 되면 실패
                 .responseTimeout(Duration.ofMinutes(1))             // 1분 동안 응답 안올 시 에러
@@ -52,6 +52,6 @@ public class WebFluxConfig {
                                                 throwable instanceof java.util.concurrent.TimeoutException
                                         )
                         )
-                );
+                ).build();
     }
 }

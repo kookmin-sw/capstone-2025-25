@@ -35,6 +35,7 @@ public class SecurityConfig {
     private final OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    private static final String[] WEBCLIENT_ENDPOINTS = { "/api/bubble/v2/create" };
     private static final String[] SWAGGER_ENDPOINTS = { "/swagger", "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**" };
     private static final String[] PUBLIC_ENDPOINTS = { "/", "/api/auth/**", "/actuator/**" };
     private static final String[] STATIC_ENDPOINTS = { "/error", "/favicon.ico", "/static/**",
@@ -51,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers(SWAGGER_ENDPOINTS).permitAll()
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(STATIC_ENDPOINTS).permitAll()
+                        .requestMatchers(WEBCLIENT_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
