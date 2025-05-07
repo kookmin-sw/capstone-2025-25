@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "마인드맵", description = "마인드맵 관련 API")
+@Tag(name = "마인드맵 V1", description = "Version1. 마인드맵 관련 API")
 @RestController
-@RequestMapping("/api/mindmap")
+@RequestMapping("/api/mindmap/v1")
 @RequiredArgsConstructor
 public class MindMapController {
 
