@@ -3,8 +3,8 @@ from datetime import datetime
 from fastapi import APIRouter
 
 from config import OPENAI_API_KEY
-from models.request import EisenhowerTaskRequest
-from models.response import EisenhowerRecommendationResponse
+from models.eisenhower_request import EisenhowerTaskRequest
+from models.eisenhower_response import EisenhowerRecommendationResponse
 from services.gpt_service import GPTService
 from utils.exception_handler import safe_gpt_handler
 from utils.gpt_helper import clean_single_line

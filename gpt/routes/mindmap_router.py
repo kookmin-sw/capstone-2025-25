@@ -2,8 +2,8 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 
 from config import OPENAI_API_KEY
-from models.request import MindmapNodeContextRequest, NodeSummaryRequest, ConvertToTaskRequest
-from models.response import GeneratedQuestionsResponse, ConvertedTaskResponse, SummarizedNodeResponse
+from models.mindmap_request import MindmapNodeContextRequest, NodeSummaryRequest, ConvertToTaskRequest
+from models.mindmap_response import GeneratedQuestionsResponse, ConvertedTaskResponse, SummarizedNodeResponse
 from services.gpt_service import GPTService
 from utils.exception_handler import safe_gpt_handler
 

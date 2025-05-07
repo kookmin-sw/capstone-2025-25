@@ -3,8 +3,8 @@ from typing import Tuple, List
 from fastapi import APIRouter
 
 from config import OPENAI_API_KEY
-from models.temporary_request import BrainStormingRequest, BrainStormingChunkRequest, RewriteChunkRequest
-from models.temporary_response import BrainStormingResponse, ChunkAnalysisResponse, MindmapToChunkResponse
+from models.brainstorming_request import BrainStormingRequest, BrainStormingChunkRequest, RewriteChunkRequest
+from models.brainstorming_response import BrainStormingResponse, ChunkAnalysisResponse, MindmapToChunkResponse
 from services.gpt_service import GPTService
 from utils.exception_handler import safe_gpt_handler
 from utils.gpt_helper import clean_question_lines

@@ -2,7 +2,7 @@ import re
 
 from fastapi import HTTPException
 
-from models.request import MindmapNodeContextRequest, ConvertToTaskRequest
+from models.mindmap_request import MindmapNodeContextRequest, ConvertToTaskRequest
 
 
 def build_mindmap_context_text(request: MindmapNodeContextRequest) -> str:
