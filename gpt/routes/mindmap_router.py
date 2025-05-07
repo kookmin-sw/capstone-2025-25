@@ -6,9 +6,6 @@ from models.request import MindmapNodeContextRequest, NodeSummaryRequest, Conver
 from models.response import GeneratedQuestionsResponse, ConvertedTaskResponse, SummarizedNodeResponse
 from services.gpt_service import GPTService
 from utils.exception_handler import safe_gpt_handler
-from utils.gpt_helper import build_mindmap_context_text, clean_question_lines, build_node_summary_text, \
-    clean_single_line
-from utils.prompt_loader import load_prompt_template
 
 router = APIRouter(tags=["Mindmap(비활성화)"])
 gpt_service = GPTService(api_key=OPENAI_API_KEY)
@@ -20,7 +17,7 @@ async def generate_todo_questions(request: MindmapNodeContextRequest):
     raise HTTPException(status_code=503, detail="이 기능은 현재 비활성화되었습니다.")
     # path_text = build_mindmap_context_text(request)
     #
-    # user_prompt = load_prompt_template("prompts/todo_prompt.txt", {
+    # user_prompt = load_prompt_template("prompts/mindmap/todo_prompt.txt", {
     #     "summary": request.mainNode.summary,
     #     "path_text": path_text
     # })
@@ -39,7 +36,7 @@ async def generate_thinking_questions(request: MindmapNodeContextRequest):
     raise HTTPException(status_code=503, detail="이 기능은 현재 비활성화되었습니다.")
     # path_text = build_mindmap_context_text(request)
     #
-    # user_prompt = load_prompt_template("prompts/thinking_prompt.txt", {
+    # user_prompt = load_prompt_template("prompts/mindmap/thinking_prompt.txt", {
     #     "summary": request.mainNode.summary,
     #     "path_text": path_text
     # })
@@ -58,7 +55,7 @@ async def convert_to_task(request: ConvertToTaskRequest):
     raise HTTPException(status_code=503, detail="이 기능은 현재 비활성화되었습니다.")
     # node_text = build_node_summary_text(request)
     #
-    # user_prompt = load_prompt_template("prompts/convert_task_prompt.txt", {
+    # user_prompt = load_prompt_template("prompts/mindmap/convert_task_prompt.txt", {
     #     "node_text": node_text
     # })
     #
@@ -75,7 +72,7 @@ async def convert_to_task(request: ConvertToTaskRequest):
 @safe_gpt_handler
 async def summarize_node(request: NodeSummaryRequest):
     raise HTTPException(status_code=503, detail="이 기능은 현재 비활성화되었습니다.")
-    # user_prompt = load_prompt_template("prompts/summarize_prompt.txt", {
+    # user_prompt = load_prompt_template("prompts/mindmap/summarize_prompt.txt", {
     #     "question": request.question,
     #     "answer": request.answer
     # })

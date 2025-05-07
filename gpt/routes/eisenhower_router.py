@@ -16,7 +16,7 @@ gpt_service = GPTService(api_key=OPENAI_API_KEY)
 @router.post("/order-recommendation", response_model=EisenhowerRecommendationResponse)
 @safe_gpt_handler
 async def eisenhower_order_recommendation(request: EisenhowerTaskRequest):
-    user_prompt = load_prompt_template("prompts/eisenhower_order_prompt.txt", {
+    user_prompt = load_prompt_template("prompts/eisenhower/eisenhower_order_prompt.txt", {
         "title": request.title,
         "currentQuadrant": request.currentQuadrant,
         "dueDate": request.dueDate.strftime("%Y-%m-%d") if request.dueDate else None,
