@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { mindmapService } from '@/services/mindmapService';
 import { GetMindmapDetailRes } from '@/types/api/mindmap';
 import { useEffect } from 'react';
-import { useSetInitialData } from '@/store/mindMapStore';
+import { useSetInitialData } from '@/store/mindMapStore_deprecated';
 
 const useGetMindmapDetail = (id: number) => {
   const setInitialData = useSetInitialData();

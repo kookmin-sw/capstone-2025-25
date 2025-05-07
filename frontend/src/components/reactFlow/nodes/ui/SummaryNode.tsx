@@ -6,7 +6,7 @@ import {
   useRemoveSelectedNode,
   useSelectedNodes,
 } from '@/store/nodeSelection';
-import { useNodes, useSetNode } from '@/store/mindMapStore';
+import { useNodes, useSetNode } from '@/store/mindMapStore_deprecated';
 import { SummaryNodeType } from '@/types/mindMap';
 import { NodeProps } from '@xyflow/react';
 import {

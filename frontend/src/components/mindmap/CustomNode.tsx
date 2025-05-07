@@ -1,4 +1,4 @@
-import { useMindmapStoreV2 } from '@/store/mindmapStoreV2';
+import { useMindmapStore } from '@/store/mindMapStore';
 import { Handle, NodeProps, Position } from '@xyflow/react';
 import { CirclePlus } from 'lucide-react';
 import { useState, useCallback, useEffect, useRef } from 'react';
@@ -9,9 +9,9 @@ export default function CustomNode({ data, id, isConnectable }: NodeProps) {
   const nodeRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const updateNodeLabel = useMindmapStoreV2((state) => state.updateNodeLabel);
-  const updateNodeHeight = useMindmapStoreV2((state) => state.updateNodeHeight);
-  const addChildNode = useMindmapStoreV2((state) => state.addChildNode);
+  const updateNodeLabel = useMindmapStore((state) => state.updateNodeLabel);
+  const updateNodeHeight = useMindmapStore((state) => state.updateNodeHeight);
+  const addChildNode = useMindmapStore((state) => state.addChildNode);
 
   useEffect(() => {
     setLabelText(data.label || '');

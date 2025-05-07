@@ -12,7 +12,7 @@ import {
   useSetNode,
   useUpdateNode,
   useUpdateNodeQuestions,
-} from '@/store/mindMapStore';
+} from '@/store/mindMapStore_deprecated';
 import { SummarizedNodeReq } from '@/types/api/mindmap';
 import { AnswerNodeType } from '@/types/mindMap';
 import { DialogClose } from '@radix-ui/react-dialog';

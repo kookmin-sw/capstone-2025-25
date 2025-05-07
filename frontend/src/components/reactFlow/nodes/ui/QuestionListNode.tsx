@@ -1,7 +1,11 @@
 import NodeHandles from '@/components/reactFlow/nodes/ui/NodeHandles';
 import { Skeleton } from '@/components/ui/skeleton';
 import { findParentNode } from '@/lib/mindMap';
-import { useEdges, useNodes, useSetNode } from '@/store/mindMapStore';
+import {
+  useEdges,
+  useNodes,
+  useSetNode,
+} from '@/store/mindMapStore_deprecated';
 import { QuestionNodeType } from '@/types/mindMap';
 import { NodeProps } from '@xyflow/react';
 import { X } from 'lucide-react';
