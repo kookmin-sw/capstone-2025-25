@@ -1,9 +1,18 @@
 import { useMindmapStore } from '@/store/mindMapStore';
-import { Handle, NodeProps, Position } from '@xyflow/react';
+import { Handle, Node, NodeProps, Position } from '@xyflow/react';
 import { CirclePlus } from 'lucide-react';
 import { useState, useCallback, useEffect, useRef } from 'react';
 
-export default function CustomNode({ data, id, isConnectable }: NodeProps) {
+type CustomNodeData = {
+  label: string;
+  layoutDirection: string;
+};
+
+export default function CustomNode({
+  data,
+  id,
+  isConnectable,
+}: NodeProps<Node<CustomNodeData>>) {
   const isHorizontal = data.layoutDirection === 'LR';
   const [labelText, setLabelText] = useState(data.label || '');
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -61,7 +70,6 @@ export default function CustomNode({ data, id, isConnectable }: NodeProps) {
         rows={1}
       />
 
-      {/* CirclePlus 아이콘 */}
       <div
         className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 z-10"
         onClick={handlePlusClick}
@@ -72,7 +80,6 @@ export default function CustomNode({ data, id, isConnectable }: NodeProps) {
         />
       </div>
 
-      {/* 핸들 */}
       <Handle
         type="source"
         position={isHorizontal ? Position.Right : Position.Bottom}
