@@ -2,7 +2,6 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Bot, Calendar, Check, GripVertical } from 'lucide-react';
 import { useCategoryStore } from '@/store/useCategoryStore';
-import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { format } from 'date-fns';
 import { MouseEvent } from 'react';
@@ -29,7 +28,7 @@ export function TaskCard({
   className,
   variant = 'default',
 }: TaskCardProps) {
-  const { id, title, memo, dueDate, type, category_id } = task;
+  const { id, title, memo, dueDate, category_id } = task;
   const { categories } = useCategoryStore();
   const category = category_id
     ? categories.find((cat) => cat.id === category_id)
@@ -110,7 +109,6 @@ export function TaskCard({
 
         {/* 상단 뱃지 */}
         <div className="flex mb-2 flex-wrap gap-1">
-          <TypeBadge type={type} />
           {category && (
             <CategoryBadge
               label={category.title}

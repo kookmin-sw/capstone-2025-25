@@ -1,14 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/Sheet.tsx';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
-import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
-import {
-  CalendarIcon,
-  ChevronsLeft,
-  CircleDashed,
-  PencilLine,
-  Tag,
-} from 'lucide-react';
+import { CalendarIcon, ChevronsLeft, PencilLine, Tag } from 'lucide-react';
 import { format } from 'date-fns';
 import type { Task } from '@/types/task';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
@@ -25,7 +18,6 @@ import AddPomodoro from '@/components/ui/Modal/AddPomodoro';
 import { useDisconnectPomodoroTask } from '@/store/pomodoro';
 import DeleteTaskModal from '@/components/ui/Modal/DeleteTask';
 import { BadgeSelector } from '@/components/common/BadgeSelector';
-import { ActualTaskType } from '@/types/commonTypes';
 
 interface TaskDetailSidebarProps {
   categories: Category[];
@@ -115,11 +107,6 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
     navigate(`/mindmap/${newMindmapId}`);
   };
 
-  const typeOptions = [
-    { label: 'TODO', value: 'TODO' },
-    { label: 'THINKING', value: 'THINKING' },
-  ];
-
   const categoryOptions = categories.map((cat) => ({
     label: cat.title,
     value: String(cat.id),
@@ -176,31 +163,6 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
           </div>
 
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4">
-            {/* 타입 */}
-            <div className="flex items-center gap-2 text-sm">
-              <CircleDashed className="w-4 h-4" />
-              <span>타입</span>
-            </div>
-            {isEditing ? (
-              <BadgeSelector
-                options={typeOptions}
-                selected={editedTask.type}
-                onChange={(val) =>
-                  setEditedTask({
-                    ...editedTask,
-                    type: val as ActualTaskType,
-                  })
-                }
-                renderBadge={(option) => (
-                  <TypeBadge type={option.value as ActualTaskType} />
-                )}
-                displayMode="block"
-                withSearch={false}
-              />
-            ) : (
-              <TypeBadge type={task.type} />
-            )}
-
             {/* 카테고리 */}
             <div className="flex items-center gap-2 text-sm">
               <Tag className="w-4 h-4" />

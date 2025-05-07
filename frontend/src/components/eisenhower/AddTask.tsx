@@ -2,15 +2,14 @@ import { useState } from 'react';
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
-import { CircleDashed, Tag, Calendar, Plus } from 'lucide-react';
-import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
+import { Tag, Calendar, Plus } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { BadgeSelector } from '@/components/common/BadgeSelector';
 import type { Task } from '@/types/task';
 import { quadrantTitles } from '@/constants/section';
 import { useCategoryStore } from '@/store/useCategoryStore';
-import { ActualTaskType, Quadrant } from '@/types/commonTypes';
+import { Quadrant } from '@/types/commonTypes';
 import { generateNumericId } from '@/lib/generateNumericId';
 
 type AddTaskProps = {
@@ -34,7 +33,6 @@ export function AddTask({
   const [dueDate, setDueDate] = useState<string | null>(
     new Date().toISOString().split('T')[0],
   );
-  const [type, setType] = useState<ActualTaskType>('TODO');
   const [category_id, setCategoryId] = useState<number | null>(null);
 
   const { categories, addCategory, removeCategory } = useCategoryStore();
@@ -43,7 +41,6 @@ export function AddTask({
     setTitle('');
     setMemo('');
     setDueDate(new Date().toISOString().split('T')[0]);
-    setType('TODO');
     setCategoryId(null);
   };
 
@@ -53,7 +50,6 @@ export function AddTask({
       title,
       memo,
       dueDate: dueDate ?? '',
-      type,
       category_id,
       quadrant,
       order: 0,
@@ -97,11 +93,6 @@ export function AddTask({
     }
   };
 
-  const typeOptions = [
-    { label: 'TODO', value: 'TODO' },
-    { label: 'THINKING', value: 'THINKING' },
-  ];
-
   return (
     <Modal
       trigger={
@@ -124,21 +115,6 @@ export function AddTask({
           </div>
 
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3 pb-1">
-            {/* 타입 */}
-            <div className="flex items-center gap-2 text-sm leading-none">
-              <CircleDashed className="w-4 h-4" />
-              <span className="pt-1">타입</span>
-            </div>
-            <BadgeSelector
-              options={typeOptions}
-              selected={type}
-              onChange={(val) => setType(val as ActualTaskType)}
-              renderBadge={(option) => (
-                <TypeBadge type={option.value as ActualTaskType} />
-              )}
-              displayMode="block"
-            />
-
             {/* 카테고리 */}
             <div className="flex items-center gap-2 text-sm leading-none">
               <Tag className="w-4 h-4" />

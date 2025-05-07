@@ -18,11 +18,10 @@ import { TaskCard } from '@/components/eisenhower/card/TaskCard';
 import { AddTask } from '@/components/eisenhower/AddTask';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import type { Task } from '@/types/task';
-import { Quadrant, TaskType } from '@/types/commonTypes';
+import { Quadrant } from '@/types/commonTypes';
 
 interface PriorityViewProps {
   tasks: Record<Quadrant, Task[]>;
-  selectedType: TaskType;
   selectedCategory: string;
   startDate: Date;
   endDate: Date;
@@ -49,7 +48,6 @@ function Droppable({
 
 export function PriorityView({
   tasks,
-  selectedType,
   selectedCategory,
   startDate,
   endDate,
@@ -146,18 +144,13 @@ export function PriorityView({
           const filtered = tasks[quadrant].filter((task) => {
             if (task.isCompleted) return false;
 
-            const matchType =
-              selectedType === 'ALL' || task.type === selectedType;
             const matchCategory =
               selectedCategory === 'all' ||
               getCategoryNameById(task.category_id, categories) ===
                 selectedCategory;
             const taskDate = new Date(task.dueDate || '');
             return (
-              matchType &&
-              matchCategory &&
-              taskDate >= startDate &&
-              taskDate <= endDate
+              matchCategory && taskDate >= startDate && taskDate <= endDate
             );
           });
 
