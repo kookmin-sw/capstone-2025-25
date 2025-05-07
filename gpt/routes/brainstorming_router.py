@@ -10,11 +10,11 @@ from utils.exception_handler import safe_gpt_handler
 from utils.gpt_helper import clean_question_lines
 from utils.prompt_loader import load_prompt_template
 
-router = APIRouter()
+router = APIRouter(tags=["Brainstorming"])
 gpt_service = GPTService(api_key=OPENAI_API_KEY)
 
 
-@router.post("/brainstorming/extract/chucks", response_model=BrainStormingResponse)
+@router.post("/extract/chucks", response_model=BrainStormingResponse)
 @safe_gpt_handler
 async def extract_chucks(request: BrainStormingRequest):
     user_prompt = load_prompt_template("prompts/extract_chucks_prompt.txt", {
@@ -40,7 +40,7 @@ def parse_chunk_analysis(gpt_output: str) -> Tuple[List[str], List[str]]:
     return ambiguous_points, questions
 
 
-@router.post("/brainstorming/analyze/chunk", response_model=ChunkAnalysisResponse)
+@router.post("/analyze/chunk", response_model=ChunkAnalysisResponse)
 @safe_gpt_handler
 async def analyze_chunk(request: BrainStormingChunkRequest):
     user_prompt = load_prompt_template("prompts/chunk_analysis_prompt.txt", {
@@ -59,7 +59,7 @@ async def analyze_chunk(request: BrainStormingChunkRequest):
         clarifying_questions=questions
     )
 
-@router.post("/brainstorming/rewrite/chunk", response_model=MindmapToChunkResponse)
+@router.post("/rewrite/chunk", response_model=MindmapToChunkResponse)
 @safe_gpt_handler
 async def rewrite_chunk(request: RewriteChunkRequest):
     user_prompt = load_prompt_template("prompts/mindmap_to_chunk_prompt.txt", {
