@@ -24,7 +24,7 @@ import {
   useUpdateNodePending,
   useActiveState,
   useRestoreActiveState,
-} from '@/store/mindMapStore';
+} from '@/store/mindMapStore_deprecated';
 import { useLoadMindMapData } from '@/store/mindmapListStore';
 import { useIsNodeSelectionMode } from '@/store/nodeSelection';
 
