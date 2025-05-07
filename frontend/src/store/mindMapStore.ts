@@ -17,7 +17,7 @@ import {
 
 const NODE_WIDTH = 172;
 const MIN_NODE_HEIGHT = 60;
-const ROOT_NODE_ID = '4';
+const ROOT_NODE_ID = '1';
 
 const nodeHeightMap = new Map<string, number>();
 
