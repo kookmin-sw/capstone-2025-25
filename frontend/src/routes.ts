@@ -15,11 +15,11 @@ export default [
   layout('layouts/DefaultLayout.tsx', [
     index('pages/home.tsx'),
     route('mindmap', 'pages/mindmap.tsx'),
-    route('mindmap/:id', 'pages/mindmapDetail.tsx'),
     route('today', 'pages/today.tsx'),
     route('matrix', 'pages/matrix.tsx'),
     route('pomodoro/:id?', 'pages/pomodoro.tsx'),
     route('list', 'pages/list.tsx'),
     route('dashboard', 'pages/dashboard.tsx'),
+    route('brainstorming', 'pages/brainstorming.tsx'),
   ]),
 ] satisfies RouteConfig;
