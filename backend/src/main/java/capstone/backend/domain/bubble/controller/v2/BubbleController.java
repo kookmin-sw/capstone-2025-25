@@ -56,7 +56,7 @@ public class BubbleController {
     public ApiResponse<Void> confirmEisenhower(
             @AuthenticationPrincipal CustomOAuth2User user,
             @Valid @RequestBody EisenhowerItemCreateRequest request,
-            @Parameter(name = "bubble id", description = "버블 ID", example = "1", required = true)
+            @Parameter(name = "id", description = "버블 ID", example = "1", required = true)
             @PathVariable Long id
     ) {
         bubbleService.confirmToEisenhower(request, user.getMemberId(), id);
@@ -68,7 +68,7 @@ public class BubbleController {
     public ApiResponse<Void> confirmInventory(
             @AuthenticationPrincipal CustomOAuth2User user,
             @Valid @RequestBody ConfirmBubbleRequest request,
-            @Parameter(name = "bubble id", description = "버블 ID", example = "1", required = true)
+            @Parameter(name = "id", description = "버블 ID", example = "1", required = true)
             @PathVariable Long id
     ) {
         bubbleService.confirmToInventory(request, user.getMemberId(), id);
@@ -91,7 +91,7 @@ public class BubbleController {
     @Operation(summary = "버블 삭제", description = "특정 버블 삭제 API")
     public ApiResponse<Void> deleteBubble(
             @AuthenticationPrincipal CustomOAuth2User user,
-            @Parameter(name = "bubble id", description = "버블 ID", example = "1", required = true)
+            @Parameter(name = "id", description = "버블 ID", example = "1", required = true)
             @PathVariable Long id
     ) {
         bubbleService.deleteBubble(user.getMemberId(), id);
