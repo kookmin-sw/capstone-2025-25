@@ -25,7 +25,7 @@ const navItems: NavItem[] = [
     id: 'today-todo',
     activeIcon: TodayTodoIcon,
     defaultIcon: TodayTodoHWIcon,
-    label: '매트릭스',
+    label: '오늘의 할 일',
     route: '/today',
   },
   {
