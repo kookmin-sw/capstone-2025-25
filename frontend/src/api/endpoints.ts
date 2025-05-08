@@ -23,5 +23,11 @@ export const ENDPOINTS = {
     YESTERDAY_LIST: '/api/v2/today-task/yesterday',
     GET_COUNT: '/api/v2/today-task/count',
     COMPLETE_COUNT: '/api/v2/today-task/completed',
+    MOVE_TODAY: (id: number) => `/api/v2/today-task/move-today/${id}`,
+  },
+
+  /* 카테고리 관련 엔드포인트 */
+  CATEGORY: {
+    LIST: '/api/v1/eisenhower/category',
   },
 };

@@ -1,3 +1,4 @@
+import useGetCategoryList from '@/hooks/queries/category/useGetCategoryList';
 import useGetTodayTodoList from '@/hooks/queries/today/useGetTodayTodoList';
 import useGetYesterdayTodoList from '@/hooks/queries/today/useGetYesterdayTodoList';
 import useMoveToday from '@/hooks/queries/today/useMoveToday';
@@ -26,6 +27,7 @@ function formatDateToEnglish(dateString: string): string {
 export default function TodayList() {
   const { todayTodoList } = useGetTodayTodoList();
   const { yesterdayTodoList } = useGetYesterdayTodoList();
+  const { getCategoryNameById } = useGetCategoryList();
   const { moveTodayMutation, isPending } = useMoveToday();
 
   const handleMoveToToday = (id: number) => {
@@ -42,7 +44,7 @@ export default function TodayList() {
           >
             <div className="flex items-center justify-between mb-2">
               <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
-                {todo.category_id}
+                {getCategoryNameById(todo.category_id)}
               </div>
               <div
                 className={cn(
@@ -88,7 +90,7 @@ export default function TodayList() {
           >
             <div className="flex items-center justify-between mb-2">
               <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
-                {todo.category_id}
+                {getCategoryNameById(todo.category_id)}
               </div>
               <div
                 className={cn(
