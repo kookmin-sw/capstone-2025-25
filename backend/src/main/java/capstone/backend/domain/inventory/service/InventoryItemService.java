@@ -44,8 +44,8 @@ public class InventoryItemService {
     }
 
     //보관함 아이템 상세 조회
-    public InventoryItemDetailResponse getInventoryDetail(Long folderId, Long inventoryId, Long memberId){
-        return inventoryItemRepository.findByMemberIdAndFolderIdAndId(memberId, folderId, inventoryId);
+    public InventoryItemDetailResponse getInventoryDetail(Long inventoryId, Long memberId){
+        return inventoryItemRepository.findByMemberIdAndId(memberId, inventoryId);
     }
 
     //보관함 아이템 삭제

@@ -54,15 +54,13 @@ public class InventoryItemController {
     }
 
     @Operation(summary = "보관함 아이템 상세 조회", description = "보관함 아이템의 메모 조회")
-    @GetMapping("/{folderId}/{inventoryId}")
+    @GetMapping("/{inventoryId}")
     public ApiResponse<InventoryItemDetailResponse> getInventoryItemDetail(
         @AuthenticationPrincipal CustomOAuth2User user,
-        @Parameter(name = "folderId", description = "조회할 폴더 ID", example = "1", required = true)
-        @PathVariable Long folderId,
         @Parameter(name = "inventoryId", description = "상세 조회 할 아이템 ID", example = "1", required = true)
         @PathVariable Long inventoryId
     ){
-        InventoryItemDetailResponse response = inventoryItemService.getInventoryDetail(folderId, inventoryId, user.getMemberId());
+        InventoryItemDetailResponse response = inventoryItemService.getInventoryDetail(inventoryId, user.getMemberId());
         return ApiResponse.ok(response);
     }
 
