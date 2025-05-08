@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "아이젠하워 작업", description = "아이젠하워 작업 관련 API")
+@Tag(name = "아이젠하워 작업 V1", description = "아이젠하워 작업 관련 API")
 @RestController
-@RequestMapping("/api/eisenhower")
+@RequestMapping("/api/v1/eisenhower")
 @RequiredArgsConstructor
 public class EisenhowerItemController {
 

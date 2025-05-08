@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "아이젠하워 카테고리", description = "아이젠하워 카테고리 관련 API")
+@Tag(name = "아이젠하워 카테고리 V1", description = "아이젠하워 카테고리 관련 API")
 @RestController
-@RequestMapping("/api/eisenhower/category")
+@RequestMapping("/api/v1/eisenhower/category")
 @RequiredArgsConstructor
 public class EisenhowerCategoryController {
 
