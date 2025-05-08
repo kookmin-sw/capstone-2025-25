@@ -1,6 +1,6 @@
 package capstone.backend.domain.inventory.controller;
 
-import capstone.backend.domain.inventory.request.InventoryFolderCreateRequest;
+import capstone.backend.domain.inventory.request.InventoryFolderRequest;
 import capstone.backend.domain.inventory.response.InventoryFolderResponse;
 import capstone.backend.domain.inventory.service.InventoryFolderService;
 import capstone.backend.global.api.dto.ApiResponse;
@@ -30,10 +30,10 @@ public class InventoryFolderController {
     @Operation(summary = "보관함 폴더 생성")
     @PostMapping
     public ApiResponse<InventoryFolderResponse> createInventoryFolder(
-        @RequestBody @Valid InventoryFolderCreateRequest inventoryFolderCreateRequest,
+        @RequestBody @Valid InventoryFolderRequest inventoryFolderRequest,
         @AuthenticationPrincipal CustomOAuth2User user
     ){
-        return ApiResponse.ok(inventoryFolderService.createInventoryFolder(inventoryFolderCreateRequest,
+        return ApiResponse.ok(inventoryFolderService.createInventoryFolder(inventoryFolderRequest,
             user.getMemberId()));
     }
 
@@ -51,7 +51,7 @@ public class InventoryFolderController {
         @AuthenticationPrincipal CustomOAuth2User user,
         @Parameter(name = "id", description = "수정할 폴더 ID", example = "1", required = true)
         @PathVariable Long id,
-        @RequestBody @Valid InventoryFolderCreateRequest request
+        @RequestBody @Valid InventoryFolderRequest request
     ){
         InventoryFolderResponse response = inventoryFolderService.updateInventoryFolder(user.getMemberId(), id, request);
         return ApiResponse.ok(response);

@@ -3,7 +3,7 @@ package capstone.backend.domain.inventory.service;
 import capstone.backend.domain.inventory.entity.InventoryFolder;
 import capstone.backend.domain.inventory.exception.FolderNotFoundException;
 import capstone.backend.domain.inventory.repository.InventoryFolderRepository;
-import capstone.backend.domain.inventory.request.InventoryFolderCreateRequest;
+import capstone.backend.domain.inventory.request.InventoryFolderRequest;
 import capstone.backend.domain.inventory.response.InventoryFolderResponse;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
@@ -22,11 +22,12 @@ public class InventoryFolderService {
 
     //폴더 생성
     @Transactional
-    public InventoryFolderResponse createInventoryFolder(InventoryFolderCreateRequest inventoryFolderCreateRequest, Long memberId){
+    public InventoryFolderResponse createInventoryFolder(
+        InventoryFolderRequest inventoryFolderRequest, Long memberId){
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        InventoryFolder inventoryFolder = InventoryFolder.from(member, inventoryFolderCreateRequest);
+        InventoryFolder inventoryFolder = InventoryFolder.from(member, inventoryFolderRequest);
         return InventoryFolderResponse.from(inventoryFolderRepository.save(inventoryFolder));
     }
 
@@ -41,7 +42,7 @@ public class InventoryFolderService {
     //폴더 수정
     @Transactional
     public InventoryFolderResponse updateInventoryFolder(Long memberId, Long folderId,
-        InventoryFolderCreateRequest request){
+        InventoryFolderRequest request){
 
         InventoryFolder inventoryFolder = inventoryFolderRepository.findByIdAndMemberId(folderId, memberId)
             .orElseThrow(() -> new FolderNotFoundException());

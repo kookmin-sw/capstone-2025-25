@@ -3,7 +3,7 @@ package capstone.backend.domain.inventory.entity;
 
 import static lombok.AccessLevel.*;
 
-import capstone.backend.domain.inventory.request.InventoryFolderCreateRequest;
+import capstone.backend.domain.inventory.request.InventoryFolderRequest;
 import capstone.backend.domain.member.scheme.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,10 +29,10 @@ public class InventoryFolder {
     @Column(nullable = false, length = 10)
     private String name;
 
-    public static InventoryFolder from(Member member, InventoryFolderCreateRequest inventoryFolderCreateRequest) {
+    public static InventoryFolder from(Member member, InventoryFolderRequest inventoryFolderRequest) {
         return InventoryFolder.builder()
             .member(member)
-            .name(inventoryFolderCreateRequest.name())
+            .name(inventoryFolderRequest.name())
             .build();
     }
 
