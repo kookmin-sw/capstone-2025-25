@@ -9,6 +9,7 @@ import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.todayTask.dto.request.TodayTaskItemCreateRequest;
 import capstone.backend.domain.todayTask.dto.response.TodayTaskItemResponse;
 import capstone.backend.domain.todayTask.entity.TodayTaskItem;
+import capstone.backend.domain.todayTask.exception.TodayTaskNotFoundException;
 import capstone.backend.domain.todayTask.repository.TodayTaskItemRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -60,5 +61,14 @@ public class TodayTaskItemService {
     public int getCompletedTaskItemCount(Long memberId, LocalDate date) {
         LocalDate taskDate = (date != null) ? date : LocalDate.now();
         return todayTaskItemRepository.countByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, taskDate, true);
+    }
+
+    //오늘의 할 일에서 삭제
+    @Transactional
+    public void deleteTaskItem(Long memberId, Long taskId) {
+        TodayTaskItem todayTaskItem = todayTaskItemRepository.findByIdAndMemberId(taskId, memberId)
+            .orElseThrow(TodayTaskNotFoundException::new);
+
+        todayTaskItemRepository.delete(todayTaskItem);
     }
 }

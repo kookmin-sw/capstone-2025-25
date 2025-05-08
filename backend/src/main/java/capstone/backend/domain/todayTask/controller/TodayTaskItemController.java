@@ -6,6 +6,7 @@ import capstone.backend.domain.todayTask.service.TodayTaskItemService;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -13,7 +14,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,5 +71,16 @@ public class TodayTaskItemController {
     ) {
         long completedCount = todayTaskItemService.getCompletedTaskItemCount(user.getMemberId(), date);
         return ApiResponse.ok(completedCount);
+    }
+
+    @Operation(summary = "오늘의 할 일 삭제", description = "오늘의 할 일 목록에서 특정 할 일을 삭제")
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteTodayTask(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @Parameter(name = "taskId", description="삭제할 오늘의 할 일 ID", example = "1", required = true)
+        @PathVariable("id") Long taskId
+    ) {
+        todayTaskItemService.deleteTaskItem(user.getMemberId(), taskId);
+        return ApiResponse.ok();
     }
 }
