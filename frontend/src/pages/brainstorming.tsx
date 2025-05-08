@@ -10,24 +10,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import useGetBubbles from '@/hooks/queries/brainstorming/useGetBubbles.ts';
+import useDeleteBubble from '@/hooks/queries/brainstorming/useDeleteBubble.ts';
 
 export default function Brainstorming() {
   const isMobile = useIsMobile();
   const containerRef = useRef(null);
   const scrollRef = useRef(null);
-  const [data, setData] = useState<BubbleType[]>([
-    { bubbleId: 0, text: 'Bubble1' },
-    { bubbleId: 1, text: 'Bubble2Bubble2' },
-    {
-      bubbleId: 2,
-      text: 'Bubble3Bubble3Bubble3',
-    },
-    { bubbleId: 2, text: 'Bubble4Bubble4Bubble4Bubble4' },
-  ]);
+  const { bubbleList } = useGetBubbles();
+  const { deleteBrainstormingMutation, isPending } = useDeleteBubble();
   const [bubbles, setBubbles] = useState<BubbleNodeType[]>([]);
   const [inputText, setInputText] = useState('');
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const bubblesRef = useRef<BubbleNodeType[]>([]);
+
+  // bubbleList가 변경되면 bubbles 상태를 업데이트
+  useEffect(() => {
+    if (bubbleList && Array.isArray(bubbleList) && bubbleList.length > 0) {
+      console.log(bubbleList);
+      setBubbles(bubbleList); // 새로 고친 버블 리스트로 상태 업데이트
+    }
+  }, [bubbleList]);
 
   useEffect(() => {
     bubblesRef.current = bubbles;
@@ -48,12 +51,12 @@ export default function Brainstorming() {
     const defaultBubbles: BubbleNodeType[] = [];
 
     for (const item of data) {
-      const radius = getRadiusForText(item.text);
+      const radius = getRadiusForText(item.title);
       const position = getPosition(radius, defaultBubbles);
 
       defaultBubbles.push({
         id: item.bubbleId,
-        text: item.text,
+        title: item.title,
         radius: radius,
         x: (position.x / containerRef.current.offsetWidth) * 100,
         y: (position.y / containerRef.current.offsetHeight) * 100,
@@ -65,7 +68,7 @@ export default function Brainstorming() {
 
   // 기존 데이터로 화면에 버블 배치
   useEffect(() => {
-    placeBubbles(data);
+    placeBubbles(bubbles);
   }, []);
 
   // 화면 리사이즈 시 버블 위치 재계산
@@ -76,10 +79,10 @@ export default function Brainstorming() {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [data]);
+  }, []);
 
-  const getRadiusForText = (text: string) => {
-    const length = text.length;
+  const getRadiusForText = (title: string) => {
+    const length = title.length;
     if (length <= 10) return 60;
     if (length <= 20) return 80;
     if (length <= 40) return 100;
@@ -174,14 +177,25 @@ export default function Brainstorming() {
       x: (position.x / containerWidth) * 100,
       y: (position.y / containerHeight) * 100,
       radius: radius,
-      text: inputText.trim(),
+      title: inputText.trim(),
     };
 
     setBubbles((prev) => [...prev, newBubble]);
     setInputText('');
   };
 
-  const deleteBubble = () => {};
+  const deleteBubble = (id: number) => {
+    deleteBrainstormingMutation(id, {
+      onSuccess: () => {
+        setBubbles((prev) => prev.filter((bubble) => bubble.id !== id));
+      },
+
+      onError: (error) => {
+        console.error('마인드맵 삭제 중 오류가 발생했습니다: ', error);
+      },
+    });
+  };
+
   const moveToMindmap = () => {};
   const createMatrix = () => {};
   const saveBubble = () => {};
@@ -201,7 +215,7 @@ export default function Brainstorming() {
                 x={bubble.x}
                 y={bubble.y}
                 radius={bubble.radius}
-                text={bubble.text}
+                title={bubble.title}
                 containerWidth={containerRef.current?.offsetWidth || 0}
                 containerHeight={containerRef.current?.offsetHeight || 0}
                 onClick={() => console.log('버블 클릭됨')} // 클릭 시 Popover 트리거
@@ -214,7 +228,7 @@ export default function Brainstorming() {
                     'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
                     isMobile ? 'text-[14px]' : 'text-[16px]',
                   )}
-                  onClick={deleteBubble}
+                  onClick={deleteBubble(bubble.id)}
                 >
                   삭제
                 </button>
