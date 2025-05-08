@@ -75,6 +75,7 @@ public class EisenhowerItem {
                 .title(request.title())
                 .category(category)
                 .dueDate(request.dueDate())
+                .memo(request.memo())
                 .quadrant(request.quadrant())
                 .order(request.order())
                 .isCompleted(false)
