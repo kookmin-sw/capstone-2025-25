@@ -15,10 +15,10 @@ import { quadrantTitles } from '@/constants/section';
 import { getCategoryNameById } from '@/utils/category';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { TaskCard } from '@/components/eisenhower/card/TaskCard';
-import { AddTask } from '@/components/eisenhower/AddTask';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import type { Task } from '@/types/task';
 import { Quadrant } from '@/types/commonTypes';
+import { TaskModal } from '@/components/eisenhower/TaskModal.tsx';
 
 interface PriorityViewProps {
   tasks: Record<Quadrant, Task[]>;
@@ -27,7 +27,7 @@ interface PriorityViewProps {
   endDate: Date;
   onReorderTask: (quadrant: Quadrant, newTasks: Task[]) => void;
   onCreateTask: (task: Task) => void;
-  onTaskClick: (task: Task) => void;
+  onUpdateTask?: (task: Task) => void;
   viewMode: 'matrix' | 'board';
 }
 
@@ -53,7 +53,7 @@ export function PriorityView({
   endDate,
   onReorderTask,
   onCreateTask,
-  onTaskClick,
+  onUpdateTask,
   viewMode,
 }: PriorityViewProps) {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
@@ -107,9 +107,9 @@ export function PriorityView({
       ? 'grid-cols-1 md:grid-cols-4'
       : 'grid-cols-1 md:grid-cols-2';
 
-  type ViewMode = 'matrix' | 'board';
-
-  const getQuadrantColors = (viewMode: ViewMode): Record<Quadrant, string> => {
+  const getQuadrantColors = (
+    viewMode: 'matrix' | 'board',
+  ): Record<Quadrant, string> => {
     if (viewMode === 'matrix') {
       return {
         Q1: 'bg-[#F5F1FF] border-gray-300 border rounded-tl-md',
@@ -118,7 +118,6 @@ export function PriorityView({
         Q4: 'bg-[#FAFAFA] border-b border-r border-gray-300 rounded-br-md',
       };
     }
-
     return {
       Q1: 'bg-[#F5F1FF] border border-gray-300 rounded-tl-md rounded-bl-md',
       Q2: 'bg-[#FAF6FF] border-t border-r border-b border-gray-300',
@@ -128,6 +127,13 @@ export function PriorityView({
   };
 
   const quadrantColors = getQuadrantColors(viewMode);
+  const handleUpdateTask = (updatedTask: Task) => {
+    const quadrant = updatedTask.quadrant;
+    const newTasks = tasks[quadrant].map((t) =>
+      t.id === updatedTask.id ? updatedTask : t,
+    );
+    onReorderTask(quadrant, newTasks);
+  };
 
   return (
     <DndContext
@@ -143,7 +149,6 @@ export function PriorityView({
         {(Object.keys(tasks) as Quadrant[]).map((quadrant) => {
           const filtered = tasks[quadrant].filter((task) => {
             if (task.isCompleted) return false;
-
             const matchCategory =
               selectedCategory === 'all' ||
               getCategoryNameById(task.category_id, categories) ===
@@ -161,14 +166,13 @@ export function PriorityView({
                   viewMode === 'board'
                     ? 'h-full h-screen'
                     : 'min-h-[400px] h-full'
-                } min-h-[300px] flex flex-col ${quadrantColors[quadrant]}`}
+                } flex flex-col ${quadrantColors[quadrant]}`}
               >
                 <div className="flex justify-between items-center pb-[14px]">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 flex items-center justify-center rounded-full border border-black text-sm font-semibold leading-none">
                       {quadrant.replace('Q', '')}
                     </div>
-
                     <div
                       className={`${viewMode === 'board' ? 'text-[16px]' : 'text-xl'} font-semibold`}
                     >
@@ -179,14 +183,10 @@ export function PriorityView({
                     </div>
                   </div>
 
-                  <AddTask
+                  {/* 생성 모달 */}
+                  <TaskModal
+                    mode="create"
                     quadrant={quadrant}
-                    categoryOptions={categories.map((c) => ({
-                      id: c.id,
-                      title: c.title,
-                      bgColor: c.color,
-                      textColor: c.textColor,
-                    }))}
                     onCreateTask={onCreateTask}
                   />
                 </div>
@@ -197,11 +197,22 @@ export function PriorityView({
                 >
                   <div className="space-y-2 flex-1 overflow-y-auto h-full scrollbar-hide">
                     {filtered.map((task) => (
-                      <TaskCard
-                        key={String(task.id)}
-                        task={{ ...task, id: task.id }}
-                        onClick={() => onTaskClick(task)}
-                        layout={viewMode}
+                      <TaskModal
+                        key={task.id}
+                        mode="edit"
+                        quadrant={task.quadrant}
+                        task={task}
+                        onUpdateTask={handleUpdateTask}
+                        trigger={
+                          <div>
+                            <TaskCard
+                              key={String(task.id)}
+                              task={{ ...task, id: task.id }}
+                              layout={viewMode}
+                              onUpdateTask={onUpdateTask}
+                            />
+                          </div>
+                        }
                       />
                     ))}
                   </div>

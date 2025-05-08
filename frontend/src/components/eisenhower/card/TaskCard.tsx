@@ -8,6 +8,7 @@ import { MouseEvent } from 'react';
 import useMatrixStore from '@/store/matrixStore';
 import { cn } from '@/lib/utils';
 import { EisenhowerBase } from '@/types/commonTypes';
+import { Task } from '@/types/task.ts';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -18,6 +19,7 @@ interface TaskCardProps {
   dragHandle?: 'full';
   className?: string;
   variant?: TaskCardVariant;
+  onUpdateTask?: (task: Task) => void;
 }
 
 export function TaskCard({
