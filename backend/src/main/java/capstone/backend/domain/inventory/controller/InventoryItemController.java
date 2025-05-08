@@ -57,7 +57,7 @@ public class InventoryItemController {
     }
 
     @Operation(summary = "보관함 아이템 상세 조회", description = "보관함 아이템의 메모 조회")
-    @GetMapping("/{inventoryId}")
+    @GetMapping("/item/{inventoryId}")
     public ApiResponse<InventoryItemDetailResponse> getInventoryItemDetail(
         @AuthenticationPrincipal CustomOAuth2User user,
         @Parameter(name = "inventoryId", description = "상세 조회 할 아이템 ID", example = "1", required = true)
@@ -68,7 +68,7 @@ public class InventoryItemController {
     }
 
     @Operation(summary = "보관함 아이템 삭제", description = "보관함 아이템 삭제")
-    @DeleteMapping("/{inventoryId}")
+    @DeleteMapping("/item/{inventoryId}")
     public ApiResponse<Void> deleteInventoryItem(
         @AuthenticationPrincipal CustomOAuth2User user,
         @Parameter(name = "inventoryId", description = "삭제할 아이템 ID", example = "1", required = true)
@@ -79,8 +79,8 @@ public class InventoryItemController {
     }
 
     @Operation(summary = "보관함 아이템 수정", description = "보관함 아이템 수정")
-    @PatchMapping("/{inventoryId}")
-    public ApiResponse<InventoryItemUpdateResponse> deleteInventoryItem(
+    @PatchMapping("/item/{inventoryId}")
+    public ApiResponse<InventoryItemUpdateResponse> updateInventoryItem(
         @AuthenticationPrincipal CustomOAuth2User user,
         @Parameter(name = "inventoryId", description = "수정할 아이템 ID", example = "1", required = true)
         @PathVariable Long inventoryId,
