@@ -4,7 +4,6 @@ import { formatDate } from '@/lib/formatDate';
 import { cn } from '@/lib/utils';
 import { MindMap } from '@/types/mindMap';
 import { Link, Loader2, X } from 'lucide-react';
-import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 
 import { useNavigate } from 'react-router';
 import { MouseEvent } from 'react';
@@ -25,8 +24,7 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
 
   const { deleteMindmapMutation, isPending } = useDeleteMindmap();
 
-  const { title, type, id, lastModifiedAt, linked, eisenhowerItemDTO } =
-    mindmap;
+  const { title, id, lastModifiedAt, linked, eisenhowerItemDTO } = mindmap;
 
   const cardBg = selected ? 'bg-[#ECE5FF] rounded-lg' : 'bg-white';
 
@@ -84,7 +82,6 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
       onClick={handleClick}
     >
       <div className="flex items-center justify-between">
-        <TypeBadge type={type} />
         <Modal
           trigger={
             <X
@@ -109,8 +106,6 @@ export default function MindmapCard({ mindmap, selected }: MindmapCardProps) {
           }
         >
           <div className="border-[1px] border-[#E5E5E5] p-[20px] rounded-[7px] flex flex-col gap-[10px]">
-            <TypeBadge type={type} />
-
             <div className="font-heading-4 font-semibold text-[18px] h-[18px]">
               {title}
             </div>

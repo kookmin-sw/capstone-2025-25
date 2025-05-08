@@ -10,15 +10,23 @@ import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 type SingleDatePickerProps = {
   date: string | null;
   onChange: (date: string | null) => void;
+  disabled?: boolean;
 };
 
-export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
+export function SingleDatePicker({
+  date,
+  onChange,
+  disabled = false,
+}: SingleDatePickerProps) {
   const parsedDate = date ? parseISO(date) : null;
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="flex items-center justify-between w-full md:w-auto min-w-[160px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer">
+        <button
+          className="flex items-center justify-between w-full md:w-auto min-w-[160px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={disabled}
+        >
           <div className="flex items-center">
             <span className="text-sm">
               {parsedDate && isValid(parsedDate)
@@ -28,16 +36,19 @@ export function SingleDatePicker({ date, onChange }: SingleDatePickerProps) {
           </div>
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <CalendarComponent
-          mode="single"
-          selected={parsedDate ?? undefined}
-          onSelect={(selected) => {
-            onChange(selected ? format(selected, 'yyyy-MM-dd') : null);
-          }}
-          locale={ko}
-        />
-      </PopoverContent>
+
+      {!disabled && (
+        <PopoverContent className="w-auto p-0" align="start">
+          <CalendarComponent
+            mode="single"
+            selected={parsedDate ?? undefined}
+            onSelect={(selected) => {
+              onChange(selected ? format(selected, 'yyyy-MM-dd') : null);
+            }}
+            locale={ko}
+          />
+        </PopoverContent>
+      )}
     </Popover>
   );
 }

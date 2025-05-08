@@ -10,8 +10,7 @@ import {
 } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
-import { CircleDashed, Tag, Calendar } from 'lucide-react';
-import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
+import { Tag, Calendar } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { useNavigate } from 'react-router';
@@ -89,14 +88,6 @@ export function NodeToTaskModal({
             <h3 className="text-[22px] font-semibold">{taskData.title}</h3>
 
             <div className="flex flex-col gap-5">
-              <div className="flex items-center gap-1 mb-3">
-                <div className="w-24 flex items-center gap-1">
-                  <CircleDashed size={15} />
-                  <label className="text-[14px]">타입</label>
-                </div>
-                <TypeBadge type="TODO" />
-              </div>
-
               <div className="flex items-center gap-1">
                 <div className="w-24 flex items-center gap-1">
                   <Tag size={15} />
