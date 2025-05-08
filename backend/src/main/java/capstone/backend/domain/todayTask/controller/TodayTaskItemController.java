@@ -58,4 +58,15 @@ public class TodayTaskItemController {
         int count = todayTaskItemService.getTaskItemCount(user.getMemberId(), date);
         return ApiResponse.ok(count);
     }
+
+    @Operation(summary = "완료된 할 일 개수 조회", description = "특정 날짜에 완료된 할 일 개수를 반환. 날짜가 없으면 오늘 날짜 기준으로 조회합니다.")
+    @GetMapping("/completed")
+    public ApiResponse<Long> getCompletedTaskItemCount(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @RequestParam(value = "date", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        long completedCount = todayTaskItemService.getCompletedTaskItemCount(user.getMemberId(), date);
+        return ApiResponse.ok(completedCount);
+    }
 }

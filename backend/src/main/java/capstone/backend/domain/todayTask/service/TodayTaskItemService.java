@@ -55,4 +55,10 @@ public class TodayTaskItemService {
         LocalDate taskDate = (date != null) ? date : LocalDate.now();
         return todayTaskItemRepository.countByMemberIdAndTaskDate(memberId, taskDate);
     }
+
+    //완료된 할 일 개수 조회
+    public int getCompletedTaskItemCount(Long memberId, LocalDate date) {
+        LocalDate taskDate = (date != null) ? date : LocalDate.now();
+        return todayTaskItemRepository.countByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, taskDate, true);
+    }
 }
