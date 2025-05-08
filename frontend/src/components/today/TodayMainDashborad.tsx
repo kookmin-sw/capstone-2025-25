@@ -1,6 +1,7 @@
 import TodayList from '@/components/today/TodayList';
 import { DailyCompletionChart } from '@/components/ui/chart/DailyCompletionChart';
 import { TodayCompleteChart } from '@/components/ui/chart/TodayCompleteChart';
+import useGetTodayTodoCompletedCount from '@/hooks/queries/today/useGetTodayTodoCompletedCount';
 import useGetTodayTodoCount from '@/hooks/queries/today/useGetTodayTodoCount';
 import { Plus } from 'lucide-react';
 
@@ -11,6 +12,7 @@ export default function TodayMainDashborad() {
   const date = today.getDate();
 
   const { todayTodoCount } = useGetTodayTodoCount();
+  const { todayTodoCompletedCount } = useGetTodayTodoCompletedCount();
 
   return (
     <div className="flex flex-col lg:flex-row w-full">
@@ -37,7 +39,12 @@ export default function TodayMainDashborad() {
           {year}년 {month}월 {date}일
         </div>
 
-        <TodayCompleteChart />
+        {todayTodoCount && todayTodoCompletedCount && (
+          <TodayCompleteChart
+            totalCount={todayTodoCount}
+            completedCount={todayTodoCompletedCount}
+          />
+        )}
 
         {/* 할 일 목록 */}
         <TodayList />

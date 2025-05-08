@@ -26,4 +26,11 @@ export const todayService = {
     );
     return response.data;
   },
+
+  getCompletedCount: async (): Promise<GetTodayCountRes> => {
+    const response = await apiClient.get<GetTodayCountRes>(
+      ENDPOINTS.TODAY.COMPLETE_COUNT,
+    );
+    return response.data;
+  },
 };
