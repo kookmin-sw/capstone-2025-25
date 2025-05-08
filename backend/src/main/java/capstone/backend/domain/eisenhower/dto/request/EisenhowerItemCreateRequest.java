@@ -23,6 +23,9 @@ public record EisenhowerItemCreateRequest(
 
         @NotNull(message = "정렬 순서(order)는 필수입니다.")
         @Schema(description = "정렬 순서 (작은 값일수록 우선)", example = "1")
-        Long order
+        Long order,
+
+        @Schema(description = "메모", example = "운동은 어려워!")
+        String memo
 ) {
 }
