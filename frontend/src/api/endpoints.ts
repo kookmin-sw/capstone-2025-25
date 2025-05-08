@@ -40,6 +40,7 @@ export const ENDPOINTS = {
   GPT: {
     BRAINSTORMING: {
       ANALYZE: '/api/brainstorming/analyze/chunk',
+      REWRITE: '/api/brainstorming/rewrite/chunk',
     },
   },
 };

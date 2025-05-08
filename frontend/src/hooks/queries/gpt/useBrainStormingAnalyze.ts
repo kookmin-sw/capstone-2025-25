@@ -5,7 +5,7 @@ import { BrainStormingAnalyzeReq } from '@/types/api/gpt';
 const useBrainStormingAnalyze = () => {
   const { mutate, isPending, isError, error, data, reset } = useMutation({
     mutationFn: (data: BrainStormingAnalyzeReq) =>
-      gptService.generateSchedule(data),
+      gptService.analyzeBrainStorming(data),
   });
 
   return {

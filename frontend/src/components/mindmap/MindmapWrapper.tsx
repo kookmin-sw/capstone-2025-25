@@ -11,7 +11,21 @@ import CustomNode from '@/components/mindmap/CustomNode';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Modal } from '@/components/common/Modal';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/Dialog';
 import { useMindmapStore } from '@/store/mindMapStore';
+import useBrainStormingRewrite from '@/hooks/queries/gpt/useBrainStormingRewrite';
+import { useState } from 'react';
+import { useSearchParams } from 'react-router';
+import { BrainStormingRewriteReq } from '@/types/api/gpt';
+import { Loader2 } from 'lucide-react';
+import BrainstormingLogo from '@/assets/sidebar/color-brainstorming.svg';
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
@@ -22,7 +36,38 @@ const flowStyles = {
 };
 
 function FlowContent() {
+  const [searchParams] = useSearchParams();
+  const bubbleText = searchParams.get('text') || '';
+  const [summary, setSummary] = useState('');
+
   const { nodes, edges, onNodesChange, onEdgesChange } = useMindmapStore();
+
+  const { rewriteBrainStormingMutation, isPending } = useBrainStormingRewrite();
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleRewriteBrainStorming = () => {
+    const mindmapData = nodes.map((node) => ({
+      context: String(node.data.label || ''),
+    }));
+
+    const requestData: BrainStormingRewriteReq = {
+      existing_chunk: bubbleText,
+      mindmap_data: mindmapData,
+    };
+
+    console.log('API 요청 데이터:', requestData);
+
+    rewriteBrainStormingMutation(requestData, {
+      onSuccess: (data) => {
+        console.log('API 응답:', data);
+        if (data && data.new_chunk) {
+          setSummary(data.new_chunk);
+        }
+        setIsDialogOpen(true);
+      },
+    });
+  };
 
   return (
     <ReactFlow
@@ -44,7 +89,10 @@ function FlowContent() {
           <div className="flex items-center gap-3">
             <Modal
               trigger={
-                <Button className="w-[139px] h-[48px] text-center rounded-4xl bg-blue-2 text-blue font-semibold">
+                <Button
+                  className="w-[139px] h-[48px] text-center rounded-4xl bg-blue-2 text-blue font-semibold"
+                  disabled={isPending}
+                >
                   취소
                 </Button>
               }
@@ -65,28 +113,46 @@ function FlowContent() {
               </div>
             </Modal>
 
-            <Modal
-              trigger={
-                <Button className="w-[139px] h-[48px] text-center rounded-4xl bg-blue text-white font-semibold">
-                  완료
-                </Button>
-              }
-              title="한 줄 요약"
-              description="마인드맵으로 정리된 한 줄 요약입니다."
-              footer={
-                <div className="w-full flex items-center justify-end">
-                  <DialogClose asChild>
-                    <Button size="sm" className="bg-blue text-white">
-                      적용하기
-                    </Button>
-                  </DialogClose>
-                </div>
-              }
+            <Button
+              onClick={handleRewriteBrainStorming}
+              className="w-[139px] h-[48px] text-center rounded-4xl bg-blue text-white font-semibold"
+              disabled={isPending}
             >
-              <div className="rounded-[7px] px-6 py-[20px] text-[20px] font-semibold bg-blue-2">
-                마인드맵 개발을 위해 React Flow 라이브러리 공부하기
-              </div>
-            </Modal>
+              {isPending ? (
+                <div className="flex items-center justify-center">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  처리중...
+                </div>
+              ) : (
+                '완료'
+              )}
+            </Button>
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogContent className="sm:max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>한 줄 요약</DialogTitle>
+                  <DialogDescription>
+                    마인드맵으로 정리된 한 줄 요약입니다.
+                  </DialogDescription>
+                </DialogHeader>
+                <div>
+                  <div className="rounded-[7px] px-6 py-[20px] text-[20px] font-semibold bg-blue-2 flex gap-2 items-start">
+                    <img src={BrainstormingLogo} />
+                    <p>{summary}</p>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <div className="w-full flex items-center justify-end">
+                    <DialogClose asChild>
+                      <Button size="sm" className="bg-blue text-white">
+                        적용하기
+                      </Button>
+                    </DialogClose>
+                  </div>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </Panel>
