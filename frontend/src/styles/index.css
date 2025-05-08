@@ -53,6 +53,21 @@
     --color-root-icon: #ffea9f;
     --color-question-input-hover: rgba(0, 0, 0, 0.02);
     --color-question-input-active: rgba(0, 0, 0, 0.05);
+
+
+    /* 새로운 기획 색상 변수 */
+    --color-gray-scale-100: #ffffff;
+    --color-gray-scale-200: #f0f0f5;
+    --color-gray-scale-300: #e1e1e8;
+    --color-gray-scale-400: #cdced6;
+    --color-gray-scale-500: #a9abb8;
+    --color-gray-scale-600: #858899;
+    --color-gray-scale-700: #525463;
+    --color-gray-scale-800: #3e404c;
+    --color-gray-scale-900: #2b2d36;
+    --color-blue: #7098ff;
+    --color-neon-green: #d3ee17;
+    --color-blue-2: #e8efff;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
@@ -63,4 +78,17 @@ body {
     font-family: 'Inter', sans-serif;
     color: black;
     font-weight: 400;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
 }
