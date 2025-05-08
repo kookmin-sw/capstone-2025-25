@@ -1,11 +1,8 @@
 package capstone.backend.domain.eisenhower.entity;
 
-import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemUpdateRequest;
 import capstone.backend.domain.member.scheme.Member;
-import capstone.backend.domain.mindmap.entity.MindMap;
-import capstone.backend.domain.pomodoro.schema.Pomodoro;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,7 +29,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class EisenhowerItem {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, name = "eisenhower_item_id")
     private Long id;
 
@@ -51,10 +49,6 @@ public class EisenhowerItem {
     @Column(nullable = false)
     private EisenhowerQuadrant quadrant;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TaskType type;
-
     @Column(nullable = false, name = "task_order")
     private Long order;
 
@@ -69,14 +63,6 @@ public class EisenhowerItem {
 
     private LocalDate dueDate;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mind_map_id")
-    private MindMap mindMap;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pomodoro_id")
-    private Pomodoro pomodoro;
-
 
     public static EisenhowerItem from(EisenhowerItemCreateRequest request, Member member, EisenhowerCategory category) {
         return EisenhowerItem.builder()
@@ -85,7 +71,6 @@ public class EisenhowerItem {
                 .category(category)
                 .dueDate(request.dueDate())
                 .quadrant(request.quadrant())
-                .type(request.type())
                 .order(request.order())
                 .isCompleted(false)
                 .createdAt(LocalDateTime.now())
@@ -93,10 +78,15 @@ public class EisenhowerItem {
     }
 
     public void update(EisenhowerItemUpdateRequest request, EisenhowerCategory category) {
-        if (request.title() != null) this.title = request.title();
-        if (request.memo() != null) this.memo = request.memo();
-        if (request.type() != null) this.type = request.type();
-        if (request.isCompleted() != null) this.isCompleted = request.isCompleted();
+        if (request.title() != null) {
+            this.title = request.title();
+        }
+        if (request.memo() != null) {
+            this.memo = request.memo();
+        }
+        if (request.isCompleted() != null) {
+            this.isCompleted = request.isCompleted();
+        }
         if (Boolean.TRUE.equals(request.dueDateExplicitlyNull())) {
             this.dueDate = null;
         } else if (request.dueDate() != null) {
@@ -110,11 +100,4 @@ public class EisenhowerItem {
         this.quadrant = quadrant;
     }
 
-    public void connectPomodoro(Pomodoro pomodoro) {
-        this.pomodoro = pomodoro;
-    }
-
-    public void connectMindMap(MindMap mindMap) {
-        this.mindMap = mindMap;
-    }
 }
