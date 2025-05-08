@@ -1,11 +1,10 @@
-from typing import Tuple, List
-
 from fastapi import APIRouter
 
 from config import OPENAI_API_KEY
 from models.brainstorming_request import BrainStormingRequest, BrainStormingChunkRequest, RewriteChunkRequest
 from models.brainstorming_response import BrainStormingResponse, ChunkAnalysisResponse, MindmapToChunkResponse
 from services.gpt_service import GPTService
+from utils.brainstorming import parse_chunk_analysis
 from utils.exception_handler import safe_gpt_handler
 from utils.gpt_helper import clean_question_lines
 from utils.prompt_loader import load_prompt_template
@@ -30,15 +29,6 @@ async def extract_chucks(request: BrainStormingRequest):
     return BrainStormingResponse(extracted_chunks=refined_questions)
 
 
-def parse_chunk_analysis(gpt_output: str) -> Tuple[List[str], List[str]]:
-    sections = gpt_output.strip().split("[Clarifying Questions]")
-    questions_section = sections[1].strip() if len(sections) > 1 else ""
-
-    questions = [line.strip("- ").strip() for line in questions_section.split("\n") if line.strip()]
-
-    return questions
-
-
 @router.post("/analyze/chunk", response_model=ChunkAnalysisResponse)
 @safe_gpt_handler
 async def analyze_chunk(request: BrainStormingChunkRequest):
@@ -56,6 +46,7 @@ async def analyze_chunk(request: BrainStormingChunkRequest):
     return ChunkAnalysisResponse(
         clarifying_questions=questions
     )
+
 
 @router.post("/rewrite/chunk", response_model=MindmapToChunkResponse)
 @safe_gpt_handler
