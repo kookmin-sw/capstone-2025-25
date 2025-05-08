@@ -8,8 +8,10 @@ import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,5 +32,13 @@ public class InventoryFolderController {
     ){
         return ApiResponse.ok(inventoryFolderService.createInventoryFolder(inventoryFolderCreateRequest,
             user.getMemberId()));
+    }
+
+    @Operation(summary = "보관함 폴더 전체 조회")
+    @GetMapping
+    public ApiResponse<List<InventoryFolderResponse>> getInventoryFolders(
+        @AuthenticationPrincipal CustomOAuth2User user
+    ){
+        return ApiResponse.ok(inventoryFolderService.getInventoryFolders(user.getMemberId()));
     }
 }

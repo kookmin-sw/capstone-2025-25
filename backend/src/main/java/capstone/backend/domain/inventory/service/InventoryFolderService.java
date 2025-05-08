@@ -1,12 +1,14 @@
 package capstone.backend.domain.inventory.service;
 
 import capstone.backend.domain.inventory.entity.InventoryFolder;
+import capstone.backend.domain.inventory.exception.FolderNotFoundException;
 import capstone.backend.domain.inventory.repository.InventoryFolderRepository;
 import capstone.backend.domain.inventory.request.InventoryFolderCreateRequest;
 import capstone.backend.domain.inventory.response.InventoryFolderResponse;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,5 +28,13 @@ public class InventoryFolderService {
 
         InventoryFolder inventoryFolder = InventoryFolder.from(member, inventoryFolderCreateRequest);
         return InventoryFolderResponse.from(inventoryFolderRepository.save(inventoryFolder));
+    }
+
+    //폴더 조회
+    public List<InventoryFolderResponse> getInventoryFolders(Long memberId){
+        return inventoryFolderRepository.findAllByMemberId(memberId).orElseThrow(FolderNotFoundException::new)
+            .stream()
+            .map(InventoryFolderResponse::from)
+            .toList();
     }
 }
