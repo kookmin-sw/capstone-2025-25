@@ -1,28 +1,48 @@
 import { LabelList, Pie, PieChart } from 'recharts';
-
 import { Card, CardContent } from '@/components/ui/card';
 import { ChartConfig, ChartContainer } from '@/components/ui/chart';
 
-const chartData = [
-  { browser: 'safari', visitors: 33, fill: 'var(--color-safari)' },
-  { browser: 'completionRate', visitors: 67, fill: 'hsl(var(--chart-1))' },
-];
+type TodayCompleteChartProps = {
+  totalCount: number;
+  completedCount: number;
+};
 
-const chartConfig = {
-  visitors: {
-    label: 'Visitors',
-  },
-  completionRate: {
-    label: '67%',
-    color: 'hsl(var(--chart-1))',
-  },
-  safari: {
-    label: '',
-    color: 'hsl(var(--chart-2))',
-  },
-} satisfies ChartConfig;
+export function TodayCompleteChart({
+  totalCount,
+  completedCount,
+}: TodayCompleteChartProps) {
+  const completionPercentage =
+    totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-export function TodayCompleteChart() {
+  const remainingPercentage = 100 - completionPercentage;
+
+  const chartData = [
+    {
+      type: 'remainRate',
+      visitors: remainingPercentage,
+      fill: '#D9D9D9',
+    },
+    {
+      type: 'completionRate',
+      visitors: completionPercentage,
+      fill: '#7098ff',
+    },
+  ];
+
+  const chartConfig = {
+    visitors: {
+      label: 'Visitors',
+    },
+    completionRate: {
+      label: `${completionPercentage}%`,
+      color: 'hsl(var(--chart-1))',
+    },
+    remainRate: {
+      label: '',
+      color: 'hsl(var(--chart-2))',
+    },
+  } satisfies ChartConfig;
+
   return (
     <Card className="flex flex-col bg-blue-2 border-0 p-0">
       <CardContent className="p-4 flex flex-col md:flex-row gap-4 md:gap-6 lg:gap-12 items-center md:justify-start lg:justify-center">
@@ -39,7 +59,7 @@ export function TodayCompleteChart() {
                 endAngle={-270}
               >
                 <LabelList
-                  dataKey="browser"
+                  dataKey="type"
                   stroke="none"
                   fontSize={24}
                   fill="#CEFF73"
@@ -51,12 +71,11 @@ export function TodayCompleteChart() {
             </PieChart>
           </ChartContainer>
         </div>
-
         <div className="w-full md:w-7/12 lg:w-1/3 md:pl-2">
-          <p className="text-[14px] text-gray-scale-900 mb-4 md:mb-6">
+          <p className="text-[14px] text-gray-scale-900 font-semibold mb-4 md:mb-6">
             오늘의 할 일의 <br />
-            <span className="text-[32px] bg-[#CEFF73] text-blue rounded-full p-1">
-              67%
+            <span className="text-[32px] bg-neon-green text-blue rounded-full px-2 py-1">
+              {completionPercentage}%
             </span>
             를 완료했어요!
           </p>
