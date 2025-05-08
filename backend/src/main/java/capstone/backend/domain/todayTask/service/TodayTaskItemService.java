@@ -49,4 +49,10 @@ public class TodayTaskItemService {
             .map(TodayTaskItemResponse::from)
             .toList();
     }
+
+    //할 일 전체 개수 조회
+    public int getTaskItemCount(Long memberId, LocalDate date) {
+        LocalDate taskDate = (date != null) ? date : LocalDate.now();
+        return todayTaskItemRepository.countByMemberIdAndTaskDate(memberId, taskDate);
+    }
 }
