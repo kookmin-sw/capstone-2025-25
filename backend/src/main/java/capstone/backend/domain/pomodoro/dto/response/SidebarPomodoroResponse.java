@@ -1,6 +1,5 @@
 package capstone.backend.domain.pomodoro.dto.response;
 
-import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.entity.EisenhowerQuadrant;
 import capstone.backend.domain.pomodoro.schema.Pomodoro;
@@ -36,7 +35,6 @@ record SidebarEisenhowerItemDTO(
         String memo,
         LocalDate dueDate,
         EisenhowerQuadrant quadrant,
-        TaskType type,
         Long order,
         boolean isCompleted,
         LocalDateTime createdAt
@@ -48,7 +46,6 @@ record SidebarEisenhowerItemDTO(
                 eisenhowerItem.getMemo(),
                 eisenhowerItem.getDueDate(),
                 eisenhowerItem.getQuadrant(),
-                eisenhowerItem.getType(),
                 eisenhowerItem.getOrder(),
                 eisenhowerItem.getIsCompleted(),
                 eisenhowerItem.getCreatedAt()

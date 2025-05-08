@@ -18,7 +18,7 @@ import java.util.List;
 
 @Tag(name = "데이터 분석 - 뽀모도로 타이머 V2", description = "뽀모도로 타이머 이용량 관련 API")
 @RestController
-@RequestMapping("/api/data/pomodoro/v2")
+@RequestMapping("/api/v2/data/pomodoro")
 @RequiredArgsConstructor
 public class DailyPomodoroSummaryController {
 

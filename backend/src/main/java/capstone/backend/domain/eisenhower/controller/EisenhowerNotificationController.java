@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "아이젠하워 알림", description = "아이젠하워 알림 관련 API")
+@Tag(name = "아이젠하워 알림 V1", description = "아이젠하워 알림 관련 API")
 @RestController
-@RequestMapping("/api/eisenhower/notification")
+@RequestMapping("/api/v1/eisenhower/notification")
 @RequiredArgsConstructor
 public class EisenhowerNotificationController {
 
