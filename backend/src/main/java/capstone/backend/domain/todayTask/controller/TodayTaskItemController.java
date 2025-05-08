@@ -53,12 +53,12 @@ public class TodayTaskItemController {
 
     @Operation(summary = "특정 날짜의 할 일 개수 조회", description = "특정 날짜에 등록된 할 일 개수를 반환. 날짜가 없으면 오늘 날짜 기준으로 조회합니다.")
     @GetMapping("/count")
-    public ApiResponse<Integer> getTaskItemCount(
+    public ApiResponse<Long> getTaskItemCount(
         @AuthenticationPrincipal CustomOAuth2User user,
         @RequestParam(value = "date", required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        int count = todayTaskItemService.getTaskItemCount(user.getMemberId(), date);
+        long count = todayTaskItemService.getTaskItemCount(user.getMemberId(), date);
         return ApiResponse.ok(count);
     }
 

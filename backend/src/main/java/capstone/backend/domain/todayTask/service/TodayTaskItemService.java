@@ -52,13 +52,13 @@ public class TodayTaskItemService {
     }
 
     //할 일 전체 개수 조회
-    public int getTaskItemCount(Long memberId, LocalDate date) {
+    public Long getTaskItemCount(Long memberId, LocalDate date) {
         LocalDate taskDate = (date != null) ? date : LocalDate.now();
         return todayTaskItemRepository.countByMemberIdAndTaskDate(memberId, taskDate);
     }
 
     //완료된 할 일 개수 조회
-    public int getCompletedTaskItemCount(Long memberId, LocalDate date) {
+    public Long getCompletedTaskItemCount(Long memberId, LocalDate date) {
         LocalDate taskDate = (date != null) ? date : LocalDate.now();
         return todayTaskItemRepository.countByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, taskDate, true);
     }

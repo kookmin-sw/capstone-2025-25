@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TodayTaskItemRepository extends JpaRepository<TodayTaskItem, Long> {
     List<TodayTaskItem> findByMemberIdAndTaskDate(Long memberId, LocalDate taskDate);
-    int countByMemberIdAndTaskDate(Long memberId, LocalDate taskDate);
-    int countByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(Long memberId, LocalDate taskDate, boolean isCompleted);
+    Long countByMemberIdAndTaskDate(Long memberId, LocalDate taskDate);
+    Long countByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(Long memberId, LocalDate taskDate, boolean isCompleted);
     Optional<TodayTaskItem> findByIdAndMemberId(Long id, Long memberId);
     List<TodayTaskItem> findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(Long memberId, LocalDate taskDate, boolean isCompleted);
 }
