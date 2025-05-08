@@ -1,6 +1,7 @@
 package capstone.backend.domain.bubble.service;
 
 
+import capstone.backend.domain.bubble.dto.request.BubbleUpdateRequest;
 import capstone.backend.domain.bubble.dto.request.ConfirmBubbleRequest;
 import capstone.backend.domain.bubble.dto.response.BubbleDTO;
 import capstone.backend.domain.bubble.entity.Bubble;
@@ -8,6 +9,7 @@ import capstone.backend.domain.bubble.exception.BubbleNotFoundException;
 import capstone.backend.domain.bubble.repository.BubbleRepository;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
 import capstone.backend.domain.eisenhower.service.EisenhowerItemService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -56,5 +58,12 @@ public class BubbleService {
     public void deleteBubble(Long memberId, Long bubbleId) {
         Bubble bubble = bubbleRepository.findByMemberIdAndId(memberId, bubbleId).orElseThrow(BubbleNotFoundException::new);
         bubbleRepository.delete(bubble);
+    }
+
+    @Transactional
+    public void updateBubble(Long memberId, Long id, @Valid BubbleUpdateRequest request) {
+        Bubble bubble = bubbleRepository.findByMemberIdAndId(memberId, id)
+                .orElseThrow(BubbleNotFoundException::new);
+        bubble.update(request.title());
     }
 }

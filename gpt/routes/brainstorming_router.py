@@ -13,7 +13,7 @@ router = APIRouter(tags=["Brainstorming"])
 gpt_service = GPTService(api_key=OPENAI_API_KEY)
 
 
-@router.post("/extract/chucks", response_model=BrainStormingResponse)
+@router.post("/extract/chunks", response_model=BrainStormingResponse)
 @safe_gpt_handler
 async def extract_chucks(request: BrainStormingRequest):
     user_prompt = load_prompt_template("prompts/brainstorming/extract_chucks_prompt.txt", {
