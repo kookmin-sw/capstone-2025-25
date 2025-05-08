@@ -14,6 +14,8 @@ export default function TodayMainDashborad() {
   const { todayTodoCount } = useGetTodayTodoCount();
   const { todayTodoCompletedCount } = useGetTodayTodoCompletedCount();
 
+  console.log(todayTodoCount, todayTodoCompletedCount);
+
   return (
     <div className="flex flex-col lg:flex-row w-full">
       <div className="w-full lg:w-1/2 bg-white rounded-lg p-4 mr-4">
@@ -39,14 +41,11 @@ export default function TodayMainDashborad() {
           {year}년 {month}월 {date}일
         </div>
 
-        {todayTodoCount && todayTodoCompletedCount && (
-          <TodayCompleteChart
-            totalCount={todayTodoCount}
-            completedCount={todayTodoCompletedCount}
-          />
-        )}
+        <TodayCompleteChart
+          totalCount={todayTodoCount ?? 0}
+          completedCount={todayTodoCompletedCount ?? 0}
+        />
 
-        {/* 할 일 목록 */}
         <TodayList />
       </div>
 
