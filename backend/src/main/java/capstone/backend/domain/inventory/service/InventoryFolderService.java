@@ -37,4 +37,17 @@ public class InventoryFolderService {
             .map(InventoryFolderResponse::from)
             .toList();
     }
+
+    //폴더 수정
+    @Transactional
+    public InventoryFolderResponse updateInventoryFolder(Long memberId, Long folderId,
+        InventoryFolderCreateRequest request){
+
+        InventoryFolder inventoryFolder = inventoryFolderRepository.findByIdAndMemberId(folderId, memberId)
+            .orElseThrow(() -> new FolderNotFoundException());
+
+        inventoryFolder.updateName(request.name());
+
+        return InventoryFolderResponse.from(inventoryFolder);
+    }
 }

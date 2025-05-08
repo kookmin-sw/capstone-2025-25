@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InventoryFolderRepository extends JpaRepository<InventoryFolder, Long> {
     Optional<List<InventoryFolder>> findAllByMemberId(Long memberId);
+    Optional<InventoryFolder> findByIdAndMemberId(Long id, Long memberId);
 }

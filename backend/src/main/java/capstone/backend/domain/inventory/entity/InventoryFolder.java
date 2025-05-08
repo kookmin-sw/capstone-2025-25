@@ -35,4 +35,8 @@ public class InventoryFolder {
             .name(inventoryFolderCreateRequest.name())
             .build();
     }
+
+    public void updateName(String name){
+        this.name = name;
+    }
 }
