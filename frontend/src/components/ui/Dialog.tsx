@@ -61,8 +61,8 @@ function DialogContent({
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="ring-offset-background absolute top-4 right-4 rounded-full opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 cursor-pointer active:bg-[#E5E5E5] focus:outline-none focus:ring-0 focus:ring-offset-0 p-1">
-          <XIcon />
+        <DialogPrimitive.Close className="ring-offset-background absolute top-4 right-4 rounded-full opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none cursor-pointer active:bg-[#E5E5E5] focus:outline-none focus:ring-0 focus:ring-offset-0 w-10 h-10 bg-blue-2 flex items-center justify-center">
+          <XIcon className="size-4" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
@@ -74,7 +74,10 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn('flex flex-col gap-2 text-center sm:text-left', className)}
+      className={cn(
+        'flex items-center gap-2 text-center sm:text-left',
+        className,
+      )}
       {...props}
     />
   );
@@ -100,7 +103,7 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn('text-[28px] leading-none font-semibold', className)}
+      className={cn('text-[24px] leading-none font-semibold', className)}
       {...props}
     />
   );
@@ -113,7 +116,10 @@ function DialogDescription({
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
-      className={cn('text-muted-foreground text-[16px] leading-[140%] font-normal text-[#6E726E]', className)}
+      className={cn(
+        'text-muted-foreground text-[16px] leading-[140%] font-normal text-[#6E726E]',
+        className,
+      )}
       {...props}
     />
   );

@@ -1,6 +1,5 @@
 package capstone.backend.domain.eisenhower.dto.request;
 
-import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.eisenhower.entity.EisenhowerQuadrant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -14,8 +13,6 @@ public record EisenhowerItemFilterRequest(
 
         @Schema(description = "카테고리 ID 필터")
         Long categoryId,
-
-        TaskType type,
 
         EisenhowerQuadrant quadrant
 ) {

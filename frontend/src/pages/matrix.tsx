@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { CompletedView } from '@/components/eisenhower/view/CompletedView.tsx';
-import { TaskDetailSidebar } from '@/components/eisenhower/TaskDetailSidebar';
 import { FilterBar } from '@/components/eisenhower/FilterBar';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
@@ -11,7 +10,6 @@ import { useCategoryStore } from '@/store/useCategoryStore';
 import { Toaster } from 'sonner';
 import type { Task, TaskSections } from '@/types/task';
 import { PriorityView } from '@/components/eisenhower/view/PriorityView';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,11 +21,9 @@ import useMatrixStore from '@/store/matrixStore';
 
 export default function MatrixPage() {
   const {
-    selectedType,
     selectedCategory,
     startDate,
     endDate,
-    setSelectedType,
     setSelectedCategory,
     setDateRange,
   } = useTaskFilters();
@@ -36,15 +32,12 @@ export default function MatrixPage() {
   const [activeTab, setActiveTab] = useState<'all' | 'completed'>('all');
 
   const { allTasks, addTask, reorderTasks } = useMatrixStore();
-
   const { categories } = useCategoryStore();
-  const { activeTask, sensors, handleDragStart, handleDragEnd } = useTaskDnD();
+  const { sensors, handleDragStart, handleDragEnd } = useTaskDnD();
 
   const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
 
-  const handleTaskClick = (task: Task) => {
-    setActiveTaskId(task.id);
-  };
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   const completedTasks = useMemo(
     () => allTasks.filter((task) => task.isCompleted),
@@ -65,6 +58,12 @@ export default function MatrixPage() {
     }),
     [uncompletedTasks],
   );
+
+  const handleTaskClick = (task: Task) => {
+    setActiveTask(task);
+    setActiveTaskId(task.id);
+  };
+
   useEffect(() => {
     if (!location.pathname.includes('/matrix')) {
       setActiveTaskId(null);
@@ -99,9 +98,7 @@ export default function MatrixPage() {
                   <DropdownMenuItem
                     onClick={() => setActiveTab('all')}
                     className={
-                      activeTab === 'all'
-                        ? 'bg-muted font-semibold cursor-pointer'
-                        : 'cursor-pointer'
+                      activeTab === 'all' ? 'bg-muted font-semibold' : ''
                     }
                   >
                     모든 일정
@@ -109,9 +106,7 @@ export default function MatrixPage() {
                   <DropdownMenuItem
                     onClick={() => setActiveTab('completed')}
                     className={
-                      activeTab === 'completed'
-                        ? 'bg-muted font-semibold cursor-pointer'
-                        : 'cursor-pointer'
+                      activeTab === 'completed' ? 'bg-muted font-semibold' : ''
                     }
                   >
                     완료된 일정
@@ -126,13 +121,13 @@ export default function MatrixPage() {
                 >
                   <TabsList>
                     <TabsTrigger value="matrix">
-                      <div className="flex items-center gap-2 cursor-pointer">
+                      <div className="flex items-center gap-2">
                         <Grid2X2 />
                         <p>매트릭스</p>
                       </div>
                     </TabsTrigger>
                     <TabsTrigger value="board">
-                      <div className="flex items-center gap-2 cursor-pointer">
+                      <div className="flex items-center gap-2">
                         <Kanban />
                         보드
                       </div>
@@ -141,6 +136,7 @@ export default function MatrixPage() {
                 </Tabs>
               )}
             </div>
+
             <div className="text-4 text-[#6E726E]">
               {activeTab === 'completed'
                 ? '완료된 일정을 확인하고, 필요하면 다시 실행할 수 있어요!'
@@ -150,11 +146,9 @@ export default function MatrixPage() {
 
           <div className="mb-6">
             <FilterBar
-              selectedType={selectedType}
               selectedCategory={selectedCategory}
               startDate={startDate}
               endDate={endDate}
-              onTypeChange={setSelectedType}
               onCategoryChange={setSelectedCategory}
               onDateChange={setDateRange}
             />
@@ -163,12 +157,10 @@ export default function MatrixPage() {
           {activeTab === 'all' ? (
             <PriorityView
               tasks={tasksByQuadrant}
-              selectedType={selectedType}
               selectedCategory={selectedCategory}
               startDate={startDate}
               endDate={endDate}
               viewMode={view}
-              onTaskClick={(task) => handleTaskClick(task)}
               onReorderTask={(sectionId, newTasks) =>
                 reorderTasks(sectionId, newTasks)
               }
@@ -177,18 +169,14 @@ export default function MatrixPage() {
           ) : (
             <CompletedView
               tasks={completedTasks}
-              selectedType={selectedType}
               selectedCategory={selectedCategory}
               startDate={startDate}
               endDate={endDate}
-              onTaskClick={(task) => handleTaskClick(task)}
+              onTaskClick={handleTaskClick}
               onCategoryChange={setSelectedCategory}
               onDateChange={setDateRange}
             />
           )}
-
-          <TaskDetailSidebar categories={categories} />
-
           <DragOverlay>
             {activeTask && (
               <DragOverlayCard task={activeTask} categories={categories} />

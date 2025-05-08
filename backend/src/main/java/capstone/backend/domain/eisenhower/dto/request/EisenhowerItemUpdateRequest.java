@@ -2,16 +2,12 @@ package capstone.backend.domain.eisenhower.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
-import capstone.backend.domain.common.entity.TaskType;
 import java.time.LocalDate;
 
 public record EisenhowerItemUpdateRequest(
         @Size(max = 20, message = "제목은 최대 20자까지 입력 가능합니다.")
         @Schema(description = "할 일 제목", example = "운동하기")
         String title,
-
-        @Schema(description = "작업 타입", example = "TODO")
-        TaskType type,
 
         @Schema(description = "카테고리 ID (null이면 변경 없음)", example = "3")
         Long categoryId,

@@ -1,8 +1,6 @@
-import { TaskType } from '@/types/commonTypes';
 import { useState } from 'react';
 
 export function useTaskFilters() {
-  const [selectedType, setSelectedType] = useState<TaskType>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [startDate, setStartDate] = useState<Date>(new Date(Date.now()));
   const [endDate, setEndDate] = useState<Date>(() => {
@@ -17,8 +15,6 @@ export function useTaskFilters() {
   };
 
   return {
-    selectedType,
-    setSelectedType,
     selectedCategory,
     setSelectedCategory,
     startDate,

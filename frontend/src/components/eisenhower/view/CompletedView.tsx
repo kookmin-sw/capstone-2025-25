@@ -2,11 +2,9 @@ import type { Task } from '@/types/task.ts';
 import { TaskCard } from '../card/TaskCard.tsx';
 import { getCategoryNameById } from '@/utils/category';
 import { useCategoryStore } from '@/store/useCategoryStore';
-import { ActualTaskType, TaskType } from '@/types/commonTypes.ts';
 
 interface CompletedScheduleViewProps {
   tasks: Task[];
-  selectedType: ActualTaskType | TaskType;
   selectedCategory: string;
   startDate: Date;
   endDate: Date;
@@ -17,15 +15,12 @@ interface CompletedScheduleViewProps {
 
 export function CompletedView({
   tasks,
-  selectedType,
   selectedCategory,
   onTaskClick,
 }: CompletedScheduleViewProps) {
   const { categories } = useCategoryStore();
 
   const filteredTasks = tasks.filter((task) => {
-    if (selectedType !== 'ALL' && task.type !== selectedType) return false;
-
     const categoryName = getCategoryNameById(task.category_id, categories);
     if (selectedCategory !== 'all' && categoryName !== selectedCategory)
       return false;

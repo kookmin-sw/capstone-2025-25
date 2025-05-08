@@ -1,6 +1,5 @@
 package capstone.backend.domain.eisenhower.dto.response;
 
-import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.entity.EisenhowerQuadrant;
 import java.time.LocalDate;
@@ -13,13 +12,10 @@ public record EisenhowerItemResponse(
         String memo,
         Long category_id,
         EisenhowerQuadrant quadrant,
-        TaskType type,
         LocalDate dueDate,
         Long order,
         Boolean isCompleted,
-        LocalDateTime createdAt,
-        Long mindMapId,
-        Long pomodoroId
+        LocalDateTime createdAt
 ) {
     public static EisenhowerItemResponse from(EisenhowerItem item) {
         return new EisenhowerItemResponse(
@@ -28,13 +24,10 @@ public record EisenhowerItemResponse(
                 item.getMemo(),
                 item.getCategory() != null ? item.getCategory().getId() : null,
                 item.getQuadrant(),
-                item.getType(),
                 item.getDueDate(),
                 item.getOrder(),
                 item.getIsCompleted(),
-                item.getCreatedAt(),
-                item.getMindMap() != null ? item.getMindMap().getId() : null,
-                item.getPomodoro() != null ? item.getPomodoro().getId() : null
+                item.getCreatedAt()
         );
     }
 
