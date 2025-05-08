@@ -15,6 +15,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,5 +64,16 @@ public class InventoryItemController {
     ){
         InventoryItemDetailResponse response = inventoryItemService.getInventoryDetail(folderId, inventoryId, user.getMemberId());
         return ApiResponse.ok(response);
+    }
+
+    @Operation(summary = "보관함 아이템 삭제", description = "보관함 아이템 삭제")
+    @DeleteMapping("/{inventoryId}")
+    public ApiResponse<Void> deleteInventoryItem(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @Parameter(name = "inventoryId", description = "삭제할 아이템 ID", example = "1", required = true)
+        @PathVariable Long inventoryId
+    ){
+        inventoryItemService.deleteInventoryItem(inventoryId, user.getMemberId());
+        return ApiResponse.ok();
     }
 }

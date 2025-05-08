@@ -3,6 +3,7 @@ package capstone.backend.domain.inventory.service;
 import capstone.backend.domain.inventory.entity.InventoryFolder;
 import capstone.backend.domain.inventory.entity.InventoryItem;
 import capstone.backend.domain.inventory.exception.FolderNotFoundException;
+import capstone.backend.domain.inventory.exception.InventoryItemNotFoundException;
 import capstone.backend.domain.inventory.repository.InventoryFolderRepository;
 import capstone.backend.domain.inventory.repository.InventoryItemRepository;
 import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
@@ -45,6 +46,15 @@ public class InventoryItemService {
     //보관함 아이템 상세 조회
     public InventoryItemDetailResponse getInventoryDetail(Long folderId, Long inventoryId, Long memberId){
         return inventoryItemRepository.findByMemberIdAndFolderIdAndId(memberId, folderId, inventoryId);
+    }
+
+    //보관함 아이템 삭제
+    @Transactional
+    public void deleteInventoryItem(Long inventoryId, Long memberId){
+        InventoryItem item = inventoryItemRepository.findByIdAndMemberId(inventoryId, memberId)
+            .orElseThrow(InventoryItemNotFoundException::new);
+
+        inventoryItemRepository.delete(item);
     }
 
 }
