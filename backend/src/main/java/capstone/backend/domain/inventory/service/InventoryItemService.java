@@ -7,8 +7,10 @@ import capstone.backend.domain.inventory.exception.InventoryItemNotFoundExceptio
 import capstone.backend.domain.inventory.repository.InventoryFolderRepository;
 import capstone.backend.domain.inventory.repository.InventoryItemRepository;
 import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
+import capstone.backend.domain.inventory.request.InventoryItemUpdateRequest;
 import capstone.backend.domain.inventory.response.InventoryItemDetailResponse;
 import capstone.backend.domain.inventory.response.InventoryItemResponse;
+import capstone.backend.domain.inventory.response.InventoryItemUpdateResponse;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
@@ -57,4 +59,14 @@ public class InventoryItemService {
         inventoryItemRepository.delete(item);
     }
 
+    //보관함 아이템 수정
+    @Transactional
+    public InventoryItemUpdateResponse updateInventoryItem(Long inventoryId, Long memberId, InventoryItemUpdateRequest request){
+        InventoryItem item = inventoryItemRepository.findByIdAndMemberId(inventoryId, memberId)
+            .orElseThrow(InventoryItemNotFoundException::new);
+
+        item.update(request.title(), request.memo());
+        inventoryItemRepository.save(item);
+        return InventoryItemUpdateResponse.from(item);
+    }
 }

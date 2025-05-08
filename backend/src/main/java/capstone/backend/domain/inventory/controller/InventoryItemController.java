@@ -1,8 +1,10 @@
 package capstone.backend.domain.inventory.controller;
 
 import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
+import capstone.backend.domain.inventory.request.InventoryItemUpdateRequest;
 import capstone.backend.domain.inventory.response.InventoryItemDetailResponse;
 import capstone.backend.domain.inventory.response.InventoryItemResponse;
+import capstone.backend.domain.inventory.response.InventoryItemUpdateResponse;
 import capstone.backend.domain.inventory.service.InventoryItemService;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,5 +76,16 @@ public class InventoryItemController {
     ){
         inventoryItemService.deleteInventoryItem(inventoryId, user.getMemberId());
         return ApiResponse.ok();
+    }
+
+    @Operation(summary = "보관함 아이템 수정", description = "보관함 아이템 수정")
+    @PatchMapping("/{inventoryId}")
+    public ApiResponse<InventoryItemUpdateResponse> deleteInventoryItem(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @Parameter(name = "inventoryId", description = "수정할 아이템 ID", example = "1", required = true)
+        @PathVariable Long inventoryId,
+        @RequestBody InventoryItemUpdateRequest request
+    ){
+        return ApiResponse.ok(inventoryItemService.updateInventoryItem(inventoryId, user.getMemberId(), request));
     }
 }
