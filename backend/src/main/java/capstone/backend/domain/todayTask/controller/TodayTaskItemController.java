@@ -36,4 +36,15 @@ public class TodayTaskItemController {
         List<TodayTaskItemResponse> response = todayTaskItemService.addTaskItem(user.getMemberId(), request);
         return ApiResponse.ok(response);
     }
+
+    @Operation(summary = "오늘의 할 일 조회", description = "오늘의 할 일 조회. 날짜 디폴트 값은 오늘 날짜(2025-05-07)")
+    @GetMapping
+    public ApiResponse<List<TodayTaskItemResponse>> getTodayTasks(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @RequestParam(value = "date", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ){
+        List<TodayTaskItemResponse> response = todayTaskItemService.getTodayTasks(user.getMemberId(), date);
+        return ApiResponse.ok(response);
+    }
 }

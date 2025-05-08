@@ -41,4 +41,12 @@ public class TodayTaskItemService {
             })
             .toList();
     }
+
+    //오늘의 할 일 조회
+    public List<TodayTaskItemResponse> getTodayTasks(Long memberId, LocalDate date) {
+        LocalDate taskDate = (date != null) ? date : LocalDate.now();
+        return todayTaskItemRepository.findByMemberIdAndTaskDate(memberId, taskDate).stream()
+            .map(TodayTaskItemResponse::from)
+            .toList();
+    }
 }
