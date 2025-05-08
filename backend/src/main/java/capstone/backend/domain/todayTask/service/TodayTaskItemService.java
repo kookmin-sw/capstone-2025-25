@@ -86,8 +86,7 @@ public class TodayTaskItemService {
         TodayTaskItem todayTaskItem = todayTaskItemRepository.findByIdAndMemberId(taskId, memberId)
             .orElseThrow(TodayTaskNotFoundException::new);
 
-        LocalDate today = LocalDate.now();
-        todayTaskItem.updateTaskDate(today);
+        todayTaskItem.updateTaskDate(LocalDate.now());
 
         todayTaskItemRepository.save(todayTaskItem);
         return TodayTaskItemResponse.from(todayTaskItem);
@@ -99,8 +98,7 @@ public class TodayTaskItemService {
         TodayTaskItem todayTaskItem = todayTaskItemRepository.findByIdAndMemberId(taskId, memberId)
             .orElseThrow(TodayTaskNotFoundException::new);
 
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        todayTaskItem.updateTaskDate(yesterday);
+        todayTaskItem.updateTaskDate(LocalDate.now().minusDays(1));
 
         todayTaskItemRepository.save(todayTaskItem);
         return TodayTaskItemResponse.from(todayTaskItem);
