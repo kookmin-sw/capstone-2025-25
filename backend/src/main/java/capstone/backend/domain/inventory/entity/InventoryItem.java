@@ -35,7 +35,7 @@ public class InventoryItem {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "folder_id")
     private InventoryFolder folder;
 
@@ -48,8 +48,7 @@ public class InventoryItem {
     @CreatedDate
     private LocalDate createdAt;
 
-    public static InventoryItem from(InventoryItemCreateRequest request, Member member,
-                                    InventoryFolder folder, String title, String memo, LocalDateTime createdAt) {
+    public static InventoryItem from(InventoryItemCreateRequest request, InventoryFolder folder, Member member) {
         return InventoryItem.builder()
             .member(member)
             .folder(folder)
