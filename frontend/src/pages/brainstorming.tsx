@@ -1,0 +1,292 @@
+import { useState, useRef, useEffect } from 'react';
+import BubbleImg from '../assets/bubble.png';
+import Arrow from '@/assets/arrow_top.svg';
+import { BubbleType, BubbleNodeType } from '@/types/brainstorming';
+import { useIsMobile } from '@/hooks/use-mobile.ts';
+import clsx from 'clsx';
+import Bubble from '@/components/ui/brainstorming/Bubble';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+
+export default function Brainstorming() {
+  const isMobile = useIsMobile();
+  const containerRef = useRef(null);
+  const scrollRef = useRef(null);
+  const [data, setData] = useState<BubbleType[]>([
+    { bubbleId: 0, text: 'Bubble1' },
+    { bubbleId: 1, text: 'Bubble2Bubble2' },
+    {
+      bubbleId: 2,
+      text: 'Bubble3Bubble3Bubble3',
+    },
+    { bubbleId: 2, text: 'Bubble4Bubble4Bubble4Bubble4' },
+  ]);
+  const [bubbles, setBubbles] = useState<BubbleNodeType[]>([]);
+  const [inputText, setInputText] = useState('');
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const bubblesRef = useRef<BubbleNodeType[]>([]);
+
+  useEffect(() => {
+    bubblesRef.current = bubbles;
+  }, [bubbles]);
+
+  // textarea 높이
+  const textareaRef = useRef(null);
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [inputText, isMobile]);
+
+  // 버블 배치
+  const placeBubbles = (data) => {
+    const defaultBubbles: BubbleNodeType[] = [];
+
+    for (const item of data) {
+      const radius = getRadiusForText(item.text);
+      const position = getPosition(radius, defaultBubbles);
+
+      defaultBubbles.push({
+        id: item.bubbleId,
+        text: item.text,
+        radius: radius,
+        x: (position.x / containerRef.current.offsetWidth) * 100,
+        y: (position.y / containerRef.current.offsetHeight) * 100,
+      });
+    }
+
+    setBubbles(defaultBubbles);
+  };
+
+  // 기존 데이터로 화면에 버블 배치
+  useEffect(() => {
+    placeBubbles(data);
+  }, []);
+
+  // 화면 리사이즈 시 버블 위치 재계산
+  useEffect(() => {
+    const handleResize = () => {
+      placeBubbles(bubblesRef.current); // 최신 버블 배열로 재배치
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [data]);
+
+  const getRadiusForText = (text: string) => {
+    const length = text.length;
+    if (length <= 10) return 60;
+    if (length <= 20) return 80;
+    if (length <= 40) return 100;
+    return 120;
+  };
+
+  const getPosition = (
+    radius: number,
+    currentBubbles: BubbleNodeType[] = [],
+  ) => {
+    const step = 15;
+    const jitter = 10;
+    const diameter = radius * 2;
+    const candidates = [];
+
+    const container = containerRef.current;
+    if (!container) return { x: 0, y: 0 };
+
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
+
+    const centerX = containerWidth / 2;
+
+    // x좌표 후보
+    const candidateX = [];
+    for (let offset = 0; offset + diameter <= centerX; offset += step) {
+      if (centerX + offset + diameter <= containerWidth)
+        candidateX.push(centerX + offset);
+      if (centerX - offset - diameter >= 0)
+        candidateX.push(centerX - offset - diameter);
+    }
+
+    // 각 x 좌표에 대해 가능한 y 위치 계산
+    for (const x of candidateX) {
+      let y = 0;
+
+      for (const bubble of currentBubbles) {
+        const dx = x - (bubble.x * containerWidth) / 100;
+        const distanceX = Math.abs(dx);
+
+        if (distanceX < radius + bubble.radius) {
+          const bottomY =
+            (bubble.y * containerHeight) / 100 + bubble.radius * 2 + 5;
+          if (bottomY > y) y = bottomY;
+        }
+      }
+
+      if (y + diameter <= containerHeight - 50) {
+        const randomOffset = Math.floor(Math.random() * jitter) - jitter / 2;
+        candidates.push({ x: x + randomOffset, y });
+      }
+    }
+
+    // 후보가 없으면 아래로 쌓기
+    if (candidates.length === 0) {
+      const maxBottom = currentBubbles.reduce((max, b) => {
+        const bottom = (b.y * container.offsetHeight) / 100 + b.radius * 2;
+        return Math.max(max, bottom);
+      }, 0);
+      return {
+        x: centerX,
+        y: maxBottom,
+      };
+    }
+
+    // 가장 위에 붙일 수 있는 후보 위치들 중 하나 선택
+    const minY = Math.min(...candidates.map((c) => c.y));
+    const filtered = candidates.filter((c) => c.y === minY);
+    const chosen = filtered[Math.floor(Math.random() * filtered.length)];
+
+    return chosen;
+  };
+
+  // 버블 추가
+  const addBubble = () => {
+    if (!inputText.trim()) return;
+
+    const radius = getRadiusForText(inputText);
+    const position = getPosition(radius, bubbles);
+
+    const container = containerRef.current;
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
+
+    if (position.y + radius * 2 > containerHeight) {
+      alert('더 이상 추가할 공간이 없습니다!');
+      return;
+    }
+
+    const newBubble = {
+      id: bubbles.length,
+      x: (position.x / containerWidth) * 100,
+      y: (position.y / containerHeight) * 100,
+      radius: radius,
+      text: inputText.trim(),
+    };
+
+    setBubbles((prev) => [...prev, newBubble]);
+    setInputText('');
+  };
+
+  const deleteBubble = () => {};
+  const moveToMindmap = () => {};
+  const createMatrix = () => {};
+  const saveBubble = () => {};
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full h-full bg-blue-2 py-[50px]"
+    >
+      <div
+        ref={scrollRef}
+        className="absolute top-0 left-0 w-full h-full overflow-auto"
+      >
+        {bubbles.map((bubble, index) => (
+          <Popover key={index}>
+            <PopoverTrigger asChild>
+              <Bubble
+                x={bubble.x}
+                y={bubble.y}
+                radius={bubble.radius}
+                text={bubble.text}
+                containerWidth={containerRef.current?.offsetWidth || 0}
+                containerHeight={containerRef.current?.offsetHeight || 0}
+                onClick={() => console.log('버블 클릭됨')} // 클릭 시 Popover 트리거
+              />
+            </PopoverTrigger>
+            <PopoverContent className="w-[112px] h-[180px] z-50 p-0">
+              <div className="w-[112px] h-[180px] flex flex-col gap-[3px] justify-center items-center">
+                <button
+                  className={clsx(
+                    'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
+                    isMobile ? 'text-[14px]' : 'text-[16px]',
+                  )}
+                  onClick={deleteBubble}
+                >
+                  삭제
+                </button>
+                <div className="w-[80px] h-[1px] bg-gray-200"></div>
+                <button
+                  className={clsx(
+                    'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
+                    isMobile ? 'text-[14px]' : 'text-[16px]',
+                  )}
+                  onClick={moveToMindmap}
+                >
+                  마인드맵
+                </button>
+                <div className="w-[80px] h-[1px] bg-gray-200"></div>
+                <button
+                  className={clsx(
+                    'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
+                    isMobile ? 'text-[14px]' : 'text-[16px]',
+                  )}
+                  onClick={createMatrix}
+                >
+                  매트릭스
+                </button>
+                <div className="w-[80px] h-[1px] bg-gray-200"></div>
+                <button
+                  className={clsx(
+                    'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
+                    isMobile ? 'text-[14px]' : 'text-[16px]',
+                  )}
+                  onClick={saveBubble}
+                >
+                  보관
+                </button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        ))}
+      </div>
+
+      <div
+        className={clsx(
+          'absolute bottom-[74px] left-1/2 transform -translate-x-1/2 bg-white/60 rounded-[48px] flex w-10/12 max-w-[704px] justify-center h-fit items-center',
+          isMobile ? 'gap-2 px-4 py-3' : 'gap-4 px-3 py-3',
+        )}
+      >
+        <textarea
+          ref={textareaRef}
+          value={inputText}
+          rows={1}
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="버블에 넣을 텍스트를 입력하세요"
+          className={clsx(
+            'border py-[7px] overflow-hidden resize-none border-blue rounded-[48px] px-6 font-semibold font-pretendard flex-1 outline-none placeholder:text-gray-400 break-words whitespace-pre-wrap h-auto',
+            isMobile ? 'text-[12px] ' : 'text-[16px] ',
+          )}
+        />
+        {isMobile ? (
+          <button
+            onClick={addBubble}
+            className="rounded-[48px] w-[30px] h-[30px] bg-blue text-white font-semibold text-[16px] font-pretendard flex justify-center items-center cursor-pointer"
+          >
+            <img src={Arrow} />
+          </button>
+        ) : (
+          <button
+            onClick={addBubble}
+            className="rounded-[48px] p-2 h-[40px] bg-blue text-white font-semibold text-[16px] font-pretendard w-[140px] cursor-pointer"
+          >
+            버블 추가하기
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
