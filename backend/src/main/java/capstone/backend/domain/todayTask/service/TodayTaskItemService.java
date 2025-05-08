@@ -75,7 +75,7 @@ public class TodayTaskItemService {
 
     //어제 할 일 중 완료되지 않은 할 일 가져오기
     public Page<TodayTaskItemResponse> getYesterdayTaskItems(Long memberId, Pageable pageable){
-        Page<TodayTaskItem> yesterdayTasks = todayTaskItemRepository.findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, getDate(), false, pageable);
+        Page<TodayTaskItem> yesterdayTasks = todayTaskItemRepository.findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, getDate().minusDays(1), false, pageable);
 
         return yesterdayTasks.map(TodayTaskItemResponse::from);
     }
