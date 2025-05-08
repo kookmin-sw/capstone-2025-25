@@ -16,7 +16,7 @@ export default function DefaultLayout() {
         </div>
 
         <div className="flex-1">
-          <main className="bg-white rounded-lg shadow-md p-6 min-h-[calc(100vh-88px-64px)] lg:min-h-[calc(100vh-88px)] mb-16 lg:mb-0">
+          <main className="min-h-[calc(100vh-88px-64px)] lg:min-h-[calc(100vh-88px)] mb-16 lg:mb-0">
             <Outlet />
           </main>
         </div>

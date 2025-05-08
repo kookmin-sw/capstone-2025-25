@@ -2,7 +2,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  LabelList,
   XAxis,
   ResponsiveContainer,
 } from 'recharts';
@@ -14,7 +13,6 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-// 일별 데이터 (일요일부터 토요일까지)
 const todoChartData = [
   { day: 'SUN', completed: 5 },
   { day: 'MON', completed: 1 },
@@ -38,9 +36,11 @@ type DailyCompletionChartProps = {
 
 export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
   return (
-    <Card className="h-full w-full">
+    <Card className="h-full w-full border-none shadow-none">
       <CardHeader className="pb-2">
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="text-gray-scale-700 text-[20px] font-semibold">
+          {title}
+        </CardTitle>
       </CardHeader>
       <CardContent className="h-[calc(100%-5rem)]">
         <div className="h-full w-full">
@@ -61,6 +61,7 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
                   tickLine={false}
                   tickMargin={10}
                   axisLine={false}
+                  className="font-bold text-gray-scale-700"
                 />
                 <ChartTooltip
                   cursor={false}
@@ -71,12 +72,12 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
                   fill="var(--color-completed)"
                   radius={8}
                 >
-                  <LabelList
+                  {/* <LabelList
                     position="top"
                     offset={12}
                     className="fill-foreground"
                     fontSize={12}
-                  />
+                  /> */}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
