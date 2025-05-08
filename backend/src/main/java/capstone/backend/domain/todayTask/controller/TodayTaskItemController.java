@@ -36,37 +36,31 @@ public class TodayTaskItemController {
         return ApiResponse.ok(response);
     }
 
-    @Operation(summary = "오늘의 할 일 조회", description = "오늘의 할 일 조회. 날짜 디폴트 값은 오늘 날짜(yyyy-mm-dd)")
+    @Operation(summary = "오늘의 할 일 조회", description = "오늘의 할 일 조회")
     @GetMapping
     public ApiResponse<Page<TodayTaskItemResponse>> getTodayTasks(
         @AuthenticationPrincipal CustomOAuth2User user,
-        @RequestParam(value = "date", required = false)
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
         @ParameterObject Pageable pageable
     ){
-        Page<TodayTaskItemResponse> response = todayTaskItemService.getTodayTasks(user.getMemberId(), date, pageable);
+        Page<TodayTaskItemResponse> response = todayTaskItemService.getTodayTasks(user.getMemberId(), pageable);
         return ApiResponse.ok(response);
     }
 
-    @Operation(summary = "특정 날짜의 할 일 개수 조회", description = "특정 날짜에 등록된 할 일 개수를 반환. 날짜가 없으면 오늘 날짜 기준으로 조회합니다.")
+    @Operation(summary = "오늘 날짜의 할 일 개수 조회", description = "오늘 날짜에 등록된 할 일 개수를 반환")
     @GetMapping("/count")
     public ApiResponse<Long> getTaskItemCount(
-        @AuthenticationPrincipal CustomOAuth2User user,
-        @RequestParam(value = "date", required = false)
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+        @AuthenticationPrincipal CustomOAuth2User user
     ) {
-        long count = todayTaskItemService.getTaskItemCount(user.getMemberId(), date);
+        long count = todayTaskItemService.getTaskItemCount(user.getMemberId());
         return ApiResponse.ok(count);
     }
 
-    @Operation(summary = "완료된 할 일 개수 조회", description = "특정 날짜에 완료된 할 일 개수를 반환. 날짜가 없으면 오늘 날짜 기준으로 조회합니다.")
+    @Operation(summary = "완료된 할 일 개수 조회")
     @GetMapping("/completed")
     public ApiResponse<Long> getCompletedTaskItemCount(
-        @AuthenticationPrincipal CustomOAuth2User user,
-        @RequestParam(value = "date", required = false)
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+        @AuthenticationPrincipal CustomOAuth2User user
     ) {
-        long completedCount = todayTaskItemService.getCompletedTaskItemCount(user.getMemberId(), date);
+        long completedCount = todayTaskItemService.getCompletedTaskItemCount(user.getMemberId());
         return ApiResponse.ok(completedCount);
     }
 

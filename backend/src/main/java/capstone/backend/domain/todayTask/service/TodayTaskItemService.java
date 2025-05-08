@@ -49,23 +49,19 @@ public class TodayTaskItemService {
     }
 
     //오늘의 할 일 조회
-    public Page<TodayTaskItemResponse> getTodayTasks(Long memberId, LocalDate date, Pageable pageable) {
-       LocalDate taskDate = getDate(date);
-
-        Page<TodayTaskItem> todayTasks = todayTaskItemRepository.findByMemberIdAndTaskDate(memberId, taskDate, pageable);
+    public Page<TodayTaskItemResponse> getTodayTasks(Long memberId, Pageable pageable) {
+        Page<TodayTaskItem> todayTasks = todayTaskItemRepository.findByMemberIdAndTaskDate(memberId, getDate(), pageable);
         return todayTasks.map(TodayTaskItemResponse::from);
     }
 
     //할 일 전체 개수 조회
-    public Long getTaskItemCount(Long memberId, LocalDate date) {
-        LocalDate taskDate = (date != null) ? date : LocalDate.now();
-        return todayTaskItemRepository.countByMemberIdAndTaskDate(memberId, taskDate);
+    public Long getTaskItemCount(Long memberId) {
+        return todayTaskItemRepository.countByMemberIdAndTaskDate(memberId, getDate());
     }
 
     //완료된 할 일 개수 조회
-    public Long getCompletedTaskItemCount(Long memberId, LocalDate date) {
-        LocalDate taskDate = (date != null) ? date : LocalDate.now();
-        return todayTaskItemRepository.countByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, taskDate, true);
+    public Long getCompletedTaskItemCount(Long memberId) {
+        return todayTaskItemRepository.countByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, getDate(), true);
     }
 
     //오늘의 할 일에서 삭제
@@ -79,9 +75,7 @@ public class TodayTaskItemService {
 
     //어제 할 일 중 완료되지 않은 할 일 가져오기
     public Page<TodayTaskItemResponse> getYesterdayTaskItems(Long memberId, Pageable pageable){
-        LocalDate taskDate = getDate(LocalDate.now());
-
-        Page<TodayTaskItem> yesterdayTasks = todayTaskItemRepository.findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, taskDate, false, pageable);
+        Page<TodayTaskItem> yesterdayTasks = todayTaskItemRepository.findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, getDate(), false, pageable);
 
         return yesterdayTasks.map(TodayTaskItemResponse::from);
     }
@@ -113,9 +107,7 @@ public class TodayTaskItemService {
     }
 
     //오전 6시 기준 날짜 가져오기
-    private LocalDate getDate(LocalDate date) {
-        if(date != null) return date;
-
+    private LocalDate getDate() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime sixAM = now.with(LocalTime.of(6, 0));
         return now.isBefore(sixAM) ? LocalDate.now().minusDays(1) : LocalDate.now();
