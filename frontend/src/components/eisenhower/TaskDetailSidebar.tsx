@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Sheet, SheetContent, SheetTitle } from '@/components/ui/Sheet.tsx';
+import { Sheet, SheetContent } from '@/components/ui/Sheet.tsx';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { CalendarIcon, ChevronsLeft, PencilLine, Tag } from 'lucide-react';
 import { format } from 'date-fns';
@@ -8,14 +8,7 @@ import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicke
 import { SECTION_TITLES } from '@/constants/eisenhower';
 import type { Category } from '@/types/category';
 import { Button } from '@/components/ui/button.tsx';
-import { useNavigate } from 'react-router';
-import {
-  useCreateLinkedMindMap,
-  useDisconnectMindmapTask,
-} from '@/store/mindmapListStore';
 import useMatrixStore from '@/store/matrixStore';
-import AddPomodoro from '@/components/ui/Modal/AddPomodoro';
-import { useDisconnectPomodoroTask } from '@/store/pomodoro';
 import DeleteTaskModal from '@/components/ui/Modal/DeleteTask';
 import { BadgeSelector } from '@/components/common/BadgeSelector';
 
@@ -27,20 +20,11 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
   const [editedTask, setEditedTask] = useState<Task | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  const navigate = useNavigate();
-  const createLinkedMindMap = useCreateLinkedMindMap();
-
   const activeTaskId = useMatrixStore((state) => state.activeTaskId);
   const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
   const getActiveTask = useMatrixStore((state) => state.getActiveTask);
   const saveTask = useMatrixStore((state) => state.saveTask);
   const deleteTask = useMatrixStore((state) => state.deleteTask);
-  const connectTaskToMindMap = useMatrixStore(
-    (state) => state.connectTaskToMindMap,
-  );
-
-  const disconnectMindMapTask = useDisconnectMindmapTask();
-  const disconnectPomodoroTask = useDisconnectPomodoroTask();
 
   const task = useMemo(() => {
     return getActiveTask();
@@ -75,37 +59,13 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
 
   const handleDeleteTask = () => {
     if (task) {
-      const { mindMapId, pomodoroId } = deleteTask(task.id);
-
-      if (mindMapId) {
-        disconnectMindMapTask(mindMapId);
-      }
-
-      // 포모도로 연결 해제
-      if (pomodoroId) {
-        disconnectPomodoroTask(pomodoroId as number);
-      }
+      deleteTask(task.id);
     }
   };
 
   const selectedCategory = categories.find(
     (cat) => cat.id === task?.category_id,
   );
-
-  const handleCreateMindmap = () => {
-    if (!task) return;
-
-    setActiveTaskId(null);
-
-    if (task.mindMapId) {
-      navigate(`/mindmap/${task.mindMapId}`);
-      return;
-    }
-
-    const newMindmapId = createLinkedMindMap(task);
-    connectTaskToMindMap(task.id, newMindmapId);
-    navigate(`/mindmap/${newMindmapId}`);
-  };
 
   const categoryOptions = categories.map((cat) => ({
     label: cat.title,
@@ -129,9 +89,6 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
           >
             <ChevronsLeft />
           </button>
-          <SheetTitle className="text-base font-semibold">
-            {isEditing ? '일정 편집' : '일정 상세'}
-          </SheetTitle>
           {isEditing ? (
             <div className="w-9 h-9"></div>
           ) : (
@@ -262,37 +219,7 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
               </Button>
             </>
           ) : (
-            <>
-              <Button
-                variant="outline"
-                onClick={handleCreateMindmap}
-                className="flex-1 border rounded py-2"
-              >
-                {task.mindMapId ? '마인드맵 이동하기' : '마인드맵 그리기'}
-              </Button>
-
-              {task.pomodoroId ? (
-                <Button
-                  variant="primary"
-                  className="flex-1 bg-black text-white rounded py-2"
-                  onClick={() => navigate(`/pomodoro/${task.pomodoroId}`)}
-                >
-                  뽀모도로 실행하기
-                </Button>
-              ) : (
-                <AddPomodoro
-                  trigger={
-                    <Button
-                      variant="primary"
-                      className="flex-1 bg-black text-white rounded py-2"
-                    >
-                      뽀모도로 실행하기
-                    </Button>
-                  }
-                  linkedEisenhower={task}
-                />
-              )}
-            </>
+            <></>
           )}
         </div>
       </SheetContent>
