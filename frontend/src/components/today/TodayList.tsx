@@ -55,7 +55,10 @@ export default function TodayList() {
                 )}
               >
                 <Check
-                  className={cn(todo.isCompleted ? 'text-white' : 'text-blue')}
+                  className={cn(
+                    'cursor-pointer',
+                    todo.isCompleted ? 'text-white' : 'text-blue',
+                  )}
                   size={24}
                 />
               </div>
@@ -72,7 +75,7 @@ export default function TodayList() {
             </div>
             <div className="flex justify-end mt-2">
               <button
-                className="px-4 py-2 rounded-full bg-white text-blue font-semibold"
+                className="px-4 py-2 rounded-full bg-white text-blue font-semibold cursor-pointer"
                 onClick={() => handleMoveToToday(todo.id)}
                 disabled={isPending}
               >
@@ -101,7 +104,10 @@ export default function TodayList() {
                 )}
               >
                 <Check
-                  className={cn(todo.isCompleted ? 'text-white' : 'text-blue')}
+                  className={cn(
+                    'cursor-pointer',
+                    todo.isCompleted ? 'text-white' : 'text-blue',
+                  )}
                   size={24}
                 />
               </div>
@@ -119,7 +125,7 @@ export default function TodayList() {
             <div className="flex justify-end mt-2">
               <button
                 className={cn(
-                  'px-4 py-2 rounded-full text-white font-semibold',
+                  'px-4 py-2 rounded-full text-white font-semibold cursor-pointer',
                   todo.isCompleted
                     ? 'bg-gray-scale-400 text-gray-scale-200'
                     : 'bg-blue text-white',
