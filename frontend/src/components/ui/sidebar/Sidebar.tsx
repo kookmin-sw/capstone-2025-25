@@ -104,7 +104,7 @@ export default function Sidebar() {
           handleItemClick(item.route);
         }}
         className={cn(
-          'flex items-center w-full gap-3 text-left transition-all duration-200 rounded-md cursor-pointer relative p-2',
+          'flex items-center w-full gap-3 text-left transition-all duration-200 rounded-md cursor-pointer relative p-2 cursor-pointer',
           active
             ? 'bg-[#F0F0F5] text-[#525463]'
             : 'hover:bg-gray-50 text-[#CDCED6]',
