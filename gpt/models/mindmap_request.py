@@ -1,5 +1,4 @@
-from datetime import date
-from typing import Optional, List, Literal
+from typing import Optional, List
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -43,9 +42,3 @@ class ConvertToTaskRequest(BaseModel):
         if not self.selectedNodes:
             raise ValueError("selectedNodes는 최소 1개 이상의 항목을 포함해야 합니다.")
         return self
-
-
-class EisenhowerTaskRequest(BaseModel):
-    title: str = Field(..., description="작업 제목")
-    currentQuadrant: Literal["Q1", "Q2", "Q3", "Q4"] = Field(..., description="사용자가 선택한 현재 사분면")
-    dueDate: Optional[date] = Field(None, description="마감일 (선택 사항)")
