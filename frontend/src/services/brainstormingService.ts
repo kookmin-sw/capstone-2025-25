@@ -11,14 +11,14 @@ export const brainstormingService = {
   },
 
   createBubble: async (data: CreateBubbleReq): Promise<CreatedBubblesRes> => {
-    const response = await gptClient.post<CreatedBubblesRes>(
+    const response = await apiClient.post<CreatedBubblesRes>(
       ENDPOINTS.BRAINSTORMING.CREATE_BUBBLE,
       data,
     );
     return response.data;
   },
   deleteBubble: async (id: number): Promise<void> => {
-    const response = await gptClient.delete(
+    const response = await apiClient.delete(
       ENDPOINTS.BRAINSTORMING.DELETE_BUBBLE(id),
     );
     return response.data;

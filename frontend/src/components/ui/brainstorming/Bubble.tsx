@@ -44,8 +44,8 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
         ref={ref}
         onClick={onClick}
         className={clsx(
-          'absolute rounded-full flex items-center justify-center text-center text-white',
-          'focus:outline-none float',
+          'absolute rounded-full flex items-center justify-center text-center ',
+          'focus:outline-none float ',
         )}
         style={style}
       >

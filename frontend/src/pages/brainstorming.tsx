@@ -30,7 +30,7 @@ export default function Brainstorming() {
   useEffect(() => {
     if (bubbleList && Array.isArray(bubbleList) && bubbleList.length > 0) {
       console.log(bubbleList);
-      setBubbles(bubbleList); // 새로 고친 버블 리스트로 상태 업데이트
+      placeBubbles(bubbleList);
     }
   }, [bubbleList]);
 
@@ -145,7 +145,7 @@ export default function Brainstorming() {
         return Math.max(max, bottom);
       }, 0);
       return {
-        x: centerX,
+        x: Math.random() * (containerWidth - radius * 2),
         y: maxBottom,
       };
     }
@@ -162,43 +162,59 @@ export default function Brainstorming() {
   const addBubble = () => {
     if (!inputText.trim()) return;
 
-    const radius = getRadiusForText(inputText);
-    const position = getPosition(radius, bubbles);
-
     const container = containerRef.current;
     const containerWidth = container.offsetWidth;
     const containerHeight = container.offsetHeight;
 
-    if (position.y + radius * 2 > containerHeight) {
-      alert('더 이상 추가할 공간이 없습니다!');
-      return;
-    }
-
-    const newBubble = {
-      id: bubbles.length,
-      x: (position.x / containerWidth) * 100,
-      y: (position.y / containerHeight) * 100,
-      radius: radius,
-      title: inputText.trim(),
-    };
-
-    setBubbles((prev) => [...prev, newBubble]);
-    setInputText('');
     createBubbleMutation(
-      { text: inputText },
-      {
-        onSuccess: () => {
-          setBubbles((prev) => prev.filter((bubble) => bubble.id !== id));
-        },
+        { text: inputText },
+        {
+          onSuccess: (data) => {
+            const newBubbles: BubbleNodeType[] = [];
 
-        onError: (error) => {
-          console.error('마인드맵 삭제 중 오류가 발생했습니다: ', error);
-        },
-      },
+            for (const bubble of data.content) {
+              const radius = getRadiusForText(bubble.title);
+
+              // 기존 + 지금 추가 중인 버블 포함해서 자리 찾기
+              let position = getPosition(radius, [...bubbles, ...newBubbles]);
+
+              // 자리 못 찾으면 아래로 이어 붙이기
+              if (!position) {
+                const maxBottom = [...bubbles, ...newBubbles].reduce((max, b) => {
+                  const bottom = (b.y * containerHeight) / 100 + b.radius * 2;
+                  return Math.max(max, bottom);
+                }, 0);
+
+                position = {
+                  x: Math.random() * (containerWidth - radius * 2) ,
+                  y: maxBottom + 10, // 10px 정도 여백
+                };
+              }
+
+              newBubbles.push({
+                id: bubble.bubbleId,
+                title: bubble.title,
+                x: (position.x / containerWidth) * 100,
+                y: (position.y / containerHeight) * 100,
+                radius,
+              });
+            }
+
+            setBubbles((prev) => [...prev, ...newBubbles]);
+            setInputText('');
+          },
+
+          onError: (error) => {
+            console.error('마인드맵 생성 중 오류가 발생했습니다: ', error);
+          },
+        }
     );
   };
 
+
+
   const deleteBubble = (id: number) => {
+    console.log(id)
     deleteBrainstormingMutation(id, {
       onSuccess: () => {
         setBubbles((prev) => prev.filter((bubble) => bubble.id !== id));
@@ -216,7 +232,7 @@ export default function Brainstorming() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full bg-blue-2 py-[50px]"
+      className="relative w-full bg-blue-2 py-[50px] h-[708px]"
     >
       <div
         ref={scrollRef}
@@ -238,11 +254,11 @@ export default function Brainstorming() {
             <PopoverContent className="w-[112px] h-[180px] z-50 p-0">
               <div className="w-[112px] h-[180px] flex flex-col gap-[3px] justify-center items-center">
                 <button
+                    onClick={()=>{deleteBubble(bubble.id)}}
                   className={clsx(
                     'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
                     isMobile ? 'text-[14px]' : 'text-[16px]',
                   )}
-                  onClick={deleteBubble(bubble.id)}
                 >
                   삭제
                 </button>
