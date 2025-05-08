@@ -12,16 +12,12 @@ import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,12 +38,13 @@ public class TodayTaskItemController {
 
     @Operation(summary = "오늘의 할 일 조회", description = "오늘의 할 일 조회. 날짜 디폴트 값은 오늘 날짜(yyyy-mm-dd)")
     @GetMapping
-    public ApiResponse<List<TodayTaskItemResponse>> getTodayTasks(
+    public ApiResponse<Page<TodayTaskItemResponse>> getTodayTasks(
         @AuthenticationPrincipal CustomOAuth2User user,
         @RequestParam(value = "date", required = false)
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+        @ParameterObject Pageable pageable
     ){
-        List<TodayTaskItemResponse> response = todayTaskItemService.getTodayTasks(user.getMemberId(), date);
+        Page<TodayTaskItemResponse> response = todayTaskItemService.getTodayTasks(user.getMemberId(), date, pageable);
         return ApiResponse.ok(response);
     }
 

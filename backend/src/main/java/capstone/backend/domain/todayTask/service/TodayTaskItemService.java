@@ -14,6 +14,8 @@ import capstone.backend.domain.todayTask.repository.TodayTaskItemRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,11 +46,10 @@ public class TodayTaskItemService {
     }
 
     //오늘의 할 일 조회
-    public List<TodayTaskItemResponse> getTodayTasks(Long memberId, LocalDate date) {
+    public Page<TodayTaskItemResponse> getTodayTasks(Long memberId, LocalDate date, Pageable pageable) {
         LocalDate taskDate = (date != null) ? date : LocalDate.now();
-        return todayTaskItemRepository.findByMemberIdAndTaskDate(memberId, taskDate).stream()
-            .map(TodayTaskItemResponse::from)
-            .toList();
+        Page<TodayTaskItem> todayTasks = todayTaskItemRepository.findByMemberIdAndTaskDate(memberId, taskDate, pageable);
+        return todayTasks.map(TodayTaskItemResponse::from);
     }
 
     //할 일 전체 개수 조회
