@@ -6,13 +6,7 @@ import {
   XAxis,
   ResponsiveContainer,
 } from 'recharts';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
@@ -33,7 +27,7 @@ const todoChartData = [
 
 const todoChartConfig = {
   completed: {
-    label: '완료된 할 일',
+    label: '완료한 일',
     color: '#7098ff',
   },
 } satisfies ChartConfig;
@@ -47,7 +41,6 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
     <Card className="h-full w-full">
       <CardHeader className="pb-2">
         <CardTitle>{title}</CardTitle>
-        <CardDescription>요일별 완료된 작업 통계</CardDescription>
       </CardHeader>
       <CardContent className="h-[calc(100%-5rem)]">
         <div className="h-full w-full">

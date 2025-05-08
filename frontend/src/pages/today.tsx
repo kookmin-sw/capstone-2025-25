@@ -49,8 +49,11 @@ export default function TodayListPage() {
   const month = today.getMonth() + 1;
   const date = today.getDate();
   return (
-    <div className="p-10">
-      {/* 응원의 한 마디 */}
+    <div className="p-5 md:p-7 lg:p-10">
+      <h1 className="block lg:hidden text-[28px] text-[#525463] font-semibold mb-6">
+        오늘의 할 일
+      </h1>
+
       <div className="w-full border border-gray-scale-300 px-6 py-4 rounded-lg text-[20px] font-semibold">
         응원의 한 마디~
       </div>
@@ -76,8 +79,8 @@ export default function TodayListPage() {
       </div>
 
       {/* 메인 대시보드 레이아웃 */}
-      <div className="flex flex-row w-full">
-        <div className="w-1/2 border border-gray-scale-300 rounded-lg p-4 mr-4">
+      <div className="flex flex-col lg:flex-row w-full">
+        <div className="w-full lg:w-1/2 border border-gray-scale-300 rounded-lg p-4 mr-4">
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-4">
               <h3 className="text-[20px] font-semibold">오늘의 할 일</h3>
@@ -106,7 +109,7 @@ export default function TodayListPage() {
                   'p-3 px-6 py-5 rounded-lg',
                   todo.reminder
                     ? 'bg-gray-scale-200'
-                    : 'bg-white border border-gray-scale-300',
+                    : 'bg-white border border-blue',
                 )}
               >
                 <div className="flex items-center justify-between mb-2">
@@ -125,7 +128,7 @@ export default function TodayListPage() {
                       className={cn(
                         todo.completed ? 'text-white' : 'text-blue',
                       )}
-                      size={todo.reminder ? 20 : 24}
+                      size={24}
                     />
                   </div>
                 </div>
@@ -168,7 +171,7 @@ export default function TodayListPage() {
           </div>
         </div>
 
-        <div className="w-1/2 flex flex-col gap-4 h-[600px]">
+        <div className="w-full lg:w-1/2 flex flex-col gap-4 h-auto md:h-[740px] lg:h-[600px] mt-4 lg:mt-0">
           <div className="h-1/2 w-full">
             <DailyCompletionChart title="할 일 완료 분석" />
           </div>
