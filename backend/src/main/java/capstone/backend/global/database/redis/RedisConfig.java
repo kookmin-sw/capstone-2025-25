@@ -1,4 +1,4 @@
-package capstone.backend.global.redis;
+package capstone.backend.global.database.redis;
 
 import capstone.backend.global.property.RedisProperty;
 import lombok.RequiredArgsConstructor;

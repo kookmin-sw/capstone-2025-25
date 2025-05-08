@@ -1,4 +1,4 @@
-package capstone.backend.global.querydsl.config;
+package capstone.backend.global.database.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
