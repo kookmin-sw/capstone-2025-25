@@ -53,9 +53,9 @@ export function TodayCompleteChart() {
         </div>
 
         <div className="w-full md:w-7/12 lg:w-1/3 md:pl-2">
-          <p className="text-[14px] text-gray-scale-900 mb-4 md:mb-6">
+          <p className="text-[14px] text-gray-scale-900 font-semibold mb-4 md:mb-6">
             오늘의 할 일의 <br />
-            <span className="text-[32px] bg-[#CEFF73] text-blue rounded-full p-1">
+            <span className="text-[32px] bg-neon-green text-blue rounded-full px-2 py-1">
               67%
             </span>
             를 완료했어요!

@@ -3,6 +3,25 @@ import { TodayCompleteChart } from '@/components/ui/chart/TodayCompleteChart';
 import { cn } from '@/lib/utils';
 import { Calendar, Check, Plus } from 'lucide-react';
 
+function formatDateToEnglish(dateString: string): string {
+  if (typeof dateString === 'string') {
+    const [yearStr, monthStr, dayStr] = dateString.split('-');
+
+    const year = parseInt(yearStr, 10);
+    const month = parseInt(monthStr, 10);
+    const day = parseInt(dayStr, 10);
+
+    const date = new Date(year, month - 1, day);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }
+
+  return '';
+}
+
 // 리마인더 데이터
 const REMIND_DATA = [
   {
@@ -48,20 +67,21 @@ export default function TodayListPage() {
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
   const date = today.getDate();
+
   return (
-    <div className="p-5 md:p-7 lg:p-10">
+    <div className="px-6">
       <h1 className="block lg:hidden text-[28px] text-[#525463] font-semibold mb-6">
         오늘의 할 일
       </h1>
 
-      <div className="w-full border border-gray-scale-300 px-6 py-4 rounded-lg text-[20px] font-semibold">
-        응원의 한 마디~
+      <div className="w-full bg-white px-6 py-4 rounded-xl text-[20px] text-[#525463] font-semibold">
+        조금씩, 하지만 꾸준히! 오늘도 파이팅 ✨
       </div>
 
       {/* 리마인더 섹션 */}
-      <div className="mt-4 mb-4">
+      <div className="mt-6 mb-4">
         <div className="flex items-center gap-4 mb-2">
-          <h4 className="text-[20px] font-semibold">리마인더</h4>
+          <h4 className="text-[20px] text-[#525463] font-semibold">리마인더</h4>
           <p className="text-blue text-[14px]">더보기 {'>'} </p>
         </div>
 
@@ -69,9 +89,11 @@ export default function TodayListPage() {
           {REMIND_DATA.map((remind) => (
             <li
               key={remind.id}
-              className="border border-gray-scale-300 rounded-lg px-6 py-4 min-w-64"
+              className="bg-white rounded-lg px-6 py-4 min-w-64"
             >
-              <h3 className="text-[20px] font-semibold">{remind.title}</h3>
+              <h3 className="text-[20px] text-[#525463] font-semibold">
+                {remind.title}
+              </h3>
               <p className="text-gray-scale-500">{remind.content}</p>
             </li>
           ))}
@@ -80,10 +102,12 @@ export default function TodayListPage() {
 
       {/* 메인 대시보드 레이아웃 */}
       <div className="flex flex-col lg:flex-row w-full">
-        <div className="w-full lg:w-1/2 border border-gray-scale-300 rounded-lg p-4 mr-4">
+        <div className="w-full lg:w-1/2 bg-white rounded-lg p-4 mr-4">
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-4">
-              <h3 className="text-[20px] font-semibold">오늘의 할 일</h3>
+              <h3 className="text-[20px] text-[#525463] font-semibold">
+                오늘의 할 일
+              </h3>
               <p className="text-[#525463]">{REMIND_DATA.length}</p>
             </div>
             <div className="flex items-center gap-2">
@@ -94,6 +118,7 @@ export default function TodayListPage() {
             </div>
           </div>
 
+          {/* 여기서 날짜 포맷은 한글 형식으로 유지 */}
           <div className="my-8 font-semibold">
             {year}년 {month}월 {date}일
           </div>
@@ -113,7 +138,7 @@ export default function TodayListPage() {
                 )}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="px-3 py-[6px] bg-blue-2 inline-block rounded-full">
+                  <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
                     {todo.category}
                   </div>
                   <div
@@ -132,13 +157,18 @@ export default function TodayListPage() {
                     />
                   </div>
                 </div>
-                <p className="text-[20px] font-semibold">{todo.title}</p>
+                <p className="text-[20px] text-[#525463] font-semibold">
+                  {todo.title}
+                </p>
                 <p className="text-[14px] text-[#858899] my-2">
                   {todo.content}
                 </p>
+                {/* 여기서 날짜 포맷만 영문 형식(Jan 20, 2022)으로 변경 */}
                 <div className="flex items-center gap-2">
                   <Calendar size={24} />
-                  <p className="text-[14px] text-[#525463]">{todo.dueDate}</p>
+                  <p className="text-[14px] text-[#525463]">
+                    {formatDateToEnglish(todo.dueDate)}
+                  </p>
                 </div>
                 <div className="flex justify-end mt-2">
                   {todo.reminder ? (
@@ -150,7 +180,7 @@ export default function TodayListPage() {
                       className={cn(
                         'px-4 py-2 rounded-full  text-white font-semibold',
                         todo.completed
-                          ? 'bg-blue-2 text-blue'
+                          ? 'bg-gray-scale-400 text-gray-scale-200'
                           : 'bg-blue text-white',
                       )}
                     >
