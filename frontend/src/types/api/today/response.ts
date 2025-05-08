@@ -7,3 +7,9 @@ export type GetTodayTodoListRes = {
     content: todayTodo[];
   };
 };
+
+export type GetTodayCountRes = {
+  statusCode: number;
+  error: string | null;
+  content: number;
+};

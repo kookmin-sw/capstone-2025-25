@@ -21,5 +21,6 @@ export const ENDPOINTS = {
   TODAY: {
     LIST: '/api/v2/today-task',
     YESTERDAY_LIST: '/api/v2/today-task/yesterday',
+    GET_COUNT: '/api/v2/today-task/count',
   },
 };

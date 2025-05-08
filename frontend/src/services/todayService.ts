@@ -1,6 +1,9 @@
 import { apiClient } from '@/api/client';
 import { ENDPOINTS } from '@/api/endpoints';
-import { GetTodayTodoListRes } from '@/types/api/today/response';
+import {
+  GetTodayCountRes,
+  GetTodayTodoListRes,
+} from '@/types/api/today/response';
 
 export const todayService = {
   getList: async (): Promise<GetTodayTodoListRes> => {
@@ -13,6 +16,13 @@ export const todayService = {
   getYesterdayList: async (): Promise<GetTodayTodoListRes> => {
     const response = await apiClient.get<GetTodayTodoListRes>(
       ENDPOINTS.TODAY.YESTERDAY_LIST,
+    );
+    return response.data;
+  },
+
+  getCount: async (): Promise<GetTodayCountRes> => {
+    const response = await apiClient.get<GetTodayCountRes>(
+      ENDPOINTS.TODAY.GET_COUNT,
     );
     return response.data;
   },
