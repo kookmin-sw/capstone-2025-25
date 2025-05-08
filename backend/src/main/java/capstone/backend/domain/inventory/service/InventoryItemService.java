@@ -6,6 +6,7 @@ import capstone.backend.domain.inventory.exception.FolderNotFoundException;
 import capstone.backend.domain.inventory.repository.InventoryFolderRepository;
 import capstone.backend.domain.inventory.repository.InventoryItemRepository;
 import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
+import capstone.backend.domain.inventory.response.InventoryItemDetailResponse;
 import capstone.backend.domain.inventory.response.InventoryItemResponse;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
@@ -37,8 +38,13 @@ public class InventoryItemService {
     }
 
     //보관함 조회
-    @Transactional
     public Page<InventoryItemResponse> getInventoryItems(Long folderId, Long memberId, Pageable pageable) {
         return inventoryItemRepository.findByMemberIdAndFolderId(memberId, folderId, pageable);
     }
+
+    //보관함 아이템 상세 조회
+    public InventoryItemDetailResponse getInventoryDetail(Long folderId, Long inventoryId, Long memberId){
+        return inventoryItemRepository.findByMemberIdAndFolderIdAndId(memberId, folderId, inventoryId);
+    }
+
 }
