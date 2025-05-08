@@ -1,6 +1,10 @@
-import { apiClient, gptClient } from '@/api/client';
+import { apiClient } from '@/api/client';
 import { ENDPOINTS } from '@/api/endpoints';
-import { CreateBubbleReq, CreatedBubblesRes } from '@/types/api/brainstorming';
+import {
+  CreateBubbleReq,
+  CreatedBubblesRes,
+  PatchBubbleReq,
+} from '@/types/api/brainstorming';
 
 export const brainstormingService = {
   getBubbles: async (): Promise<CreatedBubblesRes> => {
@@ -20,6 +24,13 @@ export const brainstormingService = {
   deleteBubble: async (id: number): Promise<void> => {
     const response = await apiClient.delete(
       ENDPOINTS.BRAINSTORMING.DELETE_BUBBLE(id),
+    );
+    return response.data;
+  },
+  patchBubble: async (id: number, data: PatchBubbleReq): Promise<void> => {
+    const response = await apiClient.patch(
+      ENDPOINTS.BRAINSTORMING.PATCH_BUBBLE(id),
+      data,
     );
     return response.data;
   },
