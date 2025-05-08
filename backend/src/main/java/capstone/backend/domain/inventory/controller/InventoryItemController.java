@@ -63,7 +63,7 @@ public class InventoryItemController {
         @Parameter(name = "itemId", description = "상세 조회 할 아이템 ID", example = "1", required = true)
         @PathVariable Long itemId
     ){
-        InventoryItemDetailResponse response = inventoryItemService.getInventoryDetail(itemId, user.getMemberId());
+        InventoryItemDetailResponse response = inventoryItemService.getInventoryItemDetail(itemId, user.getMemberId());
         return ApiResponse.ok(response);
     }
 

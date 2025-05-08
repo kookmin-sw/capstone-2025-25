@@ -46,7 +46,7 @@ public class InventoryItemService {
     }
 
     //보관함 아이템 상세 조회
-    public InventoryItemDetailResponse getInventoryDetail(Long itemId, Long memberId){
+    public InventoryItemDetailResponse getInventoryItemDetail(Long itemId, Long memberId){
         return inventoryItemRepository.findByMemberIdAndId(memberId, itemId);
     }
 
