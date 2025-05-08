@@ -29,4 +29,7 @@ public class Bubble {
                 .member(member)
                 .build();
     }
+    public void update(String title) {
+        this.title = title;
+    }
 }
