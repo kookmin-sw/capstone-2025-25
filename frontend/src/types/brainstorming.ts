@@ -1,11 +1,11 @@
 export type BubbleType = {
   bubbleId: number;
-  text: string;
+  title: string;
 };
 
 export type BubbleNodeType = {
   id: number;
-  text: string;
+  title: string;
   radius: number;
   x: number;
   y: number;

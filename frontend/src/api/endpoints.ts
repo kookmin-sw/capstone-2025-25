@@ -10,6 +10,12 @@ export const ENDPOINTS = {
     GET_LIST: '/api/mindmap/list',
     DETAIL: (id: number) => `/api/mindmap/${id}`,
   },
+  BRAINSTORMING: {
+    DELETE_BUBBLE: (id: number) => `/api/v2/bubble/${id}`,
+    GET_BUBBLES: '/api/v2/bubble',
+    CREATE_BUBBLE: '/api/v2/bubble/create',
+    PATCH_BUBBLE: (id: number) => `/api/v2/bubble/${id}`,
+  },
 
   /* 인증 관련 엔드포인트 */
   AUTH: {
@@ -29,5 +35,13 @@ export const ENDPOINTS = {
   /* 카테고리 관련 엔드포인트 */
   CATEGORY: {
     LIST: '/api/v1/eisenhower/category',
+  },
+
+  /* GPT API 관련 엔드포인트 */
+  GPT: {
+    BRAINSTORMING: {
+      ANALYZE: '/api/brainstorming/analyze/chunk',
+      REWRITE: '/api/brainstorming/rewrite/chunk',
+    },
   },
 };

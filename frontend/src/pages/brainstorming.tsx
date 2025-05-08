@@ -10,24 +10,33 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import useGetBubbles from '@/hooks/queries/brainstorming/useGetBubbles.ts';
+import useDeleteBubble from '@/hooks/queries/brainstorming/useDeleteBubble.ts';
+import useCreateBubble from '@/hooks/queries/brainstorming/useCreateBubble.ts';
+import { Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 export default function Brainstorming() {
   const isMobile = useIsMobile();
   const containerRef = useRef(null);
   const scrollRef = useRef(null);
-  const [data, setData] = useState<BubbleType[]>([
-    { bubbleId: 0, text: 'Bubble1' },
-    { bubbleId: 1, text: 'Bubble2Bubble2' },
-    {
-      bubbleId: 2,
-      text: 'Bubble3Bubble3Bubble3',
-    },
-    { bubbleId: 2, text: 'Bubble4Bubble4Bubble4Bubble4' },
-  ]);
+  const { bubbleList } = useGetBubbles();
+  const { deleteBrainstormingMutation } = useDeleteBubble();
+  const { createBubbleMutation, isPending } = useCreateBubble();
   const [bubbles, setBubbles] = useState<BubbleNodeType[]>([]);
   const [inputText, setInputText] = useState('');
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const bubblesRef = useRef<BubbleNodeType[]>([]);
+
+  const navigate = useNavigate();
+
+  // bubbleList가 변경되면 bubbles 상태를 업데이트
+  useEffect(() => {
+    if (bubbleList && Array.isArray(bubbleList) && bubbleList.length > 0) {
+      console.log(bubbleList);
+      placeBubbles(bubbleList);
+    }
+  }, [bubbleList]);
 
   useEffect(() => {
     bubblesRef.current = bubbles;
@@ -48,12 +57,12 @@ export default function Brainstorming() {
     const defaultBubbles: BubbleNodeType[] = [];
 
     for (const item of data) {
-      const radius = getRadiusForText(item.text);
+      const radius = getRadiusForText(item.title);
       const position = getPosition(radius, defaultBubbles);
 
       defaultBubbles.push({
         id: item.bubbleId,
-        text: item.text,
+        title: item.title,
         radius: radius,
         x: (position.x / containerRef.current.offsetWidth) * 100,
         y: (position.y / containerRef.current.offsetHeight) * 100,
@@ -65,7 +74,7 @@ export default function Brainstorming() {
 
   // 기존 데이터로 화면에 버블 배치
   useEffect(() => {
-    placeBubbles(data);
+    placeBubbles(bubbles);
   }, []);
 
   // 화면 리사이즈 시 버블 위치 재계산
@@ -76,10 +85,10 @@ export default function Brainstorming() {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [data]);
+  }, []);
 
-  const getRadiusForText = (text: string) => {
-    const length = text.length;
+  const getRadiusForText = (title: string) => {
+    const length = title.length;
     if (length <= 10) return 60;
     if (length <= 20) return 80;
     if (length <= 40) return 100;
@@ -140,7 +149,7 @@ export default function Brainstorming() {
         return Math.max(max, bottom);
       }, 0);
       return {
-        x: centerX,
+        x: Math.random() * (containerWidth - radius * 2),
         y: maxBottom,
       };
     }
@@ -157,38 +166,80 @@ export default function Brainstorming() {
   const addBubble = () => {
     if (!inputText.trim()) return;
 
-    const radius = getRadiusForText(inputText);
-    const position = getPosition(radius, bubbles);
-
     const container = containerRef.current;
     const containerWidth = container.offsetWidth;
     const containerHeight = container.offsetHeight;
 
-    if (position.y + radius * 2 > containerHeight) {
-      alert('더 이상 추가할 공간이 없습니다!');
-      return;
-    }
+    createBubbleMutation(
+      { text: inputText },
+      {
+        onSuccess: (data) => {
+          const newBubbles: BubbleNodeType[] = [];
 
-    const newBubble = {
-      id: bubbles.length,
-      x: (position.x / containerWidth) * 100,
-      y: (position.y / containerHeight) * 100,
-      radius: radius,
-      text: inputText.trim(),
-    };
+          for (const bubble of data.content) {
+            const radius = getRadiusForText(bubble.title);
 
-    setBubbles((prev) => [...prev, newBubble]);
-    setInputText('');
+            // 기존 + 지금 추가 중인 버블 포함해서 자리 찾기
+            let position = getPosition(radius, [...bubbles, ...newBubbles]);
+
+            // 자리 못 찾으면 아래로 이어 붙이기
+            if (!position) {
+              const maxBottom = [...bubbles, ...newBubbles].reduce((max, b) => {
+                const bottom = (b.y * containerHeight) / 100 + b.radius * 2;
+                return Math.max(max, bottom);
+              }, 0);
+
+              position = {
+                x: Math.random() * (containerWidth - radius * 2),
+                y: maxBottom + 10, // 10px 정도 여백
+              };
+            }
+
+            newBubbles.push({
+              id: bubble.bubbleId,
+              title: bubble.title,
+              x: (position.x / containerWidth) * 100,
+              y: (position.y / containerHeight) * 100,
+              radius,
+            });
+          }
+
+          setBubbles((prev) => [...prev, ...newBubbles]);
+          setInputText('');
+        },
+
+        onError: (error) => {
+          console.error('마인드맵 생성 중 오류가 발생했습니다: ', error);
+        },
+      },
+    );
   };
 
-  const deleteBubble = () => {};
-  const moveToMindmap = () => {};
+  const deleteBubble = (id: number) => {
+    console.log(id);
+    deleteBrainstormingMutation(id, {
+      onSuccess: () => {
+        setBubbles((prev) => prev.filter((bubble) => bubble.id !== id));
+      },
+
+      onError: (error) => {
+        console.error('마인드맵 삭제 중 오류가 발생했습니다: ', error);
+      },
+    });
+  };
+
+  const moveToMindmap = (id: number, title: string) => {
+    const encodedBubbleText = encodeURIComponent(title);
+    navigate(`/mindmap/${id}?text=${encodedBubbleText}`);
+  };
+
   const createMatrix = () => {};
   const saveBubble = () => {};
+
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full bg-blue-2 py-[50px]"
+      className="relative w-full bg-blue-2 py-[50px] h-[708px]"
     >
       <div
         ref={scrollRef}
@@ -201,7 +252,7 @@ export default function Brainstorming() {
                 x={bubble.x}
                 y={bubble.y}
                 radius={bubble.radius}
-                text={bubble.text}
+                title={bubble.title}
                 containerWidth={containerRef.current?.offsetWidth || 0}
                 containerHeight={containerRef.current?.offsetHeight || 0}
                 onClick={() => console.log('버블 클릭됨')} // 클릭 시 Popover 트리거
@@ -210,11 +261,13 @@ export default function Brainstorming() {
             <PopoverContent className="w-[112px] h-[180px] z-50 p-0">
               <div className="w-[112px] h-[180px] flex flex-col gap-[3px] justify-center items-center">
                 <button
+                  onClick={() => {
+                    deleteBubble(bubble.id);
+                  }}
                   className={clsx(
                     'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
                     isMobile ? 'text-[14px]' : 'text-[16px]',
                   )}
-                  onClick={deleteBubble}
                 >
                   삭제
                 </button>
@@ -224,7 +277,9 @@ export default function Brainstorming() {
                     'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
                     isMobile ? 'text-[14px]' : 'text-[16px]',
                   )}
-                  onClick={moveToMindmap}
+                  onClick={() => {
+                    moveToMindmap(bubble.id, bubble.title);
+                  }}
                 >
                   마인드맵
                 </button>
@@ -273,17 +328,29 @@ export default function Brainstorming() {
         />
         {isMobile ? (
           <button
+            disabled={isPending}
             onClick={addBubble}
             className="rounded-[48px] w-[30px] h-[30px] bg-blue text-white font-semibold text-[16px] font-pretendard flex justify-center items-center cursor-pointer"
           >
-            <img src={Arrow} />
+            {isPending ? (
+              <>
+                <Loader2 className=" animate-spin" />
+              </>
+            ) : (
+              <img src={Arrow} />
+            )}
           </button>
         ) : (
           <button
+            disabled={isPending}
             onClick={addBubble}
-            className="rounded-[48px] p-2 h-[40px] bg-blue text-white font-semibold text-[16px] font-pretendard w-[140px] cursor-pointer"
+            className="rounded-[48px] p-2 h-[40px] bg-blue text-white font-semibold text-[16px] font-pretendard w-[140px] cursor-pointer items-center justify-center"
           >
-            버블 추가하기
+            {isPending ? (
+              <Loader2 className="animate-spin mx-12" />
+            ) : (
+              '버블 생성하기'
+            )}
           </button>
         )}
       </div>

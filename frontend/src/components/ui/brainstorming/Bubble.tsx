@@ -6,7 +6,7 @@ interface BubbleProps {
   x: number;
   y: number;
   radius: number;
-  text: string;
+  title: string;
   containerWidth: number;
   containerHeight: number;
   onClick: () => void;
@@ -18,7 +18,7 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
       x,
       y,
       radius,
-      text,
+      title,
       containerWidth,
       containerHeight,
       onClick,
@@ -36,7 +36,7 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
       fontSize: '14px',
       padding: '30px',
       lineHeight: 1.2,
-        cursor: 'pointer',
+      cursor: 'pointer',
     };
 
     return (
@@ -44,12 +44,12 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
         ref={ref}
         onClick={onClick}
         className={clsx(
-          'absolute rounded-full flex items-center justify-center text-center text-white',
-          'focus:outline-none float',
+          'absolute rounded-full flex items-center justify-center text-center ',
+          'focus:outline-none float ',
         )}
         style={style}
       >
-        <p>{text}</p>
+        <p>{title}</p>
       </button>
     );
   },
