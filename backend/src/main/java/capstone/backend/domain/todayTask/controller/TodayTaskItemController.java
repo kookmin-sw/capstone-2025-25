@@ -83,10 +83,11 @@ public class TodayTaskItemController {
 
     @Operation(summary = "어제의 할 일 가져오기", description = "어제 날짜 기준으로 미완료된 할 일을 조회")
     @GetMapping("/yesterday")
-    public ApiResponse<List<TodayTaskItemResponse>> getYesterdayTaskItems(
-        @AuthenticationPrincipal CustomOAuth2User user
+    public ApiResponse<Page<TodayTaskItemResponse>> getYesterdayTaskItems(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @ParameterObject Pageable pageable
     ) {
-        List<TodayTaskItemResponse> response = todayTaskItemService.getYesterdayTaskItems(user.getMemberId());
+        Page<TodayTaskItemResponse> response = todayTaskItemService.getYesterdayTaskItems(user.getMemberId(), pageable);
         return ApiResponse.ok(response);
     }
 

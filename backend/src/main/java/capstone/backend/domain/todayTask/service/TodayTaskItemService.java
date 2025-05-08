@@ -74,14 +74,12 @@ public class TodayTaskItemService {
     }
 
     //어제 할 일 중 완료되지 않은 할 일 가져오기
-    public List<TodayTaskItemResponse> getYesterdayTaskItems(Long memberId){
+    public Page<TodayTaskItemResponse> getYesterdayTaskItems(Long memberId, Pageable pageable){
         LocalDate yesterday = LocalDate.now().minusDays(1);
 
-        List<TodayTaskItem> yesterdayTasks = todayTaskItemRepository.findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, yesterday, false);
+        Page<TodayTaskItem> yesterdayTasks = todayTaskItemRepository.findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, yesterday, false, pageable);
 
-        return yesterdayTasks.stream()
-            .map(TodayTaskItemResponse::from)
-            .toList();
+        return yesterdayTasks.map(TodayTaskItemResponse::from);
     }
 
     //할 일 날짜를 오늘로 변경
