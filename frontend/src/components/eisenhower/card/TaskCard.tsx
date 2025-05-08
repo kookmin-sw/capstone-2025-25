@@ -1,19 +1,21 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Bot, Calendar, Check, GripVertical } from 'lucide-react';
-import { useCategoryStore } from '@/store/useCategoryStore';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { format } from 'date-fns';
 import { MouseEvent } from 'react';
-import useMatrixStore from '@/store/matrixStore';
 import { cn } from '@/lib/utils';
 import { EisenhowerBase } from '@/types/commonTypes';
 import { Task } from '@/types/task.ts';
+import { Category } from '@/types/category.ts';
+import { eisenhowerService } from '@/services/eisenhowerService.ts';
+import { toast } from 'sonner';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
 interface TaskCardProps {
-  task: EisenhowerBase & { category_id?: number | null };
+  task: EisenhowerBase & { categoryId?: number | null };
+  categories: Category[];
   onClick?: () => void;
   layout?: 'matrix' | 'board';
   dragHandle?: 'full';
@@ -24,16 +26,18 @@ interface TaskCardProps {
 
 export function TaskCard({
   task,
+  categories,
   onClick,
   layout = 'matrix',
   dragHandle,
   className,
   variant = 'default',
+  onUpdateTask,
 }: TaskCardProps) {
-  const { id, title, memo, dueDate, category_id } = task;
-  const { categories } = useCategoryStore();
-  const category = category_id
-    ? categories.find((cat) => cat.id === category_id)
+  const { id, title, memo, dueDate, categoryId } = task;
+
+  const category = categoryId
+    ? categories.find((cat) => cat.id === categoryId)
     : null;
 
   const {
@@ -45,8 +49,6 @@ export function TaskCard({
     isDragging,
   } = useSortable({ id, data: { ...task } });
 
-  // const completeTask = useMatrixStore((state) => state.completeTask);
-
   const style = { transform: CSS.Transform.toString(transform), transition };
 
   const handleClick = (e: MouseEvent) => {
@@ -55,17 +57,23 @@ export function TaskCard({
     if (!isDragging && variant === 'default' && onClick) onClick();
   };
 
-  // const handleTaskComplete = () => {
-  //   if (variant === 'default') completeTask(id);
-  // };
+  const handleTaskComplete = async (e: MouseEvent) => {
+    e.stopPropagation();
 
-  const toggleCompleteTask = useMatrixStore(
-    (state) => state.toggleCompleteTask,
-  );
-
-  const handleTaskComplete = () => {
     if (variant === 'default' || variant === 'done') {
-      toggleCompleteTask(id);
+      try {
+        const updated = await eisenhowerService.update(task.id, {
+          isCompleted: !task.isCompleted,
+        });
+
+        onUpdateTask?.({
+          ...task,
+          ...updated.content,
+        });
+        toast.success('할 일을 완료했습니다');
+      } catch (err) {
+        console.error('완료 상태 업데이트 실패:', err);
+      }
     }
   };
 
@@ -94,11 +102,10 @@ export function TaskCard({
           <div className="absolute p-2 top-1 right-1 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <div
               className="text-gray-400 hover:text-gray-600 transition-colors"
-              onClick={(e) => e.stopPropagation()} // 카드 클릭 이벤트 막기
+              onClick={(e) => e.stopPropagation()}
             >
               <Bot />
             </div>
-
             {dragHandle !== 'full' && (
               <div {...listeners} className="cursor-move">
                 <span className="text-xs text-gray-400">
@@ -109,7 +116,7 @@ export function TaskCard({
           </div>
         )}
 
-        {/* 상단 뱃지 */}
+        {/* 상단 카테고리 뱃지 */}
         <div className="flex mb-2 flex-wrap gap-1">
           {category && (
             <CategoryBadge
@@ -145,20 +152,14 @@ export function TaskCard({
 
         {/* 메모 */}
         {memo && (
-          <div className={cn('text-xs mb-2 line-clamp-2 text-gray-700')}>
-            {memo}
-          </div>
+          <div className="text-xs mb-2 line-clamp-2 text-gray-700">{memo}</div>
         )}
 
         {/* 마감일 */}
         {dueDate && (
-          <div
-            className={cn(
-              'text-xs flex items-center mt-auto text-[color:var(--color-primary-100)]',
-            )}
-          >
+          <div className="text-xs flex items-center mt-auto text-[color:var(--color-primary-100)]">
             <Calendar className="w-3 h-3 mr-1" />
-            <span className="text-ceter pt-[2px]">
+            <span className="text-center pt-[2px]">
               {format(new Date(dueDate), 'yyyy.MM.dd')}
             </span>
           </div>

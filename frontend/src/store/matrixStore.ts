@@ -108,7 +108,7 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
       id,
       title,
       memo,
-      category_id: 5,
+      categoryId: 5,
       quadrant,
       dueDate,
       order: get().tasksByQuadrant[quadrant].length,

@@ -16,4 +16,23 @@ export const ENDPOINTS = {
     ACCESS_TOKEN: '/api/auth/token',
     REFRESH_TOKEN: '/api/auth/reissue',
   },
+
+  /* 아이젠하워 작업 관련 엔드포인트 */
+  EISENHOWER: {
+    GET_ALL: '/api/v1/eisenhower', // 아이젠하워 작업 전체 조회
+    GET_ONE: (itemId: number) => `/api/v1/eisenhower/${itemId}`, // 아이젠하워 작업 조회
+    SEARCH: '/api/v1/eisenhower/search', // 아이젠하워 작업 검색
+    CREATE: '/api/v1/eisenhower', // 아이젠하워 작업 생성
+    UPDATE: (itemId: number) => `/api/v1/eisenhower/${itemId}`, // 아이젠하워 작업 수정
+    DELETE: (itemId: number) => `/api/v1/eisenhower/${itemId}`, // 아이젠하워 작업 삭제
+    UPDATE_ORDER: '/api/v1/eisenhower/order', // 아이젠하워 작업들 순서 및 사분면 위치 업데이트
+  },
+
+  /* 아이젠하워 카테고리 관련 엔드포인트 */
+  EISENHOWER_CATEGORY: {
+    GET_ALL: '/api/v1/eisenhower/category', // 카테고리 전체 조회
+    CREATE: '/api/v1/eisenhower/category', // 카테고리 생성
+    UPDATE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 수정
+    DELETE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 삭제
+  },
 };
