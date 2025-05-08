@@ -23,7 +23,7 @@ import java.util.List;
 
 @Tag(name = "마인드맵 V1", description = "Version1. 마인드맵 관련 API")
 @RestController
-@RequestMapping("/api/mindmap/v1")
+@RequestMapping("/api/v1/mindmap")
 @RequiredArgsConstructor
 public class MindMapController {
 
