@@ -201,7 +201,7 @@ export default function Sidebar() {
               </div>
               <button
                 onClick={() => toggleSidebar(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100 mr-4 transition-all"
+                className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100 mr-4 transition-all cursor-pointer"
               >
                 <ChevronLeft size={18} />
               </button>
@@ -209,7 +209,7 @@ export default function Sidebar() {
           ) : (
             <button
               onClick={() => toggleSidebar(true)}
-              className="flex items-center justify-center w-full h-full transition-all"
+              className="flex items-center justify-center w-full h-full transition-all cursor-pointer"
             >
               <div className="w-6 h-6 flex items-center justify-center bg-gray-scale-200 rounded-full">
                 <ChevronRight size={40} className="text-blue" />

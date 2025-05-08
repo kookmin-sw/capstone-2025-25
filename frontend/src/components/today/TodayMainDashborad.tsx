@@ -14,8 +14,6 @@ export default function TodayMainDashborad() {
   const { todayTodoCount } = useGetTodayTodoCount();
   const { todayTodoCompletedCount } = useGetTodayTodoCompletedCount();
 
-  console.log(todayTodoCount, todayTodoCompletedCount);
-
   return (
     <div className="flex flex-col lg:flex-row w-full">
       <div className="w-full lg:w-1/2 bg-white rounded-lg p-4 mr-4">
@@ -30,7 +28,7 @@ export default function TodayMainDashborad() {
           </div>
           <div className="flex items-center gap-2">
             <p className="font-semibold text-[#A9ABB8]">수정하기</p>
-            <button className="p-2 bg-gray-scale-200 rounded-full">
+            <button className="p-2 bg-gray-scale-200 rounded-full cursor-pointer">
               <Plus size={18} className="text-blue" />
             </button>
           </div>
