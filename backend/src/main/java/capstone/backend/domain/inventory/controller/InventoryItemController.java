@@ -57,35 +57,35 @@ public class InventoryItemController {
     }
 
     @Operation(summary = "보관함 아이템 상세 조회", description = "보관함 아이템의 메모 조회")
-    @GetMapping("/item/{inventoryId}")
+    @GetMapping("/item/{itemId}")
     public ApiResponse<InventoryItemDetailResponse> getInventoryItemDetail(
         @AuthenticationPrincipal CustomOAuth2User user,
-        @Parameter(name = "inventoryId", description = "상세 조회 할 아이템 ID", example = "1", required = true)
-        @PathVariable Long inventoryId
+        @Parameter(name = "itemId", description = "상세 조회 할 아이템 ID", example = "1", required = true)
+        @PathVariable Long itemId
     ){
-        InventoryItemDetailResponse response = inventoryItemService.getInventoryDetail(inventoryId, user.getMemberId());
+        InventoryItemDetailResponse response = inventoryItemService.getInventoryDetail(itemId, user.getMemberId());
         return ApiResponse.ok(response);
     }
 
     @Operation(summary = "보관함 아이템 삭제", description = "보관함 아이템 삭제")
-    @DeleteMapping("/item/{inventoryId}")
+    @DeleteMapping("/item/{itemId}")
     public ApiResponse<Void> deleteInventoryItem(
         @AuthenticationPrincipal CustomOAuth2User user,
-        @Parameter(name = "inventoryId", description = "삭제할 아이템 ID", example = "1", required = true)
-        @PathVariable Long inventoryId
+        @Parameter(name = "itemId", description = "삭제할 아이템 ID", example = "1", required = true)
+        @PathVariable Long itemId
     ){
-        inventoryItemService.deleteInventoryItem(inventoryId, user.getMemberId());
+        inventoryItemService.deleteInventoryItem(itemId, user.getMemberId());
         return ApiResponse.ok();
     }
 
     @Operation(summary = "보관함 아이템 수정", description = "보관함 아이템 수정")
-    @PatchMapping("/item/{inventoryId}")
+    @PatchMapping("/item/{itemId}")
     public ApiResponse<InventoryItemUpdateResponse> updateInventoryItem(
         @AuthenticationPrincipal CustomOAuth2User user,
-        @Parameter(name = "inventoryId", description = "수정할 아이템 ID", example = "1", required = true)
-        @PathVariable Long inventoryId,
+        @Parameter(name = "itemId", description = "수정할 아이템 ID", example = "1", required = true)
+        @PathVariable Long itemId,
         @RequestBody InventoryItemUpdateRequest request
     ){
-        return ApiResponse.ok(inventoryItemService.updateInventoryItem(inventoryId, user.getMemberId(), request));
+        return ApiResponse.ok(inventoryItemService.updateInventoryItem(itemId, user.getMemberId(), request));
     }
 }

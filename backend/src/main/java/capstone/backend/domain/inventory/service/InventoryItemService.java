@@ -46,14 +46,14 @@ public class InventoryItemService {
     }
 
     //보관함 아이템 상세 조회
-    public InventoryItemDetailResponse getInventoryDetail(Long inventoryId, Long memberId){
-        return inventoryItemRepository.findByMemberIdAndId(memberId, inventoryId);
+    public InventoryItemDetailResponse getInventoryDetail(Long itemId, Long memberId){
+        return inventoryItemRepository.findByMemberIdAndId(memberId, itemId);
     }
 
     //보관함 아이템 삭제
     @Transactional
-    public void deleteInventoryItem(Long inventoryId, Long memberId){
-        InventoryItem item = inventoryItemRepository.findByIdAndMemberId(inventoryId, memberId)
+    public void deleteInventoryItem(Long itemId, Long memberId){
+        InventoryItem item = inventoryItemRepository.findByIdAndMemberId(itemId, memberId)
             .orElseThrow(InventoryItemNotFoundException::new);
 
         inventoryItemRepository.delete(item);
@@ -61,8 +61,8 @@ public class InventoryItemService {
 
     //보관함 아이템 수정
     @Transactional
-    public InventoryItemUpdateResponse updateInventoryItem(Long inventoryId, Long memberId, InventoryItemUpdateRequest request){
-        InventoryItem item = inventoryItemRepository.findByIdAndMemberId(inventoryId, memberId)
+    public InventoryItemUpdateResponse updateInventoryItem(Long itemId, Long memberId, InventoryItemUpdateRequest request){
+        InventoryItem item = inventoryItemRepository.findByIdAndMemberId(itemId, memberId)
             .orElseThrow(InventoryItemNotFoundException::new);
 
         item.update(request.title(), request.memo());
