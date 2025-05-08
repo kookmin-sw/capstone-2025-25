@@ -92,4 +92,24 @@ public class TodayTaskItemController {
         List<TodayTaskItemResponse> response = todayTaskItemService.getYesterdayTaskItems(user.getMemberId());
         return ApiResponse.ok(response);
     }
+
+    @Operation(summary = "어제 일을 오늘 날짜로 변경", description = "특정 할 일을 오늘 날짜로 변경")
+    @PostMapping("/move-today/{id}")
+    public ApiResponse<TodayTaskItemResponse> updateTaskDateToToday(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @PathVariable("id") Long taskId
+    ){
+        TodayTaskItemResponse response = todayTaskItemService.updateTaskDateToToday(user.getMemberId(), taskId);
+        return ApiResponse.ok(response);
+    }
+
+    @Operation(summary = "오늘의 할 일을 어제 날짜로 변경", description = "특정 할 일을 어제 날짜로 이동. 테스트 할 때만 사용")
+    @PostMapping("/yesterday/{id}")
+    public ApiResponse<TodayTaskItemResponse> updateTaskDateToYesterday(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @PathVariable("id") Long taskId
+    ) {
+        TodayTaskItemResponse response = todayTaskItemService.updateTaskDateToYesterday(user.getMemberId(), taskId);
+        return ApiResponse.ok(response);
+    }
 }

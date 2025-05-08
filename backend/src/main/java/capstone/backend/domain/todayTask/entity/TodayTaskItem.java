@@ -46,4 +46,8 @@ public class TodayTaskItem {
             .taskDate(LocalDate.now())
             .build();
     }
+
+    public void updateTaskDate(LocalDate newTaskDate) {
+        this.taskDate = newTaskDate;
+    }
 }

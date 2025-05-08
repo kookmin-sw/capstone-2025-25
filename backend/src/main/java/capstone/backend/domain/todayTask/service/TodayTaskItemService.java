@@ -82,4 +82,30 @@ public class TodayTaskItemService {
             .map(TodayTaskItemResponse::from)
             .toList();
     }
+
+    //할 일 날짜를 오늘로 변경
+    @Transactional
+    public TodayTaskItemResponse updateTaskDateToToday(Long memberId, Long taskId) {
+        TodayTaskItem todayTaskItem = todayTaskItemRepository.findByIdAndMemberId(taskId, memberId)
+            .orElseThrow(TodayTaskNotFoundException::new);
+
+        LocalDate today = LocalDate.now();
+        todayTaskItem.updateTaskDate(today);
+
+        todayTaskItemRepository.save(todayTaskItem);
+        return TodayTaskItemResponse.from(todayTaskItem);
+    }
+
+    //오늘의 할 일 날짜를 어제로 변경
+    @Transactional
+    public TodayTaskItemResponse updateTaskDateToYesterday(Long memberId, Long taskId) {
+        TodayTaskItem todayTaskItem = todayTaskItemRepository.findByIdAndMemberId(taskId, memberId)
+            .orElseThrow(TodayTaskNotFoundException::new);
+
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        todayTaskItem.updateTaskDate(yesterday);
+
+        todayTaskItemRepository.save(todayTaskItem);
+        return TodayTaskItemResponse.from(todayTaskItem);
+    }
 }
