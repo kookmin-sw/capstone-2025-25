@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Getter
@@ -44,7 +45,7 @@ public class InventoryItem {
     @Column(columnDefinition = "TEXT")
     private String memo;
 
-    @Column(nullable = false)
+    @CreatedDate
     private LocalDate createdAt;
 
     public static InventoryItem from(InventoryItemCreateRequest request, Member member,
