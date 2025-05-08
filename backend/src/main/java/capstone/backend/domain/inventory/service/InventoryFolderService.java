@@ -45,7 +45,7 @@ public class InventoryFolderService {
         InventoryFolderRequest request){
 
         InventoryFolder inventoryFolder = inventoryFolderRepository.findByIdAndMemberId(folderId, memberId)
-            .orElseThrow(() -> new FolderNotFoundException());
+            .orElseThrow(FolderNotFoundException::new);
 
         inventoryFolder.updateName(request.name());
 
