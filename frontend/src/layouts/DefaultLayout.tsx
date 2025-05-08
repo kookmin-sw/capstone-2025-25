@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router';
 import Sidebar from '@/components/ui/sidebar/Sidebar';
 import Header from '@/components/ui/header/Header';
+import BottomBar from '@/components/ui/sidebar/BottomBar';
 
 export default function DefaultLayout() {
   return (
@@ -8,17 +9,21 @@ export default function DefaultLayout() {
       <Header />
 
       <div className="flex flex-1 p-4 overflow-hidden">
-        <div className="sticky top-0 self-start h-[calc(100vh-88px)] mr-4 flex-shrink-0">
+        <div className="hidden lg:block sticky top-0 self-start h-[calc(100vh-88px)] mr-4 flex-shrink-0">
           <div className="h-full rounded-lg shadow-md overflow-hidden">
             <Sidebar />
           </div>
         </div>
 
         <div className="flex-1">
-          <main className="bg-white rounded-lg shadow-md p-6 min-h-[calc(100vh-88px)]">
+          <main className="bg-white rounded-lg shadow-md p-6 min-h-[calc(100vh-88px-64px)] lg:min-h-[calc(100vh-88px)] mb-16 lg:mb-0">
             <Outlet />
           </main>
         </div>
+      </div>
+
+      <div className="lg:hidden">
+        <BottomBar />
       </div>
     </div>
   );
