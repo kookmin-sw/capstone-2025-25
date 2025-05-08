@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/popover';
 import useGetBubbles from '@/hooks/queries/brainstorming/useGetBubbles.ts';
 import useDeleteBubble from '@/hooks/queries/brainstorming/useDeleteBubble.ts';
+import useCreateBubble from '@/hooks/queries/brainstorming/useCreateBubble.ts';
 
 export default function Brainstorming() {
   const isMobile = useIsMobile();
@@ -19,6 +20,7 @@ export default function Brainstorming() {
   const scrollRef = useRef(null);
   const { bubbleList } = useGetBubbles();
   const { deleteBrainstormingMutation, isPending } = useDeleteBubble();
+  const { createBubbleMutation } = useCreateBubble();
   const [bubbles, setBubbles] = useState<BubbleNodeType[]>([]);
   const [inputText, setInputText] = useState('');
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
@@ -182,6 +184,18 @@ export default function Brainstorming() {
 
     setBubbles((prev) => [...prev, newBubble]);
     setInputText('');
+    createBubbleMutation(
+      { text: inputText },
+      {
+        onSuccess: () => {
+          setBubbles((prev) => prev.filter((bubble) => bubble.id !== id));
+        },
+
+        onError: (error) => {
+          console.error('마인드맵 삭제 중 오류가 발생했습니다: ', error);
+        },
+      },
+    );
   };
 
   const deleteBubble = (id: number) => {

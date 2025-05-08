@@ -9,7 +9,7 @@ const useCreateRootNode = () => {
     });
 
     return {
-        createRootNodeMutation: mutate,
+        createBubbleMutation: mutate,
         isPending,
         isError,
         error,
