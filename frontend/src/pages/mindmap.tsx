@@ -1,9 +1,9 @@
-import FlowWrapper from '@/components/reactFlow/FlowWrapper';
+import MindmapWrapper from '@/components/mindmap/MindmapWrapper';
 
 export default function MindmapPage() {
   return (
-    <div style={{ width: '100vw', height: '100vh' }} className="w-full h-full">
-      <FlowWrapper />
+    <div className="relative w-full h-full">
+      <MindmapWrapper />
     </div>
   );
 }

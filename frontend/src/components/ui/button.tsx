@@ -12,8 +12,8 @@ const buttonVariants = cva(
         /* 커스텀 variants */
         black: 'bg-black text-white hover:bg-black/90',
         white: 'bg-white text-black border hover:bg-gray-100',
-        primary: 'bg-button-primary text-white hover:bg-button-primary/90',
-        disabled: 'bg-button-disabled text-gray-500 hover:bg-button-disabled',
+        primary: 'bg-button-primary text-white hover:bg-primary-100',
+        disabled: 'bg-button-disabled text-white hover:bg-[#CECFCD]',
 
         /* shadcn/ui 기본 variants */
         destructive:
@@ -26,9 +26,9 @@ const buttonVariants = cva(
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
-        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
+        default: 'h-12 rounded-md w-[148px] ',
+        sm: 'h-[42px] rounded-md gap-1.5 w-[160px] ',
+        lg: 'h-12 rounded-md w-[180px] ',
         icon: 'size-9',
       },
     },

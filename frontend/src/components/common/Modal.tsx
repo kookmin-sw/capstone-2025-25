@@ -10,8 +10,8 @@ import {
 } from '@/components/ui/Dialog';
 
 type ModalProps = {
-  trigger: ReactNode;
-  title: string;
+  trigger?: ReactNode;
+  title?: string;
   description?: string;
   children: ReactNode;
   footer?: ReactNode;
@@ -32,9 +32,13 @@ export function Modal({
       <DialogContent className={maxWidth}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+          {description && (
+            <DialogDescription className="whitespace-pre-line">
+              {description}
+            </DialogDescription>
+          )}
         </DialogHeader>
-        <div className="py-4">{children}</div>
+        <div>{children}</div>
         {footer && <DialogFooter>{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>

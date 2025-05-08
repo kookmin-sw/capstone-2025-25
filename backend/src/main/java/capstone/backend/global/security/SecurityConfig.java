@@ -1,16 +1,18 @@
 package capstone.backend.global.security;
 
+import capstone.backend.global.property.CorsProperty;
 import capstone.backend.global.security.jwt.JwtAuthenticationFilter;
 import capstone.backend.global.security.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import capstone.backend.global.security.oauth2.handler.OAuth2AuthenticationSuccessHandler;
-import capstone.backend.global.security.oauth2.service.OAuth2UserService;
+import capstone.backend.global.security.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,20 +29,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final OAuth2UserService oauth2UserService;
+    private final CorsProperty corsProperty;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    private static final String[] WEBCLIENT_ENDPOINTS = { "/api/bubble/v2/create" };
     private static final String[] SWAGGER_ENDPOINTS = { "/swagger", "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**" };
-    private static final String[] PUBLIC_ENDPOINTS = { "/" };
-
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
-        return web -> web.ignoring()
-                .requestMatchers("/error", "/favicon.ico");
-    }
+    private static final String[] PUBLIC_ENDPOINTS = { "/", "/api/auth/**", "/actuator/**" };
+    private static final String[] STATIC_ENDPOINTS = { "/error", "/favicon.ico", "/static/**",
+            "/public/**", "/resources/**", "/META-INF/resources/**" };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -52,12 +51,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(SWAGGER_ENDPOINTS).permitAll()
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(STATIC_ENDPOINTS).permitAll()
+                        .requestMatchers(WEBCLIENT_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfoEndpointConfig
-                                -> userInfoEndpointConfig.userService(oauth2UserService))
+                                -> userInfoEndpointConfig.userService(customOAuth2UserService))
                         .successHandler(oauth2AuthenticationSuccessHandler)
                         .failureHandler(oauth2AuthenticationFailureHandler)
                 )
@@ -70,15 +71,20 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedOrigins(corsProperty.getClientList());
         configuration.addAllowedHeader("*");
-        configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
         configuration.setAllowCredentials(true);
         configuration.addExposedHeader("Authorization"); // Access-Control-Expose-Headers 사용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
 }

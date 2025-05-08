@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  fastapi:
+    image: capstonetium/fastapi-gpt:latest  # Docker Hub의 이미지 사용
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    restart: always
+    env_file:
+      - .env  # 환경 변수 파일 적용

@@ -1,59 +1,55 @@
 package capstone.backend.global.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import capstone.backend.global.property.JwtProperty;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
 
-    @Value("${jwt.secret-key}")
-    private String secretKey;
-
-    @Value("${jwt.access-token.expiration}")
-    private long tokenValidityInHours;
+    private final JwtProperty jwtProperty;
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+        return Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtProperty.getSecretKey()));
     }
 
-    // JWT 토큰 생성
-    // Claims 추가 필요
-    // userId를 Claims에 포함하여 JWT 생성
-    public String generateToken(String memberId) {
-        Date now = new Date();
-        long jwtExpirationMs = TimeUnit.HOURS.toMillis(tokenValidityInHours); // 만료 시간(밀리초 변환)
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
+    private Long getAccessTokenExpiration() {
+        return jwtProperty.getAccessToken().getExpiration() * 3600 * 1000; // milliSecond
+    }
 
-        // Claims 객체 생성
-        Claims claims = Jwts.claims().setSubject(memberId);
-        claims.put("memberId", memberId);
+    public Long getRefreshTokenExpiration() {
+        return jwtProperty.getRefreshToken().getExpiration() * 3600 * 1000; // milliSecond
+    }
 
+    public String generateAccessToken(String memberId) {
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
+                .claim("id", memberId)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + getAccessTokenExpiration()))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    // userId 추출
-    public String extractToken(String token) {
-        return parseClaims(token).get("memberId", String.class);
+    public String generateRefreshToken(String memberId) {
+        return Jwts.builder()
+                .claim("id", memberId)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + getRefreshTokenExpiration()))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                .compact();
     }
 
-    // 토큰에서 Claims 추출
-    private Claims parseClaims(String token) {
+    public Claims getClaimsByToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -61,25 +57,38 @@ public class JwtProvider {
                 .getBody();
     }
 
-    // 토큰 유효성 검증
-    public boolean validateToken(String token) {
-        if (Objects.isNull(token) || token.trim().isEmpty()) {
-            log.error("JWT token is null or empty");
-            return false;
-        }
-
+    public String refreshAccessToken(String refreshToken) {
         try {
-            Claims claims = parseClaims(token);
+            String memberId = getClaimsByToken(refreshToken).get("id", String.class);
+            return generateAccessToken(memberId);
 
-            if (claims.getExpiration().before(new Date())) {
-                log.error("JWT token has expired");
-                return false;
-            }
+        } catch (ExpiredJwtException e) {
+            log.error("Refresh token expired");
+            return null;
+        } catch (JwtException e) {
+            log.error("잘못된 JWT 서명: ", e);
+            return null;
+        }
+    }
 
-            return true;
-        } catch (Exception e) {
+    public boolean validateToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // 토큰의 만료 시간 검증
+            return !claims.getExpiration().before(new Date());
+        } catch (JwtException e) {
             log.error("Invalid JWT token: ", e);
             return false;
         }
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        return (bearerToken != null && bearerToken.startsWith("Bearer ")) ? bearerToken.substring(7) : null;
     }
 }

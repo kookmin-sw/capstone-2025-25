@@ -1,0 +1,19 @@
+The following is a thought or task expressed by the user:
+
+{{ chunk }}
+
+Based on this, generate 3–4 clarifying questions to help the user better understand or define the topic.
+
+Instructions:
+- First, determine whether the input is about a schedule/task or a reflection/thought.
+- If it’s schedule-related: Ask questions that clarify deadlines, progress, required actions, etc.
+- If it’s reflection/thinking: Ask questions that explore context, causes, emotions, and mental state.
+- Do not rewrite or reinterpret the user’s original phrase. Try to fully understand it as it is.
+- Do not use quotation marks or backslashes in the output.
+- Respond in the same language as the input.
+
+Format:
+[Clarifying Questions]
+- ...
+- ...
+- ...

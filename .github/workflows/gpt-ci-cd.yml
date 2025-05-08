@@ -1,0 +1,67 @@
+name: GPT CI / CD with Docker
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'gpt/**'
+  workflow_dispatch:
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: DockerHub 로그인
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.GPT_DOCKER_USERNAME }}
+          password: ${{ secrets.GPT_DOCKER_PASSWORD }}
+
+      - name: Docker Image Build
+        run: |
+          cd gpt
+          docker build -t ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest .
+
+      - name: Docker Hub Push
+        run: docker push ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest
+
+  deploy-to-ec2:
+    needs: build-docker-image
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into EC2 and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.GPT_EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.GPT_EC2_SSH_KEY }}
+          script: |
+            # 프로젝트 디렉토리 생성 및 이동
+            mkdir -p ~/fastapi-app
+            cd ~/fastapi-app
+
+            # Docker Hub 로그인 (Private 레포지토리 Pull을 위해)
+            echo ${{ secrets.GPT_DOCKER_PASSWORD }} | docker login -u ${{ secrets.GPT_DOCKER_USERNAME }} --password-stdin
+
+            # 최신 이미지 Pull
+            docker pull ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest
+
+            # 기존 컨테이너 중지 및 삭제
+            docker stop fastapi-gpt || true
+            docker rm fastapi-gpt || true
+
+            # 새 컨테이너 실행 (docker-compose 없이)
+            docker run --name fastapi-gpt -d -p 8000:8000 --env-file <(echo "${{ secrets.GPT_SERVER_ENV }}") ${{ secrets.GPT_DOCKER_USERNAME }}/fastapi-gpt:latest
+
+            # 불필요한 이미지 삭제
+            docker image prune -f
+
+            # Nginx 재시작 (반영)
+            sudo systemctl restart nginx
