@@ -40,7 +40,7 @@ public class TodayTaskItemController {
         return ApiResponse.ok(response);
     }
 
-    @Operation(summary = "오늘의 할 일 조회", description = "오늘의 할 일 조회. 날짜 디폴트 값은 오늘 날짜(2025-05-07)")
+    @Operation(summary = "오늘의 할 일 조회", description = "오늘의 할 일 조회. 날짜 디폴트 값은 오늘 날짜(yyyy-mm-dd)")
     @GetMapping
     public ApiResponse<List<TodayTaskItemResponse>> getTodayTasks(
         @AuthenticationPrincipal CustomOAuth2User user,
@@ -74,11 +74,11 @@ public class TodayTaskItemController {
     }
 
     @Operation(summary = "오늘의 할 일 삭제", description = "오늘의 할 일 목록에서 특정 할 일을 삭제")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{taskId}")
     public ApiResponse<Void> deleteTodayTask(
         @AuthenticationPrincipal CustomOAuth2User user,
         @Parameter(name = "taskId", description="삭제할 오늘의 할 일 ID", example = "1", required = true)
-        @PathVariable("id") Long taskId
+        @PathVariable Long taskId
     ) {
         todayTaskItemService.deleteTaskItem(user.getMemberId(), taskId);
         return ApiResponse.ok();
@@ -94,20 +94,22 @@ public class TodayTaskItemController {
     }
 
     @Operation(summary = "어제 일을 오늘 날짜로 변경", description = "특정 할 일을 오늘 날짜로 변경")
-    @PostMapping("/move-today/{id}")
+    @PostMapping("/move-today/{taskId}")
     public ApiResponse<TodayTaskItemResponse> updateTaskDateToToday(
         @AuthenticationPrincipal CustomOAuth2User user,
-        @PathVariable("id") Long taskId
+        @Parameter(name = "taskId", description = "변경할 오늘의 할 일 ID", example = "1", required = true)
+        @PathVariable Long taskId
     ){
         TodayTaskItemResponse response = todayTaskItemService.updateTaskDateToToday(user.getMemberId(), taskId);
         return ApiResponse.ok(response);
     }
 
     @Operation(summary = "오늘의 할 일을 어제 날짜로 변경", description = "특정 할 일을 어제 날짜로 이동. 테스트 할 때만 사용")
-    @PostMapping("/yesterday/{id}")
+    @PostMapping("/yesterday/{taskId}")
     public ApiResponse<TodayTaskItemResponse> updateTaskDateToYesterday(
         @AuthenticationPrincipal CustomOAuth2User user,
-        @PathVariable("id") Long taskId
+        @Parameter(name = "taskId", description = "어제로 변경할 오늘의 할 일 ID (테스트 할 때 사용)", example = "1", required = true)
+        @PathVariable Long taskId
     ) {
         TodayTaskItemResponse response = todayTaskItemService.updateTaskDateToYesterday(user.getMemberId(), taskId);
         return ApiResponse.ok(response);
