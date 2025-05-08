@@ -6,10 +6,16 @@ import capstone.backend.domain.inventory.service.InventoryItemService;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +36,18 @@ public class InventoryItemController {
         @RequestBody @Valid InventoryItemCreateRequest request
     ){
         InventoryItemResponse response = inventoryItemService.createInventoryItem(request, user.getMemberId());
+        return ApiResponse.ok(response);
+    }
+
+    @Operation(summary = "보관함 폴더별 조회", description = "폴더 안에 있는 보관함 아이템들을 조회합니다.")
+    @GetMapping("/{folderId}")
+    public ApiResponse<Page<InventoryItemResponse>> getInventoryItems(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @Parameter(name = "folderId", description = "조회할 폴더 ID", example = "1", required = true)
+        @PathVariable Long folderId,
+        @ParameterObject Pageable pageable
+    ){
+        Page<InventoryItemResponse> response = inventoryItemService.getInventoryItems(folderId, user.getMemberId(),pageable);
         return ApiResponse.ok(response);
     }
 }

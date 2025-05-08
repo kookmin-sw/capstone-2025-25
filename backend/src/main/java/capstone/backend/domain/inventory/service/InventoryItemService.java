@@ -11,6 +11,8 @@ import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,5 +34,11 @@ public class InventoryItemService {
 
         InventoryItem inventoryItem = InventoryItem.from(request, folder, member);
         return InventoryItemResponse.from(inventoryItemRepository.save(inventoryItem));
+    }
+
+    //보관함 조회
+    @Transactional
+    public Page<InventoryItemResponse> getInventoryItems(Long folderId, Long memberId, Pageable pageable) {
+        return inventoryItemRepository.findByMemberIdAndFolderId(memberId, folderId, pageable);
     }
 }
