@@ -22,10 +22,11 @@ import {
 import { useMindmapStore } from '@/store/mindMapStore';
 import useBrainStormingRewrite from '@/hooks/queries/gpt/useBrainStormingRewrite';
 import { useState } from 'react';
-import { useSearchParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { BrainStormingRewriteReq } from '@/types/api/gpt';
 import { Loader2 } from 'lucide-react';
 import BrainstormingLogo from '@/assets/sidebar/color-brainstorming.svg';
+import usePatchBubble from '@/hooks/queries/brainstorming/usePatchBubble';
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
@@ -36,13 +37,17 @@ const flowStyles = {
 };
 
 function FlowContent() {
+  const { id } = useParams();
   const [searchParams] = useSearchParams();
   const bubbleText = searchParams.get('text') || '';
   const [summary, setSummary] = useState('');
 
+  const navigate = useNavigate();
+
   const { nodes, edges, onNodesChange, onEdgesChange } = useMindmapStore();
 
   const { rewriteBrainStormingMutation, isPending } = useBrainStormingRewrite();
+  const { patchBrainStormingMutation } = usePatchBubble();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -56,17 +61,33 @@ function FlowContent() {
       mindmap_data: mindmapData,
     };
 
-    console.log('API 요청 데이터:', requestData);
-
     rewriteBrainStormingMutation(requestData, {
       onSuccess: (data) => {
-        console.log('API 응답:', data);
         if (data && data.new_chunk) {
           setSummary(data.new_chunk);
         }
         setIsDialogOpen(true);
       },
     });
+  };
+
+  const handlePatchBrainStorming = () => {
+    if (id) {
+      const requestData = {
+        title: summary,
+      };
+      patchBrainStormingMutation(
+        {
+          id: parseInt(id),
+          data: requestData,
+        },
+        {
+          onSuccess: () => {
+            navigate('/brainstorming');
+          },
+        },
+      );
+    }
   };
 
   return (
@@ -145,7 +166,11 @@ function FlowContent() {
                 <DialogFooter>
                   <div className="w-full flex items-center justify-end">
                     <DialogClose asChild>
-                      <Button size="sm" className="bg-blue text-white">
+                      <Button
+                        onClick={handlePatchBrainStorming}
+                        size="sm"
+                        className="bg-blue text-white"
+                      >
                         적용하기
                       </Button>
                     </DialogClose>
