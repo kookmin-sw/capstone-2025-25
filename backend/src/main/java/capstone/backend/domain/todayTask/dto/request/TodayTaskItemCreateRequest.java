@@ -7,7 +7,6 @@ import java.util.List;
 
 
 public record TodayTaskItemCreateRequest(
-    @NotNull
     @NotEmpty
     @Schema(description = "오늘의 할 일에 추가할 아이젠하워 ID 목록", example = "[1, 2, 3]")
     List<Long> eisenhowerItemIds
