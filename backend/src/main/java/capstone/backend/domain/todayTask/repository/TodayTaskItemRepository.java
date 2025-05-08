@@ -11,4 +11,5 @@ public interface TodayTaskItemRepository extends JpaRepository<TodayTaskItem, Lo
     int countByMemberIdAndTaskDate(Long memberId, LocalDate taskDate);
     int countByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(Long memberId, LocalDate taskDate, boolean isCompleted);
     Optional<TodayTaskItem> findByIdAndMemberId(Long id, Long memberId);
+    List<TodayTaskItem> findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(Long memberId, LocalDate taskDate, boolean isCompleted);
 }

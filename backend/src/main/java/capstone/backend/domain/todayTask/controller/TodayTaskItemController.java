@@ -83,4 +83,13 @@ public class TodayTaskItemController {
         todayTaskItemService.deleteTaskItem(user.getMemberId(), taskId);
         return ApiResponse.ok();
     }
+
+    @Operation(summary = "어제의 할 일 가져오기", description = "어제 날짜 기준으로 미완료된 할 일을 조회")
+    @GetMapping("/yesterday")
+    public ApiResponse<List<TodayTaskItemResponse>> getYesterdayTaskItems(
+        @AuthenticationPrincipal CustomOAuth2User user
+    ) {
+        List<TodayTaskItemResponse> response = todayTaskItemService.getYesterdayTaskItems(user.getMemberId());
+        return ApiResponse.ok(response);
+    }
 }

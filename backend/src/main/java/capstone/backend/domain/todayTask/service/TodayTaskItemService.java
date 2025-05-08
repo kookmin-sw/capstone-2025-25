@@ -71,4 +71,15 @@ public class TodayTaskItemService {
 
         todayTaskItemRepository.delete(todayTaskItem);
     }
+
+    //어제 할 일 중 완료되지 않은 할 일 가져오기
+    public List<TodayTaskItemResponse> getYesterdayTaskItems(Long memberId){
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+
+        List<TodayTaskItem> yesterdayTasks = todayTaskItemRepository.findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, yesterday, false);
+
+        return yesterdayTasks.stream()
+            .map(TodayTaskItemResponse::from)
+            .toList();
+    }
 }
