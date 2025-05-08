@@ -5,6 +5,7 @@ import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemUpdateReques
 import capstone.backend.domain.member.scheme.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -21,12 +22,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class EisenhowerItem {
 
     @Id
@@ -55,6 +59,7 @@ public class EisenhowerItem {
     @Column(nullable = false)
     private Boolean isCompleted;
 
+    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
@@ -73,7 +78,6 @@ public class EisenhowerItem {
                 .quadrant(request.quadrant())
                 .order(request.order())
                 .isCompleted(false)
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 
