@@ -1,5 +1,6 @@
 import useGetTodayTodoList from '@/hooks/queries/today/useGetTodayTodoList';
 import useGetYesterdayTodoList from '@/hooks/queries/today/useGetYesterdayTodoList';
+import useMoveToday from '@/hooks/queries/today/useMoveToday';
 import { cn } from '@/lib/utils';
 import { Calendar, Check } from 'lucide-react';
 
@@ -25,6 +26,11 @@ function formatDateToEnglish(dateString: string): string {
 export default function TodayList() {
   const { todayTodoList } = useGetTodayTodoList();
   const { yesterdayTodoList } = useGetYesterdayTodoList();
+  const { moveTodayMutation, isPending } = useMoveToday();
+
+  const handleMoveToToday = (id: number) => {
+    moveTodayMutation(id);
+  };
 
   return (
     <div className="mt-4 space-y-4">
@@ -63,7 +69,11 @@ export default function TodayList() {
               </p>
             </div>
             <div className="flex justify-end mt-2">
-              <button className="px-4 py-2 rounded-full bg-white text-blue font-semibold">
+              <button
+                className="px-4 py-2 rounded-full bg-white text-blue font-semibold"
+                onClick={() => handleMoveToToday(todo.id)}
+                disabled={isPending}
+              >
                 오늘 일정에 추가하기
               </button>
             </div>

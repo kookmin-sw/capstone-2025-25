@@ -13,3 +13,17 @@ export type GetTodayCountRes = {
   error: string | null;
   content: number;
 };
+
+export type MoveTodayRes = {
+  statusCode: number;
+  error: string | null;
+  content: {
+    id: number;
+    title: string;
+    category_id: number;
+    meno: string;
+    dueDate: string;
+    taskDate: string;
+    isCompleted: boolean;
+  };
+};

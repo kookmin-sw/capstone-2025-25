@@ -3,6 +3,7 @@ import { ENDPOINTS } from '@/api/endpoints';
 import {
   GetTodayCountRes,
   GetTodayTodoListRes,
+  MoveTodayRes,
 } from '@/types/api/today/response';
 
 export const todayService = {
@@ -30,6 +31,13 @@ export const todayService = {
   getCompletedCount: async (): Promise<GetTodayCountRes> => {
     const response = await apiClient.get<GetTodayCountRes>(
       ENDPOINTS.TODAY.COMPLETE_COUNT,
+    );
+    return response.data;
+  },
+
+  moveToday: async (id: number): Promise<MoveTodayRes> => {
+    const response = await apiClient.post<MoveTodayRes>(
+      ENDPOINTS.TODAY.MOVE_TODAY(id),
     );
     return response.data;
   },
