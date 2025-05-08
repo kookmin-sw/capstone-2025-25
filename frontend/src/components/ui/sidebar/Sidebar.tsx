@@ -1,111 +1,240 @@
 import { cn } from '@/lib/utils';
-import { Network, Grid2x2, TimerReset, ChevronsRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router';
+import { useState } from 'react';
+import { ChevronLeft, ChevronRight, Info, Settings } from 'lucide-react';
 
-import { useSidebarStore } from '@/store/sidebarStore';
-import SubSidebar from '@/components/ui/sidebar/subSidebar/SubSidebar';
-import { useEffect } from 'react';
+import TodayTodoIcon from '@/assets/sidebar/color-today-todo.svg';
+import TodayTodoHWIcon from '@/assets/sidebar/bw-today-todo.svg';
+import BrainStormingIcon from '@/assets/sidebar/color-brainstorming.svg';
+import BrainStormingHWIcon from '@/assets/sidebar/bw-brainstorming.svg';
+import EisenHowerIcon from '@/assets/sidebar/color-eisenhower.svg';
+import EisenHowerHWIcon from '@/assets/sidebar/bw-eisenhower.svg';
+import StoreIcon from '@/assets/sidebar/color-store.svg';
+import StoreHWIcon from '@/assets/sidebar/bw-store.svg';
 
-const navItems = [
+type NavItem = {
+  id: string;
+  activeIcon: string | React.ReactNode;
+  defaultIcon: string | React.ReactNode;
+  label: string;
+  route: string;
+};
+
+const navItems: NavItem[] = [
+  {
+    id: 'today-todo',
+    activeIcon: TodayTodoIcon,
+    defaultIcon: TodayTodoHWIcon,
+    label: '매트릭스',
+    route: '/today',
+  },
+  {
+    id: 'brainstorming',
+    activeIcon: BrainStormingIcon,
+    defaultIcon: BrainStormingHWIcon,
+    label: '브레인스토밍',
+    route: '/brainstorming',
+  },
   {
     id: 'matrix',
-    icon: <Grid2x2 size={24} />,
-    label: '매트릭스',
+    activeIcon: EisenHowerIcon,
+    defaultIcon: EisenHowerHWIcon,
+    label: '아이젠하워',
     route: '/matrix',
-    hasPanel: false,
   },
   {
-    id: 'mindmap',
-    icon: <Network size={24} className="rotate-[-90deg]" />,
-    label: '마인드맵',
-    route: '/mindmap',
-    hasPanel: true,
+    id: 'store',
+    activeIcon: StoreIcon,
+    defaultIcon: StoreHWIcon,
+    label: '보관함',
+    route: '/store',
+  },
+];
+
+const bottomNavItems: NavItem[] = [
+  {
+    id: 'service-info',
+    activeIcon: <Info size={24} className="text-blue-500" />,
+    defaultIcon: <Info size={24} className="text-gray-400" />,
+    label: '서비스 소개',
+    route: '/service-info',
   },
   {
-    id: 'pomodoro',
-    icon: <TimerReset size={24} />,
-    label: '뽀모도로',
-    route: '/pomodoro',
-    hasPanel: true,
+    id: 'settings',
+    activeIcon: <Settings size={24} className="text-blue-500" />,
+    defaultIcon: <Settings size={24} className="text-gray-400" />,
+    label: '설정',
+    route: '/settings',
   },
 ];
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { panelVisible, setPanelVisible } = useSidebarStore();
+  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
-  const activeItem =
-    navItems.find((item) => location.pathname.includes(item.route)) || null;
-  const activeId = activeItem?.id || null;
-  const activeItemHasPanel = activeItem?.hasPanel || false;
+  const isActive = (itemRoute: string): boolean => {
+    return location.pathname === itemRoute;
+  };
 
-  useEffect(() => {
-    if (activeItemHasPanel) {
-      setPanelVisible(true);
-    }
-  }, [location.pathname, activeItemHasPanel, setPanelVisible]);
-
-  const handleNavItemClick = (e: React.MouseEvent, route: string) => {
-    const target = e.target as HTMLElement;
-    const isChevronButton = target.closest('.panel-toggle-button');
-
-    if (isChevronButton) {
-      setPanelVisible(true);
-      return;
-    }
-
+  const handleItemClick = (route: string): void => {
     navigate(route);
   };
 
-  return (
-    <div className="flex h-screen">
-      <div className="flex h-full relative">
-        <aside className="w-[230px] bg-white border-r border-gray-[#E5E5E5] px-[15px] py-[10px] flex flex-col gap-[20px]">
-          <div className="flex items-center gap-2  h-[45px] pl-[12px] pt-[5px]">
-            <div className="w-8 h-8 bg-black rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold">★</span>
-            </div>
-            <span className="text-lg font-semibold">AHZ</span>
-          </div>
+  const activeItem: NavItem =
+    [...navItems, ...bottomNavItems].find((item) => isActive(item.route)) ||
+    navItems[0];
 
-          <div className="overflow-hidden flex flex-col gap-[5px]">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={(e) => handleNavItemClick(e, item.route)}
+  const toggleSidebar = (open: boolean): void => {
+    setIsTransitioning(true);
+    setIsOpen(open);
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 300);
+  };
+
+  const renderNavItem = (item: NavItem, active: boolean) => {
+    const isIconComponent = typeof item.activeIcon !== 'string';
+
+    return (
+      <button
+        key={item.id}
+        onClick={() => {
+          handleItemClick(item.route);
+        }}
+        className={cn(
+          'flex items-center w-full gap-3 text-left transition-all duration-200 rounded-md cursor-pointer relative p-2',
+          active
+            ? 'bg-[#F0F0F5] text-[#525463]'
+            : 'hover:bg-gray-50 text-[#CDCED6]',
+          isOpen ? '' : 'px-0 justify-center',
+        )}
+      >
+        <div className="flex items-center justify-center w-6 h-6 min-w-6 relative">
+          {isIconComponent ? (
+            <>
+              <div
                 className={cn(
-                  'flex items-center w-full px-4 py-3 gap-2 text-left transition rounded-md cursor-pointer relative group',
-                  activeId === item.id
-                    ? 'bg-[#8F5AFF] text-white'
-                    : 'text-black hover:bg-gray-50',
+                  'transition-opacity duration-300',
+                  active ? 'opacity-100' : 'opacity-0',
                 )}
               >
-                <div>{item.icon}</div>
-                <p>{item.label}</p>
-
-                {item.hasPanel && activeId === item.id && !panelVisible && (
-                  <div className="panel-toggle-button absolute right-2 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-100 p-1 hover:bg-white/10 rounded-full cursor-pointer">
-                    <ChevronsRight size={18} />
-                  </div>
+                {item.activeIcon}
+              </div>
+              <div
+                className={cn(
+                  'absolute inset-0 transition-opacity duration-300',
+                  !active ? 'opacity-100' : 'opacity-0',
                 )}
-              </button>
-            ))}
-          </div>
-        </aside>
-
-        {activeItemHasPanel && (
-          <div
+              >
+                {item.defaultIcon}
+              </div>
+            </>
+          ) : (
+            <>
+              <img
+                src={item.activeIcon as string}
+                alt={item.label}
+                className={cn(
+                  'w-6 h-6 absolute transition-opacity duration-300',
+                  active ? 'opacity-100' : 'opacity-0',
+                )}
+              />
+              <img
+                src={item.defaultIcon as string}
+                alt={item.label}
+                className={cn(
+                  'w-6 h-6 absolute transition-opacity duration-300',
+                  !active ? 'opacity-100' : 'opacity-0',
+                )}
+              />
+            </>
+          )}
+        </div>
+        {isOpen && (
+          <p
             className={cn(
-              'h-full bg-white transition-all duration-300 ease-in-out overflow-hidden border-none',
-              panelVisible
-                ? 'w-[300px] opacity-100'
-                : 'w-0 opacity-0 border-r border-gray-300',
+              'whitespace-nowrap transition-opacity duration-300',
+              active ? 'font-medium' : '',
+              isTransitioning ? 'opacity-0' : 'opacity-100',
             )}
           >
-            {activeId && <SubSidebar activeId={activeId} />}
-          </div>
+            {item.label}
+          </p>
         )}
+      </button>
+    );
+  };
+
+  return (
+    <div className="h-full">
+      <div
+        className={cn(
+          'bg-white border-r border-[#E5E5E5] h-full flex flex-col transition-all duration-300 ease-in-out',
+          isOpen ? 'w-[218px]' : 'w-[70px]',
+        )}
+      >
+        <div className="flex items-center justify-between h-[60px] flex-shrink-0">
+          {isOpen ? (
+            <>
+              <div className="flex items-center gap-3 overflow-hidden pl-6">
+                <div className="flex items-center justify-center w-6 h-6 relative">
+                  {typeof activeItem.activeIcon === 'string' ? (
+                    <img
+                      src={activeItem.activeIcon}
+                      alt={activeItem.label}
+                      className="w-6 h-6 transition-opacity duration-300"
+                    />
+                  ) : (
+                    activeItem.activeIcon
+                  )}
+                </div>
+                <span
+                  className={cn(
+                    'text-lg font-semibold whitespace-nowrap transition-opacity duration-300',
+                    isTransitioning ? 'opacity-0' : 'opacity-100',
+                  )}
+                >
+                  {activeItem.label}
+                </span>
+              </div>
+              <button
+                onClick={() => toggleSidebar(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-100 mr-4 transition-all"
+              >
+                <ChevronLeft size={18} />
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => toggleSidebar(true)}
+              className="flex items-center justify-center w-full h-full transition-all"
+            >
+              <div className="w-6 h-6 flex items-center justify-center bg-gray-scale-200 rounded-full">
+                <ChevronRight size={40} className="text-blue" />
+              </div>
+            </button>
+          )}
+        </div>
+
+        <div className="py-[10px] flex-1 ">
+          <div className="flex flex-col gap-[18px] px-4">
+            {navItems.map((item) => {
+              const active = isActive(item.route);
+              return renderNavItem(item, active);
+            })}
+          </div>
+        </div>
+
+        <div className="py-[10px] mt-auto flex-shrink-0">
+          <div className="flex flex-col gap-[18px] px-4 mb-4">
+            {bottomNavItems.map((item) => {
+              const active = isActive(item.route);
+              return renderNavItem(item, active);
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
