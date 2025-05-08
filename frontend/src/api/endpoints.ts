@@ -16,4 +16,10 @@ export const ENDPOINTS = {
     ACCESS_TOKEN: '/api/auth/token',
     REFRESH_TOKEN: '/api/auth/reissue',
   },
+
+  /* 오늘의 할 일 관련 엔드포인트 */
+  TODAY: {
+    LIST: '/api/v2/today-task',
+    YESTERDAY_LIST: '/api/v2/today-task/yesterday',
+  },
 };
