@@ -35,4 +35,11 @@ export const ENDPOINTS = {
   CATEGORY: {
     LIST: '/api/v1/eisenhower/category',
   },
+
+  /* GPT API 관련 엔드포인트 */
+  GPT: {
+    BRAINSTORMING: {
+      ANALYZE: '/api/brainstorming/analyze/chunk',
+    },
+  },
 };

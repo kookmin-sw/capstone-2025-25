@@ -14,6 +14,7 @@ import useGetBubbles from '@/hooks/queries/brainstorming/useGetBubbles.ts';
 import useDeleteBubble from '@/hooks/queries/brainstorming/useDeleteBubble.ts';
 import useCreateBubble from '@/hooks/queries/brainstorming/useCreateBubble.ts';
 import { Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 export default function Brainstorming() {
   const isMobile = useIsMobile();
@@ -21,11 +22,13 @@ export default function Brainstorming() {
   const scrollRef = useRef(null);
   const { bubbleList } = useGetBubbles();
   const { deleteBrainstormingMutation } = useDeleteBubble();
-  const { createBubbleMutation,isPending } = useCreateBubble();
+  const { createBubbleMutation, isPending } = useCreateBubble();
   const [bubbles, setBubbles] = useState<BubbleNodeType[]>([]);
   const [inputText, setInputText] = useState('');
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const bubblesRef = useRef<BubbleNodeType[]>([]);
+
+  const navigate = useNavigate();
 
   // bubbleList가 변경되면 bubbles 상태를 업데이트
   useEffect(() => {
@@ -225,9 +228,14 @@ export default function Brainstorming() {
     });
   };
 
-  const moveToMindmap = () => {};
+  const moveToMindmap = (id: number, title: string) => {
+    const encodedBubbleText = encodeURIComponent(title);
+    navigate(`/mindmap/${id}?text=${encodedBubbleText}`);
+  };
+
   const createMatrix = () => {};
   const saveBubble = () => {};
+
   return (
     <div
       ref={containerRef}
@@ -269,7 +277,9 @@ export default function Brainstorming() {
                     'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
                     isMobile ? 'text-[14px]' : 'text-[16px]',
                   )}
-                  onClick={moveToMindmap}
+                  onClick={() => {
+                    moveToMindmap(bubble.id, bubble.title);
+                  }}
                 >
                   마인드맵
                 </button>
@@ -318,7 +328,7 @@ export default function Brainstorming() {
         />
         {isMobile ? (
           <button
-              disabled={isPending}
+            disabled={isPending}
             onClick={addBubble}
             className="rounded-[48px] w-[30px] h-[30px] bg-blue text-white font-semibold text-[16px] font-pretendard flex justify-center items-center cursor-pointer"
           >
@@ -332,14 +342,12 @@ export default function Brainstorming() {
           </button>
         ) : (
           <button
-              disabled={isPending}
+            disabled={isPending}
             onClick={addBubble}
             className="rounded-[48px] p-2 h-[40px] bg-blue text-white font-semibold text-[16px] font-pretendard w-[140px] cursor-pointer items-center justify-center"
           >
             {isPending ? (
-
-                <Loader2 className="animate-spin mx-12" />
-
+              <Loader2 className="animate-spin mx-12" />
             ) : (
               '버블 생성하기'
             )}

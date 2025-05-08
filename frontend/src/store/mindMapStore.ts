@@ -133,6 +133,7 @@ type MindmapState = {
   updateNodeHeight: (nodeId: string, height: number) => void;
   setDirection: (direction: 'TB' | 'LR') => void;
   addChildNode: (parentNodeId: string) => void;
+  initializeWithQuestions: (rootText: string, questions: string[]) => void;
 };
 
 export const useMindmapStore = create<MindmapState>((set, get) => ({
@@ -247,6 +248,79 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
       const { nodes, edges } = getLayoutedElements(
         updatedNodes,
         updatedEdges,
+        state.direction,
+      );
+
+      return { nodes, edges };
+    });
+  },
+
+  initializeWithQuestions: (rootText: string, questions: string[]) => {
+    set((state) => {
+      // 모든 노드와 엣지를 지우고 새로 시작
+      const rootNode: Node = {
+        id: ROOT_NODE_ID,
+        type: 'custom',
+        data: {
+          label: rootText,
+          layoutDirection: state.direction,
+        },
+        position: { x: 0, y: 0 }, // 레이아웃이 나중에 이 위치를 조정
+        targetPosition: state.direction === 'LR' ? Position.Left : Position.Top,
+        sourcePosition:
+          state.direction === 'LR' ? Position.Right : Position.Bottom,
+        style: nodeStyles,
+      };
+
+      // 새로운 노드와 엣지 배열 시작
+      const newNodes: Node[] = [rootNode];
+      const newEdges: Edge[] = [];
+
+      // nodeHeightMap 초기화 (루트 노드)
+      nodeHeightMap.clear();
+      nodeHeightMap.set(ROOT_NODE_ID, MIN_NODE_HEIGHT);
+
+      // 각 질문에 대한 자식 노드 생성
+      questions.forEach((question, index) => {
+        const nodeId = `node-${index + 1}`;
+
+        // 노드 높이 맵에 추가
+        nodeHeightMap.set(nodeId, MIN_NODE_HEIGHT);
+
+        // 자식 노드 생성
+        const childNode: Node = {
+          id: nodeId,
+          type: 'custom',
+          data: {
+            label: question,
+            layoutDirection: state.direction,
+          },
+          position: { x: 100, y: 100 * (index + 1) }, // 임시 위치
+          targetPosition:
+            state.direction === 'LR' ? Position.Left : Position.Top,
+          sourcePosition:
+            state.direction === 'LR' ? Position.Right : Position.Bottom,
+          style: nodeStyles,
+        };
+
+        // 루트와 자식 노드 연결 엣지 생성
+        const edge: Edge = {
+          id: `edge-${ROOT_NODE_ID}-${nodeId}`,
+          source: ROOT_NODE_ID,
+          target: nodeId,
+          type: ConnectionLineType.Bezier,
+          animated: true,
+          style: edgeStyles,
+        };
+
+        newNodes.push(childNode);
+        newEdges.push(edge);
+      });
+
+      // dagre 레이아웃 적용
+      const { nodes, edges } = getLayoutedElements(
+        newNodes,
+        newEdges,
         state.direction,
       );
 
