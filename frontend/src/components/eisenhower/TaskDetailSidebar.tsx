@@ -64,7 +64,7 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
   };
 
   const selectedCategory = categories.find(
-    (cat) => cat.id === task?.category_id,
+    (cat) => cat.id === task?.categoryId,
   );
 
   const categoryOptions = categories.map((cat) => ({
@@ -128,11 +128,11 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
             {isEditing ? (
               <BadgeSelector
                 options={categoryOptions}
-                selected={String(editedTask.category_id ?? '')}
+                selected={String(editedTask.categoryId ?? '')}
                 onChange={(val) =>
                   setEditedTask({
                     ...editedTask,
-                    category_id: val === '' ? null : Number(val),
+                    categoryId: val === '' ? null : Number(val),
                   })
                 }
                 renderBadge={(option) => (

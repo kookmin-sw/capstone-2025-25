@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
@@ -8,15 +8,19 @@ import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicke
 import { BadgeSelector } from '@/components/common/BadgeSelector';
 import { TaskCard } from '@/components/eisenhower/card/TaskCard';
 import { quadrantTitles } from '@/constants/section';
-import { useCategoryStore } from '@/store/useCategoryStore';
+// import { useCategoryStore } from '@/store/useCategoryStore';
 import type { Task } from '@/types/task';
 import { Quadrant } from '@/types/commonTypes';
-import { generateNumericId } from '@/lib/generateNumericId';
+import { eisenhowerService } from '@/services/eisenhowerService';
+import { eisenhowerCategoryService } from '@/services/eisenhowerCategoryService';
+import { useCategoryStore } from '@/store/useCategoryStore.ts';
+import { toast } from 'sonner';
 
 type TaskModalProps = {
   mode: 'create' | 'edit';
   quadrant: Quadrant;
   task?: Task;
+  currentTasksInQuadrant?: Task[];
   onCreateTask?: (task: Task) => void;
   onUpdateTask?: (task: Task) => void;
   onDeleteTask?: (id: number | string) => void;
@@ -27,6 +31,7 @@ export function TaskModal({
   mode,
   quadrant,
   task,
+  currentTasksInQuadrant = [],
   onCreateTask,
   onUpdateTask,
   onDeleteTask,
@@ -34,15 +39,11 @@ export function TaskModal({
 }: TaskModalProps) {
   const [title, setTitle] = useState(task?.title || '');
   const [memo, setMemo] = useState(task?.memo || '');
-  const [dueDate, setDueDate] = useState<string | null>(
-    task?.dueDate || new Date().toISOString().split('T')[0],
-  );
-  const [category_id, setCategoryId] = useState<number | null>(
-    task?.category_id ?? null,
+  const [dueDate, setDueDate] = useState<string | null>(task?.dueDate ?? null);
+  const [categoryId, setCategoryId] = useState<number | null>(
+    task?.categoryId ?? null,
   );
   const [isEditing, setIsEditing] = useState(false);
-
-  const { categories, addCategory, removeCategory } = useCategoryStore();
 
   const resetForm = () => {
     setTitle('');
@@ -51,65 +52,102 @@ export function TaskModal({
     setCategoryId(null);
   };
 
-  const handleCreate = () => {
-    const newTask: Task = {
-      id: generateNumericId(),
-      title,
-      memo,
-      dueDate: dueDate ?? '',
-      category_id,
-      quadrant,
-      order: 0,
-      isCompleted: false,
-      createdAt: new Date().toISOString(),
-      mindMapId: null,
-      pomodoroId: null,
-    };
-    onCreateTask?.(newTask);
-    resetForm();
-  };
-
-  const handleSave = () => {
-    if (task && onUpdateTask) {
-      const updatedTask = {
-        ...task,
+  const handleCreate = async () => {
+    try {
+      const nextOrder = currentTasksInQuadrant.length + 1;
+      const payload = {
         title,
         memo,
-        dueDate: dueDate ?? '',
-        category_id,
+        dueDate,
+        categoryId: categoryId,
+        quadrant,
+        order: nextOrder,
       };
-      onUpdateTask(updatedTask);
-      setIsEditing(false);
+      const created = await eisenhowerService.create(payload);
+
+      if (created?.content) {
+        onCreateTask?.(created.content);
+      }
+
+      resetForm();
+    } catch (err) {
+      console.error('생성 실패:', err);
     }
   };
 
-  const handleDelete = () => {
-    if (task && onDeleteTask) {
-      onDeleteTask(task.id);
+  const handleSave = async () => {
+    if (task) {
+      try {
+        const payload = {
+          title,
+          memo,
+          dueDate,
+          categoryId: categoryId,
+          isCompleted: task.isCompleted,
+          dueDateExplicitlyNull: dueDate === null,
+          categoryExplicitlyNull: categoryId === null,
+        };
+        const updated = await eisenhowerService.update(task.id, payload);
+        onUpdateTask?.({
+          ...task,
+          ...updated.content,
+        });
+        setIsEditing(false);
+      } catch (err) {
+        console.error('수정 실패:', err);
+      }
+    }
+  };
+  const handleDelete = async () => {
+    if (task) {
+      try {
+        await eisenhowerService.delete(task.id);
+        onDeleteTask?.(task.id);
+        toast.success('할 일이 삭제되었습니다.');
+      } catch (err) {
+        console.error('삭제 실패:', err);
+      }
     }
   };
 
-  const handleAddCategory = (title: string) => {
+  const { categories, fetchCategories } = useCategoryStore();
+
+  const handleAddCategory = async (title: string) => {
     const trimmed = title.trim();
     const exists = categories.some((cat) => cat.title === trimmed);
     if (!trimmed || exists) return;
 
-    addCategory(trimmed);
-    setTimeout(() => {
+    try {
+      await eisenhowerCategoryService.create({
+        title: trimmed,
+        color: '#E8EFFF',
+      });
+      await fetchCategories();
       const added = useCategoryStore
         .getState()
         .categories.find((c) => c.title === trimmed);
-      if (added) setCategoryId(added.id);
-    }, 0);
+
+      if (added) {
+        setCategoryId(added.id);
+      } else {
+        console.warn('새 카테고리 추가 후 찾을 수 없음');
+      }
+    } catch (err) {
+      console.error('카테고리 생성 실패:', err);
+    }
   };
 
-  const handleDeleteCategory = (value: string) => {
+  const handleDeleteCategory = async (value: string) => {
     const id = Number(value);
-    removeCategory(id);
-    const current = useCategoryStore
-      .getState()
-      .categories.find((c) => c.id === id);
-    if (!current && category_id === id) setCategoryId(null);
+    try {
+      await eisenhowerCategoryService.delete(id);
+      await fetchCategories();
+      if (!categories.find((c) => c.id === id) && categoryId === id) {
+        setCategoryId(null);
+      }
+    } catch (err) {
+      console.error('카테고리 삭제 실패:', err);
+    }
   };
 
   const defaultTrigger =
@@ -123,10 +161,30 @@ export function TaskModal({
         task={task}
         onClick={() => {}}
         layout="matrix"
+        categories={categories}
       />
     ) : null;
 
   const finalTrigger = trigger ?? defaultTrigger;
+
+  useEffect(() => {
+    const fetchTaskDetail = async () => {
+      if (mode === 'edit' && task?.id) {
+        try {
+          const result = await eisenhowerService.getDetail(task.id);
+          const detail = result.content;
+          setTitle(detail.title);
+          setMemo(detail.memo);
+          setDueDate(detail.dueDate ?? '');
+          setCategoryId(detail.categoryId ?? null);
+        } catch (err) {
+          console.error('단일 작업 조회 실패:', err);
+        }
+      }
+    };
+
+    fetchTaskDetail();
+  }, [mode, task]);
 
   return (
     <Modal
@@ -156,7 +214,7 @@ export function TaskModal({
                     bgColor: cat.color,
                     textColor: cat.textColor,
                   }))}
-                  selected={category_id ? String(category_id) : ''}
+                  selected={categoryId ? String(categoryId) : ''}
                   onChange={(val) => setCategoryId(val ? Number(val) : null)}
                   onCreateOption={handleAddCategory}
                   onDeleteOption={handleDeleteCategory}
@@ -171,17 +229,16 @@ export function TaskModal({
                   withSearch
                   displayMode="block"
                 />
-              ) : category_id ? (
+              ) : categoryId ? (
                 <CategoryBadge
                   label={
-                    categories.find((c) => c.id === category_id)?.title ?? ''
+                    categories.find((c) => c.id === categoryId)?.title ?? ''
                   }
                   bgColor={
-                    categories.find((c) => c.id === category_id)?.color ??
-                    '#ccc'
+                    categories.find((c) => c.id === categoryId)?.color ?? '#ccc'
                   }
                   textColor={
-                    categories.find((c) => c.id === category_id)?.textColor ??
+                    categories.find((c) => c.id === categoryId)?.textColor ??
                     '#000'
                   }
                 />
@@ -197,7 +254,7 @@ export function TaskModal({
               <span className="pt-1">마감일</span>
               <div className="pt-1">
                 <SingleDatePicker
-                  date={dueDate}
+                  date={dueDate ?? ''}
                   onChange={(date) => setDueDate(date)}
                   disabled={mode === 'edit' && !isEditing}
                 />
@@ -210,7 +267,7 @@ export function TaskModal({
             <textarea
               className="w-full min-h-[100px] border border-gray-300 rounded-[7px] px-3 py-2 text-sm placeholder:text-gray-400"
               placeholder="일정에 관한 메모를 입력하세요."
-              value={memo}
+              value={memo ?? ''}
               onChange={(e) => setMemo(e.target.value)}
               disabled={mode === 'edit' && !isEditing}
             />
@@ -231,9 +288,11 @@ export function TaskModal({
           </div>
         ) : isEditing ? (
           <div className="flex justify-between gap-2">
-            <Button variant="destructive" onClick={handleDelete}>
-              삭제하기
-            </Button>
+            <DialogClose asChild>
+              <Button variant="destructive" onClick={handleDelete}>
+                삭제하기
+              </Button>
+            </DialogClose>
             <div className="flex gap-2">
               <DialogClose asChild>
                 <Button

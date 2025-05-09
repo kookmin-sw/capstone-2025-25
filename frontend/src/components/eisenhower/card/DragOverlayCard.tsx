@@ -10,13 +10,13 @@ export interface DragOverlayCardProps {
 }
 
 export function DragOverlayCard({ task, categories }: DragOverlayCardProps) {
-  const { title, category_id, dueDate, memo } = task;
-  const categoryName = getCategoryNameById(category_id, categories);
+  const { title, categoryId, dueDate, memo } = task;
+  const categoryName = getCategoryNameById(categoryId, categories);
 
   return (
     <div className="bg-white rounded-md p-4 shadow-lg w-full flex flex-col">
       <div className="flex mb-2 gap-1">
-        {category_id !== null && <CategoryBadge label={categoryName} />}
+        {categoryId !== null && <CategoryBadge label={categoryName} />}
       </div>
 
       <div className="flex items-start mb-2 flex-grow">
