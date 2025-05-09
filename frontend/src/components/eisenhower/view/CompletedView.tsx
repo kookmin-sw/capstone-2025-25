@@ -1,7 +1,10 @@
-import type { Task } from '@/types/task.ts';
+import { useEffect, useState } from 'react';
 import { TaskCard } from '../card/TaskCard.tsx';
 import { getCategoryNameById } from '@/utils/category';
 import { useCategoryStore } from '@/store/useCategoryStore';
+import { eisenhowerService } from '@/services/eisenhowerService';
+import type { EisenhowerTask } from '@/types/api/eisenhower';
+import { Task } from '@/types/task.ts';
 
 interface CompletedScheduleViewProps {
   tasks: Task[];
@@ -10,18 +13,42 @@ interface CompletedScheduleViewProps {
   endDate: Date;
   onCategoryChange: (category: string) => void;
   onDateChange: (start: Date, end: Date) => void;
-  onTaskClick: (task: Task) => void;
+  onTaskClick: (task: EisenhowerTask) => void;
 }
 
 export function CompletedView({
-  tasks,
   selectedCategory,
+  startDate,
+  endDate,
   onTaskClick,
 }: CompletedScheduleViewProps) {
-  const { categories } = useCategoryStore();
+  const { categories, fetchCategories } = useCategoryStore();
+  const [tasks, setTasks] = useState<EisenhowerTask[]>([]);
+
+  useEffect(() => {
+    const fetchCompletedTasks = async () => {
+      try {
+        const res = await eisenhowerService.getList();
+        const apiTasks = res.content.content;
+
+        const completedTasks = apiTasks.filter((t) => t.isCompleted);
+        console.log(completedTasks);
+
+        setTasks(completedTasks);
+      } catch (err) {
+        console.error('✅ 완료된 일정 불러오기 실패:', err);
+      }
+    };
+
+    fetchCompletedTasks();
+    fetchCategories();
+  }, []);
 
   const filteredTasks = tasks.filter((task) => {
-    const categoryName = getCategoryNameById(task.category_id, categories);
+    const due = task.dueDate ? new Date(task.dueDate) : null;
+    if (due && (due < startDate || due > endDate)) return false;
+
+    const categoryName = getCategoryNameById(task.categoryId, categories);
     if (selectedCategory !== 'all' && categoryName !== selectedCategory)
       return false;
 
@@ -38,6 +65,7 @@ export function CompletedView({
               task={task}
               onClick={() => onTaskClick(task)}
               variant="done"
+              categories={categories}
             />
           ))}
         </div>

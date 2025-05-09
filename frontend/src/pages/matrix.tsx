@@ -8,7 +8,7 @@ import { useTaskFilters } from '@/hooks/useTaskFilters';
 import { useTaskDnD } from '@/hooks/useTaskDnD';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { Toaster } from 'sonner';
-import type { Task, TaskSections } from '@/types/task';
+import type { Task } from '@/types/task';
 import { PriorityView } from '@/components/eisenhower/view/PriorityView';
 import {
   DropdownMenu,
@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, Grid2X2, Kanban } from 'lucide-react';
 import useMatrixStore from '@/store/matrixStore';
+import { eisenhowerService } from '@/services/eisenhowerService.ts';
 
 export default function MatrixPage() {
   const {
@@ -28,36 +29,26 @@ export default function MatrixPage() {
     setDateRange,
   } = useTaskFilters();
 
+  const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const { categories, fetchCategories } = useCategoryStore();
   const [view, setView] = useState<'matrix' | 'board'>('matrix');
   const [activeTab, setActiveTab] = useState<'all' | 'completed'>('all');
 
-  const { allTasks, addTask, reorderTasks } = useMatrixStore();
-  const { categories } = useCategoryStore();
   const { sensors, handleDragStart, handleDragEnd } = useTaskDnD();
 
   const setActiveTaskId = useMatrixStore((state) => state.setActiveTaskId);
 
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
-  const completedTasks = useMemo(
-    () => allTasks.filter((task) => task.isCompleted),
-    [allTasks],
-  );
-
-  const uncompletedTasks = useMemo(
-    () => allTasks.filter((task) => !task.isCompleted),
-    [allTasks],
-  );
-
-  const tasksByQuadrant = useMemo<TaskSections>(
-    () => ({
-      Q1: uncompletedTasks.filter((task) => task.quadrant === 'Q1'),
-      Q2: uncompletedTasks.filter((task) => task.quadrant === 'Q2'),
-      Q3: uncompletedTasks.filter((task) => task.quadrant === 'Q3'),
-      Q4: uncompletedTasks.filter((task) => task.quadrant === 'Q4'),
-    }),
-    [uncompletedTasks],
-  );
+  const completedTasks = useMemo(() => {
+    return allTasks.filter(
+      (task) =>
+        task.isCompleted &&
+        (!task.dueDate ||
+          (new Date(task.dueDate) >= startDate &&
+            new Date(task.dueDate) <= endDate)),
+    );
+  }, [allTasks, startDate, endDate]);
 
   const handleTaskClick = (task: Task) => {
     setActiveTask(task);
@@ -69,6 +60,21 @@ export default function MatrixPage() {
       setActiveTaskId(null);
     }
   }, [setActiveTaskId]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await eisenhowerService.getList();
+        const fetchedTasks = res.content.content;
+        setAllTasks(fetchedTasks);
+      } catch (err) {
+        console.error('작업 불러오기 실패:', err);
+      }
+    };
+
+    fetchTasks();
+    fetchCategories(); // 카테고리도 같이 불러오기
+  }, []);
 
   return (
     <div className="flex min-h-0 flex-1 bg-white p-[30px] overflow-auto">
@@ -156,15 +162,10 @@ export default function MatrixPage() {
 
           {activeTab === 'all' ? (
             <PriorityView
-              tasks={tasksByQuadrant}
               selectedCategory={selectedCategory}
               startDate={startDate}
               endDate={endDate}
               viewMode={view}
-              onReorderTask={(sectionId, newTasks) =>
-                reorderTasks(sectionId, newTasks)
-              }
-              onCreateTask={(newTask) => addTask(newTask)}
             />
           ) : (
             <CompletedView
