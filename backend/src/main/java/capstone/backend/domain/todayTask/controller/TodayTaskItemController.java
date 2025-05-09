@@ -1,6 +1,7 @@
 package capstone.backend.domain.todayTask.controller;
 
 import capstone.backend.domain.todayTask.dto.request.TodayTaskItemCreateRequest;
+import capstone.backend.domain.todayTask.dto.request.TodayTaskUpdateRequest;
 import capstone.backend.domain.todayTask.dto.response.TodayTaskItemResponse;
 import capstone.backend.domain.todayTask.service.TodayTaskItemService;
 import capstone.backend.global.api.dto.ApiResponse;
@@ -103,5 +104,16 @@ public class TodayTaskItemController {
     ) {
         TodayTaskItemResponse response = todayTaskItemService.updateTaskDateToYesterday(user.getMemberId(), taskId);
         return ApiResponse.ok(response);
+    }
+
+    @Operation(summary = "오늘의 할 일 상태 변경", description = "할 일의 체크 상태 변경")
+    @PatchMapping("/status/{taskId}")
+    public ApiResponse<TodayTaskItemResponse> updateTaskStatus(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @Parameter(name = "taskId", description = "완료할 할 일 ID", example = "1", required = true)
+        @PathVariable Long taskId,
+        @RequestBody @Valid TodayTaskUpdateRequest request
+    ) {
+        return ApiResponse.ok(todayTaskItemService.updateTaskStatus(user.getMemberId(), taskId, request.isCompleted()));
     }
 }

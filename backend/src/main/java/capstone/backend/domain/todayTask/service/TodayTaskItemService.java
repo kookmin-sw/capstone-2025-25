@@ -102,6 +102,18 @@ public class TodayTaskItemService {
         return TodayTaskItemResponse.from(todayTaskItem);
     }
 
+    //할 일 완료 처리
+    @Transactional
+    public TodayTaskItemResponse updateTaskStatus(Long memberId, Long taskId, Boolean isCompleted) {
+        TodayTaskItem todayTaskItem = todayTaskItemRepository.findByIdAndMemberId(taskId, memberId)
+            .orElseThrow(TodayTaskNotFoundException::new);
+
+        todayTaskItem.getEisenhowerItem().setCompletedStatus(isCompleted);
+        todayTaskItemRepository.save(todayTaskItem);
+        
+        return TodayTaskItemResponse.from(todayTaskItem);
+    }
+
     //00시 기준 날짜 가져오기
     private LocalDate getDate() {
 //        LocalDateTime now = LocalDateTime.now();
