@@ -60,4 +60,8 @@ public class InventoryItem {
         this.title = title;
         this.memo = memo;
     }
+
+    public void updateFolder(InventoryFolder folder){
+        this.folder = folder;
+    }
 }

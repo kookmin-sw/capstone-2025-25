@@ -2,7 +2,9 @@ package capstone.backend.domain.inventory.controller;
 
 import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
 import capstone.backend.domain.inventory.request.InventoryItemUpdateRequest;
+import capstone.backend.domain.inventory.request.InventoryItemMoveRequest;
 import capstone.backend.domain.inventory.response.InventoryItemDetailResponse;
+import capstone.backend.domain.inventory.response.InventoryItemMoveResponse;
 import capstone.backend.domain.inventory.response.InventoryItemResponse;
 import capstone.backend.domain.inventory.response.InventoryItemUpdateResponse;
 import capstone.backend.domain.inventory.service.InventoryItemService;
@@ -87,5 +89,16 @@ public class InventoryItemController {
         @RequestBody InventoryItemUpdateRequest request
     ){
         return ApiResponse.ok(inventoryItemService.updateInventoryItem(itemId, user.getMemberId(), request));
+    }
+
+    @Operation(summary = "보관함 아이템의 폴더 변경", description = "보관함 아이템의 폴더를 변경합니다.")
+    @PatchMapping("/move/{itemId}")
+    public ApiResponse<InventoryItemMoveResponse> updateInventoryItemFolder(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @Parameter(name = "itemId", description = "폴더 변경할 아이템 ID", example = "1", required = true)
+        @PathVariable Long itemId,
+        @RequestBody InventoryItemMoveRequest request
+    ){
+        return ApiResponse.ok(inventoryItemService.moveInventoryItemFolder(user.getMemberId(), itemId, request.folderId()));
     }
 }

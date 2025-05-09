@@ -9,6 +9,7 @@ import capstone.backend.domain.inventory.repository.InventoryItemRepository;
 import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
 import capstone.backend.domain.inventory.request.InventoryItemUpdateRequest;
 import capstone.backend.domain.inventory.response.InventoryItemDetailResponse;
+import capstone.backend.domain.inventory.response.InventoryItemMoveResponse;
 import capstone.backend.domain.inventory.response.InventoryItemResponse;
 import capstone.backend.domain.inventory.response.InventoryItemUpdateResponse;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
@@ -68,5 +69,19 @@ public class InventoryItemService {
         item.update(request.title(), request.memo());
         inventoryItemRepository.save(item);
         return InventoryItemUpdateResponse.from(item);
+    }
+
+    //보관함 아이템 폴더 변경
+    @Transactional
+    public InventoryItemMoveResponse moveInventoryItemFolder(Long memberId, Long itemId, Long folderId){
+        InventoryItem item = inventoryItemRepository.findByIdAndMemberId(itemId, memberId)
+            .orElseThrow(InventoryItemNotFoundException::new);
+
+        InventoryFolder newFolder = inventoryFolderRepository.findById(folderId)
+            .orElseThrow(FolderNotFoundException::new);
+
+        item.updateFolder(newFolder);
+        inventoryItemRepository.save(item);
+        return InventoryItemMoveResponse.from(item);
     }
 }
