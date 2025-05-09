@@ -26,6 +26,7 @@ export default function Brainstorming() {
   const [inputText, setInputText] = useState('');
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const bubblesRef = useRef<BubbleNodeType[]>([]);
+  const textareaRef = useRef(null);
 
   // bubbleList가 변경되면 bubbles 상태를 업데이트
   useEffect(() => {
@@ -58,7 +59,6 @@ export default function Brainstorming() {
   };
 
   // textarea 높이
-  const textareaRef = useRef(null);
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -124,29 +124,38 @@ export default function Brainstorming() {
           if (bottomY > y) y = bottomY;
         }
       }
-
-      if (y + diameter <= containerHeight - 50) {
-        const randomOffset = Math.floor(Math.random() * jitter) - jitter / 2;
-        candidates.push({ x: x + randomOffset, y });
-      }
+      const randomOffset = Math.floor(Math.random() * jitter) - jitter / 2;
+      candidates.push({ x: x + randomOffset, y });
+      // if (y + diameter <= containerHeight - 50) {
+      //   const randomOffset = Math.floor(Math.random() * jitter) - jitter / 2;
+      //   candidates.push({ x: x + randomOffset, y });
+      // }
     }
 
     // 후보가 없으면 아래로 쌓기
-    if (candidates.length === 0) {
-      const maxBottom = currentBubbles.reduce((max, b) => {
-        const bottom = (b.y * container.offsetHeight) / 100 + b.radius * 2;
-        return Math.max(max, bottom);
-      }, 0);
-      return {
-        x: Math.random() * (containerWidth - radius * 2),
-        y: maxBottom,
-      };
-    }
+    // if (candidates.length === 0) {
+    //   const maxBottom = currentBubbles.reduce((max, b) => {
+    //     const bottom = (b.y * container.offsetHeight) / 100 + b.radius * 2;
+    //     return Math.max(max, bottom);
+    //   }, 0);
+    //   return {
+    //     x: Math.random() * (containerWidth - radius * 2),
+    //     y: maxBottom,
+    //   };
+    // }
 
     // 가장 위에 붙일 수 있는 후보 위치들 중 하나 선택
     const minY = Math.min(...candidates.map((c) => c.y));
     const filtered = candidates.filter((c) => c.y === minY);
     const chosen = filtered[Math.floor(Math.random() * filtered.length)];
+
+    if (chosen.y + diameter > containerHeight) {
+      setContainerSize((prev) => ({
+        ...prev,
+        height: chosen.y + diameter + 100, // +100은 여유
+      }));
+      console.log(chosen.y + diameter + 100)
+    }
 
     return chosen;
   };
@@ -169,20 +178,7 @@ export default function Brainstorming() {
             const radius = getRadiusForText(bubble.title);
 
             // 기존 + 지금 추가 중인 버블 포함해서 자리 찾기
-            let position = getPosition(radius, [...bubbles, ...newBubbles]);
-
-            // 자리 못 찾으면 아래로 이어 붙이기
-            if (!position) {
-              const maxBottom = [...bubbles, ...newBubbles].reduce((max, b) => {
-                const bottom = (b.y * containerHeight) / 100 + b.radius * 2;
-                return Math.max(max, bottom);
-              }, 0);
-
-              position = {
-                x: Math.random() * (containerWidth - radius * 2),
-                y: maxBottom + 10, // 10px 정도 여백
-              };
-            }
+            const position = getPosition(radius, [...bubbles, ...newBubbles]);
 
             newBubbles.push({
               bubbleId: bubble.bubbleId,
@@ -221,7 +217,8 @@ export default function Brainstorming() {
   return (
     <div
       ref={containerRef}
-      className={clsx('w-full h-full bg-red', isMobile && 'pb-[50px]')}
+      className={clsx('w-full h-full lg:pb-[0px]', isMobile && 'pb-[50px]')}
+
     >
       <div
         className="absolute left-0 top-0 w-screen h-screen
@@ -230,7 +227,8 @@ export default function Brainstorming() {
       <div className="relative w-full h-full">
         <div
           ref={scrollRef}
-          className="relative w-full h-full overflow-auto bg-blue"
+          className="relative w-full h-full overflow-auto"
+
         >
           {bubbles.map((bubble, index) => (
             <Popover key={index}>
@@ -295,8 +293,7 @@ export default function Brainstorming() {
         </div>
         <div
           className={clsx(
-            'absolute bottom-[35px] left-1/2 transform -translate-x-1/2 bg-white/60 rounded-[48px] flex w-10/12 max-w-[704px] justify-center h-fit items-center',
-            isMobile ? 'gap-2 px-4 py-3' : 'gap-4 px-3 py-3',
+            'absolute bottom-[35px] left-1/2 transform -translate-x-1/2 bg-white/60 rounded-[48px] flex w-10/12 max-w-[704px] justify-center h-fit items-center gap-4 px-3 py-3 sm:gap-2 sm:px-4 sm:py-3 ',
           )}
         >
           <textarea
