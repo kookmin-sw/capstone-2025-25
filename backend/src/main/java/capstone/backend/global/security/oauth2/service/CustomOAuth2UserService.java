@@ -3,6 +3,7 @@ package capstone.backend.global.security.oauth2.service;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.member.scheme.Role;
+import capstone.backend.domain.member.service.MemberService;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import capstone.backend.global.security.oauth2.user.OAuth2UserInfoFactory;
 import capstone.backend.global.security.oauth2.user.OAuth2UserInfo;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -63,7 +65,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                                 userInfo.getName(),
                                 Role.USER,
                                 provider);
-                        return memberRepository.save(newMember);
+
+                        memberRepository.save(newMember);
+
+                        //기본 폴더 생성
+                        memberService.createDefaultFolder(newMember);
+
+                        return newMember;
                     });
 
             // 사용자 객체 반환
