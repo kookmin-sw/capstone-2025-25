@@ -23,7 +23,6 @@ export const ENDPOINTS = {
     REFRESH_TOKEN: '/api/auth/reissue',
   },
 
-
   /* 아이젠하워 작업 관련 엔드포인트 */
   EISENHOWER: {
     GET_ALL: '/api/v1/eisenhower', // 아이젠하워 작업 전체 조회
@@ -40,8 +39,8 @@ export const ENDPOINTS = {
     GET_ALL: '/api/v1/eisenhower/category', // 카테고리 전체 조회
     CREATE: '/api/v1/eisenhower/category', // 카테고리 생성
     UPDATE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 수정
-    DELETE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 삭제
-
+    DELETE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 삭제,
+  },
   /* 오늘의 할 일 관련 엔드포인트 */
   TODAY: {
     LIST: '/api/v2/today-task',
@@ -62,6 +61,5 @@ export const ENDPOINTS = {
       ANALYZE: '/api/brainstorming/analyze/chunk',
       REWRITE: '/api/brainstorming/rewrite/chunk',
     },
-
   },
 };
