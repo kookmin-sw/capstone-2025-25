@@ -14,7 +14,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -45,7 +44,7 @@ public class EisenhowerItem {
     @Column(nullable = false)
     private String title;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private EisenhowerCategory category;
 
@@ -75,6 +74,7 @@ public class EisenhowerItem {
                 .title(request.title())
                 .category(category)
                 .dueDate(request.dueDate())
+                .memo(request.memo())
                 .quadrant(request.quadrant())
                 .order(request.order())
                 .isCompleted(false)

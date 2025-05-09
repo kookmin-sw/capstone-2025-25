@@ -133,6 +133,7 @@ type MindmapState = {
   updateNodeHeight: (nodeId: string, height: number) => void;
   setDirection: (direction: 'TB' | 'LR') => void;
   addChildNode: (parentNodeId: string) => void;
+  initializeWithQuestions: (rootText: string, questions: string[]) => void;
 };
 
 export const useMindmapStore = create<MindmapState>((set, get) => ({
@@ -247,6 +248,71 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
       const { nodes, edges } = getLayoutedElements(
         updatedNodes,
         updatedEdges,
+        state.direction,
+      );
+
+      return { nodes, edges };
+    });
+  },
+
+  initializeWithQuestions: (rootText: string, questions: string[]) => {
+    set((state) => {
+      const rootNode: Node = {
+        id: ROOT_NODE_ID,
+        type: 'custom',
+        data: {
+          label: rootText,
+          layoutDirection: state.direction,
+        },
+        position: { x: 0, y: 0 },
+        targetPosition: state.direction === 'LR' ? Position.Left : Position.Top,
+        sourcePosition:
+          state.direction === 'LR' ? Position.Right : Position.Bottom,
+        style: nodeStyles,
+      };
+
+      const newNodes: Node[] = [rootNode];
+      const newEdges: Edge[] = [];
+
+      nodeHeightMap.clear();
+      nodeHeightMap.set(ROOT_NODE_ID, MIN_NODE_HEIGHT);
+
+      questions.forEach((question, index) => {
+        const nodeId = `node-${index + 1}`;
+
+        nodeHeightMap.set(nodeId, MIN_NODE_HEIGHT);
+
+        const childNode: Node = {
+          id: nodeId,
+          type: 'custom',
+          data: {
+            label: question,
+            layoutDirection: state.direction,
+          },
+          position: { x: 100, y: 100 * (index + 1) },
+          targetPosition:
+            state.direction === 'LR' ? Position.Left : Position.Top,
+          sourcePosition:
+            state.direction === 'LR' ? Position.Right : Position.Bottom,
+          style: nodeStyles,
+        };
+
+        const edge: Edge = {
+          id: `edge-${ROOT_NODE_ID}-${nodeId}`,
+          source: ROOT_NODE_ID,
+          target: nodeId,
+          type: ConnectionLineType.Bezier,
+          animated: true,
+          style: edgeStyles,
+        };
+
+        newNodes.push(childNode);
+        newEdges.push(edge);
+      });
+
+      const { nodes, edges } = getLayoutedElements(
+        newNodes,
+        newEdges,
         state.direction,
       );
 

@@ -1,6 +1,7 @@
 package capstone.backend.domain.bubble.controller.v2;
 
 
+import capstone.backend.domain.bubble.dto.request.BubbleUpdateRequest;
 import capstone.backend.domain.bubble.dto.request.ConfirmBubbleRequest;
 import capstone.backend.domain.bubble.dto.request.PromptRequest;
 import capstone.backend.domain.bubble.dto.response.BubbleDTO;
@@ -55,7 +56,7 @@ public class BubbleController {
     public ApiResponse<Void> confirmEisenhower(
             @AuthenticationPrincipal CustomOAuth2User user,
             @Valid @RequestBody EisenhowerItemCreateRequest request,
-            @Parameter(name = "bubble id", description = "버블 ID", example = "1", required = true)
+            @Parameter(name = "id", description = "버블 ID", example = "1", required = true)
             @PathVariable Long id
     ) {
         bubbleService.confirmToEisenhower(request, user.getMemberId(), id);
@@ -67,10 +68,22 @@ public class BubbleController {
     public ApiResponse<Void> confirmInventory(
             @AuthenticationPrincipal CustomOAuth2User user,
             @Valid @RequestBody ConfirmBubbleRequest request,
-            @Parameter(name = "bubble id", description = "버블 ID", example = "1", required = true)
+            @Parameter(name = "id", description = "버블 ID", example = "1", required = true)
             @PathVariable Long id
     ) {
         bubbleService.confirmToInventory(request, user.getMemberId(), id);
+        return ApiResponse.ok();
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "버블 수정", description = "특정 버블 수정 API")
+    public ApiResponse<Void> updateBubble(
+            @AuthenticationPrincipal CustomOAuth2User user,
+            @Parameter(name = "id", description = "버블 ID", example = "1", required = true)
+            @PathVariable Long id,
+            @Valid @RequestBody BubbleUpdateRequest request
+    ) {
+        bubbleService.updateBubble(user.getMemberId(), id, request);
         return ApiResponse.ok();
     }
 
@@ -78,7 +91,7 @@ public class BubbleController {
     @Operation(summary = "버블 삭제", description = "특정 버블 삭제 API")
     public ApiResponse<Void> deleteBubble(
             @AuthenticationPrincipal CustomOAuth2User user,
-            @Parameter(name = "bubble id", description = "버블 ID", example = "1", required = true)
+            @Parameter(name = "id", description = "버블 ID", example = "1", required = true)
             @PathVariable Long id
     ) {
         bubbleService.deleteBubble(user.getMemberId(), id);

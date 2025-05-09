@@ -12,8 +12,6 @@ import capstone.backend.domain.todayTask.entity.TodayTaskItem;
 import capstone.backend.domain.todayTask.exception.TodayTaskNotFoundException;
 import capstone.backend.domain.todayTask.repository.TodayTaskItemRepository;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -75,7 +73,7 @@ public class TodayTaskItemService {
 
     //어제 할 일 중 완료되지 않은 할 일 가져오기
     public Page<TodayTaskItemResponse> getYesterdayTaskItems(Long memberId, Pageable pageable){
-        Page<TodayTaskItem> yesterdayTasks = todayTaskItemRepository.findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, getDate(), false, pageable);
+        Page<TodayTaskItem> yesterdayTasks = todayTaskItemRepository.findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, getDate().minusDays(1), false, pageable);
 
         return yesterdayTasks.map(TodayTaskItemResponse::from);
     }
@@ -104,10 +102,11 @@ public class TodayTaskItemService {
         return TodayTaskItemResponse.from(todayTaskItem);
     }
 
-    //오전 6시 기준 날짜 가져오기
+    //00시 기준 날짜 가져오기
     private LocalDate getDate() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime sixAM = now.with(LocalTime.of(6, 0));
-        return now.isBefore(sixAM) ? LocalDate.now().minusDays(1) : LocalDate.now();
+//        LocalDateTime now = LocalDateTime.now();
+//        LocalDateTime sixAM = now.with(LocalTime.of(6, 0));
+//        return now.isBefore(sixAM) ? LocalDate.now().minusDays(1) : LocalDate.now();
+        return LocalDate.now();
     }
 }

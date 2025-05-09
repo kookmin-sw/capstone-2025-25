@@ -75,7 +75,20 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  color: black;
-  font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    color: black;
+    font-weight: 400;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
 }

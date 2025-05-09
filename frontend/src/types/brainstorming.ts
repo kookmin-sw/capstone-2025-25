@@ -1,0 +1,12 @@
+export type BubbleType = {
+  bubbleId: number;
+  title: string;
+};
+
+export type BubbleNodeType = {
+  id: number;
+  title: string;
+  radius: number;
+  x: number;
+  y: number;
+};

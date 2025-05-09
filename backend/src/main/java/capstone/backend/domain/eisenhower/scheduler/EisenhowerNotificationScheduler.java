@@ -17,7 +17,7 @@ public class EisenhowerNotificationScheduler {
     private final Job notificationJob;
     private final JobLauncher jobLauncher;
 
-    @Scheduled(cron = "0 0 6 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void run() throws Exception {
         // JobParameters 생성
         JobParameters jobParameters = new JobParametersBuilder()

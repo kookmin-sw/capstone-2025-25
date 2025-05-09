@@ -10,7 +10,7 @@ public record EisenhowerItemResponse(
         Long id,
         String title,
         String memo,
-        Long category_id,
+        Long categoryId,
         EisenhowerQuadrant quadrant,
         LocalDate dueDate,
         Long order,
