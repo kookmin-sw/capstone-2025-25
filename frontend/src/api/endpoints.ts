@@ -14,6 +14,7 @@ export const ENDPOINTS = {
     DELETE_BUBBLE: (id: number) => `/api/v2/bubble/${id}`,
     GET_BUBBLES: '/api/v2/bubble',
     CREATE_BUBBLE: '/api/v2/bubble/create',
+    PATCH_BUBBLE: (id: number) => `/api/v2/bubble/${id}`,
   },
 
   /* 인증 관련 엔드포인트 */
@@ -22,6 +23,24 @@ export const ENDPOINTS = {
     REFRESH_TOKEN: '/api/auth/reissue',
   },
 
+  /* 아이젠하워 작업 관련 엔드포인트 */
+  EISENHOWER: {
+    GET_ALL: '/api/v1/eisenhower', // 아이젠하워 작업 전체 조회
+    GET_ONE: (itemId: number) => `/api/v1/eisenhower/${itemId}`, // 아이젠하워 작업 조회
+    SEARCH: '/api/v1/eisenhower/search', // 아이젠하워 작업 검색
+    CREATE: '/api/v1/eisenhower', // 아이젠하워 작업 생성
+    UPDATE: (itemId: number) => `/api/v1/eisenhower/${itemId}`, // 아이젠하워 작업 수정
+    DELETE: (itemId: number) => `/api/v1/eisenhower/${itemId}`, // 아이젠하워 작업 삭제
+    UPDATE_ORDER: '/api/v1/eisenhower/order', // 아이젠하워 작업들 순서 및 사분면 위치 업데이트
+  },
+
+  /* 아이젠하워 카테고리 관련 엔드포인트 */
+  EISENHOWER_CATEGORY: {
+    GET_ALL: '/api/v1/eisenhower/category', // 카테고리 전체 조회
+    CREATE: '/api/v1/eisenhower/category', // 카테고리 생성
+    UPDATE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 수정
+    DELETE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 삭제,
+  },
   /* 오늘의 할 일 관련 엔드포인트 */
   TODAY: {
     LIST: '/api/v2/today-task',
@@ -34,5 +53,13 @@ export const ENDPOINTS = {
   /* 카테고리 관련 엔드포인트 */
   CATEGORY: {
     LIST: '/api/v1/eisenhower/category',
+  },
+
+  /* GPT API 관련 엔드포인트 */
+  GPT: {
+    BRAINSTORMING: {
+      ANALYZE: '/api/brainstorming/analyze/chunk',
+      REWRITE: '/api/brainstorming/rewrite/chunk',
+    },
   },
 };

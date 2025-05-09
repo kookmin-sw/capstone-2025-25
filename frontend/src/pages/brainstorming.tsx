@@ -14,6 +14,7 @@ import useGetBubbles from '@/hooks/queries/brainstorming/useGetBubbles.ts';
 import useDeleteBubble from '@/hooks/queries/brainstorming/useDeleteBubble.ts';
 import useCreateBubble from '@/hooks/queries/brainstorming/useCreateBubble.ts';
 import { Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 export default function Brainstorming() {
   const isMobile = useIsMobile();
@@ -27,6 +28,8 @@ export default function Brainstorming() {
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const bubblesRef = useRef<BubbleNodeType[]>([]);
   const textareaRef = useRef(null);
+
+  const navigate = useNavigate();
 
   // bubbleList가 변경되면 bubbles 상태를 업데이트
   useEffect(() => {
@@ -211,14 +214,18 @@ export default function Brainstorming() {
     });
   };
 
-  const moveToMindmap = () => {};
+  const moveToMindmap = (id: number, title: string) => {
+    const encodedBubbleText = encodeURIComponent(title);
+    navigate(`/mindmap/${id}?text=${encodedBubbleText}`);
+  };
+
   const createMatrix = () => {};
   const saveBubble = () => {};
+
   return (
     <div
       ref={containerRef}
       className={clsx('w-full h-full lg:pb-[0px]', isMobile && 'pb-[50px]')}
-
     >
       <div
         className="absolute left-0 top-0 w-screen h-screen
