@@ -4,7 +4,7 @@ export type BubbleType = {
 };
 
 export type BubbleNodeType = {
-  id: number;
+  bubbleId: number;
   title: string;
   radius: number;
   x: number;

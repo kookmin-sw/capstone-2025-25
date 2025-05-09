@@ -16,7 +16,7 @@ export default function Header() {
   };
 
   return (
-    <header className="px-7.5 py-2.5 h-[50px] flex items-center justify-between sticky top-0 w-full bg-gray-scale-200 border-b border-b-white z-10 ">
+    <header className="px-7.5 py-2.5 h-[50px] flex items-center justify-between sticky top-0 w-full bg-gray-scale-200 border-b border-b-white z-100 ">
       <div className="flex-1 max-w-md">
         <img src={TmpLogo} />
       </div>
