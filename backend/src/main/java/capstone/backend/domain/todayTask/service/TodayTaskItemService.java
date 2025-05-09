@@ -31,28 +31,24 @@ public class TodayTaskItemService {
 
     //오늘의 할 일 추가
     @Transactional
-    public List<TodayTaskItemResponse> addTaskItem(Long memberId, TodayTaskItemCreateRequest request) {
+    public TodayTaskItemResponse addTaskItem(Long memberId, Long eisenhowerId) {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-        return request.eisenhowerItemIds().stream()
-            .map(itemId -> {
-                // 중복 여부 확인
-                boolean exists = todayTaskItemRepository.existsByMemberIdAndEisenhowerItemIdAndTaskDate(
-                    memberId, itemId, LocalDate.now());
+        // 중복 여부 확인
+        boolean exists = todayTaskItemRepository.existsByMemberIdAndEisenhowerItemIdAndTaskDate(
+            memberId, eisenhowerId, LocalDate.now());
 
-                if (exists) {
-                    throw (new DuplicateTaskException());
-                }
+        if (exists) {
+            throw (new DuplicateTaskException());
+        }
 
-                EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findByIdAndMemberId(itemId, memberId)
-                    .orElseThrow(EisenhowerItemNotFoundException::new);
+        EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findByIdAndMemberId(eisenhowerId, memberId)
+            .orElseThrow(EisenhowerItemNotFoundException::new);
 
-                TodayTaskItem todayTaskItem = TodayTaskItem.from(member, eisenhowerItem);
-                todayTaskItemRepository.save(todayTaskItem);
+        TodayTaskItem todayTaskItem = TodayTaskItem.from(member, eisenhowerItem);
+        todayTaskItemRepository.save(todayTaskItem);
 
-                return TodayTaskItemResponse.from(todayTaskItem);
-            })
-            .toList();
+        return TodayTaskItemResponse.from(todayTaskItem);
     }
 
     //오늘의 할 일 조회

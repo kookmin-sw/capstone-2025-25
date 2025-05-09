@@ -25,13 +25,14 @@ import org.springframework.web.bind.annotation.*;
 public class TodayTaskItemController {
     private final TodayTaskItemService todayTaskItemService;
 
-    @Operation(summary = "오늘의 할 일 추가", description = "여러 개의 아이젠하워 할 일을 오늘의 할 일 목록에 추가")
-    @PostMapping
-    public ApiResponse<List<TodayTaskItemResponse>> addTodayTask(
-        @RequestBody @Valid TodayTaskItemCreateRequest request,
-        @AuthenticationPrincipal CustomOAuth2User user
+    @Operation(summary = "오늘의 할 일 추가", description = "아이젠하워 할 일을 오늘의 할 일 목록에 추가")
+    @PostMapping("/{eisenhowerId}")
+    public ApiResponse<TodayTaskItemResponse> addTodayTask(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @Parameter(name = "eisenhowerId", description="추가할 아이젠하워 ID", example = "1", required = true)
+        @PathVariable Long eisenhowerId
     ) {
-        List<TodayTaskItemResponse> response = todayTaskItemService.addTaskItem(user.getMemberId(), request);
+        TodayTaskItemResponse response = todayTaskItemService.addTaskItem(user.getMemberId(), eisenhowerId);
         return ApiResponse.ok(response);
     }
 
