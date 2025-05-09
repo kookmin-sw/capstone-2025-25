@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "보관함 폴더", description = "보관함 폴더 관련 API")
 @RestController
-@RequestMapping("/api/inventory/folder")
+@RequestMapping("/api/v2/inventory/folder")
 @RequiredArgsConstructor
 public class InventoryFolderController {
     private final InventoryFolderService inventoryFolderService;
