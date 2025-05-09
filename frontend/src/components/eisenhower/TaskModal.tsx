@@ -48,7 +48,7 @@ export function TaskModal({
   const resetForm = () => {
     setTitle('');
     setMemo('');
-    setDueDate(new Date().toISOString().split('T')[0]);
+    setDueDate('');
     setCategoryId(null);
   };
 
