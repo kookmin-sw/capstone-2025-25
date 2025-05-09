@@ -11,10 +11,10 @@ export default function DefaultLayout() {
     <div className="min-h-screen bg-[#F0F0F5] flex flex-col">
       <Header />
 
-      <div className="flex flex-1 p-4 overflow-hidden ">
+      <div className="flex flex-1 p-4 overflow-visible ">
         <div
           className={clsx(
-            'block sticky top-0 self-start h-[calc(100vh-88px)] mr-4 flex-shrink-0 z-50',
+            'block sticky top-[66px] self-start h-[calc(100vh-88px)] mr-4 flex-shrink-0 z-50',
             isMobile && 'hidden',
           )}
         >
