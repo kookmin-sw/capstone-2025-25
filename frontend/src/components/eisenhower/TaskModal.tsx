@@ -212,7 +212,7 @@ export function TaskModal({
                     label: cat.title,
                     value: String(cat.id),
                     bgColor: cat.color,
-                    textColor: cat.textColor,
+                    // textColor: cat.textColor,
                   }))}
                   selected={categoryId ? String(categoryId) : ''}
                   onChange={(val) => setCategoryId(val ? Number(val) : null)}
@@ -236,10 +236,6 @@ export function TaskModal({
                   }
                   bgColor={
                     categories.find((c) => c.id === categoryId)?.color ?? '#ccc'
-                  }
-                  textColor={
-                    categories.find((c) => c.id === categoryId)?.textColor ??
-                    '#000'
                   }
                 />
               ) : (
