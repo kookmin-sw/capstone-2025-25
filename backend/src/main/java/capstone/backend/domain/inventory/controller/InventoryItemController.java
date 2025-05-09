@@ -3,10 +3,7 @@ package capstone.backend.domain.inventory.controller;
 import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
 import capstone.backend.domain.inventory.request.InventoryItemUpdateRequest;
 import capstone.backend.domain.inventory.request.InventoryItemMoveRequest;
-import capstone.backend.domain.inventory.response.InventoryItemDetailResponse;
-import capstone.backend.domain.inventory.response.InventoryItemMoveResponse;
 import capstone.backend.domain.inventory.response.InventoryItemResponse;
-import capstone.backend.domain.inventory.response.InventoryItemUpdateResponse;
 import capstone.backend.domain.inventory.service.InventoryItemService;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
@@ -60,12 +57,12 @@ public class InventoryItemController {
 
     @Operation(summary = "보관함 아이템 상세 조회", description = "보관함 아이템의 메모 조회")
     @GetMapping("/item/{itemId}")
-    public ApiResponse<InventoryItemDetailResponse> getInventoryItemDetail(
+    public ApiResponse<InventoryItemResponse> getInventoryItemDetail(
         @AuthenticationPrincipal CustomOAuth2User user,
         @Parameter(name = "itemId", description = "상세 조회 할 아이템 ID", example = "1", required = true)
         @PathVariable Long itemId
     ){
-        InventoryItemDetailResponse response = inventoryItemService.getInventoryItemDetail(itemId, user.getMemberId());
+        InventoryItemResponse response = inventoryItemService.getInventoryItemDetail(itemId, user.getMemberId());
         return ApiResponse.ok(response);
     }
 
@@ -82,7 +79,7 @@ public class InventoryItemController {
 
     @Operation(summary = "보관함 아이템 수정", description = "보관함 아이템 수정")
     @PatchMapping("/item/{itemId}")
-    public ApiResponse<InventoryItemUpdateResponse> updateInventoryItem(
+    public ApiResponse<InventoryItemResponse> updateInventoryItem(
         @AuthenticationPrincipal CustomOAuth2User user,
         @Parameter(name = "itemId", description = "수정할 아이템 ID", example = "1", required = true)
         @PathVariable Long itemId,
@@ -93,7 +90,7 @@ public class InventoryItemController {
 
     @Operation(summary = "보관함 아이템의 폴더 변경", description = "보관함 아이템의 폴더를 변경합니다.")
     @PatchMapping("/move/{itemId}")
-    public ApiResponse<InventoryItemMoveResponse> updateInventoryItemFolder(
+    public ApiResponse<InventoryItemResponse> updateInventoryItemFolder(
         @AuthenticationPrincipal CustomOAuth2User user,
         @Parameter(name = "itemId", description = "폴더 변경할 아이템 ID", example = "1", required = true)
         @PathVariable Long itemId,

@@ -8,10 +8,7 @@ import capstone.backend.domain.inventory.repository.InventoryFolderRepository;
 import capstone.backend.domain.inventory.repository.InventoryItemRepository;
 import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
 import capstone.backend.domain.inventory.request.InventoryItemUpdateRequest;
-import capstone.backend.domain.inventory.response.InventoryItemDetailResponse;
-import capstone.backend.domain.inventory.response.InventoryItemMoveResponse;
 import capstone.backend.domain.inventory.response.InventoryItemResponse;
-import capstone.backend.domain.inventory.response.InventoryItemUpdateResponse;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
@@ -47,7 +44,7 @@ public class InventoryItemService {
     }
 
     //보관함 아이템 상세 조회
-    public InventoryItemDetailResponse getInventoryItemDetail(Long itemId, Long memberId){
+    public InventoryItemResponse getInventoryItemDetail(Long itemId, Long memberId){
         return inventoryItemRepository.findByMemberIdAndId(memberId, itemId);
     }
 
@@ -62,18 +59,18 @@ public class InventoryItemService {
 
     //보관함 아이템 수정
     @Transactional
-    public InventoryItemUpdateResponse updateInventoryItem(Long itemId, Long memberId, InventoryItemUpdateRequest request){
+    public InventoryItemResponse updateInventoryItem(Long itemId, Long memberId, InventoryItemUpdateRequest request){
         InventoryItem item = inventoryItemRepository.findByIdAndMemberId(itemId, memberId)
             .orElseThrow(InventoryItemNotFoundException::new);
 
         item.update(request.title(), request.memo());
         inventoryItemRepository.save(item);
-        return InventoryItemUpdateResponse.from(item);
+        return InventoryItemResponse.from(item);
     }
 
     //보관함 아이템 폴더 변경
     @Transactional
-    public InventoryItemMoveResponse moveInventoryItemFolder(Long memberId, Long itemId, Long folderId){
+    public InventoryItemResponse moveInventoryItemFolder(Long memberId, Long itemId, Long folderId){
         InventoryItem item = inventoryItemRepository.findByIdAndMemberId(itemId, memberId)
             .orElseThrow(InventoryItemNotFoundException::new);
 
@@ -82,6 +79,6 @@ public class InventoryItemService {
 
         item.updateFolder(newFolder);
         inventoryItemRepository.save(item);
-        return InventoryItemMoveResponse.from(item);
+        return InventoryItemResponse.from(item);
     }
 }
