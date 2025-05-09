@@ -4,12 +4,14 @@ import capstone.backend.domain.inventory.entity.InventoryFolder;
 
 public record InventoryFolderResponse(
     Long id,
-    String name
+    String name,
+    int itemCount
 ) {
     public static InventoryFolderResponse from(InventoryFolder inventoryFolder) {
         return new InventoryFolderResponse(
             inventoryFolder.getId(),
-            inventoryFolder.getName()
+            inventoryFolder.getName(),
+            inventoryFolder.getItems().size()
         );
     }
 }
