@@ -110,15 +110,12 @@ public class TodayTaskItemService {
 
         todayTaskItem.getEisenhowerItem().setCompletedStatus(isCompleted);
         todayTaskItemRepository.save(todayTaskItem);
-        
+
         return TodayTaskItemResponse.from(todayTaskItem);
     }
 
     //00시 기준 날짜 가져오기
     private LocalDate getDate() {
-//        LocalDateTime now = LocalDateTime.now();
-//        LocalDateTime sixAM = now.with(LocalTime.of(6, 0));
-//        return now.isBefore(sixAM) ? LocalDate.now().minusDays(1) : LocalDate.now();
         return LocalDate.now();
     }
 }
