@@ -23,8 +23,8 @@ export default function DefaultLayout() {
           </div>
         </div>
 
-        <div className="flex-1">
-          <main className="w-full h-full">
+        <div className="flex-1 min-w-0">
+          <main className="w-full h-full ">
             <Outlet />
           </main>
         </div>
