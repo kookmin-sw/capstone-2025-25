@@ -157,7 +157,7 @@ export default function Brainstorming() {
         ...prev,
         height: chosen.y + diameter + 100, // +100은 여유
       }));
-      console.log(chosen.y + diameter + 100)
+      console.log(chosen.y + diameter + 100);
     }
 
     return chosen;
@@ -232,11 +232,7 @@ export default function Brainstorming() {
     bg-blue-2"
       ></div>
       <div className="relative w-full h-full">
-        <div
-          ref={scrollRef}
-          className="relative w-full h-full overflow-auto"
-
-        >
+        <div ref={scrollRef} className="relative w-full h-full overflow-auto">
           {bubbles.map((bubble, index) => (
             <Popover key={index}>
               <PopoverTrigger asChild>
@@ -269,7 +265,7 @@ export default function Brainstorming() {
                       'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
                       isMobile ? 'text-[14px]' : 'text-[16px]',
                     )}
-                    onClick={moveToMindmap}
+                    onClick={() => moveToMindmap(bubble.bubbleId, bubble.title)}
                   >
                     마인드맵
                   </button>
