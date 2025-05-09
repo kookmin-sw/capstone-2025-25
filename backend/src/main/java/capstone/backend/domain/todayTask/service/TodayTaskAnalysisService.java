@@ -46,6 +46,7 @@ public class TodayTaskAnalysisService {
                 .orElse(TodayTaskAnalysis.builder()
                     .member(member)
                     .date(yesterday)
+                    .dayOfWeek(yesterday.getDayOfWeek().toString())
                     .completedNum(completedNum)
                     .build());
 

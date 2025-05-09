@@ -8,12 +8,14 @@ import java.util.stream.Collectors;
 public record TodayTaskAnalysisResponse(
     Long id,
     LocalDate taskDate,
+    String dayOfWeek,
     Long completedNum
 ) {
     public static TodayTaskAnalysisResponse from(TodayTaskAnalysis todayTaskAnalysis) {
         return new TodayTaskAnalysisResponse(
             todayTaskAnalysis.getId(),
             todayTaskAnalysis.getDate(),
+            todayTaskAnalysis.getDayOfWeek(),
             todayTaskAnalysis.getCompletedNum()
         );
     }

@@ -24,12 +24,16 @@ public class TodayTaskAnalysis {
     private LocalDate date;
 
     @Column(nullable = false)
+    private String dayOfWeek;
+
+    @Column(nullable = false)
     private long completedNum;
 
     public static TodayTaskAnalysis from(Member member, LocalDate date, long completedNum) {
         return TodayTaskAnalysis.builder()
             .member(member)
             .date(date)
+            .dayOfWeek(date.getDayOfWeek().toString())
             .completedNum(completedNum)
             .build();
     }
