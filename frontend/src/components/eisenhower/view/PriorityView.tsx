@@ -18,18 +18,8 @@ import { TaskCard } from '@/components/eisenhower/card/TaskCard';
 import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import type { Task } from '@/types/task';
 import { Quadrant } from '@/types/commonTypes';
-import { TaskModal } from '@/components/eisenhower/TaskModal.tsx';
-
-interface PriorityViewProps {
-  tasks: Record<Quadrant, Task[]>;
-  selectedCategory: string;
-  startDate: Date;
-  endDate: Date;
-  onReorderTask: (quadrant: Quadrant, newTasks: Task[]) => void;
-  onCreateTask: (task: Task) => void;
-  onUpdateTask?: (task: Task) => void;
-  viewMode: 'matrix' | 'board';
-}
+import { TaskModal } from '@/components/eisenhower/TaskModal';
+import { eisenhowerService } from '@/services/eisenhowerService';
 
 function Droppable({
   id,
@@ -47,26 +37,57 @@ function Droppable({
 }
 
 export function PriorityView({
-  tasks,
   selectedCategory,
   startDate,
   endDate,
-  onReorderTask,
-  onCreateTask,
-  onUpdateTask,
   viewMode,
-}: PriorityViewProps) {
+}: {
+  selectedCategory: string;
+  startDate: Date;
+  endDate: Date;
+  viewMode: 'matrix' | 'board';
+}) {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-
   const { fetchCategories, categories } = useCategoryStore();
 
+  const [tasksByQuadrant, setTasksByQuadrant] = useState<
+    Record<Quadrant, Task[]>
+  >({
+    Q1: [],
+    Q2: [],
+    Q3: [],
+    Q4: [],
+  });
+
   useEffect(() => {
-    if (categories.length === 0) fetchCategories();
-  }, [categories, fetchCategories]);
+    if (categories.length === 0) {
+      fetchCategories();
+    }
+  }, [categories.length]);
+
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        const res = await eisenhowerService.getList();
+        const allTasks = res.content.content;
+        const grouped: Record<Quadrant, Task[]> = {
+          Q1: [],
+          Q2: [],
+          Q3: [],
+          Q4: [],
+        };
+        allTasks.forEach((task) => grouped[task.quadrant].push(task));
+        setTasksByQuadrant(grouped);
+      } catch (err) {
+        console.error('작업 목록 불러오기 실패:', err);
+      }
+    };
+    loadTasks();
+  }, []);
 
   const findTaskQuadrant = (taskId: string | number): Quadrant | undefined =>
     (['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).find((q) =>
-      tasks[q].some((t) => String(t.id) === String(taskId)),
+      tasksByQuadrant[q].some((t) => String(t.id) === String(taskId)),
     );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -78,28 +99,66 @@ export function PriorityView({
     const to = findTaskQuadrant(over.id) || (over.id as Quadrant);
     if (!from || !to) return;
 
-    const fromIndex = tasks[from].findIndex(
+    const fromIndex = tasksByQuadrant[from].findIndex(
       (t) => String(t.id) === String(active.id),
     );
-    const toIndex = tasks[to].findIndex(
+    const toIndex = tasksByQuadrant[to].findIndex(
       (t) => String(t.id) === String(over.id),
     );
-    const moving = tasks[from][fromIndex];
+    const moving = tasksByQuadrant[from][fromIndex];
+
+    let newTasksByQuadrant = { ...tasksByQuadrant };
 
     if (from === to) {
-      onReorderTask(from, arrayMove(tasks[from], fromIndex, toIndex));
+      const reordered = arrayMove(newTasksByQuadrant[from], fromIndex, toIndex);
+      newTasksByQuadrant = { ...newTasksByQuadrant, [from]: reordered };
     } else {
-      const newFrom = tasks[from].filter(
+      const newFrom = newTasksByQuadrant[from].filter(
         (t) => String(t.id) !== String(active.id),
       );
-      const newTo = [...tasks[to]];
+      const newTo = [...newTasksByQuadrant[to]];
       newTo.splice(toIndex >= 0 ? toIndex : newTo.length, 0, {
         ...moving,
         quadrant: to,
       });
-      onReorderTask(from, newFrom);
-      onReorderTask(to, newTo);
+      newTasksByQuadrant = {
+        ...newTasksByQuadrant,
+        [from]: newFrom,
+        [to]: newTo,
+      };
     }
+
+    setTasksByQuadrant(newTasksByQuadrant);
+
+    const items = Object.entries(newTasksByQuadrant).flatMap(
+      ([quadrant, tasks]) =>
+        tasks.map((task, index) => ({
+          eisenhowerItemId: task.id,
+          quadrant,
+          order: index + 1,
+        })),
+    );
+
+    eisenhowerService
+      .updateOrder(items)
+      .then(() => console.log('순서 및 사분면 업데이트 완료'))
+      .catch((err) => console.error('순서 및 사분면 업데이트 실패:', err));
+  };
+
+  const handleCreateTask = (newTask: Task) => {
+    setTasksByQuadrant((prev) => ({
+      ...prev,
+      [newTask.quadrant]: [...prev[newTask.quadrant], newTask],
+    }));
+  };
+
+  const handleUpdateTask = (updatedTask: Task) => {
+    setTasksByQuadrant((prev) => ({
+      ...prev,
+      [updatedTask.quadrant]: prev[updatedTask.quadrant].map((t) =>
+        t.id === updatedTask.id ? updatedTask : t,
+      ),
+    }));
   };
 
   const gridClass =
@@ -107,32 +166,11 @@ export function PriorityView({
       ? 'grid-cols-1 md:grid-cols-4'
       : 'grid-cols-1 md:grid-cols-2';
 
-  const getQuadrantColors = (
-    viewMode: 'matrix' | 'board',
-  ): Record<Quadrant, string> => {
-    if (viewMode === 'matrix') {
-      return {
-        Q1: 'bg-[#F5F1FF] border-gray-300 border rounded-tl-md',
-        Q2: 'bg-[#FAF6FF] border-t border-r border-b border-gray-300 rounded-tr-md',
-        Q3: 'bg-[#FAF8FD] border-l border-b border-r border-gray-300 rounded-bl-md',
-        Q4: 'bg-[#FAFAFA] border-b border-r border-gray-300 rounded-br-md',
-      };
-    }
-    return {
-      Q1: 'bg-[#F5F1FF] border border-gray-300 rounded-tl-md rounded-bl-md',
-      Q2: 'bg-[#FAF6FF] border-t border-r border-b border-gray-300',
-      Q3: 'bg-[#FAF8FD] border-t border-r border-b border-gray-300',
-      Q4: 'bg-[#FAFAFA] border-t border-r border-b border-gray-300 rounded-tr-md rounded-br-md',
-    };
-  };
-
-  const quadrantColors = getQuadrantColors(viewMode);
-  const handleUpdateTask = (updatedTask: Task) => {
-    const quadrant = updatedTask.quadrant;
-    const newTasks = tasks[quadrant].map((t) =>
-      t.id === updatedTask.id ? updatedTask : t,
-    );
-    onReorderTask(quadrant, newTasks);
+  const quadrantColors: Record<Quadrant, string> = {
+    Q1: 'bg-[#F5F1FF] border-gray-300 border rounded-tl-md',
+    Q2: 'bg-[#FAF6FF] border-t border-r border-b border-gray-300 rounded-tr-md',
+    Q3: 'bg-[#FAF8FD] border-l border-b border-r border-gray-300 rounded-bl-md',
+    Q4: 'bg-[#FAFAFA] border-b border-r border-gray-300 rounded-br-md',
   };
 
   return (
@@ -141,17 +179,19 @@ export function PriorityView({
       onDragEnd={handleDragEnd}
       onDragStart={({ active }) => {
         const q = findTaskQuadrant(active.id);
-        const t = q && tasks[q].find((t) => String(t.id) === String(active.id));
+        const t =
+          q &&
+          tasksByQuadrant[q].find((t) => String(t.id) === String(active.id));
         if (t) setActiveTask(t);
       }}
     >
       <div className={`grid ${gridClass} h-full`}>
-        {(Object.keys(tasks) as Quadrant[]).map((quadrant) => {
-          const filtered = tasks[quadrant].filter((task) => {
+        {(Object.keys(tasksByQuadrant) as Quadrant[]).map((quadrant) => {
+          const filtered = tasksByQuadrant[quadrant].filter((task) => {
             if (task.isCompleted) return false;
             const matchCategory =
               selectedCategory === 'all' ||
-              getCategoryNameById(task.category_id, categories) ===
+              getCategoryNameById(task.categoryId, categories) ===
                 selectedCategory;
             const taskDate = new Date(task.dueDate || '');
             return (
@@ -162,40 +202,31 @@ export function PriorityView({
           return (
             <Droppable key={quadrant} id={quadrant}>
               <div
-                className={`px-4 py-5 ${
-                  viewMode === 'board'
-                    ? 'h-full h-screen'
-                    : 'min-h-[400px] h-full'
-                } flex flex-col ${quadrantColors[quadrant]}`}
+                className={`px-4 py-5 min-h-[400px] flex flex-col ${quadrantColors[quadrant]}`}
               >
                 <div className="flex justify-between items-center pb-[14px]">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 flex items-center justify-center rounded-full border border-black text-sm font-semibold leading-none">
                       {quadrant.replace('Q', '')}
                     </div>
-                    <div
-                      className={`${viewMode === 'board' ? 'text-[16px]' : 'text-xl'} font-semibold`}
-                    >
+                    <div className="text-xl font-semibold">
                       {quadrantTitles[quadrant]}
                     </div>
                     <div className="text-sm text-[#6E726E]">
                       {filtered.length}
                     </div>
                   </div>
-
-                  {/* 생성 모달 */}
                   <TaskModal
                     mode="create"
                     quadrant={quadrant}
-                    onCreateTask={onCreateTask}
+                    onCreateTask={handleCreateTask}
                   />
                 </div>
-
                 <SortableContext
                   items={filtered.map((task) => String(task.id))}
                   strategy={verticalListSortingStrategy}
                 >
-                  <div className="space-y-2 flex-1 overflow-y-auto h-full scrollbar-hide">
+                  <div className="space-y-2 flex-1 overflow-y-auto scrollbar-hide">
                     {filtered.map((task) => (
                       <TaskModal
                         key={task.id}
@@ -207,9 +238,10 @@ export function PriorityView({
                           <div>
                             <TaskCard
                               key={String(task.id)}
-                              task={{ ...task, id: task.id }}
+                              task={task}
                               layout={viewMode}
-                              onUpdateTask={onUpdateTask}
+                              onUpdateTask={handleUpdateTask}
+                              categories={categories}
                             />
                           </div>
                         }

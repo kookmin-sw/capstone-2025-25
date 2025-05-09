@@ -24,8 +24,6 @@ export function FilterBar({
     {
       label: '모든 카테고리',
       value: 'all',
-      bgColor: '#FFFFFF',
-      textColor: '#6B7280',
     },
     ...categories.map((cat) => ({
       label: cat.title,

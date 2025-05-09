@@ -171,7 +171,7 @@ export default function Sidebar() {
     <div className="h-full">
       <div
         className={cn(
-          'bg-white border-r border-[#E5E5E5] h-full flex flex-col transition-all duration-300 ease-in-out',
+          'bg-white border-r border-[#E5E5E5] h-full flex flex-col transition-all duration-300 ease-in-out rounded-lg',
           isOpen ? 'w-[218px]' : 'w-[70px]',
         )}
       >
