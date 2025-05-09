@@ -11,7 +11,7 @@ public record InventoryFolderResponse(
         return new InventoryFolderResponse(
             inventoryFolder.getId(),
             inventoryFolder.getName(),
-            inventoryFolder.getItems().size()
+            inventoryFolder.getItems() != null ? inventoryFolder.getItems().size() : 0
         );
     }
 }
