@@ -16,6 +16,7 @@ public interface TodayTaskItemRepository extends JpaRepository<TodayTaskItem, Lo
     Long countByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(Long memberId, LocalDate taskDate, boolean isCompleted);
     Optional<TodayTaskItem> findByIdAndMemberId(Long id, Long memberId);
     Page<TodayTaskItem> findByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(Long memberId, LocalDate taskDate, boolean isCompleted, Pageable pageable);
+    boolean existsByMemberIdAndEisenhowerItemIdAndTaskDate(Long memberId, Long eisenhowerItemId, LocalDate taskDate);
 
     @Query("SELECT DISTINCT t.member.id FROM TodayTaskItem t WHERE t.taskDate = :date")
     List<Long> findDistinctMemberIdsByTaskDate(@Param("date") LocalDate date);

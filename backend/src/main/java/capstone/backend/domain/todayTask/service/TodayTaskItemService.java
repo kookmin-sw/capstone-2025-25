@@ -10,6 +10,7 @@ import capstone.backend.domain.todayTask.dto.request.TodayTaskItemCreateRequest;
 import capstone.backend.domain.todayTask.dto.response.TodayTaskItemResponse;
 import capstone.backend.domain.todayTask.entity.TodayTaskItem;
 import capstone.backend.domain.todayTask.exception.TodayTaskNotFoundException;
+import capstone.backend.domain.todayTask.exception.DuplicateTaskException;
 import capstone.backend.domain.todayTask.repository.TodayTaskItemRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +36,14 @@ public class TodayTaskItemService {
 
         return request.eisenhowerItemIds().stream()
             .map(itemId -> {
+                // 중복 여부 확인
+                boolean exists = todayTaskItemRepository.existsByMemberIdAndEisenhowerItemIdAndTaskDate(
+                    memberId, itemId, LocalDate.now());
+
+                if (exists) {
+                    throw (new DuplicateTaskException());
+                }
+
                 EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findByIdAndMemberId(itemId, memberId)
                     .orElseThrow(EisenhowerItemNotFoundException::new);
 
