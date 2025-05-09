@@ -1,6 +1,7 @@
 package capstone.backend.domain.inventory.service;
 
 import capstone.backend.domain.inventory.entity.InventoryFolder;
+import capstone.backend.domain.inventory.exception.FolderDeletionNotAllowedException;
 import capstone.backend.domain.inventory.exception.FolderNotFoundException;
 import capstone.backend.domain.inventory.repository.InventoryFolderRepository;
 import capstone.backend.domain.inventory.request.InventoryFolderRequest;
@@ -55,6 +56,10 @@ public class InventoryFolderService {
     //폴더 삭제
     @Transactional
     public void deleteInventoryFolder(Long memberId, Long folderId){
+        if (folderId == 1L){
+            throw new FolderDeletionNotAllowedException();
+        }
+
         InventoryFolder inventoryFolder = inventoryFolderRepository.findByIdAndMemberId(folderId, memberId)
             .orElseThrow(FolderNotFoundException::new);
 

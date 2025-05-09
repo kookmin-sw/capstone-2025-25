@@ -62,7 +62,7 @@ public class InventoryFolderController {
     @DeleteMapping("/{id}")
     public ApiResponse<Void> deleteInventoryFolder(
         @AuthenticationPrincipal CustomOAuth2User user,
-        @Parameter(name = "id", description = "삭제할 폴더 ID", example = "1", required = true)
+        @Parameter(name = "id", description = "삭제할 폴더 ID", example = "2", required = true)
         @PathVariable Long id
     ){
         inventoryFolderService.deleteInventoryFolder(user.getMemberId(), id);
