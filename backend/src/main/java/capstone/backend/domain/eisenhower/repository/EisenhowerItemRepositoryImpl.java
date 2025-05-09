@@ -2,18 +2,16 @@ package capstone.backend.domain.eisenhower.repository;
 
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemFilterRequest;
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
-import capstone.backend.domain.eisenhower.entity.QEisenhowerItem;
-import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.eisenhower.entity.EisenhowerQuadrant;
+import capstone.backend.domain.eisenhower.entity.QEisenhowerItem;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class EisenhowerItemRepositoryImpl implements EisenhowerItemRepositoryCustom {
@@ -31,7 +29,6 @@ public class EisenhowerItemRepositoryImpl implements EisenhowerItemRepositoryCus
                         eqCompleted(filter.completed(), item),
                         eqCategory(filter.categoryId(), item),
                         eqDueDate(filter.dueDate(), item),
-                        eqType(filter.type(), item),
                         eqQuadrant(filter.quadrant(), item)
                 )
                 .offset(pageable.getOffset())
@@ -47,7 +44,6 @@ public class EisenhowerItemRepositoryImpl implements EisenhowerItemRepositoryCus
                         eqCompleted(filter.completed(), item),
                         eqCategory(filter.categoryId(), item),
                         eqDueDate(filter.dueDate(), item),
-                        eqType(filter.type(), item),
                         eqQuadrant(filter.quadrant(), item)
                 )
                 .fetchOne();
@@ -65,10 +61,6 @@ public class EisenhowerItemRepositoryImpl implements EisenhowerItemRepositoryCus
 
     private BooleanExpression eqDueDate(LocalDate dueDate, QEisenhowerItem item) {
         return dueDate != null ? item.dueDate.eq(dueDate) : null;
-    }
-
-    private BooleanExpression eqType(TaskType type, QEisenhowerItem item) {
-        return type != null ? item.type.eq(type) : null;
     }
 
     private BooleanExpression eqQuadrant(EisenhowerQuadrant quadrant, QEisenhowerItem item) {

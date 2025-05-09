@@ -14,7 +14,6 @@ export type MatrixState = {
   allTasks: Task[];
   tasksByQuadrant: TaskSections;
   activeTaskId: number | null;
-
   setTasks: (tasks: Task[]) => void;
   updateTask: (taskId: number, updatedTask: Task) => void;
   addTask: (newTask: Task) => void;
@@ -109,9 +108,8 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
       id,
       title,
       memo,
-      category_id: 5,
+      categoryId: 5,
       quadrant,
-      type: 'TODO',
       dueDate,
       order: get().tasksByQuadrant[quadrant].length,
       isCompleted: false,

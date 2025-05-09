@@ -49,7 +49,7 @@ public class MindMapService {
             .ifPresent(eisenhowerId -> {
                 EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(eisenhowerId)
                     .orElseThrow(EisenhowerItemNotFoundException::new);
-                eisenhowerItem.connectMindMap(mindMap);
+//                eisenhowerItem.connectMindMap(mindMap);
                 eisenhowerItemRepository.save(eisenhowerItem);
             });
         mindMapRepository.save(mindMap);
@@ -99,13 +99,14 @@ public class MindMapService {
 
     //마인드맵 리스트 조회
     public List<SidebarMindMapResponse> getMindMapList(Long memberId){
-        List<Object[]> results = mindMapRepository.findMindMapWithEisenhowerByMemberId(memberId);
-        return results.stream()
-            .map(row -> {
-                MindMap mindMap = (MindMap) row[0];
-                EisenhowerItem eisenhowerItem = (EisenhowerItem) row[1]; // null 가능
-                return SidebarMindMapResponse.from(mindMap, eisenhowerItem);
-            })
-            .toList();
+//        List<Object[]> results = mindMapRepository.findMindMapWithEisenhowerByMemberId(memberId);
+//        return results.stream()
+//            .map(row -> {
+//                MindMap mindMap = (MindMap) row[0];
+//                EisenhowerItem eisenhowerItem = (EisenhowerItem) row[1]; // null 가능
+//                return SidebarMindMapResponse.from(mindMap, eisenhowerItem);
+//            })
+//            .toList();
+        return null;
     }
 }

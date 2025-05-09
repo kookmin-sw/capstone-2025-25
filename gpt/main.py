@@ -1,17 +1,19 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 from config import CORS_ORIGINS
-from routes import gpt_router, temporary_router
+from routes import brainstorming_router, mindmap_router, eisenhower_router
 from utils.logging import setup_logging
-from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
-app.include_router(gpt_router.router, prefix="/api/gpt")
-app.include_router(temporary_router.router, prefix="/api/gpt")
+app.include_router(mindmap_router.router, prefix="/api/mindmap")
+app.include_router(brainstorming_router.router, prefix="/api/brainstorming")
+app.include_router(eisenhower_router.router, prefix="/api/eisenhower")
 
-@app.get("/")
+
+@app.get("/", include_in_schema=False)
 async def root():
     return RedirectResponse(url="/docs")  # FastAPI의 Swagger UI로 리다이렉트
 

@@ -34,7 +34,6 @@ record SidebarEisenhowerItemDTO(
     String memo,
     LocalDate dueDate,
     EisenhowerQuadrant quadrant,
-    TaskType type,
     Long order,
     boolean isCompleted,
     LocalDateTime createdAt
@@ -46,7 +45,6 @@ record SidebarEisenhowerItemDTO(
             eisenhowerItem.getMemo(),
             eisenhowerItem.getDueDate(),
             eisenhowerItem.getQuadrant(),
-            eisenhowerItem.getType(),
             eisenhowerItem.getOrder(),
             eisenhowerItem.getIsCompleted(),
             eisenhowerItem.getCreatedAt()

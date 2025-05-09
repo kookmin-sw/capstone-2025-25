@@ -1,9 +1,8 @@
 package capstone.backend.domain.pomodoro.service;
 
-import static capstone.backend.domain.pomodoro.util.PomodoroTimeUtils.*;
+import static capstone.backend.domain.pomodoro.util.PomodoroTimeUtils.calculateTotalTimeSummary;
+import static capstone.backend.domain.pomodoro.util.PomodoroTimeUtils.convertSecondsToLocalTime;
 
-import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
-import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundException;
 import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
@@ -11,7 +10,6 @@ import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.pomodoro.dto.request.CreatePomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.response.PomodoroDTO;
-import capstone.backend.domain.pomodoro.dto.response.SidebarPomodoroResponse;
 import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
 import capstone.backend.domain.pomodoro.exception.PomodoroNotFoundException;
 import capstone.backend.domain.pomodoro.repository.PomodoroRepository;
@@ -19,9 +17,6 @@ import capstone.backend.domain.pomodoro.schema.Pomodoro;
 import capstone.backend.domain.pomodoro.schema.PomodoroCycle;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,15 +49,15 @@ public class PomodoroService {
                 convertSecondsToLocalTime(times[1])
         );
 
-        // eisenhowerId가 있으면 매핑
-        Optional.ofNullable(request.eisenhowerId())
-                .ifPresent(eisenhowerId -> {
-                    // 한번 더 유효성 검사
-                    EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(eisenhowerId)
-                            .orElseThrow(EisenhowerItemNotFoundException::new);
-                    eisenhowerItem.connectPomodoro(pomodoro); // 연관관계 설정
-                    eisenhowerItemRepository.save(eisenhowerItem);
-                });
+//        // eisenhowerId가 있으면 매핑
+//        Optional.ofNullable(request.eisenhowerId())
+//                .ifPresent(eisenhowerId -> {
+//                    // 한번 더 유효성 검사
+//                    EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findById(eisenhowerId)
+//                            .orElseThrow(EisenhowerItemNotFoundException::new);
+//                    eisenhowerItem.connectPomodoro(pomodoro); // 연관관계 설정
+//                    eisenhowerItemRepository.save(eisenhowerItem);
+//                });
 
         Pomodoro save = pomodoroRepository.save(pomodoro);
         return new PomodoroDTO(save.getId());
@@ -70,16 +65,17 @@ public class PomodoroService {
 
     // (언링크 + 링크) 뽀모도로 전체 조회
     public SidebarResponse getAllPomodoros(Long memberId) {
-        List<Object[]> results = pomodoroRepository.findPomodoroWithEisenhowerByMemberId(memberId);
-
-        Map<Boolean, List<SidebarPomodoroResponse>> partitioned = results.stream()
-                .map(row -> new SidebarPomodoroResponse((Pomodoro) row[0], (EisenhowerItem) row[1]))
-                .collect(Collectors.partitioningBy(SidebarPomodoroResponse::isLinked));
-
-        return new SidebarResponse(
-                partitioned.getOrDefault(false, List.of()), // unlinked
-                partitioned.getOrDefault(true, List.of())   // linked
-        );
+//        List<Object[]> results = pomodoroRepository.findPomodoroWithEisenhowerByMemberId(memberId);
+//
+//        Map<Boolean, List<SidebarPomodoroResponse>> partitioned = results.stream()
+//                .map(row -> new SidebarPomodoroResponse((Pomodoro) row[0], (EisenhowerItem) row[1]))
+//                .collect(Collectors.partitioningBy(SidebarPomodoroResponse::isLinked));
+//
+//        return new SidebarResponse(
+//                partitioned.getOrDefault(false, List.of()), // unlinked
+//                partitioned.getOrDefault(true, List.of())   // linked
+//        );
+        return null;
     }
 
     // 특정 뽀모도로 조회
@@ -94,7 +90,7 @@ public class PomodoroService {
         Pomodoro pomodoro = pomodoroRepository.findByIdAndMemberId(pomodoroId, memberId).orElseThrow(PomodoroNotFoundException::new);
 
         // EisenhowerItem에서 연결 끊기 (만약 존재한다면)
-        eisenhowerItemRepository.findById(pomodoroId).ifPresent(eisenhowerItem -> eisenhowerItem.connectPomodoro(null));
+//        eisenhowerItemRepository.findById(pomodoroId).ifPresent(eisenhowerItem -> eisenhowerItem.connectPomodoro(null));
 
         pomodoroRepository.delete(pomodoro);
     }

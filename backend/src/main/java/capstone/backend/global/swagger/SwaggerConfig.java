@@ -16,9 +16,9 @@ import java.util.List;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "AHZ (ADHD Zone)",
+                title = "Bubble-PoP API",
                 version = "1.0.0",
-                description = "흩어진 생각을 정리하고, 일상 흐름을 바로 잡아주는 ADHD 맞춤형 서비스"
+                description = "쏟아지는 생각 속에서, 나만의 흐름을 다시 세우는 서비스"
         ),
         security = @SecurityRequirement(name = "JWT")
 )
