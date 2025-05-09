@@ -16,7 +16,7 @@ export default function TodayMainDashborad() {
 
   return (
     <div className="flex flex-col lg:flex-row w-full">
-      <div className="w-full lg:w-1/2 bg-white rounded-lg p-4 mr-4">
+      <div className="w-full lg:w-1/2 bg-white rounded-lg p-4 lg:mr-4 h-auto lg:min-h-[616px] overflow-auto">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-4">
             <h3 className="text-[20px] text-[#525463] font-semibold">
@@ -34,7 +34,6 @@ export default function TodayMainDashborad() {
           </div>
         </div>
 
-        {/* 여기서 날짜 포맷은 한글 형식으로 유지 */}
         <div className="my-8 font-semibold">
           {year}년 {month}월 {date}일
         </div>
