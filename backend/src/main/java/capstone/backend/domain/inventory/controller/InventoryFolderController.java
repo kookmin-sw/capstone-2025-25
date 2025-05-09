@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,5 +56,16 @@ public class InventoryFolderController {
     ){
         InventoryFolderResponse response = inventoryFolderService.updateInventoryFolder(user.getMemberId(), id, request);
         return ApiResponse.ok(response);
+    }
+
+    @Operation(summary = "보관함 폴더 삭제")
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteInventoryFolder(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @Parameter(name = "id", description = "삭제할 폴더 ID", example = "1", required = true)
+        @PathVariable Long id
+    ){
+        inventoryFolderService.deleteInventoryFolder(user.getMemberId(), id);
+        return ApiResponse.ok();
     }
 }

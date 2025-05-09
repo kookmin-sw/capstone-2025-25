@@ -6,6 +6,8 @@ import static lombok.AccessLevel.*;
 import capstone.backend.domain.inventory.request.InventoryFolderRequest;
 import capstone.backend.domain.member.scheme.Member;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +30,9 @@ public class InventoryFolder {
 
     @Column(nullable = false, length = 10)
     private String name;
+
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<InventoryItem> items = new ArrayList<>();
 
     public static InventoryFolder from(Member member, InventoryFolderRequest inventoryFolderRequest) {
         return InventoryFolder.builder()

@@ -34,7 +34,7 @@ public class InventoryItem {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "folder_id")
+    @JoinColumn(name = "folder_id", nullable = false)
     private InventoryFolder folder;
 
     @Column(nullable = false)

@@ -51,4 +51,13 @@ public class InventoryFolderService {
 
         return InventoryFolderResponse.from(inventoryFolder);
     }
+
+    //폴더 삭제
+    @Transactional
+    public void deleteInventoryFolder(Long memberId, Long folderId){
+        InventoryFolder inventoryFolder = inventoryFolderRepository.findByIdAndMemberId(folderId, memberId)
+            .orElseThrow(FolderNotFoundException::new);
+
+        inventoryFolderRepository.delete(inventoryFolder);
+    }
 }
