@@ -21,7 +21,7 @@ export default function store() {
   return (
     <div className="p-10">
       <div className="flex items-center justify-between">
-        <div className="flex items-end gap-4 mb-4">
+        <div className="flex items-end gap-4 mb-8">
           <h1 className="text-[28px] text-[#525463] font-semibold">
             나의 보관함
           </h1>
