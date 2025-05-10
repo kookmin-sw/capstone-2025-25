@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -97,5 +98,13 @@ public class InventoryItemController {
         @RequestBody @Valid InventoryItemMoveRequest request
     ){
         return ApiResponse.ok(inventoryItemService.moveInventoryItemFolder(user.getMemberId(), itemId, request.folderId()));
+    }
+
+    @Operation(summary = "최근 생성한 5개 보관함 아이템 조회", description = "보관함 아이템 Top5에 대해 생성순으로 조회합니다.")
+    @GetMapping("/recent")
+    public ApiResponse<List<InventoryItemResponse>> getRecentInventoryItems(
+        @AuthenticationPrincipal CustomOAuth2User user
+    ){
+        return ApiResponse.ok(inventoryItemService.getRecentItems(user.getMemberId()));
     }
 }

@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,7 +44,7 @@ public class InventoryItem {
     private String memo;
 
     @CreatedDate
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     public static InventoryItem from(InventoryItemCreateRequest request, InventoryFolder folder, Member member) {
         return InventoryItem.builder()
@@ -52,7 +52,7 @@ public class InventoryItem {
             .folder(folder)
             .title(request.title())
             .memo(request.memo())
-            .createdAt(LocalDate.now())
+            .createdAt(LocalDateTime.now())
             .build();
     }
 

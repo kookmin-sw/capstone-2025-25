@@ -12,6 +12,7 @@ import capstone.backend.domain.inventory.response.InventoryItemResponse;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -78,5 +79,11 @@ public class InventoryItemService {
 
         item.updateFolder(newFolder);
         return InventoryItemResponse.from(item);
+    }
+
+    //보관함 최근 생성 5개 조회
+    @Transactional
+    public List<InventoryItemResponse> getRecentItems(Long memberId){
+        return inventoryItemRepository.findTop5ByMemberIdOrderByCreatedAtDesc(memberId);
     }
 }

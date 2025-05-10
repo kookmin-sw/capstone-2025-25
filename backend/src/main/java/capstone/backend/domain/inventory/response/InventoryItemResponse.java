@@ -1,14 +1,14 @@
 package capstone.backend.domain.inventory.response;
 
 import capstone.backend.domain.inventory.entity.InventoryItem;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record InventoryItemResponse(
     Long id,
     Long folderId,
     String title,
     String memo,
-    LocalDate createdAt
+    LocalDateTime createdAt
 ) {
     public static InventoryItemResponse from(InventoryItem item) {
         return new InventoryItemResponse(
