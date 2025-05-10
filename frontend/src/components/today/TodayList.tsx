@@ -35,20 +35,8 @@ export default function TodayList() {
     moveTodayMutation(id);
   };
 
-  const currentId = usePomodoroStore((s) => s.id);
-  const setId = usePomodoroStore((s) => s.setId);
-  const setTitle = usePomodoroStore((s) => s.setTitle);
-  const setIsRunning = usePomodoroStore((s) => s.setIsRunning);
-  const setElapsedTime = usePomodoroStore((s) => s.setElapsedTime);
+  const setTimer = usePomodoroStore((s) => s.setTimer);
 
-  const startPomodoro = (id: number, title: string) => {
-    if (id != currentId) {
-      setId(id);
-      setTitle(title);
-      setElapsedTime(0);
-      setIsRunning(false);
-    }
-  };
 
   return (
     <div className="mt-4 space-y-4">
@@ -147,7 +135,7 @@ export default function TodayList() {
                     : 'bg-blue text-white',
                 )}
                 onClick={() => {
-                  startPomodoro(todo.id, todo.title);
+                  setTimer(todo.id, todo.title);
                 }}
               >
                 뽀모도로 시작하기
