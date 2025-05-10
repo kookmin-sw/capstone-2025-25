@@ -3,6 +3,7 @@ package capstone.backend.domain.inventory.request;
 import jakarta.validation.constraints.NotNull;
 
 public record InventoryItemMoveRequest(
-    @NotNull Long folderId
+    @NotNull(message = "id를 입력해주세요.")
+    Long folderId
 ) {
 }
