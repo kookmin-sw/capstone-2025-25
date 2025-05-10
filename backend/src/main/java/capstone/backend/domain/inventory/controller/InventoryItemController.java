@@ -83,7 +83,7 @@ public class InventoryItemController {
         @AuthenticationPrincipal CustomOAuth2User user,
         @Parameter(name = "itemId", description = "수정할 아이템 ID", example = "1", required = true)
         @PathVariable Long itemId,
-        @RequestBody InventoryItemUpdateRequest request
+        @RequestBody @Valid InventoryItemUpdateRequest request
     ){
         return ApiResponse.ok(inventoryItemService.updateInventoryItem(itemId, user.getMemberId(), request));
     }
@@ -94,7 +94,7 @@ public class InventoryItemController {
         @AuthenticationPrincipal CustomOAuth2User user,
         @Parameter(name = "itemId", description = "폴더 변경할 아이템 ID", example = "1", required = true)
         @PathVariable Long itemId,
-        @RequestBody InventoryItemMoveRequest request
+        @RequestBody @Valid InventoryItemMoveRequest request
     ){
         return ApiResponse.ok(inventoryItemService.moveInventoryItemFolder(user.getMemberId(), itemId, request.folderId()));
     }
