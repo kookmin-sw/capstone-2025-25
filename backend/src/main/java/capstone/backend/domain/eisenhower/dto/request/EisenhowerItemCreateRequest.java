@@ -1,6 +1,5 @@
 package capstone.backend.domain.eisenhower.dto.request;
 
-import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.eisenhower.entity.EisenhowerQuadrant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -22,12 +21,11 @@ public record EisenhowerItemCreateRequest(
         @Schema(description = "아이젠하워 사분면", example = "Q1")
         EisenhowerQuadrant quadrant,
 
-        @NotNull(message = "작업 타입(type)은 필수입니다.")
-        @Schema(description = "작업 타입", example = "TODO")
-        TaskType type,
-
         @NotNull(message = "정렬 순서(order)는 필수입니다.")
         @Schema(description = "정렬 순서 (작은 값일수록 우선)", example = "1")
-        Long order
+        Long order,
+
+        @Schema(description = "메모", example = "운동은 어려워!")
+        String memo
 ) {
 }

@@ -12,7 +12,7 @@ interface CategoryBadgeProps {
 export function CategoryBadge({
   label,
   bgColor = '#E5E7EB',
-  textColor = '#FFFFFF',
+  textColor = '#15161A',
   showDelete,
   onDelete,
 }: CategoryBadgeProps) {
@@ -22,7 +22,6 @@ export function CategoryBadge({
         style={{
           backgroundColor: bgColor,
           color: textColor,
-          border: `1px solid ${textColor}`,
         }}
         className="rounded-full px-3 py-1 font-semibold text-sm "
       >

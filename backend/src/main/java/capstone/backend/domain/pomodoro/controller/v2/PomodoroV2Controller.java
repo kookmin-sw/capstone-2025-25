@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "뽀모도로 타이머 V2", description = "Version 2. 기획 수정 후 뽀모도로 타이머 관련 API")
 @RestController
-@RequestMapping("/api/pomodoro/v2")
+@RequestMapping("/api/v2/pomodoro")
 @RequiredArgsConstructor
 public class PomodoroV2Controller {
 

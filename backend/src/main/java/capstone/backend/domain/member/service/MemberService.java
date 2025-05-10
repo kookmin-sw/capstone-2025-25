@@ -32,4 +32,7 @@ public class MemberService {
             .build();
         inventoryFolderRepository.save(defaultFolder);
     }
+    public Member findById(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    }
 }

@@ -1,7 +1,6 @@
 import { Calendar } from 'lucide-react';
 import type { Category } from '@/types/category';
 import { getCategoryNameById } from '@/utils/category';
-import { TypeBadge } from '@/components/eisenhower/filter/TypeBadge';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { Task } from '@/types/task.ts';
 
@@ -11,14 +10,13 @@ export interface DragOverlayCardProps {
 }
 
 export function DragOverlayCard({ task, categories }: DragOverlayCardProps) {
-  const { title, category_id, dueDate, type, memo } = task;
-  const categoryName = getCategoryNameById(category_id, categories);
+  const { title, categoryId, dueDate, memo } = task;
+  const categoryName = getCategoryNameById(categoryId, categories);
 
   return (
     <div className="bg-white rounded-md p-4 shadow-lg w-full flex flex-col">
       <div className="flex mb-2 gap-1">
-        <TypeBadge type={type} />
-        {category_id !== null && <CategoryBadge label={categoryName} />}
+        {categoryId !== null && <CategoryBadge label={categoryName} />}
       </div>
 
       <div className="flex items-start mb-2 flex-grow">
