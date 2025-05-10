@@ -2,10 +2,13 @@ import { useAuthStore } from '@/store/authStore';
 import { Bell } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import TmpLogo from '@/assets/tmp-logo.svg';
+import { usePomodoroStore } from '@/store/pomodoro';
+import usePomodoroControl from '@/hooks/usePomodoroControl';
 
 export default function Header() {
   const { isAuthenticated, setToken } = useAuthStore();
   const navigate = useNavigate();
+  usePomodoroControl();
 
   const handleAuthAction = () => {
     if (isAuthenticated) {
@@ -15,6 +18,15 @@ export default function Header() {
     }
   };
 
+  const currentId = usePomodoroStore((s) => s.id);
+  const currentElapsedTime = usePomodoroStore((s) => s.elapsedTime);
+
+  const TOTAL_SECONDS = 25 * 60;
+  const remaining = Math.max(TOTAL_SECONDS - currentElapsedTime, 0);
+
+  const format = (seconds: number) =>
+    `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+
   return (
     <header className="px-7.5 py-2.5 h-[50px] flex items-center justify-between sticky top-0 w-full bg-gray-scale-200 border-b border-b-white z-100 ">
       <div className="flex-1 max-w-md">
@@ -22,6 +34,11 @@ export default function Header() {
       </div>
       <div className="flex items-center gap-[20px]">
         <div></div>
+        {currentId && (
+          <div className="text-[#7098FF] font-medium bg-blue-2 border rounded-4xl border-blue px-4 py-[6px] text-[20px] h-9 w-[87px]">
+             {format(remaining)}
+          </div>
+        )}
 
         {isAuthenticated && (
           <>

@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import { useIsMobile } from '@/hooks/use-mobile.ts';
 
 export default function DefaultLayout() {
+
   const isMobile = useIsMobile();
   return (
     <div className="min-h-screen bg-[#F0F0F5] flex flex-col">

@@ -1,151 +1,82 @@
-import { generateNumericId } from '@/lib/generateNumericId';
-import { pomodoroMockData } from '@/mock/pomorodo';
-import {
-  PomodoroList,
-  Pomodoro,
-  LinkedUnlinkedPomodoro,
-  Eisenhower,
-  PomodoroCycle,
-  TotalTime,
-} from '@/types/pomodoro';
 import { create } from 'zustand';
+import { Pomodoro } from '@/types/pomodoro';
 
-export type PomodoroListState = {
-  pomodoros: PomodoroList;
+export const usePomodoroStore = create<Pomodoro>((set, get) => ({
+  id: null,
+  title: '',
+  isRunning: false,
+  elapsedTime: 0,
+  startTimestamp: null,
+  intervalId: null,
 
-  createPomodoro: (newPomodoroData: {
-    title: string;
-    plannedCycles: PomodoroCycle[];
-    totalPlannedTime: TotalTime;
-    eisenhower: Eisenhower | null;
-  }) => number;
-  deletePomodoro: (id: number) => void;
-  disconnectPomodoroTask: (pomodoroId: number) => void;
-};
+  setId: (id: number) => set({ id }),
+  setTitle: (title: string) => set({ title }),
+  setIsRunning: (running: boolean) => set({ isRunning: running }),
+  setElapsedTime: (seconds: number) => set({ elapsedTime: seconds }),
+  setStartTimestamp: (time: number) => set({ startTimestamp: time }),
 
-const useStore = create<PomodoroListState>((set) => ({
-  pomodoros: pomodoroMockData,
-
-  createPomodoro: (newPomodoroData) => {
-    const newId = generateNumericId();
-    const now = new Date().toISOString();
-
-    const newPomodoro: Pomodoro = {
-      id: newId,
-      title: newPomodoroData.title,
-      createdAt: now,
-      completedAt: '',
-      totalPlannedTime: newPomodoroData.totalPlannedTime,
-      totalExecutedTime: {
-        hour: 0,
-        minute: 0,
-        second: 0,
-        nano: 0,
-      },
-      totalWorkingTime: {
-        hour: 0,
-        minute: 0,
-        second: 0,
-        nano: 0,
-      },
-      totalBreakTime: {
-        hour: 0,
-        minute: 0,
-        second: 0,
-        nano: 0,
-      },
-      plannedCycles: newPomodoroData.plannedCycles,
-      executedCycles: [],
-    };
-
-    const newPomodoroItem: LinkedUnlinkedPomodoro = {
-      pomodoro: newPomodoro,
-      eisenhower: newPomodoroData.eisenhower,
-    };
-
-    set((state) => {
-      const updatedPomodoros = { ...state.pomodoros };
-
-      if (newPomodoroData.eisenhower) {
-        updatedPomodoros.linkedPomodoros = [
-          ...(updatedPomodoros.linkedPomodoros || []),
-          newPomodoroItem,
-        ];
-      } else {
-        updatedPomodoros.unlinkedPomodoros = [
-          ...(updatedPomodoros.unlinkedPomodoros || []),
-          newPomodoroItem,
-        ];
-      }
-
-      return { pomodoros: updatedPomodoros };
-    });
-
-    return newId;
-  },
-
-  deletePomodoro: (id) => {
-    set((state) => {
-      const updatedPomodoros = { ...state.pomodoros };
-
-      if (updatedPomodoros.linkedPomodoros) {
-        updatedPomodoros.linkedPomodoros =
-          updatedPomodoros.linkedPomodoros.filter(
-            (item) => item.pomodoro.id !== id,
-          );
-      }
-
-      if (updatedPomodoros.unlinkedPomodoros) {
-        updatedPomodoros.unlinkedPomodoros =
-          updatedPomodoros.unlinkedPomodoros.filter(
-            (item) => item.pomodoro.id !== id,
-          );
-      }
-
-      return { pomodoros: updatedPomodoros };
+  resetTimer: () => {
+    const { intervalId } = get();
+    if (intervalId !== null) {
+      clearInterval(intervalId);
+    }
+    set({
+      isRunning: false,
+      elapsedTime: 0,
+      startTimestamp: null,
+      intervalId: null,
     });
   },
 
-  disconnectPomodoroTask: (pomodoroId) => {
-    set((state) => {
-      const updatedPomodoros = { ...state.pomodoros };
-
-      if (updatedPomodoros.linkedPomodoros) {
-        const pomodoroIndex = updatedPomodoros.linkedPomodoros.findIndex(
-          (item) => item.pomodoro.id === pomodoroId,
-        );
-
-        if (pomodoroIndex !== -1) {
-          const pomodoro = updatedPomodoros.linkedPomodoros[pomodoroIndex];
-
-          const unlinkedPomodoro = {
-            pomodoro: pomodoro.pomodoro,
-            eisenhower: null,
-          };
-
-          updatedPomodoros.linkedPomodoros =
-            updatedPomodoros.linkedPomodoros.filter(
-              (item) => item.pomodoro.id !== pomodoroId,
-            );
-
-          updatedPomodoros.unlinkedPomodoros = [
-            ...(updatedPomodoros.unlinkedPomodoros || []),
-            unlinkedPomodoro,
-          ];
-        }
-      }
-
-      return { pomodoros: updatedPomodoros };
+  deleteTimer: () => {
+    localStorage.removeItem('pomodoro-state');
+    const { intervalId } = get();
+    if (intervalId !== null) {
+      clearInterval(intervalId);
+    }
+    set({
+      id: null,
+      title: '',
+      isRunning: false,
+      elapsedTime: 0,
+      startTimestamp: null,
     });
+  },
+
+  startTimer: () => {
+    const interval = setInterval(() => {
+      get().tick();
+    }, 1000);
+    set({
+      isRunning: true,
+      startTimestamp: Date.now(),
+      intervalId: interval,
+    });
+  },
+
+  pauseTimer: () => {
+    const { intervalId } = get();
+    if (intervalId !== null) {
+      clearInterval(intervalId);
+    }
+    const now = Date.now();
+    const { startTimestamp, elapsedTime } = get();
+    if (startTimestamp) {
+      const delta = Math.floor((now - startTimestamp) / 1000);
+      set({
+        isRunning: false,
+        elapsedTime: elapsedTime + delta,
+        startTimestamp: null,
+      });
+    }
+  },
+
+  tick: () => {
+    const { isRunning, startTimestamp, elapsedTime } = get();
+    if (isRunning && startTimestamp) {
+      const now = Date.now();
+      const delta = Math.floor((now - startTimestamp) / 1000);
+      set({ elapsedTime: elapsedTime + delta, startTimestamp: Date.now() });
+    }
   },
 }));
-
-export const usePomodoros = () => useStore((state) => state.pomodoros);
-export const useCreatePomodoro = () =>
-  useStore((state) => state.createPomodoro);
-export const useDeletePomodoro = () =>
-  useStore((state) => state.deletePomodoro);
-export const useDisconnectPomodoroTask = () =>
-  useStore((state) => state.disconnectPomodoroTask);
-
-export default useStore;

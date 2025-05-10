@@ -4,6 +4,7 @@ import useGetYesterdayTodoList from '@/hooks/queries/today/useGetYesterdayTodoLi
 import useMoveToday from '@/hooks/queries/today/useMoveToday';
 import { cn } from '@/lib/utils';
 import { Calendar, Check } from 'lucide-react';
+import { usePomodoroStore } from '@/store/pomodoro';
 
 function formatDateToEnglish(dateString: string): string {
   if (typeof dateString === 'string') {
@@ -32,6 +33,21 @@ export default function TodayList() {
 
   const handleMoveToToday = (id: number) => {
     moveTodayMutation(id);
+  };
+
+  const currentId = usePomodoroStore((s) => s.id);
+  const setId = usePomodoroStore((s) => s.setId);
+  const setTitle = usePomodoroStore((s) => s.setTitle);
+  const setIsRunning = usePomodoroStore((s) => s.setIsRunning);
+  const setElapsedTime = usePomodoroStore((s) => s.setElapsedTime);
+
+  const startPomodoro = (id: number, title: string) => {
+    if (id != currentId) {
+      setId(id);
+      setTitle(title);
+      setElapsedTime(0);
+      setIsRunning(false);
+    }
   };
 
   return (
@@ -130,6 +146,9 @@ export default function TodayList() {
                     ? 'bg-gray-scale-400 text-gray-scale-200'
                     : 'bg-blue text-white',
                 )}
+                onClick={() => {
+                  startPomodoro(todo.id, todo.title);
+                }}
               >
                 뽀모도로 시작하기
               </button>

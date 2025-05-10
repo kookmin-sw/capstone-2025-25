@@ -1,9 +1,11 @@
 import TodayList from '@/components/today/TodayList';
 import { DailyCompletionChart } from '@/components/ui/chart/DailyCompletionChart';
 import { TodayCompleteChart } from '@/components/ui/chart/TodayCompleteChart';
+import { PomodoroCard } from '@/components/today/PomodoroCard';
 import useGetTodayTodoCompletedCount from '@/hooks/queries/today/useGetTodayTodoCompletedCount';
 import useGetTodayTodoCount from '@/hooks/queries/today/useGetTodayTodoCount';
 import { Plus } from 'lucide-react';
+import { usePomodoroStore } from '@/store/pomodoro.ts';
 
 export default function TodayMainDashborad() {
   const today = new Date();
@@ -13,6 +15,7 @@ export default function TodayMainDashborad() {
 
   const { todayTodoCount } = useGetTodayTodoCount();
   const { todayTodoCompletedCount } = useGetTodayTodoCompletedCount();
+  const currentId = usePomodoroStore((s) => s.id);
 
   return (
     <div className="flex flex-col lg:flex-row w-full">
@@ -42,11 +45,15 @@ export default function TodayMainDashborad() {
           totalCount={todayTodoCount ?? 0}
           completedCount={todayTodoCompletedCount ?? 0}
         />
-
         <TodayList />
       </div>
 
       <div className="w-full lg:w-1/2 flex flex-col gap-4 h-auto md:h-[740px] lg:h-[600px] mt-4 lg:mt-0">
+        {currentId && (
+          <div className=" w-full">
+            <PomodoroCard />
+          </div>
+        )}
         <div className="h-1/2 w-full">
           <DailyCompletionChart title="할 일 완료 분석" />
         </div>
