@@ -34,7 +34,7 @@ public class InventoryFolderService {
 
     //폴더 조회
     public List<InventoryFolderResponse> getInventoryFolders(Long memberId){
-        return inventoryFolderRepository.findAllByMemberId(memberId).orElseThrow(FolderNotFoundException::new)
+        return inventoryFolderRepository.findAllByMemberId(memberId)
             .stream()
             .map(InventoryFolderResponse::from)
             .toList();
