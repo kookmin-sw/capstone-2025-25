@@ -35,7 +35,7 @@ export default function Header() {
       <div className="flex items-center gap-[20px]">
         <div></div>
         {currentId && (
-          <div className="text-[#7098FF] font-medium bg-blue-2 border rounded-4xl border-blue px-4 py-[6px] text-[20px] h-9 w-[87px]">
+          <div className="text-[#7098FF] font-medium bg-blue-2 border rounded-4xl border-blue px-4 py-[6px] text-[20px] h-9 w-[87px] flex justify-center items-center">
              {format(remaining)}
           </div>
         )}
