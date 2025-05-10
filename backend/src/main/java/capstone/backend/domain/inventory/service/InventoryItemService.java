@@ -64,7 +64,6 @@ public class InventoryItemService {
             .orElseThrow(InventoryItemNotFoundException::new);
 
         item.update(request.title(), request.memo());
-        inventoryItemRepository.save(item);
         return InventoryItemResponse.from(item);
     }
 
@@ -78,7 +77,6 @@ public class InventoryItemService {
             .orElseThrow(FolderNotFoundException::new);
 
         item.updateFolder(newFolder);
-        inventoryItemRepository.save(item);
         return InventoryItemResponse.from(item);
     }
 }
