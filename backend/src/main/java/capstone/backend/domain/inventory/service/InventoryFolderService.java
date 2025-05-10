@@ -65,4 +65,14 @@ public class InventoryFolderService {
 
         inventoryFolderRepository.delete(inventoryFolder);
     }
+
+    //회원가입 시 기본 폴더 생성
+    @Transactional
+    public void createDefaultFolder(Member member) {
+        InventoryFolder defaultFolder = InventoryFolder.builder()
+            .name("기본 폴더")
+            .member(member)
+            .build();
+        inventoryFolderRepository.save(defaultFolder);
+    }
 }

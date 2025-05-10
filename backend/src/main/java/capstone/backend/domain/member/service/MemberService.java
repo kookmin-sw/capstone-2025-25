@@ -24,14 +24,6 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    @Transactional
-    public void createDefaultFolder(Member member) {
-        InventoryFolder defaultFolder = InventoryFolder.builder()
-            .name("기본 폴더")
-            .member(member)
-            .build();
-        inventoryFolderRepository.save(defaultFolder);
-    }
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     }
