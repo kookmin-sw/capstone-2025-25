@@ -10,6 +10,7 @@ import capstone.backend.domain.todayTask.dto.request.TodayTaskItemCreateRequest;
 import capstone.backend.domain.todayTask.dto.response.TodayTaskItemResponse;
 import capstone.backend.domain.todayTask.entity.TodayTaskItem;
 import capstone.backend.domain.todayTask.exception.TodayTaskNotFoundException;
+import capstone.backend.domain.todayTask.exception.DuplicateTaskException;
 import capstone.backend.domain.todayTask.repository.TodayTaskItemRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,20 +31,24 @@ public class TodayTaskItemService {
 
     //오늘의 할 일 추가
     @Transactional
-    public List<TodayTaskItemResponse> addTaskItem(Long memberId, TodayTaskItemCreateRequest request) {
+    public TodayTaskItemResponse addTaskItem(Long memberId, Long eisenhowerId) {
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-        return request.eisenhowerItemIds().stream()
-            .map(itemId -> {
-                EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findByIdAndMemberId(itemId, memberId)
-                    .orElseThrow(EisenhowerItemNotFoundException::new);
+        // 중복 여부 확인
+        boolean exists = todayTaskItemRepository.existsByMemberIdAndEisenhowerItemIdAndTaskDate(
+            memberId, eisenhowerId, LocalDate.now());
 
-                TodayTaskItem todayTaskItem = TodayTaskItem.from(member, eisenhowerItem);
-                todayTaskItemRepository.save(todayTaskItem);
+        if (exists) {
+            throw (new DuplicateTaskException());
+        }
 
-                return TodayTaskItemResponse.from(todayTaskItem);
-            })
-            .toList();
+        EisenhowerItem eisenhowerItem = eisenhowerItemRepository.findByIdAndMemberId(eisenhowerId, memberId)
+            .orElseThrow(EisenhowerItemNotFoundException::new);
+
+        TodayTaskItem todayTaskItem = TodayTaskItem.from(member, eisenhowerItem);
+        todayTaskItemRepository.save(todayTaskItem);
+
+        return TodayTaskItemResponse.from(todayTaskItem);
     }
 
     //오늘의 할 일 조회
@@ -102,11 +107,20 @@ public class TodayTaskItemService {
         return TodayTaskItemResponse.from(todayTaskItem);
     }
 
+    //할 일 완료 처리
+    @Transactional
+    public TodayTaskItemResponse updateTaskStatus(Long memberId, Long taskId, Boolean isCompleted) {
+        TodayTaskItem todayTaskItem = todayTaskItemRepository.findByIdAndMemberId(taskId, memberId)
+            .orElseThrow(TodayTaskNotFoundException::new);
+
+        todayTaskItem.getEisenhowerItem().setCompletedStatus(isCompleted);
+        todayTaskItemRepository.save(todayTaskItem);
+
+        return TodayTaskItemResponse.from(todayTaskItem);
+    }
+
     //00시 기준 날짜 가져오기
     private LocalDate getDate() {
-//        LocalDateTime now = LocalDateTime.now();
-//        LocalDateTime sixAM = now.with(LocalTime.of(6, 0));
-//        return now.isBefore(sixAM) ? LocalDate.now().minusDays(1) : LocalDate.now();
         return LocalDate.now();
     }
 }
