@@ -20,4 +20,11 @@ export const inventoryService = {
     );
     return res.data;
   },
+
+  delete: async (id: number): Promise<void> => {
+    const response = await apiClient.delete(
+      ENDPOINTS.INVENTORY.FOLDER.DELETE(id),
+    );
+    return response.data;
+  },
 };
