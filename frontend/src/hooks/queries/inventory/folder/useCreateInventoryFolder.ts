@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { inventoryService } from '@/services/inventoryService';
-import { CreateInvertoryFolderCreateReq } from '@/types/api/inventory';
+import { CreateInvertoryFolderCreateReq } from '@/types/api/inventory/folder';
+import { inventoryFolderService } from '@/services/inventoryFolderService';
 
 const useCreateInventoryFolder = () => {
   const queryClient = useQueryClient();
 
   const { mutate, isPending, isError, error, data, reset } = useMutation({
     mutationFn: (data: CreateInvertoryFolderCreateReq) =>
-      inventoryService.create(data),
+      inventoryFolderService.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inventoryFolderList'] });
     },

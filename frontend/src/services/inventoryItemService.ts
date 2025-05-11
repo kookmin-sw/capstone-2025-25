@@ -1,11 +1,9 @@
 import { apiClient } from '@/api/client';
 import { ENDPOINTS } from '@/api/endpoints';
-import {
-  CreateInvertoryFolderCreateReq,
-  InventoryFolderListRes,
-} from '@/types/api/inventory';
+import { CreateInvertoryFolderCreateReq } from '@/types/api/inventory/folder';
+import { InventoryFolderListRes } from '@/types/api/inventory/folder/response';
 
-export const inventoryService = {
+export const inventoryItemService = {
   getList: async (): Promise<InventoryFolderListRes> => {
     const response = await apiClient.get<InventoryFolderListRes>(
       ENDPOINTS.INVENTORY.FOLDER.LIST,

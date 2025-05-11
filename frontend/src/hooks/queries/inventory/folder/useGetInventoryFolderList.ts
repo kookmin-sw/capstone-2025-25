@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { InventoryFolderListRes } from '@/types/api/inventory';
-import { inventoryService } from '@/services/inventoryService';
+import { inventoryFolderService } from '@/services/inventoryFolderService';
+import { InventoryFolderListRes } from '@/types/api/inventory/folder/response';
 
 const useGetInventoryFolderList = () => {
   const { data, isLoading, error, isPending } =
     useQuery<InventoryFolderListRes>({
       queryKey: ['inventoryFolderList'],
-      queryFn: () => inventoryService.getList(),
+      queryFn: () => inventoryFolderService.getList(),
       refetchOnWindowFocus: false,
       retry: 1,
     });

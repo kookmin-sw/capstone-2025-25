@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router';
 import FolderIcon from '@/assets/folder.png';
 import { ChevronRight, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import useGetInventoryFolderList from '@/hooks/queries/inventory/useGetInventoryFolderList';
-import useCreateInventoryFolder from '@/hooks/queries/inventory/useCreateInventoryFolder';
-import useDeleteInventoryFolder from '@/hooks/queries/inventory/useDeleteInventoryFolder';
+import useGetInventoryFolderList from '@/hooks/queries/inventory/folder/useGetInventoryFolderList';
+import useCreateInventoryFolder from '@/hooks/queries/inventory/folder/useCreateInventoryFolder';
+import useDeleteInventoryFolder from '@/hooks/queries/inventory/folder/useDeleteInventoryFolder';
 import CreateFolderModal from '@/components/inventory/modal/CreateFolderMoal';
 import DeleteFolderModal from '@/components/inventory/modal/DeleteFolderMoal';
 
