@@ -23,7 +23,6 @@ export const ENDPOINTS = {
     REFRESH_TOKEN: '/api/auth/reissue',
   },
 
-
   /* 아이젠하워 작업 관련 엔드포인트 */
   EISENHOWER: {
     GET_ALL: '/api/v1/eisenhower', // 아이젠하워 작업 전체 조회
@@ -42,26 +41,26 @@ export const ENDPOINTS = {
     UPDATE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 수정
     DELETE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 삭제
 
-  /* 오늘의 할 일 관련 엔드포인트 */
-  TODAY: {
-    LIST: '/api/v2/today-task',
-    YESTERDAY_LIST: '/api/v2/today-task/yesterday',
-    GET_COUNT: '/api/v2/today-task/count',
-    COMPLETE_COUNT: '/api/v2/today-task/completed',
-    MOVE_TODAY: (id: number) => `/api/v2/today-task/move-today/${id}`,
-  },
-
-  /* 카테고리 관련 엔드포인트 */
-  CATEGORY: {
-    LIST: '/api/v1/eisenhower/category',
-  },
-
-  /* GPT API 관련 엔드포인트 */
-  GPT: {
-    BRAINSTORMING: {
-      ANALYZE: '/api/brainstorming/analyze/chunk',
-      REWRITE: '/api/brainstorming/rewrite/chunk',
+    /* 오늘의 할 일 관련 엔드포인트 */
+    TODAY: {
+      LIST: '/api/v2/today-task',
+      YESTERDAY_LIST: '/api/v2/today-task/yesterday',
+      GET_COUNT: '/api/v2/today-task/count',
+      COMPLETE_COUNT: '/api/v2/today-task/completed',
+      MOVE_TODAY: (id: number) => `/api/v2/today-task/move-today/${id}`,
     },
 
+    /* 카테고리 관련 엔드포인트 */
+    CATEGORY: {
+      LIST: '/api/v1/eisenhower/category',
+    },
+
+    /* GPT API 관련 엔드포인트 */
+    GPT: {
+      BRAINSTORMING: {
+        ANALYZE: '/api/brainstorming/analyze/chunk',
+        REWRITE: '/api/brainstorming/rewrite/chunk',
+      },
+    },
   },
 };

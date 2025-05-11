@@ -29,7 +29,6 @@ export function FilterBar({
       label: cat.title,
       value: cat.title,
       bgColor: cat.color,
-      textColor: cat.textColor,
     })),
   ];
 

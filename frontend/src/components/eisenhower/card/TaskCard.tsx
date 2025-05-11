@@ -119,11 +119,7 @@ export function TaskCard({
         {/* 상단 카테고리 뱃지 */}
         <div className="flex mb-2 flex-wrap gap-1">
           {category && (
-            <CategoryBadge
-              label={category.title}
-              bgColor={category.color}
-              textColor={category.textColor}
-            />
+            <CategoryBadge label={category.title} bgColor={category.color} />
           )}
         </div>
 
