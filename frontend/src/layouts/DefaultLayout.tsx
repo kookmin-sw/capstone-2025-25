@@ -4,9 +4,10 @@ import Header from '@/components/ui/header/Header';
 import BottomBar from '@/components/ui/sidebar/BottomBar';
 import clsx from 'clsx';
 import { useIsMobile } from '@/hooks/use-mobile.ts';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect.ts';
 
 export default function DefaultLayout() {
-
+  useAuthRedirect();
   const isMobile = useIsMobile();
   return (
     <div className="min-h-screen bg-[#F0F0F5] flex flex-col">
