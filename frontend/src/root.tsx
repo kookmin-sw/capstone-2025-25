@@ -13,17 +13,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>AHZ</title>
-        <meta property="og:title" content="AHZ" />
+        <title>Bubble Pop</title>
+        <meta property="og:title" content="Bubble Pop" />
         <meta
           property="og:description"
-          content="흩어진 생각을 정리하고, 일상 속 흐름을 바로 잡아주는 ADHD 맞춤형 서비스"
+          content="머릿속을 맑게, 오늘을 명확하게"
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.ahz.co.kr/" />
-        <meta property="og:site_name" content="AHZ" />
+        <meta property="og:url" content="https://www.bubble-pop.kr/" />
+        <meta property="og:site_name" content="Bubble Pop" />
+        <meta property="og:image" content="/pwa-512x512.png" />
+        <meta
+          property="og:image:alt"
+          content="Bubble Pop - 머릿속을 맑게, 오늘을 명확하게"
+        />
+
+        <link rel="manifest" href="/manifest.json" />
+
         <Meta />
         <Links />
+        <link rel="icon" href="/favicon.ico" sizes="48x48" />
+        <link rel="icon" href="/logo.svg" sizes="any" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
       </head>
       <body>
         {children}

@@ -8,7 +8,8 @@
     "typecheck": "react-router typegen && tsc -b",
     "build": "tsc --noEmit false && react-router build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/logo.svg"
   },
   "dependencies": {
     "@dagrejs/dagre": "^1.1.4",
@@ -60,6 +61,7 @@
     "@types/node": "^22.13.8",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@vite-pwa/assets-generator": "^1.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",
@@ -69,6 +71,7 @@
     "prettier": "^3.5.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "vite-plugin-pwa": "^1.0.0"
   }
 }

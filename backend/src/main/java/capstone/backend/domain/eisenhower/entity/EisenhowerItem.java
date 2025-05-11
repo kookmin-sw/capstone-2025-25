@@ -104,4 +104,8 @@ public class EisenhowerItem {
         this.quadrant = quadrant;
     }
 
+    //오늘의 할 일에서 완료 처리
+    public void setCompletedStatus(boolean isCompleted){
+        this.isCompleted = isCompleted;
+    }
 }
