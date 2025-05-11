@@ -19,6 +19,10 @@ export function PomodoroCard() {
     pauseTimer,
   } = store;
   const { patchPomodoroMutation } = usePatchPomodoro();
+  const setPatchPomodoroMutation = usePomodoroStore((state) => state.setPatchPomodoroMutation);
+  useEffect(() => {
+    setPatchPomodoroMutation(patchPomodoroMutation);
+  }, [patchPomodoroMutation, setPatchPomodoroMutation]);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const CYCLE_TIME = 25 * 60;
@@ -104,6 +108,9 @@ export function PomodoroCard() {
   const handleDelete = () => {
     deleteTimer(patchPomodoroMutation);
   };
+  const handlePause = () => {
+    pauseTimer(patchPomodoroMutation);
+  };
 
   return (
     <Card className="h-full w-full border-none shadow-none">
@@ -139,7 +146,7 @@ export function PomodoroCard() {
             <button
               className={`w-[48px] h-[48px] rounded-full flex items-center justify-center bg-[#7098FF] cursor-pointer 
               }`}
-              onClick={isRunning ? pauseTimer : startTimer}
+              onClick={isRunning ? handlePause : startTimer}
             >
               {isRunning ? (
                 <Pause className="w-[22.59px] h-[22.59px] text-[#ffffff] fill-white" />
