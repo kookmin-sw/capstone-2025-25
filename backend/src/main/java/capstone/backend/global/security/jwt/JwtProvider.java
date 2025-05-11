@@ -73,12 +73,7 @@ public class JwtProvider {
 
     public boolean validateToken(String token) {
         try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-
+            Claims claims = getClaimsByToken(token);
             // 토큰의 만료 시간 검증
             return !claims.getExpiration().before(new Date());
         } catch (JwtException e) {
@@ -90,5 +85,11 @@ public class JwtProvider {
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         return (bearerToken != null && bearerToken.startsWith("Bearer ")) ? bearerToken.substring(7) : null;
+    }
+
+    // AT 남은 만료기간
+    public long getRemainingExpiration(String token) {
+        Claims claims = getClaimsByToken(token);
+        return claims.getExpiration().getTime() - System.currentTimeMillis();
     }
 }

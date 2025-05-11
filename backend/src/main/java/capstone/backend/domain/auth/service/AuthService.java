@@ -5,8 +5,10 @@ import capstone.backend.domain.auth.dto.response.TokenResponse;
 import capstone.backend.domain.auth.exception.CodeExpiredException;
 import capstone.backend.domain.auth.exception.RefreshTokenExpiredException;
 import capstone.backend.domain.auth.exception.RefreshTokenNotFoundException;
+import capstone.backend.domain.auth.repository.BlacklistTokenRedisRepository;
 import capstone.backend.domain.auth.repository.OauthCodeRedisRepository;
 import capstone.backend.domain.auth.repository.RefreshTokenRedisRepository;
+import capstone.backend.domain.auth.schema.BlacklistToken;
 import capstone.backend.domain.auth.schema.OauthCode;
 import capstone.backend.domain.auth.schema.RefreshToken;
 import capstone.backend.global.security.jwt.JwtProvider;
@@ -25,6 +27,7 @@ public class AuthService {
 
     private final OauthCodeRedisRepository oauthCodeRedisRepository;
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
+    private final BlacklistTokenRedisRepository blacklistTokenRedisRepository;
     private final JwtProvider jwtProvider;
 
     public void saveRefreshToken(Long memberId, String token) {
@@ -67,5 +70,24 @@ public class AuthService {
         saveRefreshToken(memberId, refreshToken);  // Redis에 RT 저장
 
         return new TokenResponse(accessToken, refreshToken);
+    }
+
+    // 로그아웃 로직
+    public void logout(Long memberId, String accessToken) {
+        // 1. RT 삭제
+        refreshTokenRedisRepository.findById(memberId)
+                .ifPresent(refreshTokenRedisRepository::delete);
+
+        // 2. AT 블랙리스트 등록
+        long expiration = jwtProvider.getRemainingExpiration(accessToken);
+        if (expiration > 0) {
+            BlacklistToken blacklistToken = BlacklistToken.builder()
+                    .token(accessToken)
+                    .ttl(expiration)
+                    .build();
+            blacklistTokenRedisRepository.save(blacklistToken);
+        }
+
+        log.info("로그아웃 처리 완료 - memberId={}, AT 블랙리스트 등록", memberId);
     }
 }
