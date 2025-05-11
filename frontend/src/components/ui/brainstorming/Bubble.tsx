@@ -36,9 +36,8 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
       y,
     });
     const [delay, setDelay] = useState<string>('0s');
-    const delayRef = useRef<string>('0s'); // delay 값을 한 번만 저장해두는 참조
+    const delayRef = useRef<string>('0s');
 
-    // 처음 한 번만 위치를 계산하고 재사용하도록 처리
     useEffect(() => {
       const calculatePosition = () => {
         const newX = (x / 100) * containerWidth;
@@ -50,7 +49,7 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
     }, [x, y, containerWidth, containerHeight]);
 
     useEffect(() => {
-      const randomDelay = Math.random() * 2 + 's'; // 0~2초 사이의 랜덤 딜레이
+      const randomDelay = Math.random() * 2 + 's';
       setDelay(randomDelay);
       delayRef.current = randomDelay;
     }, []);
