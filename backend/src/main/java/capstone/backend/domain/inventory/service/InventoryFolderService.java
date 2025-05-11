@@ -40,6 +40,14 @@ public class InventoryFolderService {
             .toList();
     }
 
+    //폴더 상세 조회
+    public InventoryFolderResponse getInventoryFolderDetail(Long memberId, Long folderId){
+        InventoryFolder inventoryFolder = inventoryFolderRepository.findByIdAndMemberId(folderId, memberId)
+            .orElseThrow(FolderDeletionNotAllowedException::new);
+
+        return InventoryFolderResponse.from(inventoryFolder);
+    }
+
     //폴더 수정
     @Transactional
     public InventoryFolderResponse updateInventoryFolder(Long memberId, Long folderId,
