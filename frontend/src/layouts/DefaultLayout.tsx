@@ -2,6 +2,7 @@ import { Outlet } from 'react-router';
 import Sidebar from '@/components/ui/sidebar/Sidebar';
 import Header from '@/components/ui/header/Header';
 import BottomBar from '@/components/ui/sidebar/BottomBar';
+import { Toaster } from '@/components/ui/sonner';
 
 export default function DefaultLayout() {
   return (
@@ -18,6 +19,7 @@ export default function DefaultLayout() {
         <div className="flex-1 overflow-hidden">
           <main className="w-full min-h-[calc(100vh-88px-64px)] lg:min-h-[calc(100vh-88px)] mb-16 lg:mb-0 overflow-hidden">
             <Outlet />
+            <Toaster />
           </main>
         </div>
       </div>

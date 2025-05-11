@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Trash2, Loader2 } from 'lucide-react';
+import { Trash2, Loader2, FolderInput } from 'lucide-react';
 import {
   Collapsible,
   CollapsibleContent,
@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/button';
 import useDeleteInventoryItem from '@/hooks/queries/inventory/item/useDeleteInventoryItem';
+import MoveToFolderModal from '@/components/inventory/modal/MoveToFolderModal';
 
 type InventoryItemCardProps = {
   item: {
@@ -52,6 +53,7 @@ export default function InventoryItemCard({ item }: InventoryItemCardProps) {
   const [memo, setMemo] = useState(item.memo || '');
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
 
   const { updateInventoryItemMutation, isPending: isUpdating } =
     useUpdateInventoryItem(item.folderId);
@@ -90,7 +92,7 @@ export default function InventoryItemCard({ item }: InventoryItemCardProps) {
       <li className="p-6 bg-white rounded-xl">
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <div className="flex items-center justify-between">
-            <div className="w-2/3">
+            <div className="w-1/2">
               {isOpen ? (
                 <div className="pb-2">
                   <Input
@@ -110,11 +112,21 @@ export default function InventoryItemCard({ item }: InventoryItemCardProps) {
               </p>
             </div>
 
-            <CollapsibleTrigger asChild>
-              <button className="px-4 py-2 bg-blue-2 text-blue rounded-full font-semibold flex items-center gap-1 cursor-pointer">
-                {buttonText}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsMoveDialogOpen(true)}
+                className="px-4 py-2 bg-green-50 text-green-600 rounded-full font-semibold flex items-center gap-1 cursor-pointer"
+              >
+                <FolderInput size={16} className="mr-1" />
+                폴더이동
               </button>
-            </CollapsibleTrigger>
+
+              <CollapsibleTrigger asChild>
+                <button className="px-4 py-2 bg-blue-2 text-blue rounded-full font-semibold flex items-center gap-1 cursor-pointer">
+                  {buttonText}
+                </button>
+              </CollapsibleTrigger>
+            </div>
           </div>
 
           <CollapsibleContent>
@@ -189,6 +201,17 @@ export default function InventoryItemCard({ item }: InventoryItemCardProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* 폴더 이동 모달 */}
+      <MoveToFolderModal
+        isOpen={isMoveDialogOpen}
+        onOpenChange={setIsMoveDialogOpen}
+        item={{
+          id: item.id,
+          title,
+          folderId: item.folderId,
+        }}
+      />
     </>
   );
 }
