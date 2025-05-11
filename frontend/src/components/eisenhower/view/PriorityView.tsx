@@ -163,14 +163,14 @@ export function PriorityView({
 
   const gridClass =
     viewMode === 'board'
-      ? 'grid-cols-1 md:grid-cols-4'
-      : 'grid-cols-1 md:grid-cols-2';
+      ? 'grid-cols-1 md:grid-cols-4 gap-4'
+      : 'grid-cols-1 md:grid-cols-2 gap-4';
 
   const quadrantColors: Record<Quadrant, string> = {
-    Q1: 'bg-[#F5F1FF] border-gray-300 border rounded-tl-md',
-    Q2: 'bg-[#FAF6FF] border-t border-r border-b border-gray-300 rounded-tr-md',
-    Q3: 'bg-[#FAF8FD] border-l border-b border-r border-gray-300 rounded-bl-md',
-    Q4: 'bg-[#FAFAFA] border-b border-r border-gray-300 rounded-br-md',
+    Q1: 'bg-[#C2D5FF] border-blue border rounded-md',
+    Q2: 'bg-[#DAE6FF] border-blue border rounded-md',
+    Q3: 'bg-[#E8EFFF] border-blue border rounded-md',
+    Q4: 'bg-[#F1F5FF] border-blue border rounded-md',
   };
 
   return (
@@ -206,10 +206,10 @@ export function PriorityView({
               >
                 <div className="flex justify-between items-center pb-[14px]">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 flex items-center justify-center rounded-full border border-black text-sm font-semibold leading-none">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green">
                       {quadrant.replace('Q', '')}
                     </div>
-                    <div className="text-xl font-semibold">
+                    <div className="text-xl font-semibold text-[#525463]">
                       {quadrantTitles[quadrant]}
                     </div>
                     <div className="text-sm text-[#6E726E]">

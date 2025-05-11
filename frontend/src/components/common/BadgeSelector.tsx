@@ -10,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Check, ChevronDown, Plus, X } from 'lucide-react';
+import { Check, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface BadgeOption {
@@ -76,20 +76,25 @@ export function BadgeSelector({
   const noResult = withSearch && searchValue && filtered.length === 0;
 
   return (
-    <div className={displayMode === 'inline' ? 'relative w-30' : ''}>
+    <div
+      className={
+        displayMode === 'inline' ? 'relative w-40 gap-4 flex items-center' : ''
+      }
+    >
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <div
-            className={
-              displayMode === 'inline'
-                ? 'flex items-center space-x-2 cursor-pointer'
-                : 'cursor-pointer'
-            }
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => setOpen(!open)}
           >
             {displayMode === 'inline' && (
               <>
                 <span className="text-sm font-medium">{label}</span>
-                <ChevronDown className="w-4 h-4" />
+                {selectedOption ? (
+                  renderBadge(selectedOption)
+                ) : (
+                  <span className="text-sm text-gray-400">비어있음</span>
+                )}
               </>
             )}
 
@@ -100,15 +105,14 @@ export function BadgeSelector({
                 ) : (
                   <span className="text-sm text-gray-400">비어있음</span>
                 )}
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
               </div>
             )}
           </div>
         </PopoverTrigger>
 
-        {displayMode === 'inline' && selectedOption && (
-          <div className="mt-2">{renderBadge(selectedOption)}</div>
-        )}
+        {/*{displayMode === 'inline' && selectedOption && (*/}
+        {/*  <div className="mt-2">{renderBadge(selectedOption)}</div>*/}
+        {/*)}*/}
 
         <PopoverContent className="w-52 p-0">
           <Command>

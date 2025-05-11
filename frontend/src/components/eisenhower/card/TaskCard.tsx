@@ -98,23 +98,34 @@ export function TaskCard({
         )}
       >
         {/* 상단 도구 아이콘 */}
-        {variant === 'default' && (
-          <div className="absolute p-2 top-1 right-1 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <div
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Bot />
-            </div>
-            {dragHandle !== 'full' && (
-              <div {...listeners} className="cursor-move">
-                <span className="text-xs text-gray-400">
-                  <GripVertical />
-                </span>
+        <div className="absolute p-2 top-1 right-1 flex gap-2">
+          {variant === 'default' && (
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+              <div
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Bot />
               </div>
+              {dragHandle !== 'full' && (
+                <div {...listeners} className="cursor-move">
+                  <span className="text-xs text-gray-400">
+                    <GripVertical />
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+          <div
+            onClick={handleTaskComplete}
+            className={cn(
+              'check-icon w-[24px] h-[24px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center cursor-pointer',
+              variant === 'done' ? 'bg-blue text-white' : 'border border-blue',
             )}
+          >
+            {variant === 'done' && <Check className="w-3 h-3" />}
           </div>
-        )}
+        </div>
 
         {/* 상단 카테고리 뱃지 */}
         <div className="flex mb-2 flex-wrap gap-1">
@@ -123,19 +134,7 @@ export function TaskCard({
           )}
         </div>
 
-        {/* 제목 + 체크 */}
         <div className="flex items-center mb-2 flex-grow">
-          <div
-            onClick={handleTaskComplete}
-            className={cn(
-              'check-icon w-[18px] h-[18px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center cursor-pointer',
-              variant === 'done'
-                ? 'bg-primary-100 text-white'
-                : 'border border-primary-100',
-            )}
-          >
-            {variant === 'done' && <Check className="w-3 h-3" />}
-          </div>
           <div
             className={cn(
               'text-md font-medium line-clamp-2',
@@ -148,12 +147,12 @@ export function TaskCard({
 
         {/* 메모 */}
         {memo && (
-          <div className="text-xs mb-2 line-clamp-2 text-gray-700">{memo}</div>
+          <div className="text-xs mb-2 line-clamp-2 text-[#858899]">{memo}</div>
         )}
 
         {/* 마감일 */}
         {dueDate && (
-          <div className="text-xs flex items-center mt-auto text-[color:var(--color-primary-100)]">
+          <div className="text-xs flex items-center mt-auto text-[#525463]">
             <Calendar className="w-3 h-3 mr-1" />
             <span className="text-center pt-[2px]">
               {format(new Date(dueDate), 'yyyy.MM.dd')}

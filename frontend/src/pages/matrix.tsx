@@ -77,7 +77,7 @@ export default function MatrixPage() {
   }, []);
 
   return (
-    <div className="flex min-h-0 flex-1 bg-white p-[30px] overflow-auto">
+    <div className="flex min-h-0 flex-1 p-[30px] overflow-auto">
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
@@ -93,7 +93,7 @@ export default function MatrixPage() {
                   className="flex gap-5 cursor-pointer"
                 >
                   <button className="text-[32px] h-8 font-bold inline-flex items-center gap-[5px] cursor-pointer">
-                    {activeTab === 'all' ? '모든 일정' : '완료된 일정'}
+                    {activeTab === 'all' ? '미완료 일정' : '완료된 일정'}
                     <ChevronDown className="w-8 h-8" />
                   </button>
                 </DropdownMenuTrigger>
@@ -107,7 +107,7 @@ export default function MatrixPage() {
                       activeTab === 'all' ? 'bg-muted font-semibold' : ''
                     }
                   >
-                    모든 일정
+                    미완료 일정
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => setActiveTab('completed')}
