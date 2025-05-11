@@ -105,7 +105,7 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
           style={backgroundStyle}
         />
         <p className="z-10 p-5">
-          {title} {className}
+          {title}
         </p>
       </button>
     );
