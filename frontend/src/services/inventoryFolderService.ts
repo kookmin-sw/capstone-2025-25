@@ -1,7 +1,10 @@
 import { apiClient } from '@/api/client';
 import { ENDPOINTS } from '@/api/endpoints';
 import { CreateInvertoryFolderCreateReq } from '@/types/api/inventory/folder';
-import { InventoryFolderListRes } from '@/types/api/inventory/folder/response';
+import {
+  InventoryFolderDetailRes,
+  InventoryFolderListRes,
+} from '@/types/api/inventory/folder/response';
 
 export const inventoryFolderService = {
   getList: async (): Promise<InventoryFolderListRes> => {
@@ -22,6 +25,13 @@ export const inventoryFolderService = {
   delete: async (id: number): Promise<void> => {
     const response = await apiClient.delete(
       ENDPOINTS.INVENTORY.FOLDER.DELETE(id),
+    );
+    return response.data;
+  },
+
+  getDetail: async (id: number): Promise<InventoryFolderDetailRes> => {
+    const response = await apiClient.get<InventoryFolderDetailRes>(
+      ENDPOINTS.INVENTORY.FOLDER.DETAIL(id),
     );
     return response.data;
   },

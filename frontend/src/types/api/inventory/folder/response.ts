@@ -5,3 +5,8 @@ export type InventoryFolderListRes = {
   statusCode: number;
   content: InventoryFolder[];
 };
+export type InventoryFolderDetailRes = {
+  error: string | null;
+  statusCode: number;
+  content: InventoryFolder;
+};
