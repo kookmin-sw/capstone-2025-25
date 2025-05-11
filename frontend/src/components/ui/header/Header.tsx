@@ -4,15 +4,17 @@ import { useNavigate } from 'react-router';
 import TmpLogo from '@/assets/tmp-logo.svg';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePomodoroControl from '@/hooks/usePomodoroControl';
+import { authService } from '@/services/authService.ts';
 
 export default function Header() {
-  const { isAuthenticated, setToken } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
   usePomodoroControl();
 
   const handleAuthAction = () => {
     if (isAuthenticated) {
-      setToken(null);
+      // setToken(null);
+      authService.logout();
     } else {
       navigate('/login');
     }
@@ -36,7 +38,7 @@ export default function Header() {
         <div></div>
         {currentId && (
           <div className="text-[#7098FF] font-medium bg-blue-2 border rounded-4xl border-blue px-4 py-[6px] text-[20px] h-9 w-[87px] flex justify-center items-center">
-             {format(remaining)}
+            {format(remaining)}
           </div>
         )}
 
