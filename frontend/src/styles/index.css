@@ -79,6 +79,14 @@ body {
     color: black;
     font-weight: 400;
 }
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.5);  /* 처음에는 작게 시작 */
+  }
+  100% {
+    transform: scale(1);  /* 최종 크기 (정상 크기) */
+  }
+}
 
 @keyframes float {
     0%, 100% {
@@ -89,6 +97,17 @@ body {
     }
 }
 
-.float {
-    animation: float 3s ease-in-out infinite;
+.bubble {
+  position: absolute;
+  transition: transform 0.6s ease-out, opacity 0.6s ease-out;
 }
+
+.scale-in {
+  animation: scaleIn 0.6s ease-out forwards;
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+

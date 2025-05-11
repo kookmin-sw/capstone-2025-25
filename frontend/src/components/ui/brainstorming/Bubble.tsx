@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState, useEffect, useRef } from 'react';
 import BubbleImg from '@/assets/bubble.png';
+import BubblePop from '@/assets/bubble_pop.gif';
 import clsx from 'clsx';
 
 interface BubbleProps {
@@ -10,6 +11,9 @@ interface BubbleProps {
   containerWidth: number;
   containerHeight: number;
   onClick: () => void;
+  isDeleting: boolean;
+  isNew: boolean;
+  className?: string;
 }
 
 const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
@@ -22,34 +26,85 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
       containerWidth,
       containerHeight,
       onClick,
+      isDeleting,
+      className,
     }: BubbleProps,
     ref,
   ) => {
+    const [position, setPosition] = useState<{ x: number; y: number }>({
+      x,
+      y,
+    });
+    const [delay, setDelay] = useState<string>('0s');
+    const delayRef = useRef<string>('0s'); // delay 값을 한 번만 저장해두는 참조
+
+    // 처음 한 번만 위치를 계산하고 재사용하도록 처리
+    useEffect(() => {
+      const calculatePosition = () => {
+        const newX = (x / 100) * containerWidth;
+        const newY = (y / 100) * containerHeight;
+        setPosition({ x: newX, y: newY });
+      };
+
+      calculatePosition();
+    }, [x, y, containerWidth, containerHeight]);
+
+    useEffect(() => {
+      const randomDelay = Math.random() * 2 + 's'; // 0~2초 사이의 랜덤 딜레이
+      setDelay(randomDelay);
+      delayRef.current = randomDelay;
+    }, []);
+
     const style: React.CSSProperties = {
       width: `${radius * 2}px`,
       height: `${radius * 2}px`,
-      left: `${(x / 100) * containerWidth}px`,
-      top: `${(y / 100) * containerHeight}px`,
+      left: `${position.x}px`,
+      top: `${position.y}px`,
+      fontSize: '14px',
+      lineHeight: 1.2,
+      cursor: 'pointer',
+      animationDelay: delay,
+    };
+
+    const backgroundStyle: React.CSSProperties = {
       backgroundImage: `url(${BubbleImg})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      fontSize: '14px',
-      padding: '30px',
-      lineHeight: 1.2,
-      cursor: 'pointer',
+      opacity: 0.5,
     };
 
-    return (
+    return isDeleting ? (
+      <img
+        src={BubblePop}
+        style={{
+          ...style,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.5,
+        }}
+        className={clsx(
+          'absolute rounded-full flex items-center justify-center text-center',
+          'focus:outline-none',
+        )}
+      />
+    ) : (
       <button
         ref={ref}
         onClick={onClick}
         className={clsx(
           'absolute rounded-full flex items-center justify-center text-center ',
-          'focus:outline-none float ',
+          'focus:outline-none',
+          className,
         )}
-        style={style}
+        style={{
+          ...style,
+        }}
       >
-        <p>{title}</p>
+        <div
+          className="absolute inset-0 rounded-full"
+          style={backgroundStyle}
+        />
+        <p className="z-10 p-5">{title}</p>
       </button>
     );
   },
