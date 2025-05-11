@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 public class TokenNotFoundException extends ApiException {
 
     public TokenNotFoundException() {
-        super(HttpStatus.NOT_FOUND, "발급한 Token이 없습니다.");
+        super(HttpStatus.UNAUTHORIZED, "발급한 Token이 없습니다.");
     }
 }
