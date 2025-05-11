@@ -9,29 +9,54 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
   elapsedTime: 0,
   startTimestamp: 0,
   intervalId: null,
-
+  pausedTime: 0,
   setId: (id: number) => set({ id }),
   setTitle: (title: string) => set({ title }),
   setIsRunning: (running: boolean) => set({ isRunning: running }),
   setElapsedTime: (seconds: number) => set({ elapsedTime: seconds }),
   setStartTimestamp: (time: number) => set({ startTimestamp: time }),
-  setTimer: (id: number, title: string) => {
-    const { intervalId } = get();
-    if (intervalId !== null) {
-      clearInterval(intervalId);
+  setPausedTime: (time: number) => set({ pausedTime: time }),
+  setTimer: (
+    id: number,
+    title: string,
+    patchPomodoroMutation: ReturnType<
+      typeof usePatchPomodoro
+    >['patchPomodoroMutation'],
+  ) => {
+    const { intervalId, elapsedTime, pausedTime, isRunning } = get();
+    if (id !== id) {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+      }
+      if (isRunning && elapsedTime > 0) {
+        patchPomodoroMutation({
+          data: {
+            executedCycles: [
+              {
+                workDuration: Math.floor((elapsedTime - pausedTime) / 60),
+                breakDuration: 0,
+              },
+            ],
+          },
+        });
+      }
+      set({
+        id: id,
+        title: title,
+        isRunning: false,
+        elapsedTime: 0,
+        startTimestamp: 0,
+        intervalId: null,
+        pausedTime: 0,
+      });
     }
-    set({
-      id: id,
-      title: title,
-      isRunning: false,
-      elapsedTime: 0,
-      startTimestamp: 0,
-      intervalId: null,
-    });
   },
-
-  resetTimer: (patchPomodoroMutation: ReturnType<typeof usePatchPomodoro>['patchPomodoroMutation'], elapsedTime: number) => {
-    const { intervalId } = get();
+  resetTimer: (
+    patchPomodoroMutation: ReturnType<
+      typeof usePatchPomodoro
+    >['patchPomodoroMutation'],
+  ) => {
+    const { intervalId, pausedTime, elapsedTime } = get();
 
     if (intervalId !== null) {
       clearInterval(intervalId);
@@ -42,31 +67,52 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       elapsedTime: 0,
       startTimestamp: 0,
       intervalId: null,
+      pausedTime: 0,
     });
 
     patchPomodoroMutation({
       data: {
         executedCycles: [
           {
-            workDuration: Math.floor(elapsedTime / 60),
+            workDuration: Math.floor(elapsedTime - pausedTime / 60),
             breakDuration: 0,
           },
         ],
       },
     });
   },
-  deleteTimer: () => {
-    localStorage.removeItem('pomodoro-state');
-    const { intervalId } = get();
+  deleteTimer: (
+    patchPomodoroMutation: ReturnType<
+      typeof usePatchPomodoro
+    >['patchPomodoroMutation'],
+  ) => {
+    const { intervalId, pausedTime, elapsedTime } = get();
+
     if (intervalId !== null) {
       clearInterval(intervalId);
     }
+
+    localStorage.removeItem('pomodoro-state');
+
     set({
       id: null,
       title: '',
       isRunning: false,
       elapsedTime: 0,
       startTimestamp: 0,
+      intervalId: null,
+      pausedTime: 0,
+    });
+
+    patchPomodoroMutation({
+      data: {
+        executedCycles: [
+          {
+            workDuration: Math.floor((elapsedTime - pausedTime) / 60),
+            breakDuration: 0,
+          },
+        ],
+      },
     });
   },
 
@@ -94,6 +140,7 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
         isRunning: false,
         elapsedTime: elapsedTime + delta,
         startTimestamp: 0,
+        pausedTime: elapsedTime + delta,
       });
     }
   },

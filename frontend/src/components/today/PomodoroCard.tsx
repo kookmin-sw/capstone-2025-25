@@ -98,7 +98,11 @@ export function PomodoroCard() {
   }, [elapsedTime]);
 
   const handleReset = () => {
-    resetTimer(patchPomodoroMutation, elapsedTime);
+    resetTimer(patchPomodoroMutation);
+  };
+
+  const handleDelete = () => {
+    deleteTimer(patchPomodoroMutation);
   };
 
   return (
@@ -128,7 +132,7 @@ export function PomodoroCard() {
           <div className="flex items-center justify-center gap-[35px] py-2">
             <button
               className="w-[30px] h-[30px] rounded-full  bg-gray-scale-200 flex items-center justify-center  cursor-pointer"
-              onClick={deleteTimer}
+              onClick={handleDelete}
             >
               <img src={x} className="w-[10.87px] h-[10.87px]" />
             </button>
