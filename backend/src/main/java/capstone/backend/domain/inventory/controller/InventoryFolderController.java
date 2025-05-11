@@ -68,4 +68,14 @@ public class InventoryFolderController {
         inventoryFolderService.deleteInventoryFolder(user.getMemberId(), id);
         return ApiResponse.ok();
     }
+
+    @Operation(summary = "보관함 폴더 상세 조회")
+    @GetMapping("/{id}")
+    public ApiResponse<InventoryFolderResponse> getInventoryFolderDetail(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @Parameter(name = "id", description = "상세 조회할 폴더 ID", example = "1", required = true)
+        @PathVariable Long id
+    ){
+        return ApiResponse.ok(inventoryFolderService.getInventoryFolderDetail(user.getMemberId(), id));
+    }
 }
