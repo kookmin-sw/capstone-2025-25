@@ -24,7 +24,7 @@ export default function StorePage() {
   } | null>(null);
 
   const handleRouteToStoreDetail = (id: number) => {
-    navigate(`/store/${id}`);
+    navigate(`/inventory/${id}`);
   };
 
   const handleCreateFolder = (name: string) => {
