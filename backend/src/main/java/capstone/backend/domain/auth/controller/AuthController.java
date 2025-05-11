@@ -1,14 +1,18 @@
 package capstone.backend.domain.auth.controller;
 
+import capstone.backend.domain.auth.dto.request.AccessTokenRequest;
 import capstone.backend.domain.auth.dto.response.AccessTokenResponse;
 import capstone.backend.domain.auth.dto.response.TokenResponse;
 import capstone.backend.domain.auth.service.AuthService;
 import capstone.backend.global.api.dto.ApiResponse;
+import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "인증/인가", description = "JWT 관련 API")
@@ -54,5 +58,18 @@ public class AuthController {
 
         // AT는 body에 담아 응답
         return ApiResponse.ok(new AccessTokenResponse(tokenResponse.accessToken()));
+    }
+
+    @PostMapping("/logout")
+    @Operation(
+            summary = "로그아웃",
+            description = "Redis에서 RT 삭제, 사용중인 AT를 BlackList로 등록"
+    )
+    public ApiResponse<Void> logout(
+            @AuthenticationPrincipal CustomOAuth2User user,
+            @RequestBody @Valid AccessTokenRequest request
+    ) {
+        authService.logout(user.getMemberId(), request.accessToken());
+        return ApiResponse.ok();
     }
 }
