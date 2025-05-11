@@ -34,7 +34,7 @@ export default function DeleteFolderModal({
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
-          <div className="rounded-[7px] px-6 py-[20px] text-[16px] font-medium bg-red-50 text-red-600">
+          <div className="rounded-[7px] px-6 py-[20px] text-[16px] font-medium bg-blue-2">
             <p>"{folderName}" 보관함과 그 안의 모든 내용이 삭제됩니다.</p>
             <p className="mt-2">이 작업은 되돌릴 수 없습니다.</p>
           </div>
@@ -47,7 +47,7 @@ export default function DeleteFolderModal({
             <Button
               onClick={onDelete}
               disabled={isPending}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-blue text-white"
             >
               {isPending ? (
                 <div className="flex items-center justify-center">

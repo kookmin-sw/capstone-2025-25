@@ -23,4 +23,11 @@ export const inventoryItemService = {
     );
     return response.data;
   },
+
+  delete: async (id: number): Promise<void> => {
+    const response = await apiClient.delete(
+      ENDPOINTS.INVENTORY.ITEM.DELETE(id),
+    );
+    return response.data;
+  },
 };
