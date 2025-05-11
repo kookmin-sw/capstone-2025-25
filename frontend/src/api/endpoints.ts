@@ -72,6 +72,7 @@ export const ENDPOINTS = {
     },
     ITEM: {
       LIST: (id: number) => `/api/v2/inventory/${id}`,
+      UPDATE_ITEM: (id: number) => `/api/v2/inventory/item/${id}`,
     },
   },
 };
