@@ -21,7 +21,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Component
@@ -46,15 +44,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String accessToken = jwtProvider.resolveToken(request);
 
-            if(accessToken == null) {
+            if (accessToken == null) {
                 handleException(response, new TokenNotFoundException());
-                return ;
+                return;
             }
 
             // BlackList Token인 경우 401 에러
             if (blacklistTokenRedisRepository.existsById(accessToken)) {
                 handleException(response, new AccessLogoutTokenException());
-                return ;
+                return;
             }
 
             if (jwtProvider.validateToken(accessToken)) {
@@ -68,9 +66,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             handleException(response, new AccessTokenExpiredException());
             return;
-        } catch(JwtException e) {
+        } catch (JwtException e) {
             handleException(response, new InvalidTokenException());
-            return ;
+            return;
         } catch (ApiException e) {
             handleException(response, e);
             return;
@@ -96,8 +94,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-
-        String uri  = request.getRequestURI();
-        return Stream.of("/api/auth/reissue").anyMatch(uri::equalsIgnoreCase);
+        String uri = request.getRequestURI();
+        return uri.equals("/api/auth/reissue") || uri.equals("/api/auth/token");
     }
 }
