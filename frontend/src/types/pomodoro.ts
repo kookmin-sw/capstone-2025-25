@@ -1,39 +1,19 @@
-import { EisenhowerBase } from '@/types/commonTypes';
-
-export type TotalTime = {
-  hour: number;
-  minute: number;
-  second: number;
-  nano: number;
-};
-
-export type Mode = 'WORK' | 'BREAK';
-
-export type PomodoroCycle = {
-  workDuration: number;
-  breakDuration: number;
-};
-
 export type Pomodoro = {
-  id: number;
+  id: number | null;
   title: string;
-  createdAt: string;
-  completedAt: string;
-  totalPlannedTime: TotalTime;
-  totalExecutedTime: TotalTime;
-  totalWorkingTime: TotalTime;
-  totalBreakTime: TotalTime;
-  plannedCycles: PomodoroCycle[];
-  executedCycles: PomodoroCycle[];
-};
-
-export type Eisenhower = EisenhowerBase;
-
-export type LinkedUnlinkedPomodoro = {
-  pomodoro: Pomodoro;
-  eisenhower: Eisenhower | null;
-};
-export type PomodoroList = {
-  linkedPomodoros: LinkedUnlinkedPomodoro[] | null;
-  unlinkedPomodoros: LinkedUnlinkedPomodoro[] | null;
+  isRunning: boolean;
+  elapsedTime: number;
+  startTimestamp: number;
+  intervalId: number | null;
+  setId: (id: number) => void;
+  setTitle: (title: string) => void;
+  setIsRunning: (running: boolean) => void;
+  setElapsedTime: (seconds: number) => void;
+  setStartTimestamp: (time: number) => void;
+  setTimer: (id: number, title: string) => void;
+  resetTimer: () => void;
+  deleteTimer: () => void;
+  pauseTimer: () => void;
+  startTimer: () => void;
+  tick: () => void;
 };
