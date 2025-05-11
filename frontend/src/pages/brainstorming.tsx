@@ -195,7 +195,6 @@ export default function Brainstorming() {
           scrollHeight = scroll.offsetHeight;
           console.log(scrollHeight);
 
-
           setBubbles((prev) => [...prev, ...newBubbles]);
           setInputText('');
           setTimeout(() => {
@@ -255,10 +254,7 @@ export default function Brainstorming() {
     bg-blue-2"
       ></div>
       <div className="relative w-full h-full ">
-        <div
-          ref={scrollRef}
-          className="relative w-full h-full overflow-auto "
-        >
+        <div ref={scrollRef} className="relative w-full h-full overflow-auto ">
           {bubbles.map((bubble, index) => (
             <Popover
               key={bubble.bubbleId}
@@ -277,9 +273,15 @@ export default function Brainstorming() {
                   containerHeight={scrollRef.current?.offsetHeight || 0}
                   onClick={() => {}} // 클릭 시 Popover 트리거
                   isDeleting={bubble.isDeleting}
-                  className={clsx('float', {
-                    'scale-in': bubble.isNew,
-                  })}
+                  isNew={bubble.isNew}
+                  className={clsx(
+                    {
+                      'scale-in': bubble.isNew,
+                    },
+                    {
+                      float: !bubble.isNew,
+                    },
+                  )}
                 />
               </PopoverTrigger>
               <PopoverContent className="w-[112px] h-[180px] z-50 p-0">

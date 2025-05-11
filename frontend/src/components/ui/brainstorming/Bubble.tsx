@@ -11,8 +11,8 @@ interface BubbleProps {
   containerWidth: number;
   containerHeight: number;
   onClick: () => void;
-  isDeleting: boolean;
-  isNew: boolean;
+  isDeleting?: boolean | null;
+  isNew?: boolean | null;
   className?: string;
 }
 
@@ -27,6 +27,7 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
       containerHeight,
       onClick,
       isDeleting,
+      isNew,
       className,
     }: BubbleProps,
     ref,
@@ -62,7 +63,7 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
       fontSize: '14px',
       lineHeight: 1.2,
       cursor: 'pointer',
-      animationDelay: delay,
+      animationDelay: isNew ? '0s' : delay,
     };
 
     const backgroundStyle: React.CSSProperties = {
@@ -103,7 +104,9 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
           className="absolute inset-0 rounded-full"
           style={backgroundStyle}
         />
-        <p className="z-10 p-5">{title}</p>
+        <p className="z-10 p-5">
+          {title} {className}
+        </p>
       </button>
     );
   },
