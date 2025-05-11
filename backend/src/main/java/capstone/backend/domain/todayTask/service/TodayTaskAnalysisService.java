@@ -4,6 +4,7 @@ import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.todayTask.dto.response.TodayTaskAnalysisResponse;
+import capstone.backend.domain.todayTask.entity.DayOfWeekEnum;
 import capstone.backend.domain.todayTask.entity.TodayTaskAnalysis;
 import capstone.backend.domain.todayTask.repository.TodayTaskAnalysisRepository;
 import capstone.backend.domain.todayTask.repository.TodayTaskItemRepository;
@@ -41,12 +42,13 @@ public class TodayTaskAnalysisService {
         for (Long memberId : memberIds) {
             Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
             long completedNum = todayTaskItemRepository.countByMemberIdAndTaskDateAndEisenhowerItemIsCompleted(memberId, yesterday, true);
+            DayOfWeekEnum dayOfWeekEnum = DayOfWeekEnum.from(yesterday.getDayOfWeek());
 
             TodayTaskAnalysis analysis = todayTaskAnalysisRepository.findByMemberIdAndDate(memberId, yesterday)
                 .orElse(TodayTaskAnalysis.builder()
                     .member(member)
                     .date(yesterday)
-                    .dayOfWeek(yesterday.getDayOfWeek().toString())
+                    .dayOfWeek(dayOfWeekEnum)
                     .completedNum(completedNum)
                     .build());
 

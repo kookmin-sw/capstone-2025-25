@@ -1,5 +1,6 @@
 package capstone.backend.domain.todayTask.dto.response;
 
+import capstone.backend.domain.todayTask.entity.DayOfWeekEnum;
 import capstone.backend.domain.todayTask.entity.TodayTaskAnalysis;
 import java.time.LocalDate;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.stream.Collectors;
 public record TodayTaskAnalysisResponse(
     Long id,
     LocalDate taskDate,
-    String dayOfWeek,
+    DayOfWeekEnum dayOfWeek,
     Long completedNum
 ) {
     public static TodayTaskAnalysisResponse from(TodayTaskAnalysis todayTaskAnalysis) {
