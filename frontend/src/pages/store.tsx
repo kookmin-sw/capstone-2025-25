@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router';
 import FolderIcon from '@/assets/folder.png';
 import { ChevronRight, Plus } from 'lucide-react';
+import useGetInventoryFolderList from '@/hooks/queries/inventory/useGetInventoryFolderList';
 
 const STORE_LIST = [
   { id: 0, title: '운동', count: 10 },
@@ -11,8 +12,10 @@ const STORE_LIST = [
   { id: 5, title: '런닝', count: 7 },
 ];
 
-export default function store() {
+export default function StorePage() {
   const navigate = useNavigate();
+
+  const { inventoryFolderList } = useGetInventoryFolderList();
 
   const handleRouteToStoreDetail = (id) => {
     navigate(`/store/${id}`);
@@ -33,21 +36,24 @@ export default function store() {
       </div>
 
       <ul className="bg-gray-scale-200 rounded-lg flex flex-col gap-4">
-        {STORE_LIST.map((store) => (
-          <li
-            className="flex items-center justify-between px-8 py-4 bg-white rounded-xl cursor-pointer"
-            onClick={() => handleRouteToStoreDetail(store.id)}
-          >
-            <div className="flex items-center gap-4">
-              <img src={FolderIcon} className="w-[37.5px] h-[30px]" />
-              <p className="text-[20px] text-[#15161A] font-semibold">
-                {store.title}
-              </p>
-              <p className="text-[#A9ABB8] font-semibold">{store.count}</p>
-            </div>
-            <ChevronRight className="text-[#A9ABB8]" />
-          </li>
-        ))}
+        {inventoryFolderList &&
+          inventoryFolderList.map((store) => (
+            <li
+              className="flex items-center justify-between px-8 py-4 bg-white rounded-xl cursor-pointer"
+              onClick={() => handleRouteToStoreDetail(store.id)}
+            >
+              <div className="flex items-center gap-4">
+                <img src={FolderIcon} className="w-[37.5px] h-[30px]" />
+                <p className="text-[20px] text-[#15161A] font-semibold">
+                  {store.name}
+                </p>
+                <p className="text-[#A9ABB8] font-semibold">
+                  {store.itemCount}
+                </p>
+              </div>
+              <ChevronRight className="text-[#A9ABB8]" />
+            </li>
+          ))}
       </ul>
     </div>
   );
