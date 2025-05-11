@@ -1,6 +1,8 @@
 package capstone.backend.global.security.jwt;
 
+import capstone.backend.domain.auth.exception.AccessLogoutTokenException;
 import capstone.backend.domain.auth.exception.AccessTokenExpiredException;
+import capstone.backend.domain.auth.repository.BlacklistTokenRedisRepository;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
@@ -16,6 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -31,6 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final MemberRepository memberRepository;
+    private final BlacklistTokenRedisRepository blacklistTokenRedisRepository;
 
     @Override
     protected void doFilterInternal(@Nonnull HttpServletRequest request,
@@ -38,6 +42,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @Nonnull FilterChain filterChain) throws IOException, ServletException {
         try {
             String accessToken = jwtProvider.resolveToken(request);
+
+            // BlackList Token인 경우 401 에러
+            if (blacklistTokenRedisRepository.existsByToken(accessToken)) {
+                handleException(response, new AccessLogoutTokenException());
+                return ;
+            }
 
             if (accessToken != null && jwtProvider.validateToken(accessToken)) {
                 Claims claimsByToken = jwtProvider.getClaimsByToken(accessToken);
