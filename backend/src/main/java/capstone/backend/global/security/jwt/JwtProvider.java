@@ -72,14 +72,9 @@ public class JwtProvider {
     }
 
     public boolean validateToken(String token) {
-        try {
-            Claims claims = getClaimsByToken(token);
-            // 토큰의 만료 시간 검증
-            return !claims.getExpiration().before(new Date());
-        } catch (JwtException e) {
-            log.error("Invalid JWT token: ", e);
-            return false;
-        }
+        Claims claims = getClaimsByToken(token);
+        // 토큰의 만료 시간 검증
+        return !claims.getExpiration().before(new Date());
     }
 
     public String resolveToken(HttpServletRequest request) {
