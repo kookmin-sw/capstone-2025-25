@@ -2,8 +2,8 @@ package capstone.backend.domain.auth.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record RefreshAccessTokenRequest (
+public record AccessTokenRequest(
     @NotBlank
-    String token
+    String accessToken
 )
 {}
