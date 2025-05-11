@@ -67,6 +67,7 @@ export const ENDPOINTS = {
   INVENTORY: {
     FOLDER: {
       LIST: '/api/v2/inventory/folder',
+      CREATE: '/api/v2/inventory/folder',
     },
   },
 };

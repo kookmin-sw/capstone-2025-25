@@ -1,6 +1,6 @@
 import { InventoryFolder } from '@/types/inventory';
 
-export type GetInventoryFolderListRes = {
+export type InventoryFolderListRes = {
   error: string | null;
   statusCode: number;
   content: InventoryFolder[];
