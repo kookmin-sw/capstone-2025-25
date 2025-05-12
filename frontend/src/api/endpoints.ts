@@ -85,4 +85,9 @@ export const ENDPOINTS = {
       CREATE_ITEM: '/api/v2/inventory',
     },
   },
+
+  /* 분석 관련 API */
+  ANALYSIS: {
+    TODAY_TASK: '/api/v2/today-task/analysis',
+  },
 };
