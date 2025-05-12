@@ -81,6 +81,7 @@ export const ENDPOINTS = {
       MOVE_FOLDER: (id: number) => `/api/v2/inventory/move/${id}`,
       DELETE: (id: number) => `/api/v2/inventory/item/${id}`,
       RECENT: '/api/v2/inventory/recent',
+      CREATE_ITEM: '/api/v2/inventory',
     },
   },
 };

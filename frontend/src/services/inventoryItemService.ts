@@ -1,6 +1,7 @@
 import { apiClient } from '@/api/client';
 import { ENDPOINTS } from '@/api/endpoints';
 import {
+  CreateInventoryItemReq,
   InventoryItemListRes,
   InventoryRecentListRes,
   MoveInventoryItemReq,
@@ -44,6 +45,16 @@ export const inventoryItemService = {
   getRecentList: async (): Promise<InventoryRecentListRes> => {
     const response = await apiClient.get<InventoryRecentListRes>(
       ENDPOINTS.INVENTORY.ITEM.RECENT,
+    );
+    return response.data;
+  },
+
+  createItem: async (
+    data: CreateInventoryItemReq,
+  ): Promise<MoveInventoryItemReq> => {
+    const response = await apiClient.post(
+      ENDPOINTS.INVENTORY.ITEM.CREATE_ITEM,
+      data,
     );
     return response.data;
   },

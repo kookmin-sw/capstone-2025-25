@@ -10,8 +10,8 @@ import {
 } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/button';
 import useGetInventoryFolderList from '@/hooks/queries/inventory/folder/useGetInventoryFolderList';
-import useMoveInventoryItem from '@/hooks/queries/inventory/item/useMoveInventoryItem';
 import { toast } from 'sonner';
+import useCreateInventoryItem from '@/hooks/queries/inventory/item/useCreateInventoryItem';
 
 type MoveToInventoryModalProps = {
   isOpen: boolean;
@@ -20,21 +20,20 @@ type MoveToInventoryModalProps = {
     id: number;
     title: string;
   };
+  onSuccess?: () => void;
 };
 
 export default function MoveToInventoryModal({
   isOpen,
   onOpenChange,
   item,
+  onSuccess,
 }: MoveToInventoryModalProps) {
   const [selectedFolderId, setSelectedFolderId] = useState<number | null>(null);
 
   const { inventoryFolderList, isLoading } = useGetInventoryFolderList();
 
-  //   아이젠하워 -> 보관함 할당하는 API 로 수정!!!
-  const { moveInventoryItemMutation, isPending } = useMoveInventoryItem(
-    item.folderId,
-  );
+  const { createInventoryItemMutation, isPending } = useCreateInventoryItem();
 
   const handleFolderSelect = (folderId: number) => {
     setSelectedFolderId(folderId);
@@ -43,18 +42,18 @@ export default function MoveToInventoryModal({
   const handleMove = () => {
     if (!selectedFolderId) return;
 
-    moveInventoryItemMutation(
+    createInventoryItemMutation(
       {
-        id: item.id,
-        data: {
-          folderId: selectedFolderId,
-        },
+        folderId: selectedFolderId,
+        title: item.title,
+        memo: '',
       },
       {
         onSuccess: () => {
           onOpenChange(false);
           setSelectedFolderId(null);
           toast.success(`"${item.title}" 항목이 성공적으로 이동되었습니다.`);
+          if (onSuccess) onSuccess();
         },
       },
     );
