@@ -7,6 +7,8 @@ import useGetTodayTodoCount from '@/hooks/queries/today/useGetTodayTodoCount';
 import { Plus } from 'lucide-react';
 import { usePomodoroStore } from '@/store/pomodoro.ts';
 import { useIsMobile } from '@/hooks/use-mobile.ts';
+import { useState } from 'react';
+import { Switch } from '@/components/ui/switch';
 
 export default function TodayMainDashborad() {
   const isMobile = useIsMobile();
@@ -15,6 +17,8 @@ export default function TodayMainDashborad() {
   const month = today.getMonth() + 1;
   const date = today.getDate();
 
+  const [hideCompleted, setHideCompleted] = useState(false);
+
   const { todayTodoCount } = useGetTodayTodoCount();
   const { todayTodoCompletedCount } = useGetTodayTodoCompletedCount();
   const currentId = usePomodoroStore((s) => s.id);
@@ -22,9 +26,9 @@ export default function TodayMainDashborad() {
   return (
     <div className="flex flex-col lg:flex-row w-full gap-4">
       {isMobile && currentId && (
-          <div className=" w-full">
-            <PomodoroCard />
-          </div>
+        <div className=" w-full">
+          <PomodoroCard />
+        </div>
       )}
       <div className="w-full lg:w-1/2 bg-white rounded-lg p-4 lg:mr-4 h-auto lg:min-h-[616px] overflow-auto">
         <div className="flex justify-between items-center mb-4">
@@ -44,15 +48,25 @@ export default function TodayMainDashborad() {
           </div>
         </div>
 
-        <div className="my-8 font-semibold">
-          {year}년 {month}월 {date}일
+        <div className="flex items-center justify-between">
+          <div className="my-8 font-semibold">
+            {year}년 {month}월 {date}일
+          </div>
+          <div className="flex items-center gap-2">
+            <p className="text-[14px] text-gray-scale-700">완료된 일 숨기기</p>
+            <Switch
+              checked={hideCompleted}
+              onCheckedChange={setHideCompleted}
+              className="data-[state=checked]:bg-blue"
+            />
+          </div>
         </div>
 
         <TodayCompleteChart
           totalCount={todayTodoCount ?? 0}
           completedCount={todayTodoCompletedCount ?? 0}
         />
-        <TodayList />
+        <TodayList hideCompleted={hideCompleted} />
       </div>
 
       <div className="w-full lg:w-1/2 flex flex-col gap-4 h-auto md:h-[740px] lg:h-[600px] mt-4 lg:mt-0">
