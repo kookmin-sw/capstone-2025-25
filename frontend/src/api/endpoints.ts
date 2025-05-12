@@ -74,6 +74,7 @@ export const ENDPOINTS = {
       CREATE: '/api/v2/inventory/folder',
       DELETE: (id: number) => `/api/v2/inventory/folder/${id}`,
       DETAIL: (id: number) => `/api/v2/inventory/folder/${id}`,
+      UPDATE_NAME: (id: number) => `/api/v2/inventory/folder/${id}`,
     },
     ITEM: {
       LIST: (id: number) => `/api/v2/inventory/${id}`,

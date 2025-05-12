@@ -1,17 +1,20 @@
 import { useNavigate } from 'react-router';
 import FolderIcon from '@/assets/folder.png';
-import { ChevronRight, Plus, Trash2 } from 'lucide-react';
+import { ChevronRight, Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import useGetInventoryFolderList from '@/hooks/queries/inventory/folder/useGetInventoryFolderList';
 import useDeleteInventoryFolder from '@/hooks/queries/inventory/folder/useDeleteInventoryFolder';
 import CreateFolderModal from '@/components/inventory/modal/CreateFolderMoal';
 import DeleteFolderModal from '@/components/inventory/modal/DeleteFolderMoal';
+import useUpdateFolderName from '@/hooks/queries/inventory/folder/useUpdateFolderName';
 
 export default function InventoryPage() {
   const navigate = useNavigate();
   const { inventoryFolderList } = useGetInventoryFolderList();
   const { deleteInventoryFolderMutation, isPending: isDeleting } =
     useDeleteInventoryFolder();
+  const { updateFolderNameMutation, isPending: isUpdatingFolderName } =
+    useUpdateFolderName();
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -20,8 +23,13 @@ export default function InventoryPage() {
     name: string;
   } | null>(null);
 
+  const [editingFolderId, setEditingFolderId] = useState<number | null>(null);
+  const [editingFolderName, setEditingFolderName] = useState('');
+
   const handleRouteToStoreDetail = (id: number) => {
-    navigate(`/inventory/${id}`);
+    if (editingFolderId === null) {
+      navigate(`/inventory/${id}`);
+    }
   };
 
   const handleDeleteClick = (
@@ -49,6 +57,43 @@ export default function InventoryPage() {
     if (!open) {
       setFolderToDelete(null);
     }
+  };
+
+  const handleEditClick = (
+    e: React.MouseEvent,
+    store: { id: number; name: string },
+  ) => {
+    e.stopPropagation();
+    setEditingFolderId(store.id);
+    setEditingFolderName(store.name);
+  };
+
+  const handleCancelEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingFolderId(null);
+    setEditingFolderName('');
+  };
+
+  const handleUpdateFolderName = (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    if (editingFolderName.trim() === '') return;
+
+    updateFolderNameMutation(
+      {
+        id,
+        data: { name: editingFolderName.trim() },
+      },
+      {
+        onSuccess: () => {
+          setEditingFolderId(null);
+          setEditingFolderName('');
+        },
+      },
+    );
+  };
+
+  const handleFolderNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditingFolderName(e.target.value);
   };
 
   return (
@@ -95,26 +140,75 @@ export default function InventoryPage() {
                   className="w-[37.5px] h-[30px]"
                   alt="폴더"
                 />
-                <p className="text-[20px] text-[#15161A] font-semibold">
-                  {store.name}
-                </p>
+                {editingFolderId === store.id ? (
+                  <input
+                    type="text"
+                    value={editingFolderName}
+                    onChange={handleFolderNameChange}
+                    onClick={(e) => e.stopPropagation()} // 이벤트 버블링 방지
+                    className="text-[20px] font-semibold p-1 border border-blue rounded focus:outline-none"
+                    autoFocus
+                  />
+                ) : (
+                  <p className="text-[20px] text-[#15161A] font-semibold">
+                    {store.name}
+                  </p>
+                )}
                 <p className="text-[#A9ABB8] font-semibold">
                   {store.itemCount}
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <div
-                  className="p-2 hover:bg-gray-100 rounded-full"
-                  onClick={(e) =>
-                    handleDeleteClick(e, { id: store.id, name: store.name })
-                  }
-                >
-                  <Trash2
-                    className="text-[#A9ABB8] hover:text-red-500"
-                    size={18}
-                  />
-                </div>
-                <ChevronRight className="text-[#A9ABB8]" />
+                {editingFolderId === store.id ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={(e) => handleCancelEdit(e)}
+                      className="p-2 hover:bg-gray-100 rounded-full text-gray-500"
+                    >
+                      <X size={18} />
+                    </button>
+                    <button
+                      onClick={(e) => handleUpdateFolderName(e, store.id)}
+                      className="px-3 py-1 bg-blue text-white rounded-full text-sm flex items-center"
+                      disabled={isUpdatingFolderName}
+                    >
+                      {isUpdatingFolderName ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                          변경 중...
+                        </>
+                      ) : (
+                        '변경'
+                      )}
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                      onClick={(e) =>
+                        handleEditClick(e, { id: store.id, name: store.name })
+                      }
+                    >
+                      <Pencil
+                        className="text-[#A9ABB8] hover:text-blue-500"
+                        size={18}
+                      />
+                    </div>
+                    <div
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                      onClick={(e) =>
+                        handleDeleteClick(e, { id: store.id, name: store.name })
+                      }
+                    >
+                      <Trash2
+                        className="text-[#A9ABB8] hover:text-red-500"
+                        size={18}
+                      />
+                    </div>
+                    <ChevronRight className="text-[#A9ABB8]" />
+                  </>
+                )}
               </div>
             </li>
           ))}
