@@ -11,6 +11,7 @@ import capstone.backend.domain.pomodoro.dto.request.CreatePomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.response.PomodoroDTO;
 import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
+import capstone.backend.domain.pomodoro.exception.PomodoroDurationException;
 import capstone.backend.domain.pomodoro.exception.PomodoroNotFoundException;
 import capstone.backend.domain.pomodoro.repository.PomodoroRepository;
 import capstone.backend.domain.pomodoro.schema.Pomodoro;
@@ -103,7 +104,14 @@ public class PomodoroService {
         // 최적화된 시간 계산
         int[] times = calculateTotalTimeSummary(executedCycles);
 
+        int totalExecutedSeconds = times[2];
+        // TODO 에러로 낼 지, 아니면 0보다 클 때만 기록을 저장하게 조건 제어로 할지 논의 필요
+        // 0이면 기록을 저장하지 않고 에러 발생
+        if (totalExecutedSeconds <= 0) {
+            throw new PomodoroDurationException();
+        }
+
         // 일일 뽀모도로 총 시간 업데이트
-        dailyPomodoroSummaryService.updateDailyPomodoroSummary(memberId, times[2]);
+        dailyPomodoroSummaryService.updateDailyPomodoroSummary(memberId, totalExecutedSeconds);
     }
 }
