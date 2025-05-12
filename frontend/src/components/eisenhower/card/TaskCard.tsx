@@ -22,6 +22,7 @@ import { Modal } from '@/components/common/Modal.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { DialogClose } from '@radix-ui/react-dialog';
 import EisenhowerAi from '@/components/ui/Modal/EisenhowerAi.tsx';
+import { todayService } from '@/services/todayService.ts';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -141,7 +142,20 @@ export function TaskCard({
                   }
                   footer={
                     <DialogClose asChild>
-                      <Button variant="blue">추가하기</Button>
+                      <Button
+                        variant="blue"
+                        onClick={async () => {
+                          try {
+                            await todayService.createTodayTask(task.id);
+                            toast.success('오늘의 할 일에 추가했어요!');
+                          } catch (err) {
+                            console.error('오늘의 할 일 추가 실패:', err);
+                            toast.error('추가에 실패했습니다');
+                          }
+                        }}
+                      >
+                        추가하기
+                      </Button>
                     </DialogClose>
                   }
                 ></Modal>

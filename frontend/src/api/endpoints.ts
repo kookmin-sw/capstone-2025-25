@@ -44,6 +44,7 @@ export const ENDPOINTS = {
 
   /* 오늘의 할 일 관련 엔드포인트 */
   TODAY: {
+    CREATE: (eisenhowerId: number) => `/api/v2/today-task/${eisenhowerId}`,
     LIST: '/api/v2/today-task',
     YESTERDAY_LIST: '/api/v2/today-task/yesterday',
     GET_COUNT: '/api/v2/today-task/count',
