@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Bot, Calendar, Check, GripVertical } from 'lucide-react';
+import { Bot, Calendar, GripVertical } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { format } from 'date-fns';
 import { MouseEvent } from 'react';
@@ -10,6 +10,8 @@ import { Task } from '@/types/task.ts';
 import { Category } from '@/types/category.ts';
 import { eisenhowerService } from '@/services/eisenhowerService.ts';
 import { toast } from 'sonner';
+import CheckFillIcon from '@/assets/eisenhower/check_fill.svg';
+import CheckOutlineIcon from '@/assets/eisenhower/check_outline.svg';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -91,7 +93,7 @@ export function TaskCard({
           variant === 'default' && !isDragging && 'hover:shadow-md',
           variant === 'default'
             ? 'bg-white border border-gray-100 cursor-pointer'
-            : 'bg-muted border border-gray-300 cursor-default shadow-none',
+            : 'bg-white border border-gray-300 cursor-default shadow-none',
           isDragging &&
             'opacity-50 z-10 shadow-lg border-2 border-purple-300 cursor-grabbing',
           className,
@@ -120,15 +122,21 @@ export function TaskCard({
             onClick={handleTaskComplete}
             className={cn(
               'check-icon w-[24px] h-[24px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center cursor-pointer',
-              variant === 'done' ? 'bg-blue text-white' : 'border border-blue',
+              // variant === 'done' ? 'bg-blue text-white' : 'border border-blue',
             )}
           >
-            {variant === 'done' && <Check className="w-3 h-3" />}
+            {variant === 'done' ? (
+              // <Check className="w-3 h-3 text-white" />
+              <img src={CheckFillIcon} alt="check-fill" />
+            ) : (
+              // <Check className="w-3 h-3 text-blue" />
+              <img src={CheckOutlineIcon} alt="check-outline" />
+            )}
           </div>
         </div>
 
         {/* 상단 카테고리 뱃지 */}
-        <div className="flex mb-2 flex-wrap gap-1">
+        <div className="flex mb-2 flex-wrap">
           {category && (
             <CategoryBadge label={category.title} bgColor={category.color} />
           )}
@@ -153,8 +161,8 @@ export function TaskCard({
         {/* 마감일 */}
         {dueDate && (
           <div className="text-xs flex items-center mt-auto text-[#525463]">
-            <Calendar className="w-3 h-3 mr-1" />
-            <span className="text-center pt-[2px]">
+            <Calendar className="w-4 h-4 mr-1 text-blue" />
+            <span className="text-center pt-[2px] text-xs">
               {format(new Date(dueDate), 'yyyy.MM.dd')}
             </span>
           </div>
