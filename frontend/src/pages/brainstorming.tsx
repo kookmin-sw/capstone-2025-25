@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import BubbleImg from '../assets/bubble.png';
 import Arrow from '@/assets/arrow_top.svg';
 import { BubbleType, BubbleNodeType } from '@/types/brainstorming';
-import { useIsMobile } from '@/hooks/use-mobile.ts';
+import { useResponsive } from '@/hooks/use-mobile.ts';
 import clsx from 'clsx';
 import Bubble from '@/components/ui/brainstorming/Bubble';
 import {
@@ -17,7 +17,7 @@ import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 export default function Brainstorming() {
-  const isMobile = useIsMobile();
+  const isMobile = useResponsive();
   const containerRef = useRef(null);
   const scrollRef = useRef(null);
   const { bubbleList } = useGetBubbles();
