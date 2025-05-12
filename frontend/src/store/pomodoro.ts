@@ -25,7 +25,6 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
     return totalElapsed;
   },
 
-
   setId: (id: number) => set({ id }),
   setTitle: (title: string) => set({ title }),
   setIsRunning: (running: boolean) => set({ isRunning: running }),
@@ -40,7 +39,14 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       typeof usePatchPomodoro
     >['patchPomodoroMutation'],
   ) => {
-    const { intervalId, elapsedTime, pausedTime, isRunning, id:currentId ,getTotalElapsedTime } = get();
+    const {
+      intervalId,
+      elapsedTime,
+      pausedTime,
+      isRunning,
+      id: currentId,
+      getTotalElapsedTime,
+    } = get();
     if (currentId !== id) {
       if (intervalId !== null) {
         clearInterval(intervalId);
@@ -51,9 +57,7 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
           data: {
             executedCycles: [
               {
-                workDuration: Math.floor(
-                  (totalElapsed - pausedTime) / 60
-                ),
+                workDuration: (totalElapsed - pausedTime),
                 breakDuration: 0,
               },
             ],
@@ -76,18 +80,18 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       typeof usePatchPomodoro
     >['patchPomodoroMutation'],
   ) => {
-    const { intervalId, pausedTime,getTotalElapsedTime } = get();
+    const { intervalId, pausedTime, getTotalElapsedTime } = get();
 
     if (intervalId !== null) {
       clearInterval(intervalId);
     }
     const totalElapsed = getTotalElapsedTime();
-    console.log(totalElapsed-pausedTime)
+    console.log(totalElapsed - pausedTime);
     patchPomodoroMutation({
       data: {
         executedCycles: [
           {
-            workDuration: Math.floor((totalElapsed - pausedTime) / 60),
+            workDuration: (totalElapsed - pausedTime),
             breakDuration: 0,
           },
         ],
@@ -118,7 +122,7 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       data: {
         executedCycles: [
           {
-            workDuration: Math.floor((totalElapsed - pausedTime) / 60),
+            workDuration: (totalElapsed - pausedTime),
             breakDuration: 0,
           },
         ],
@@ -151,7 +155,7 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       typeof usePatchPomodoro
     >['patchPomodoroMutation'],
   ) => {
-    const { intervalId,getTotalElapsedTime } = get();
+    const { intervalId, getTotalElapsedTime,pausedTime } = get();
     if (intervalId !== null) {
       clearInterval(intervalId);
     }
@@ -162,7 +166,7 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
         data: {
           executedCycles: [
             {
-              workDuration: Math.floor(totalElapsed / 60), // 분 단위 전송
+              workDuration: (totalElapsed - pausedTime),
               breakDuration: 0,
             },
           ],
@@ -176,11 +180,16 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       startTimestamp: 0,
       pausedTime: totalElapsed,
     });
-
   },
 
   tick: () => {
-    const { isRunning, startTimestamp, elapsedTime, pauseTimer, patchPomodoroMutation } = get();
+    const {
+      isRunning,
+      startTimestamp,
+      elapsedTime,
+      pauseTimer,
+      patchPomodoroMutation,
+    } = get();
     if (isRunning && startTimestamp) {
       const now = Date.now();
       const delta = Math.floor((now - startTimestamp) / 1000);
