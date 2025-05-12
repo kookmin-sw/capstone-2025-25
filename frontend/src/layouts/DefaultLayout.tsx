@@ -5,6 +5,7 @@ import BottomBar from '@/components/ui/sidebar/BottomBar';
 import clsx from 'clsx';
 import { useIsMobile } from '@/hooks/use-mobile.ts';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect.ts';
+import { Toaster } from '@/components/ui/sonner';
 
 export default function DefaultLayout() {
   useAuthRedirect();
@@ -28,6 +29,7 @@ export default function DefaultLayout() {
         <div className="flex-1 min-w-0">
           <main className="w-full h-full ">
             <Outlet />
+            <Toaster />
           </main>
         </div>
       </div>

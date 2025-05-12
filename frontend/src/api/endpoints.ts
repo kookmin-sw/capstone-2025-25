@@ -62,4 +62,20 @@ export const ENDPOINTS = {
       REWRITE: '/api/brainstorming/rewrite/chunk',
     },
   },
+
+  /* 보관홤 관련 API */
+  INVENTORY: {
+    FOLDER: {
+      LIST: '/api/v2/inventory/folder',
+      CREATE: '/api/v2/inventory/folder',
+      DELETE: (id: number) => `/api/v2/inventory/folder/${id}`,
+      DETAIL: (id: number) => `/api/v2/inventory/folder/${id}`,
+    },
+    ITEM: {
+      LIST: (id: number) => `/api/v2/inventory/${id}`,
+      UPDATE_ITEM: (id: number) => `/api/v2/inventory/item/${id}`,
+      MOVE_FOLDER: (id: number) => `/api/v2/inventory/move/${id}`,
+      DELETE: (id: number) => `/api/v2/inventory/item/${id}`,
+    },
+  },
 };

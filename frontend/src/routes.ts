@@ -20,6 +20,8 @@ export default [
     // route('pomodoro/:id?', 'pages/pomodoro.tsx'),
     route('list', 'pages/list.tsx'),
     route('dashboard', 'pages/dashboard.tsx'),
+    route('inventory', 'pages/inventory.tsx'),
+    route('inventory/:id', 'pages/inventoryDetail.tsx'),
     route('brainstorming', 'pages/brainstorming.tsx'),
   ]),
 ] satisfies RouteConfig;
