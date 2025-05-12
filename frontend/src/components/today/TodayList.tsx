@@ -3,11 +3,12 @@ import useGetTodayTodoList from '@/hooks/queries/today/useGetTodayTodoList';
 import useGetYesterdayTodoList from '@/hooks/queries/today/useGetYesterdayTodoList';
 import useMoveToday from '@/hooks/queries/today/useMoveToday';
 import { cn } from '@/lib/utils';
-import { Calendar, Check } from 'lucide-react';
+import { Calendar, Check, Trash2 } from 'lucide-react';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePatchPomodoro from '@/hooks/queries/pomodoro/usePatchPomodoro.ts';
 import { toast } from 'sonner';
 import useUpdateStatusTodo from '@/hooks/queries/today/useUpdateStatusTodo';
+import useDeleteTodayTodo from '@/hooks/queries/today/useDeleteTodayTodo';
 
 interface TodayListProps {
   hideCompleted?: boolean;
@@ -39,6 +40,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
   const { moveTodayMutation, isPending } = useMoveToday();
   const { patchPomodoroMutation } = usePatchPomodoro();
   const { updateStatusMutation } = useUpdateStatusTodo();
+  const { deleteTodayTodoMutation } = useDeleteTodayTodo();
 
   const handleMoveToToday = (id: number) => {
     moveTodayMutation(id);
@@ -73,6 +75,14 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
         },
       },
     );
+  };
+
+  const handleDeleteTask = (id: number, title: string) => {
+    deleteTodayTodoMutation(id, {
+      onSuccess: () => {
+        toast.success(`"${title}"을 오늘의 할 일에서 삭제했습니다.`);
+      },
+    });
   };
 
   const filteredTodayTodoList = todayTodoList
@@ -144,24 +154,32 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
             <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
               {getCategoryNameById(todo.category_id)}
             </div>
-            <div
-              className={cn(
-                'w-6 h-6 rounded-full flex items-center justify-center p-1',
-                todo.isCompleted
-                  ? 'bg-blue'
-                  : 'bg-transparent border-2 border-blue',
-              )}
-            >
-              <Check
-                className={cn(
-                  'cursor-pointer',
-                  todo.isCompleted ? 'text-white' : 'text-blue',
-                )}
+            <div className="flex items-center gap-2">
+              <Trash2
+                className="cursor-pointer text-gray-400 hover:text-red-500"
                 size={24}
-                onClick={() =>
-                  handleCompleteTask(todo.id, todo.isCompleted, todo.title)
-                }
+                onClick={() => handleDeleteTask(todo.id, todo.title)}
+                color="#7098ff"
               />
+              <div
+                className={cn(
+                  'w-6 h-6 rounded-full flex items-center justify-center p-1',
+                  todo.isCompleted
+                    ? 'bg-blue'
+                    : 'bg-transparent border-2 border-blue',
+                )}
+              >
+                <Check
+                  className={cn(
+                    'cursor-pointer',
+                    todo.isCompleted ? 'text-white' : 'text-blue',
+                  )}
+                  size={24}
+                  onClick={() =>
+                    handleCompleteTask(todo.id, todo.isCompleted, todo.title)
+                  }
+                />
+              </div>
             </div>
           </div>
           <p className="text-[20px] text-[#525463] font-semibold">

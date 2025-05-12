@@ -49,6 +49,7 @@ export const ENDPOINTS = {
     COMPLETE_COUNT: '/api/v2/today-task/completed',
     MOVE_TODAY: (id: number) => `/api/v2/today-task/move-today/${id}`,
     UPDATE_STATUS: (id: number) => `/api/v2/today-task/status/${id}`,
+    DELETE: (id: number) => `/api/v2/today-task/${id}`,
   },
   POMODORO: {
     PATCH_POMODORO: '/api/v2/pomodoro',

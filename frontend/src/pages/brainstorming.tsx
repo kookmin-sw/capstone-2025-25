@@ -15,6 +15,7 @@ import useDeleteBubble from '@/hooks/queries/brainstorming/useDeleteBubble.ts';
 import useCreateBubble from '@/hooks/queries/brainstorming/useCreateBubble.ts';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import MoveToInventoryModal from '@/components/ui/brainstorming/MoveToInventoryModal';
 
 export default function Brainstorming() {
   const isMobile = useIsMobile();
@@ -29,6 +30,13 @@ export default function Brainstorming() {
   const bubblesRef = useRef<BubbleNodeType[]>([]);
   const textareaRef = useRef(null);
   const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
+  const [selectedBubble, setSelectedBubble] = useState({
+    bubbleId: null,
+    title: '',
+  });
+
+  const [isMoveToInventoryDialogOpen, setIsMoveToInventoryDialogOpen] =
+    useState(false);
 
   const navigate = useNavigate();
 
@@ -156,7 +164,7 @@ export default function Brainstorming() {
       return;
     }
     const scroll = scrollRef.current;
-    let scrollWidth = scroll.offsetWidth;
+    const scrollWidth = scroll.offsetWidth;
     let scrollHeight = scroll.offsetHeight;
 
     createBubbleMutation(
@@ -255,7 +263,7 @@ export default function Brainstorming() {
       ></div>
       <div className="relative w-full h-full ">
         <div ref={scrollRef} className="relative w-full h-full overflow-auto ">
-          {bubbles.map((bubble, index) => (
+          {bubbles.map((bubble) => (
             <Popover
               key={bubble.bubbleId}
               open={openPopoverId === bubble.bubbleId}
@@ -331,8 +339,13 @@ export default function Brainstorming() {
                       isMobile ? 'text-[14px]' : 'text-[16px]',
                     )}
                     onClick={() => {
+                      setSelectedBubble({
+                        bubbleId: bubble.bubbleId,
+                        title: bubble.title,
+                      });
                       saveBubble();
                       setOpenPopoverId(null);
+                      setIsMoveToInventoryDialogOpen(true);
                     }}
                   >
                     보관
@@ -387,6 +400,15 @@ export default function Brainstorming() {
           )}
         </div>
       </div>
+
+      <MoveToInventoryModal
+        isOpen={isMoveToInventoryDialogOpen}
+        onOpenChange={setIsMoveToInventoryDialogOpen}
+        item={{
+          id: selectedBubble.bubbleId,
+          title: selectedBubble.title,
+        }}
+      />
     </div>
   );
 }

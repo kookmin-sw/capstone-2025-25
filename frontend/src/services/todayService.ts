@@ -52,4 +52,9 @@ export const todayService = {
     );
     return response.data;
   },
+
+  delete: async (id: number): Promise<void> => {
+    const response = await apiClient.delete(ENDPOINTS.TODAY.DELETE(id));
+    return response.data;
+  },
 };
