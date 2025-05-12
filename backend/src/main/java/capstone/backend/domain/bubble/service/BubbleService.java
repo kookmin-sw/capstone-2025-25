@@ -2,13 +2,14 @@ package capstone.backend.domain.bubble.service;
 
 
 import capstone.backend.domain.bubble.dto.request.BubbleUpdateRequest;
-import capstone.backend.domain.bubble.dto.request.ConfirmBubbleRequest;
 import capstone.backend.domain.bubble.dto.response.BubbleDTO;
 import capstone.backend.domain.bubble.entity.Bubble;
 import capstone.backend.domain.bubble.exception.BubbleNotFoundException;
 import capstone.backend.domain.bubble.repository.BubbleRepository;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
 import capstone.backend.domain.eisenhower.service.EisenhowerItemService;
+import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
+import capstone.backend.domain.inventory.service.InventoryItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class BubbleService {
 
     private final BubbleRepository bubbleRepository;
     private final EisenhowerItemService eisenhowerItemService;
+    private final InventoryItemService inventoryItemService;
 
     // 버블 전체 조회
     public List<BubbleDTO> findBubbles(Long memberId) {
@@ -42,13 +44,13 @@ public class BubbleService {
         log.info("Eisenhower item confirmed for bubble {}", bubbleId);
     }
 
-    // 버블 확정 (생각 바구니로)
+    // 버블 확정 (보관함)
     @Transactional
-    public void confirmToInventory(ConfirmBubbleRequest request, Long memberId, Long bubbleId) {
+    public void confirmToInventory(InventoryItemCreateRequest request, Long memberId, Long bubbleId) {
         Bubble bubble = bubbleRepository.findByMemberIdAndId(memberId, bubbleId).orElseThrow(BubbleNotFoundException::new);
 
-        // TODO 추후 보관함 생성 로직 구현
-
+        // 보관함 아이템 생성 로직 구현
+        inventoryItemService.createInventoryItem(request, memberId);
 
         bubbleRepository.delete(bubble);
     }

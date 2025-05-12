@@ -8,6 +8,7 @@ import capstone.backend.domain.bubble.dto.response.BubbleDTO;
 import capstone.backend.domain.bubble.service.BubbleService;
 import capstone.backend.domain.bubble.service.WebFluxService;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
+import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.member.service.MemberService;
 import capstone.backend.global.api.dto.ApiResponse;
@@ -64,10 +65,10 @@ public class BubbleController {
     }
 
     @PostMapping("/confirm-inventory/{id}")
-    @Operation(summary = "버블 확정 (보관함)", description = "버블 내용을 바탕으로 보관함 Item 생성")
+    @Operation(summary = "버블 확정 (보관함)", description = "request body의 memo 필드값은 null로 해주세요")
     public ApiResponse<Void> confirmInventory(
             @AuthenticationPrincipal CustomOAuth2User user,
-            @Valid @RequestBody ConfirmBubbleRequest request,
+            @Valid @RequestBody InventoryItemCreateRequest request,
             @Parameter(name = "id", description = "버블 ID", example = "1", required = true)
             @PathVariable Long id
     ) {
