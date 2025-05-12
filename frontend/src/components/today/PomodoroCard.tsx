@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { usePomodoroStore } from '@/store/pomodoro.ts';
+import usePatchPomodoro from '@/hooks/queries/pomodoro/usePatchPomodoro';
 import { useRef, useEffect } from 'react';
 import { Pause } from 'lucide-react';
 import start from '@/assets/pomodoro_start.svg';
@@ -12,18 +13,18 @@ export function PomodoroCard() {
     title,
     isRunning,
     elapsedTime,
-    startTimestamp,
-    setIsRunning,
-    setElapsedTime,
     resetTimer,
     deleteTimer,
     startTimer,
     pauseTimer,
-    tick,
   } = store;
+  const { patchPomodoroMutation } = usePatchPomodoro();
+  const setPatchPomodoroMutation = usePomodoroStore((state) => state.setPatchPomodoroMutation);
+  useEffect(() => {
+    setPatchPomodoroMutation(patchPomodoroMutation);
+  }, [patchPomodoroMutation, setPatchPomodoroMutation]);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const CYCLE_TIME = 25 * 60;
   const remaining = Math.max(CYCLE_TIME - elapsedTime, 0);
 
@@ -100,6 +101,17 @@ export function PomodoroCard() {
     ctx.fill();
   }, [elapsedTime]);
 
+  const handleReset = () => {
+    resetTimer(patchPomodoroMutation);
+  };
+
+  const handleDelete = () => {
+    deleteTimer(patchPomodoroMutation);
+  };
+  const handlePause = () => {
+    pauseTimer(patchPomodoroMutation);
+  };
+
   return (
     <Card className="h-full w-full border-none shadow-none">
       <CardHeader className="pb-2">
@@ -127,14 +139,14 @@ export function PomodoroCard() {
           <div className="flex items-center justify-center gap-[35px] py-2">
             <button
               className="w-[30px] h-[30px] rounded-full  bg-gray-scale-200 flex items-center justify-center  cursor-pointer"
-              onClick={deleteTimer}
+              onClick={handleDelete}
             >
               <img src={x} className="w-[10.87px] h-[10.87px]" />
             </button>
             <button
               className={`w-[48px] h-[48px] rounded-full flex items-center justify-center bg-[#7098FF] cursor-pointer 
               }`}
-              onClick={isRunning ? pauseTimer : startTimer}
+              onClick={isRunning ? handlePause : startTimer}
             >
               {isRunning ? (
                 <Pause className="w-[22.59px] h-[22.59px] text-[#ffffff] fill-white" />
@@ -147,7 +159,7 @@ export function PomodoroCard() {
             </button>
             <button
               className="w-[30px] h-[30px] rounded-full  bg-gray-scale-200 flex items-center justify-center  cursor-pointer"
-              onClick={resetTimer}
+              onClick={handleReset}
             >
               <img src={reset} className="w-[18px] h-[18px]" />
             </button>

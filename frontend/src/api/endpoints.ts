@@ -49,7 +49,9 @@ export const ENDPOINTS = {
     COMPLETE_COUNT: '/api/v2/today-task/completed',
     MOVE_TODAY: (id: number) => `/api/v2/today-task/move-today/${id}`,
   },
-
+  POMODORO: {
+    PATCH_POMODORO: '/api/v2/pomodoro',
+  },
   /* 카테고리 관련 엔드포인트 */
   CATEGORY: {
     LIST: '/api/v1/eisenhower/category',

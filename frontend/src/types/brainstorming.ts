@@ -9,4 +9,6 @@ export type BubbleNodeType = {
   radius: number;
   x: number;
   y: number;
+  isDeleting?: boolean | null;
+  isNew?: boolean | null;
 };
