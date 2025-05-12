@@ -10,33 +10,33 @@ import {
 } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
+import useCreateInventoryFolder from '@/hooks/queries/inventory/folder/useCreateInventoryFolder';
 
 type CreateFolderModalProps = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (name: string) => void;
-  isPending: boolean;
 };
 
 export default function CreateFolderModal({
   isOpen,
   onOpenChange,
-  onSubmit,
-  isPending,
 }: CreateFolderModalProps) {
   const [folderName, setFolderName] = useState('');
+  const { createInventoryFolderMutation, isPending } =
+    useCreateInventoryFolder();
 
-  const handleCreateFolder = () => {
-    if (folderName.trim()) {
-      onSubmit(folderName);
-      setFolderName('');
-    }
-  };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && folderName.trim() && !isPending) {
-      e.preventDefault();
-      handleCreateFolder();
+    if (folderName.trim() && !isPending) {
+      createInventoryFolderMutation(
+        { name: folderName.trim() },
+        {
+          onSuccess: () => {
+            handleOpenChange(false);
+          },
+        },
+      );
     }
   };
 
@@ -56,36 +56,43 @@ export default function CreateFolderModal({
             새 보관함의 이름을 입력해주세요.
           </DialogDescription>
         </DialogHeader>
-        <div className="py-4">
-          <Input
-            value={folderName}
-            onChange={(e) => setFolderName(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="보관함 이름"
-            className="w-full"
-          />
-        </div>
-        <DialogFooter>
-          <div className="w-full flex items-center justify-end gap-2">
-            <Button onClick={() => handleOpenChange(false)} variant="outline">
-              취소
-            </Button>
-            <Button
-              onClick={handleCreateFolder}
-              disabled={isPending || !folderName.trim()}
-              className="bg-blue text-white"
-            >
-              {isPending ? (
-                <div className="flex items-center justify-center">
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  생성 중...
-                </div>
-              ) : (
-                '생성하기'
-              )}
-            </Button>
+        <form onSubmit={handleSubmit}>
+          <div className="py-4">
+            <Input
+              value={folderName}
+              onChange={(e) => setFolderName(e.target.value)}
+              placeholder="보관함 이름"
+              className="w-full"
+              autoFocus
+              disabled={isPending}
+            />
           </div>
-        </DialogFooter>
+          <DialogFooter>
+            <div className="w-full flex items-center justify-end gap-2">
+              <Button
+                type="button"
+                onClick={() => handleOpenChange(false)}
+                variant="outline"
+              >
+                취소
+              </Button>
+              <Button
+                type="submit"
+                disabled={isPending || !folderName.trim()}
+                className="bg-blue text-white"
+              >
+                {isPending ? (
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    생성 중...
+                  </div>
+                ) : (
+                  '생성하기'
+                )}
+              </Button>
+            </div>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

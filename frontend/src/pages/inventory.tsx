@@ -3,7 +3,6 @@ import FolderIcon from '@/assets/folder.png';
 import { ChevronRight, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import useGetInventoryFolderList from '@/hooks/queries/inventory/folder/useGetInventoryFolderList';
-import useCreateInventoryFolder from '@/hooks/queries/inventory/folder/useCreateInventoryFolder';
 import useDeleteInventoryFolder from '@/hooks/queries/inventory/folder/useDeleteInventoryFolder';
 import CreateFolderModal from '@/components/inventory/modal/CreateFolderMoal';
 import DeleteFolderModal from '@/components/inventory/modal/DeleteFolderMoal';
@@ -11,8 +10,6 @@ import DeleteFolderModal from '@/components/inventory/modal/DeleteFolderMoal';
 export default function StorePage() {
   const navigate = useNavigate();
   const { inventoryFolderList } = useGetInventoryFolderList();
-  const { createInventoryFolderMutation, isPending: isCreating } =
-    useCreateInventoryFolder();
   const { deleteInventoryFolderMutation, isPending: isDeleting } =
     useDeleteInventoryFolder();
 
@@ -25,17 +22,6 @@ export default function StorePage() {
 
   const handleRouteToStoreDetail = (id: number) => {
     navigate(`/inventory/${id}`);
-  };
-
-  const handleCreateFolder = (name: string) => {
-    createInventoryFolderMutation(
-      { name },
-      {
-        onSuccess: () => {
-          setIsCreateModalOpen(false);
-        },
-      },
-    );
   };
 
   const handleDeleteClick = (
@@ -85,8 +71,6 @@ export default function StorePage() {
       <CreateFolderModal
         isOpen={isCreateModalOpen}
         onOpenChange={setIsCreateModalOpen}
-        onSubmit={handleCreateFolder}
-        isPending={isCreating}
       />
 
       <DeleteFolderModal
