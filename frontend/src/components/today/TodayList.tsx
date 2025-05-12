@@ -210,13 +210,13 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
         </div>
       ))}
       {filteredTodayTodoList.length === 0 && (
-        <div className="bg-white px-4 py-2 rounded-md">
+        <div className="bg-white px-4 py-8 rounded-md flex flex-col items-center justify-center text-center min-h-[200px]">
           <p className="font-semibold">
             {hideCompleted && todayTodoList && todayTodoList.length > 0
               ? '완료되지 않은 일이 없어요'
               : '아직 오늘의 할 일이 없어요'}
           </p>
-          <p className="text-[14px] text-[#525463]">
+          <p className="text-[14px] text-[#525463] mt-2 cursor-pointer hover:text-blue">
             오늘의 할 일 추가하기 {'>'}
           </p>
         </div>

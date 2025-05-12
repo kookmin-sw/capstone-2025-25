@@ -19,9 +19,7 @@ export default function TodayMainDashborad() {
   const date = today.getDate();
 
   const [hideCompleted, setHideCompleted] = useState(false);
-
   const navigate = useNavigate();
-
   const { todayTodoCount } = useGetTodayTodoCount();
   const { todayTodoCompletedCount } = useGetTodayTodoCompletedCount();
   const currentId = usePomodoroStore((s) => s.id);
@@ -33,18 +31,19 @@ export default function TodayMainDashborad() {
   return (
     <div className="flex flex-col lg:flex-row w-full gap-4">
       {isMobile && currentId && (
-        <div className=" w-full">
+        <div className="w-full">
           <PomodoroCard />
         </div>
       )}
-      <div className="w-full lg:w-1/2 bg-white rounded-lg p-4 lg:mr-4 h-auto lg:min-h-[616px] overflow-auto">
+
+      <div className="w-full lg:w-1/2 bg-white rounded-lg p-4 lg:mr-4 h-auto lg:h-fit overflow-auto self-start">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-4">
-            <h3 className="text-[20px] text-[#525463] font-semibold">
+            <h3 className="text-[20px] text-[`#525463`] font-semibold">
               오늘의 할 일
             </h3>
             {todayTodoCount && (
-              <p className="text-[#525463]">{todayTodoCount}</p>
+              <p className="text-[`#525463`]">{todayTodoCount}</p>
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -79,16 +78,16 @@ export default function TodayMainDashborad() {
         <TodayList hideCompleted={hideCompleted} />
       </div>
 
-      <div className="w-full lg:w-1/2 flex flex-col gap-4 h-auto md:h-[740px] lg:h-[600px] mt-4 lg:mt-0">
+      <div className="w-full lg:w-1/2 flex flex-col gap-4 h-auto mt-4 lg:mt-0">
         {!isMobile && currentId && (
-          <div className=" w-full">
+          <div className="w-full">
             <PomodoroCard />
           </div>
         )}
-        <div className="h-1/2 w-full">
+        <div className="w-full">
           <DailyCompletionChart title="할 일 완료 분석" />
         </div>
-        <div className="h-1/2 w-full">
+        <div className="w-full">
           <DailyCompletionChart title="뽀모도로 시간 분석" />
         </div>
       </div>

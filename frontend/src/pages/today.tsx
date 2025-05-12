@@ -13,7 +13,6 @@ export default function TodayListPage() {
       </div>
 
       <ReminderList />
-      {/* 메인 대시보드 레이아웃 */}
       <TodayMainDashborad />
     </div>
   );
