@@ -4,6 +4,7 @@ import capstone.backend.domain.auth.dto.request.AccessTokenRequest;
 import capstone.backend.domain.auth.dto.response.AccessTokenResponse;
 import capstone.backend.domain.auth.dto.response.TokenResponse;
 import capstone.backend.domain.auth.service.AuthService;
+import capstone.backend.domain.member.service.MemberService;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final MemberService memberService;
 
     @PostMapping("/reissue")
     @Operation(summary = "Access Token 재발급", description = "refreshToken이 담긴 Cookie를 받아서 AT 재발급")
@@ -70,6 +72,20 @@ public class AuthController {
             @RequestBody @Valid AccessTokenRequest request
     ) {
         authService.logout(user.getMemberId(), request.accessToken());
+        return ApiResponse.ok();
+    }
+
+    @DeleteMapping
+    @Operation(
+            summary = "회원 탈퇴",
+            description = "회원 탈퇴와 동시에 기존의 AT BlackList로 등록, 기존의 회원이 사용하던 RT 삭제"
+    )
+    public ApiResponse<Void> delete(
+            @AuthenticationPrincipal CustomOAuth2User user,
+            @RequestBody @Valid AccessTokenRequest request
+    ) {
+        authService.logout(user.getMemberId(), request.accessToken());
+        memberService.deleteMember(user.getMemberId());
         return ApiResponse.ok();
     }
 }
