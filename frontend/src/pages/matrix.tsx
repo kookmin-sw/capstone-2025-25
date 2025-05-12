@@ -19,6 +19,7 @@ import {
 import { ChevronDown, Grid2X2, Kanban } from 'lucide-react';
 import useMatrixStore from '@/store/matrixStore';
 import { eisenhowerService } from '@/services/eisenhowerService.ts';
+import { useResponsive } from '@/hooks/use-mobile';
 
 export default function MatrixPage() {
   const {
@@ -73,8 +74,10 @@ export default function MatrixPage() {
     };
 
     fetchTasks();
-    fetchCategories(); // 카테고리도 같이 불러오기
+    fetchCategories();
   }, []);
+
+  const { isMobile } = useResponsive();
 
   return (
     <div className="flex min-h-0 flex-1 p-[30px] overflow-auto">
@@ -119,7 +122,7 @@ export default function MatrixPage() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              {activeTab === 'all' && (
+              {activeTab === 'all' && !isMobile && (
                 <Tabs
                   value={view}
                   onValueChange={(val) => setView(val as 'matrix' | 'board')}

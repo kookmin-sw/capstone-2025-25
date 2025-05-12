@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
-import { Tag, Calendar, Plus } from 'lucide-react';
+import { Tag } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { BadgeSelector } from '@/components/common/BadgeSelector';
@@ -15,6 +15,9 @@ import { eisenhowerService } from '@/services/eisenhowerService';
 import { eisenhowerCategoryService } from '@/services/eisenhowerCategoryService';
 import { useCategoryStore } from '@/store/useCategoryStore.ts';
 import { toast } from 'sonner';
+import PlusIcon from '@/assets/eisenhower/plus.svg';
+
+import CalendarOutlineIcon from '@/assets/eisenhower/calander_outline.svg';
 
 type TaskModalProps = {
   mode: 'create' | 'edit';
@@ -152,8 +155,12 @@ export function TaskModal({
 
   const defaultTrigger =
     mode === 'create' ? (
-      <button className="cursor-pointer">
-        <Plus />
+      <button
+        type="button"
+        className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-blue shrink-0"
+      >
+        {/*<Plus className="w-5 h-5" />*/}
+        <img src={PlusIcon} alt="plus" />
       </button>
     ) : task ? (
       <TaskCard
@@ -246,7 +253,7 @@ export function TaskModal({
 
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3 pb-1">
             <div className="flex items-center gap-2 text-sm whitespace-nowrap leading-none">
-              <Calendar className="w-4 h-4" />
+              <img src={CalendarOutlineIcon} alt="calendar" />
               <span className="pt-1">마감일</span>
               <div className="pt-1">
                 <SingleDatePicker
@@ -277,6 +284,7 @@ export function TaskModal({
               <Button
                 onClick={handleCreate}
                 disabled={!title.trim() || !dueDate}
+                variant={!title.trim() || !dueDate ? 'disabled' : 'blue'}
               >
                 생성하기
               </Button>
@@ -294,6 +302,7 @@ export function TaskModal({
                 <Button
                   onClick={handleSave}
                   disabled={!title.trim() || !dueDate}
+                  variant="blue"
                 >
                   저장하기
                 </Button>
@@ -302,7 +311,9 @@ export function TaskModal({
           </div>
         ) : (
           <div className="flex justify-end gap-2">
-            <Button onClick={() => setIsEditing(true)}>수정하기</Button>
+            <Button onClick={() => setIsEditing(true)} variant="blue">
+              수정하기
+            </Button>
           </div>
         )
       }

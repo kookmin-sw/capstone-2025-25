@@ -36,7 +36,7 @@ export function CompletedView({
 
         setTasks(completedTasks);
       } catch (err) {
-        console.error('✅ 완료된 일정 불러오기 실패:', err);
+        console.error('완료된 일정 불러오기 실패:', err);
       }
     };
 
@@ -56,7 +56,7 @@ export function CompletedView({
   });
 
   return (
-    <div className="bg-gray-100 rounded-lg p-4">
+    <div className="bg-[#E8EFFF] rounded-lg p-4">
       {filteredTasks.length > 0 ? (
         <div className="space-y-2">
           {filteredTasks.map((task) => (

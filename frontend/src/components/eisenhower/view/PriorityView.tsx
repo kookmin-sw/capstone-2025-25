@@ -20,6 +20,8 @@ import type { Task } from '@/types/task';
 import { Quadrant } from '@/types/commonTypes';
 import { TaskModal } from '@/components/eisenhower/TaskModal';
 import { eisenhowerService } from '@/services/eisenhowerService';
+import { cn } from '@/lib/utils.ts';
+import { useResponsive } from '@/hooks/use-mobile.ts';
 
 function Droppable({
   id,
@@ -173,6 +175,9 @@ export function PriorityView({
     Q4: 'bg-[#F1F5FF] border-blue border rounded-md',
   };
 
+  const { isMobile, isCompact } = useResponsive();
+  const [activeQuadrant, setActiveQuadrant] = useState<Quadrant>('Q1');
+
   return (
     <DndContext
       collisionDetection={rectIntersection}
@@ -185,74 +190,105 @@ export function PriorityView({
         if (t) setActiveTask(t);
       }}
     >
-      <div className={`grid ${gridClass} h-full`}>
-        {(Object.keys(tasksByQuadrant) as Quadrant[]).map((quadrant) => {
-          const filtered = tasksByQuadrant[quadrant].filter((task) => {
-            if (task.isCompleted) return false;
-            const matchCategory =
-              selectedCategory === 'all' ||
-              getCategoryNameById(task.categoryId, categories) ===
-                selectedCategory;
-            const taskDate = new Date(task.dueDate || '');
-            return (
-              matchCategory && taskDate >= startDate && taskDate <= endDate
-            );
-          });
+      {isMobile && (
+        <div
+          className={cn(
+            'grid gap-1 mb-4',
+            isCompact ? 'grid-cols-1' : 'grid-cols-2',
+          )}
+        >
+          {(['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).map((q) => (
+            <button
+              key={q}
+              onClick={() => setActiveQuadrant(q)}
+              className={cn(
+                'w-full py-2 px-1 rounded-[8px] text-sm font-medium border cursor-pointer',
+                activeQuadrant === q
+                  ? 'bg-blue text-white border-blue'
+                  : 'bg-white text-blue border-blue',
+              )}
+            >
+              {quadrantTitles[q]}
+            </button>
+          ))}
+        </div>
+      )}
 
-          return (
-            <Droppable key={quadrant} id={quadrant}>
-              <div
-                className={`px-4 py-5 min-h-[400px] flex flex-col ${quadrantColors[quadrant]}`}
-              >
-                <div className="flex justify-between items-center pb-[14px]">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green">
-                      {quadrant.replace('Q', '')}
-                    </div>
-                    <div className="text-xl font-semibold text-[#525463]">
-                      {quadrantTitles[quadrant]}
-                    </div>
-                    <div className="text-sm text-[#6E726E]">
-                      {filtered.length}
-                    </div>
-                  </div>
-                  <TaskModal
-                    mode="create"
-                    quadrant={quadrant}
-                    onCreateTask={handleCreateTask}
-                  />
-                </div>
-                <SortableContext
-                  items={filtered.map((task) => String(task.id))}
-                  strategy={verticalListSortingStrategy}
+      <div className={`grid ${gridClass} h-full`}>
+        {(Object.keys(tasksByQuadrant) as Quadrant[])
+          .filter((q) => !isMobile || q === activeQuadrant)
+          .map((quadrant) => {
+            const filtered = tasksByQuadrant[quadrant].filter((task) => {
+              if (task.isCompleted) return false;
+              const matchCategory =
+                selectedCategory === 'all' ||
+                getCategoryNameById(task.categoryId, categories) ===
+                  selectedCategory;
+              const taskDate = new Date(task.dueDate || '');
+              return (
+                matchCategory && taskDate >= startDate && taskDate <= endDate
+              );
+            });
+
+            return (
+              <Droppable key={quadrant} id={quadrant}>
+                <div
+                  className={`px-4 py-5 min-h-[400px] flex flex-col ${quadrantColors[quadrant]}`}
                 >
-                  <div className="space-y-2 flex-1 overflow-y-auto scrollbar-hide">
-                    {filtered.map((task) => (
-                      <TaskModal
-                        key={task.id}
-                        mode="edit"
-                        quadrant={task.quadrant}
-                        task={task}
-                        onUpdateTask={handleUpdateTask}
-                        trigger={
-                          <div>
-                            <TaskCard
-                              key={String(task.id)}
-                              task={task}
-                              layout={viewMode}
-                              onUpdateTask={handleUpdateTask}
-                              categories={categories}
-                            />
-                          </div>
-                        }
-                      />
-                    ))}
+                  <div className="flex justify-between items-center pb-[14px] gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
+                        {quadrant.replace('Q', '')}
+                      </div>
+                      <div
+                        className={cn(
+                          'font-semibold text-[#525463]',
+                          viewMode === 'board' ? 'text-[16px]' : 'text-[20px]',
+                        )}
+                      >
+                        {quadrantTitles[quadrant]}
+                      </div>
+                      <div className="text-sm text-[#6E726E]">
+                        {filtered.length}
+                      </div>
+                    </div>
+                    <TaskModal
+                      mode="create"
+                      quadrant={quadrant}
+                      onCreateTask={handleCreateTask}
+                    />
                   </div>
-                </SortableContext>
-              </div>
-            </Droppable>
-          );
-        })}
+                  <SortableContext
+                    items={filtered.map((task) => String(task.id))}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="space-y-2 flex-1 overflow-y-auto scrollbar-hide">
+                      {filtered.map((task) => (
+                        <TaskModal
+                          key={task.id}
+                          mode="edit"
+                          quadrant={task.quadrant}
+                          task={task}
+                          onUpdateTask={handleUpdateTask}
+                          trigger={
+                            <div>
+                              <TaskCard
+                                key={String(task.id)}
+                                task={task}
+                                layout={viewMode}
+                                onUpdateTask={handleUpdateTask}
+                                categories={categories}
+                              />
+                            </div>
+                          }
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </div>
+              </Droppable>
+            );
+          })}
       </div>
 
       <DragOverlay>
