@@ -7,7 +7,7 @@ import useDeleteInventoryFolder from '@/hooks/queries/inventory/folder/useDelete
 import CreateFolderModal from '@/components/inventory/modal/CreateFolderMoal';
 import DeleteFolderModal from '@/components/inventory/modal/DeleteFolderMoal';
 
-export default function StorePage() {
+export default function InventoryPage() {
   const navigate = useNavigate();
   const { inventoryFolderList } = useGetInventoryFolderList();
   const { deleteInventoryFolderMutation, isPending: isDeleting } =
