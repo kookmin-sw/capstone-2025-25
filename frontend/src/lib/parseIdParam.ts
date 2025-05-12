@@ -1,5 +1,5 @@
-export const parseIdParam = (id: string | undefined): number | null => {
-  if (!id) return null;
+export const parseIdParam = (id: string | undefined): number => {
+  if (!id) return 0;
   const parsed = Number(id);
-  return isNaN(parsed) ? null : parsed;
+  return isNaN(parsed) ? 0 : parsed;
 };

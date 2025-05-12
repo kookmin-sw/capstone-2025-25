@@ -1,151 +1,200 @@
-import { generateNumericId } from '@/lib/generateNumericId';
-import { pomodoroMockData } from '@/mock/pomorodo';
-import {
-  PomodoroList,
-  Pomodoro,
-  LinkedUnlinkedPomodoro,
-  Eisenhower,
-  PomodoroCycle,
-  TotalTime,
-} from '@/types/pomodoro';
 import { create } from 'zustand';
+import { Pomodoro, PatchPomodoroMutationType } from '@/types/pomodoro';
+import usePatchPomodoro from '@/hooks/queries/pomodoro/usePatchPomodoro.ts';
 
-export type PomodoroListState = {
-  pomodoros: PomodoroList;
+export const usePomodoroStore = create<Pomodoro>((set, get) => ({
+  id: null,
+  title: '',
+  isRunning: false,
+  elapsedTime: 0,
+  startTimestamp: 0,
+  intervalId: null,
+  pausedTime: 0,
+  patchPomodoroMutation: null,
+  setPatchPomodoroMutation: (mutation: PatchPomodoroMutationType) => {
+    set({ patchPomodoroMutation: mutation });
+  },
+  getTotalElapsedTime: () => {
+    const { isRunning, elapsedTime, startTimestamp } = get();
+    let totalElapsed = elapsedTime;
+    if (isRunning && startTimestamp > 0) {
+      const now = Date.now();
+      const delta = Math.floor((now - startTimestamp) / 1000);
+      totalElapsed += delta;
+    }
+    return totalElapsed;
+  },
 
-  createPomodoro: (newPomodoroData: {
-    title: string;
-    plannedCycles: PomodoroCycle[];
-    totalPlannedTime: TotalTime;
-    eisenhower: Eisenhower | null;
-  }) => number;
-  deletePomodoro: (id: number) => void;
-  disconnectPomodoroTask: (pomodoroId: number) => void;
-};
 
-const useStore = create<PomodoroListState>((set) => ({
-  pomodoros: pomodoroMockData,
+  setId: (id: number) => set({ id }),
+  setTitle: (title: string) => set({ title }),
+  setIsRunning: (running: boolean) => set({ isRunning: running }),
+  setElapsedTime: (seconds: number) => set({ elapsedTime: seconds }),
+  setStartTimestamp: (time: number) => set({ startTimestamp: time }),
+  setPausedTime: (time: number) => set({ pausedTime: time }),
 
-  createPomodoro: (newPomodoroData) => {
-    const newId = generateNumericId();
-    const now = new Date().toISOString();
+  setTimer: (
+    id: number,
+    title: string,
+    patchPomodoroMutation: ReturnType<
+      typeof usePatchPomodoro
+    >['patchPomodoroMutation'],
+  ) => {
+    const { intervalId, elapsedTime, pausedTime, isRunning, id:currentId ,getTotalElapsedTime } = get();
+    if (currentId !== id) {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+      }
+      const totalElapsed = getTotalElapsedTime();
+      if (isRunning && elapsedTime > 0) {
+        patchPomodoroMutation({
+          data: {
+            executedCycles: [
+              {
+                workDuration: Math.floor(
+                  (totalElapsed - pausedTime) / 60
+                ),
+                breakDuration: 0,
+              },
+            ],
+          },
+        });
+      }
+      set({
+        id: id,
+        title: title,
+        isRunning: false,
+        elapsedTime: 0,
+        startTimestamp: 0,
+        intervalId: null,
+        pausedTime: 0,
+      });
+    }
+  },
+  resetTimer: (
+    patchPomodoroMutation: ReturnType<
+      typeof usePatchPomodoro
+    >['patchPomodoroMutation'],
+  ) => {
+    const { intervalId, pausedTime,getTotalElapsedTime } = get();
 
-    const newPomodoro: Pomodoro = {
-      id: newId,
-      title: newPomodoroData.title,
-      createdAt: now,
-      completedAt: '',
-      totalPlannedTime: newPomodoroData.totalPlannedTime,
-      totalExecutedTime: {
-        hour: 0,
-        minute: 0,
-        second: 0,
-        nano: 0,
+    if (intervalId !== null) {
+      clearInterval(intervalId);
+    }
+    const totalElapsed = getTotalElapsedTime();
+    console.log(totalElapsed-pausedTime)
+    patchPomodoroMutation({
+      data: {
+        executedCycles: [
+          {
+            workDuration: Math.floor((totalElapsed - pausedTime) / 60),
+            breakDuration: 0,
+          },
+        ],
       },
-      totalWorkingTime: {
-        hour: 0,
-        minute: 0,
-        second: 0,
-        nano: 0,
+    });
+    set({
+      isRunning: false,
+      elapsedTime: 0,
+      startTimestamp: 0,
+      intervalId: null,
+      pausedTime: 0,
+    });
+  },
+  deleteTimer: (
+    patchPomodoroMutation: ReturnType<
+      typeof usePatchPomodoro
+    >['patchPomodoroMutation'],
+  ) => {
+    const { intervalId, pausedTime, getTotalElapsedTime } = get();
+
+    if (intervalId !== null) {
+      clearInterval(intervalId);
+    }
+
+    localStorage.removeItem('pomodoro-state');
+    const totalElapsed = getTotalElapsedTime();
+    patchPomodoroMutation({
+      data: {
+        executedCycles: [
+          {
+            workDuration: Math.floor((totalElapsed - pausedTime) / 60),
+            breakDuration: 0,
+          },
+        ],
       },
-      totalBreakTime: {
-        hour: 0,
-        minute: 0,
-        second: 0,
-        nano: 0,
-      },
-      plannedCycles: newPomodoroData.plannedCycles,
-      executedCycles: [],
-    };
+    });
+    set({
+      id: null,
+      title: '',
+      isRunning: false,
+      elapsedTime: 0,
+      startTimestamp: 0,
+      intervalId: null,
+      pausedTime: 0,
+    });
+  },
 
-    const newPomodoroItem: LinkedUnlinkedPomodoro = {
-      pomodoro: newPomodoro,
-      eisenhower: newPomodoroData.eisenhower,
-    };
+  startTimer: () => {
+    const interval = setInterval(() => {
+      get().tick();
+    }, 1000);
+    set({
+      isRunning: true,
+      startTimestamp: Date.now(),
+      intervalId: interval,
+    });
+  },
 
-    set((state) => {
-      const updatedPomodoros = { ...state.pomodoros };
+  pauseTimer: (
+    patchPomodoroMutation: ReturnType<
+      typeof usePatchPomodoro
+    >['patchPomodoroMutation'],
+  ) => {
+    const { intervalId,getTotalElapsedTime } = get();
+    if (intervalId !== null) {
+      clearInterval(intervalId);
+    }
+    const totalElapsed = getTotalElapsedTime();
 
-      if (newPomodoroData.eisenhower) {
-        updatedPomodoros.linkedPomodoros = [
-          ...(updatedPomodoros.linkedPomodoros || []),
-          newPomodoroItem,
-        ];
+    if (totalElapsed > 0) {
+      patchPomodoroMutation({
+        data: {
+          executedCycles: [
+            {
+              workDuration: Math.floor(totalElapsed / 60), // 분 단위 전송
+              breakDuration: 0,
+            },
+          ],
+        },
+      });
+    }
+
+    set({
+      isRunning: false,
+      elapsedTime: totalElapsed,
+      startTimestamp: 0,
+      pausedTime: totalElapsed,
+    });
+
+  },
+
+  tick: () => {
+    const { isRunning, startTimestamp, elapsedTime, pauseTimer, patchPomodoroMutation } = get();
+    if (isRunning && startTimestamp) {
+      const now = Date.now();
+      const delta = Math.floor((now - startTimestamp) / 1000);
+      const newElapsed = elapsedTime + delta;
+
+      if (newElapsed >= 1500) {
+        pauseTimer(patchPomodoroMutation);
+        set({ elapsedTime: 1500 }); // 최대 25분까지만 고정
       } else {
-        updatedPomodoros.unlinkedPomodoros = [
-          ...(updatedPomodoros.unlinkedPomodoros || []),
-          newPomodoroItem,
-        ];
+        set({
+          elapsedTime: newElapsed,
+          startTimestamp: Date.now(),
+        });
       }
-
-      return { pomodoros: updatedPomodoros };
-    });
-
-    return newId;
-  },
-
-  deletePomodoro: (id) => {
-    set((state) => {
-      const updatedPomodoros = { ...state.pomodoros };
-
-      if (updatedPomodoros.linkedPomodoros) {
-        updatedPomodoros.linkedPomodoros =
-          updatedPomodoros.linkedPomodoros.filter(
-            (item) => item.pomodoro.id !== id,
-          );
-      }
-
-      if (updatedPomodoros.unlinkedPomodoros) {
-        updatedPomodoros.unlinkedPomodoros =
-          updatedPomodoros.unlinkedPomodoros.filter(
-            (item) => item.pomodoro.id !== id,
-          );
-      }
-
-      return { pomodoros: updatedPomodoros };
-    });
-  },
-
-  disconnectPomodoroTask: (pomodoroId) => {
-    set((state) => {
-      const updatedPomodoros = { ...state.pomodoros };
-
-      if (updatedPomodoros.linkedPomodoros) {
-        const pomodoroIndex = updatedPomodoros.linkedPomodoros.findIndex(
-          (item) => item.pomodoro.id === pomodoroId,
-        );
-
-        if (pomodoroIndex !== -1) {
-          const pomodoro = updatedPomodoros.linkedPomodoros[pomodoroIndex];
-
-          const unlinkedPomodoro = {
-            pomodoro: pomodoro.pomodoro,
-            eisenhower: null,
-          };
-
-          updatedPomodoros.linkedPomodoros =
-            updatedPomodoros.linkedPomodoros.filter(
-              (item) => item.pomodoro.id !== pomodoroId,
-            );
-
-          updatedPomodoros.unlinkedPomodoros = [
-            ...(updatedPomodoros.unlinkedPomodoros || []),
-            unlinkedPomodoro,
-          ];
-        }
-      }
-
-      return { pomodoros: updatedPomodoros };
-    });
+    }
   },
 }));
-
-export const usePomodoros = () => useStore((state) => state.pomodoros);
-export const useCreatePomodoro = () =>
-  useStore((state) => state.createPomodoro);
-export const useDeletePomodoro = () =>
-  useStore((state) => state.deletePomodoro);
-export const useDisconnectPomodoroTask = () =>
-  useStore((state) => state.disconnectPomodoroTask);
-
-export default useStore;

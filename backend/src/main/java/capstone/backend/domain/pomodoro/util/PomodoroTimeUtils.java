@@ -17,10 +17,11 @@ public class PomodoroTimeUtils {
         int totalBreakSeconds = 0;
 
         for (PomodoroCycle cycle : cycles) {
-            totalWorkingSeconds += Optional.ofNullable(cycle.getWorkDuration()).orElse(0) * 60;
-            totalBreakSeconds += Optional.ofNullable(cycle.getBreakDuration()).orElse(0) * 60;
+            totalWorkingSeconds += Optional.ofNullable(cycle.getWorkDuration()).orElse(0);
+            totalBreakSeconds += Optional.ofNullable(cycle.getBreakDuration()).orElse(0);
         }
 
+        // 전부 초단위로 변경
         return new int[]{
                 totalWorkingSeconds,
                 totalBreakSeconds,

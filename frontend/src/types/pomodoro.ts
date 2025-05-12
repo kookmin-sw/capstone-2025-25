@@ -1,39 +1,37 @@
-import { EisenhowerBase } from '@/types/commonTypes';
-
-export type TotalTime = {
-  hour: number;
-  minute: number;
-  second: number;
-  nano: number;
-};
-
-export type Mode = 'WORK' | 'BREAK';
-
-export type PomodoroCycle = {
-  workDuration: number;
-  breakDuration: number;
-};
+import usePatchPomodoro from '@/hooks/queries/pomodoro/usePatchPomodoro';
+export type PatchPomodoroMutationType = ReturnType<typeof usePatchPomodoro>['patchPomodoroMutation'];
 
 export type Pomodoro = {
-  id: number;
+  id: number | null;
   title: string;
-  createdAt: string;
-  completedAt: string;
-  totalPlannedTime: TotalTime;
-  totalExecutedTime: TotalTime;
-  totalWorkingTime: TotalTime;
-  totalBreakTime: TotalTime;
-  plannedCycles: PomodoroCycle[];
-  executedCycles: PomodoroCycle[];
-};
-
-export type Eisenhower = EisenhowerBase;
-
-export type LinkedUnlinkedPomodoro = {
-  pomodoro: Pomodoro;
-  eisenhower: Eisenhower | null;
-};
-export type PomodoroList = {
-  linkedPomodoros: LinkedUnlinkedPomodoro[] | null;
-  unlinkedPomodoros: LinkedUnlinkedPomodoro[] | null;
+  isRunning: boolean;
+  elapsedTime: number;
+  startTimestamp: number;
+  pausedTime: number;
+  intervalId: ReturnType<typeof setInterval> | null;
+  patchPomodoroMutation: PatchPomodoroMutationType | null;
+  setPatchPomodoroMutation: (mutation: PatchPomodoroMutationType) => void;
+  getTotalElapsedTime: () => void;
+  setId: (id: number) => void;
+  setTitle: (title: string) => void;
+  setIsRunning: (running: boolean) => void;
+  setElapsedTime: (seconds: number) => void;
+  setStartTimestamp: (time: number) => void;
+  setPausedTime: (time: number) => void;
+  setTimer: (
+    id: number,
+    title: string,
+    patchFn: ReturnType<typeof usePatchPomodoro>['patchPomodoroMutation'],
+  ) => void;
+  resetTimer: (
+    patchFn: ReturnType<typeof usePatchPomodoro>['patchPomodoroMutation'],
+  ) => void;
+  deleteTimer: (
+    patchFn: ReturnType<typeof usePatchPomodoro>['patchPomodoroMutation'],
+  ) => void;
+  pauseTimer: (
+    patchFn: ReturnType<typeof usePatchPomodoro>['patchPomodoroMutation'],
+  ) => void;
+  startTimer: () => void;
+  tick: () => void;
 };

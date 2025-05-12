@@ -22,7 +22,7 @@ public class NotificationJobConfig {
     private final DeleteOldNotificationsTasklet deleteOldNotificationTasklet;
 
     // 알림 생성 및 삭제 Job
-    @Bean
+    @Bean(name = "notificationJob")
     public Job notificationJob() {
         return new JobBuilder("notificationJob", jobRepository)
                 .start(generateNotificationStep())
