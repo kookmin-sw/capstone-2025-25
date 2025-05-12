@@ -18,6 +18,10 @@ import { toast } from 'sonner';
 import CheckFillIcon from '@/assets/eisenhower/check_fill.svg';
 import CheckOutlineIcon from '@/assets/eisenhower/check_outline.svg';
 import type { EisenhowerTask } from '@/types/api/eisenhower';
+import { Modal } from '@/components/common/Modal.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { DialogClose } from '@radix-ui/react-dialog';
+import EisenhowerAi from '@/components/ui/Modal/EisenhowerAi.tsx';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -114,17 +118,33 @@ export function TaskCard({
         <div className="absolute p-2 top-1 right-1 flex gap-2">
           {variant === 'default' && (
             <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 items-center">
-              <div
-                className="text-[#6E726E] hover:text-gray-600 transition-colors"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Bot />
+              <div onClick={(e) => e.stopPropagation()}>
+                <EisenhowerAi
+                  trigger={
+                    <div className="text-[#6E726E] hover:text-gray-600 transition-colors">
+                      <Bot />
+                    </div>
+                  }
+                  linkedEisenhower={task}
+                />
               </div>
-              <div
-                className="text-[#6E726E] hover:text-gray-600 transition-colors w-[22px]"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <SquareArrowOutUpRight />
+
+              <div onClick={(e) => e.stopPropagation()}>
+                <Modal
+                  trigger={
+                    <div className="text-[#6E726E] hover:text-gray-600 transition-colors w-[22px]">
+                      <SquareArrowOutUpRight />
+                    </div>
+                  }
+                  children={
+                    <div>매트릭스 페이지에서 오늘의 할 일을 추가할까요?</div>
+                  }
+                  footer={
+                    <DialogClose asChild>
+                      <Button variant="blue">추가하기</Button>
+                    </DialogClose>
+                  }
+                ></Modal>
               </div>
               {dragHandle !== 'full' && (
                 <div {...listeners} className="cursor-move">

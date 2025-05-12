@@ -32,7 +32,7 @@ function Droppable({
 }) {
   const { setNodeRef } = useDroppable({ id });
   return (
-    <div ref={setNodeRef} className=" w-full">
+    <div ref={setNodeRef} className="h-full">
       {children}
     </div>
   );
@@ -218,7 +218,7 @@ export function PriorityView({
         </div>
       )}
 
-      <div className={`grid ${gridClass} h-full h-screen`}>
+      <div className={`grid ${gridClass} h-full`}>
         {(Object.keys(tasksByQuadrant) as Quadrant[])
           .filter((q) => !isMobile || q === activeQuadrant)
           .map((quadrant) => {
@@ -244,7 +244,9 @@ export function PriorityView({
                   className={cn(
                     'px-4 py-5 overflow-y-scroll flex flex-col rounded-[16px]',
                     quadrantColors[quadrant],
-                    viewMode === 'board' ? 'h-[800px]' : 'h-[400px]',
+                    viewMode === 'board'
+                      ? 'h-[calc(100vh-160px)]'
+                      : 'h-[400px]',
                   )}
                 >
                   <div className="flex justify-between items-center pb-[14px] gap-2">
