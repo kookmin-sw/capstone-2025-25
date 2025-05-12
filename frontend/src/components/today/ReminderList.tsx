@@ -5,6 +5,10 @@ export default function ReminderList() {
   const { inventoryRecentList } = useGetRecentInventory();
   const navigate = useNavigate();
 
+  const handleRouteToInventory = () => {
+    navigate('/inventory');
+  };
+
   const handleClickReminder = (folderId: number, itemId: number) => {
     navigate(`/inventory/${folderId}?itemId=${itemId}`);
   };
@@ -13,7 +17,12 @@ export default function ReminderList() {
     <div className="w-full mt-6 mb-4">
       <div className="flex items-center gap-2 mb-2">
         <h4 className="text-[20px] text-[#525463] font-semibold">리마인더</h4>
-        <p className="text-blue text-[14px] cursor-pointer">더보기 {'>'} </p>
+        <p
+          className="text-blue text-[14px] cursor-pointer"
+          onClick={handleRouteToInventory}
+        >
+          더보기 {'>'}{' '}
+        </p>
       </div>
 
       <div className="w-full overflow-x-auto pb-4">

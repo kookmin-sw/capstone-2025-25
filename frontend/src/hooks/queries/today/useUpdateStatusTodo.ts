@@ -15,6 +15,8 @@ const useUpdateStatusTodo = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todayTodoList'] });
       queryClient.invalidateQueries({ queryKey: ['yesterdayTodoList'] });
+      queryClient.invalidateQueries({ queryKey: ['todayTodoCount'] });
+      queryClient.invalidateQueries({ queryKey: ['todayTodoCompletedCount'] });
     },
   });
 
