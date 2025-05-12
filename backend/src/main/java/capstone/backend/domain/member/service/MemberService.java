@@ -1,7 +1,5 @@
 package capstone.backend.domain.member.service;
 
-import capstone.backend.domain.inventory.entity.InventoryFolder;
-import capstone.backend.domain.inventory.repository.InventoryFolderRepository;
 import capstone.backend.domain.member.dto.response.UserDataDTO;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final InventoryFolderRepository inventoryFolderRepository;
 
     public UserDataDTO findMember(Long memberId) {
         return memberRepository.findById(memberId)
@@ -26,5 +23,10 @@ public class MemberService {
 
     public Member findById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Transactional
+    public void deleteMember(Long memberId) {
+        memberRepository.deleteById(memberId);
     }
 }
