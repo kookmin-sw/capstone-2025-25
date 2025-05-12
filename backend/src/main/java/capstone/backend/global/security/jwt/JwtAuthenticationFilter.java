@@ -44,18 +44,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String accessToken = jwtProvider.resolveToken(request);
 
-            if (accessToken == null) {
-                handleException(response, new TokenNotFoundException());
-                return;
-            }
+            if (accessToken != null && jwtProvider.validateToken(accessToken)) {
 
-            // BlackList Token인 경우 401 에러
-            if (blacklistTokenRedisRepository.existsById(accessToken)) {
-                handleException(response, new AccessLogoutTokenException());
-                return;
-            }
+                // BlackList Token인 경우 401 에러
+                if (blacklistTokenRedisRepository.existsById(accessToken)) {
+                    handleException(response, new AccessLogoutTokenException());
+                    return;
+                }
 
-            if (jwtProvider.validateToken(accessToken)) {
                 Claims claimsByToken = jwtProvider.getClaimsByToken(accessToken);
 
                 Authentication authentication = getAuthentication(claimsByToken);

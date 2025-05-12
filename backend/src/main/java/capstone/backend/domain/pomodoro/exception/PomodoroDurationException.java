@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 
 public class PomodoroDurationException extends ApiException {
     public PomodoroDurationException() {
-        super(HttpStatus.BAD_REQUEST, "유효하지 않은 입력값입니다.");
+        super(HttpStatus.BAD_REQUEST, "1분 이상의 기록만 완료 가능합니다.");
     }
 }
