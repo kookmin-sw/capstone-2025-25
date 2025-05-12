@@ -71,7 +71,6 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
     label: cat.title,
     value: String(cat.id),
     bgColor: cat.color,
-    textColor: cat.textColor,
   }));
 
   if (!task || !editedTask) return null;
@@ -150,7 +149,6 @@ export function TaskDetailSidebar({ categories }: TaskDetailSidebarProps) {
                 <CategoryBadge
                   label={selectedCategory.title}
                   bgColor={selectedCategory.color}
-                  textColor={selectedCategory.textColor}
                 />
               )
             )}

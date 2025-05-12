@@ -29,7 +29,6 @@ export function FilterBar({
       label: cat.title,
       value: cat.title,
       bgColor: cat.color,
-      textColor: cat.textColor,
     })),
   ];
 
@@ -54,11 +53,11 @@ export function FilterBar({
           />
 
           {/* 날짜 필터 */}
-          <div className="relative">
-            <div className="flex items-center space-x-2 cursor-pointer pb-3">
+          <div className="relative flex gap-2 items-center">
+            <div className="flex items-center space-x-2 cursor-pointer">
               <span className="text-sm font-medium">날짜</span>
             </div>
-            <div className="pb-1">
+            <div>
               <DateRangePicker
                 startDate={startDate}
                 endDate={endDate}

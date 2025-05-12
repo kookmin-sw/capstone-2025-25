@@ -39,6 +39,7 @@ export const ENDPOINTS = {
     GET_ALL: '/api/v1/eisenhower/category', // 카테고리 전체 조회
     CREATE: '/api/v1/eisenhower/category', // 카테고리 생성
     UPDATE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 수정
+
     DELETE: (categoryId: number) => `/api/v1/eisenhower/category/${categoryId}`, // 카테고리 삭제,
   },
   /* 오늘의 할 일 관련 엔드포인트 */
@@ -57,14 +58,17 @@ export const ENDPOINTS = {
     LIST: '/api/v1/eisenhower/category',
   },
 
-  /* GPT API 관련 엔드포인트 */
-  GPT: {
-    BRAINSTORMING: {
-      ANALYZE: '/api/brainstorming/analyze/chunk',
-      REWRITE: '/api/brainstorming/rewrite/chunk',
+    /* 카테고리 관련 엔드포인트 */
+    CATEGORY: {
+      LIST: '/api/v1/eisenhower/category',
     },
   },
-
+    /* GPT API 관련 엔드포인트 */
+    GPT: {
+      BRAINSTORMING: {
+        ANALYZE: '/api/brainstorming/analyze/chunk',
+        REWRITE: '/api/brainstorming/rewrite/chunk',
+      },
   /* 보관홤 관련 API */
   INVENTORY: {
     FOLDER: {

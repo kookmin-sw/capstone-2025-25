@@ -36,7 +36,7 @@ export function CompletedView({
 
         setTasks(completedTasks);
       } catch (err) {
-        console.error('✅ 완료된 일정 불러오기 실패:', err);
+        console.error('완료된 일정 불러오기 실패:', err);
       }
     };
 
@@ -55,8 +55,17 @@ export function CompletedView({
     return true;
   });
 
+  const handleUpdateTask = (updatedTask: EisenhowerTask) => {
+    setTasks(
+      (prev) =>
+        updatedTask.isCompleted
+          ? prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
+          : prev.filter((t) => t.id !== updatedTask.id), // 완료 취소 → 리스트에서 제거
+    );
+  };
+
   return (
-    <div className="bg-gray-100 rounded-lg p-4">
+    <div className="bg-[#E8EFFF] rounded-lg p-4">
       {filteredTasks.length > 0 ? (
         <div className="space-y-2">
           {filteredTasks.map((task) => (
@@ -66,6 +75,7 @@ export function CompletedView({
               onClick={() => onTaskClick(task)}
               variant="done"
               categories={categories}
+              onUpdateTask={handleUpdateTask}
             />
           ))}
         </div>

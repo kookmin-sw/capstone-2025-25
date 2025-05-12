@@ -1,15 +1,27 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Bot, Calendar, Check, GripVertical } from 'lucide-react';
+import {
+  Bot,
+  Calendar,
+  GripVertical,
+  SquareArrowOutUpRight,
+} from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { format } from 'date-fns';
 import { MouseEvent } from 'react';
 import { cn } from '@/lib/utils';
 import { EisenhowerBase } from '@/types/commonTypes';
-import { Task } from '@/types/task.ts';
+// import { Task } from '@/types/task.ts';
 import { Category } from '@/types/category.ts';
 import { eisenhowerService } from '@/services/eisenhowerService.ts';
 import { toast } from 'sonner';
+import CheckFillIcon from '@/assets/eisenhower/check_fill.svg';
+import CheckOutlineIcon from '@/assets/eisenhower/check_outline.svg';
+import type { EisenhowerTask } from '@/types/api/eisenhower';
+import { Modal } from '@/components/common/Modal.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { DialogClose } from '@radix-ui/react-dialog';
+import EisenhowerAi from '@/components/ui/Modal/EisenhowerAi.tsx';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -21,7 +33,7 @@ interface TaskCardProps {
   dragHandle?: 'full';
   className?: string;
   variant?: TaskCardVariant;
-  onUpdateTask?: (task: Task) => void;
+  onUpdateTask?: (task: EisenhowerTask) => void;
 }
 
 export function TaskCard({
@@ -61,16 +73,21 @@ export function TaskCard({
     e.stopPropagation();
 
     if (variant === 'default' || variant === 'done') {
+      const wasCompleted = task.isCompleted;
+
       try {
         const updated = await eisenhowerService.update(task.id, {
-          isCompleted: !task.isCompleted,
+          isCompleted: !wasCompleted,
         });
 
         onUpdateTask?.({
           ...task,
           ...updated.content,
         });
-        toast.success('할 일을 완료했습니다');
+
+        toast.success(
+          wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다',
+        );
       } catch (err) {
         console.error('완료 상태 업데이트 실패:', err);
       }
@@ -91,55 +108,80 @@ export function TaskCard({
           variant === 'default' && !isDragging && 'hover:shadow-md',
           variant === 'default'
             ? 'bg-white border border-gray-100 cursor-pointer'
-            : 'bg-muted border border-gray-300 cursor-default shadow-none',
+            : 'bg-white border border-gray-300 cursor-default shadow-none',
           isDragging &&
             'opacity-50 z-10 shadow-lg border-2 border-purple-300 cursor-grabbing',
           className,
         )}
       >
         {/* 상단 도구 아이콘 */}
-        {variant === 'default' && (
-          <div className="absolute p-2 top-1 right-1 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <div
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Bot />
-            </div>
-            {dragHandle !== 'full' && (
-              <div {...listeners} className="cursor-move">
-                <span className="text-xs text-gray-400">
-                  <GripVertical />
-                </span>
+        <div className="absolute p-2 top-1 right-1 flex gap-2">
+          {variant === 'default' && (
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 items-center">
+              <div onClick={(e) => e.stopPropagation()}>
+                <EisenhowerAi
+                  trigger={
+                    <div className="text-[#6E726E] hover:text-gray-600 transition-colors">
+                      <Bot />
+                    </div>
+                  }
+                  linkedEisenhower={task}
+                />
               </div>
-            )}
-          </div>
-        )}
 
-        {/* 상단 카테고리 뱃지 */}
-        <div className="flex mb-2 flex-wrap gap-1">
-          {category && (
-            <CategoryBadge
-              label={category.title}
-              bgColor={category.color}
-              textColor={category.textColor}
-            />
+              <div onClick={(e) => e.stopPropagation()}>
+                <Modal
+                  trigger={
+                    <div className="text-[#6E726E] hover:text-gray-600 transition-colors w-[22px]">
+                      <SquareArrowOutUpRight />
+                    </div>
+                  }
+                  children={
+                    <div>매트릭스 페이지에서 오늘의 할 일을 추가할까요?</div>
+                  }
+                  footer={
+                    <DialogClose asChild>
+                      <Button variant="blue">추가하기</Button>
+                    </DialogClose>
+                  }
+                ></Modal>
+              </div>
+              {dragHandle !== 'full' && (
+                <div {...listeners} className="cursor-move">
+                  <span className="text-xs text-[#6E726E] hover:text-gray-600">
+                    <GripVertical />
+                  </span>
+                </div>
+              )}
+            </div>
           )}
-        </div>
-
-        {/* 제목 + 체크 */}
-        <div className="flex items-center mb-2 flex-grow">
           <div
             onClick={handleTaskComplete}
             className={cn(
-              'check-icon w-[18px] h-[18px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center cursor-pointer',
-              variant === 'done'
-                ? 'bg-primary-100 text-white'
-                : 'border border-primary-100',
+              'check-icon w-[24px] h-[24px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center cursor-pointer',
+              // variant === 'done' ? 'bg-blue text-white' : 'border border-blue',
             )}
           >
-            {variant === 'done' && <Check className="w-3 h-3" />}
+            {variant === 'done' ? (
+              // <Check className="w-3 h-3 text-white" />
+              <img src={CheckFillIcon} alt="check-fill" />
+            ) : (
+              // <Check className="w-3 h-3 text-blue" />
+              <img src={CheckOutlineIcon} alt="check-outline" />
+            )}
           </div>
+        </div>
+
+        {/* 카테고리 */}
+        <div className="flex mb-2 flex-wrap">
+          {category ? (
+            <CategoryBadge label={category.title} bgColor={category.color} />
+          ) : (
+            <div className="h-4"></div>
+          )}
+        </div>
+
+        <div className="flex items-center mb-2 flex-grow">
           <div
             className={cn(
               'text-md font-medium line-clamp-2',
@@ -151,19 +193,23 @@ export function TaskCard({
         </div>
 
         {/* 메모 */}
-        {memo && (
-          <div className="text-xs mb-2 line-clamp-2 text-gray-700">{memo}</div>
-        )}
+        <div className="text-xs mb-2 line-clamp-2 text-[#858899] ">
+          {memo ? memo : <></>}
+        </div>
 
         {/* 마감일 */}
-        {dueDate && (
-          <div className="text-xs flex items-center mt-auto text-[color:var(--color-primary-100)]">
-            <Calendar className="w-3 h-3 mr-1" />
-            <span className="text-center pt-[2px]">
-              {format(new Date(dueDate), 'yyyy.MM.dd')}
-            </span>
-          </div>
-        )}
+        <div className="text-xs flex items-center mt-auto text-[#525463] ">
+          {dueDate ? (
+            <div className="flex">
+              <Calendar className="w-4 h-4 mr-1 text-blue" />
+              <span className="text-center pt-[2px] text-xs">
+                {format(new Date(dueDate), 'yyyy.MM.dd')}
+              </span>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
     </div>
   );
