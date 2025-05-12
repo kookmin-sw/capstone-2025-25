@@ -66,6 +66,9 @@ export const ENDPOINTS = {
       ANALYZE: '/api/brainstorming/analyze/chunk',
       REWRITE: '/api/brainstorming/rewrite/chunk',
     },
+    EISENHOWER: {
+      RECOMMEND: '/api/eisenhower/order-recommendation',
+    },
   },
 
   /* 보관홤 관련 API */

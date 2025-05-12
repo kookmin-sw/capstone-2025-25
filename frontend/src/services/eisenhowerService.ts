@@ -1,6 +1,11 @@
-import { apiClient } from '@/api/client';
+import { apiClient, gptClient } from '@/api/client';
 import { ENDPOINTS } from '@/api/endpoints';
-import type { GetTaskDetailRes, GetTaskListRes } from '@/types/api/eisenhower';
+import type {
+  GetTaskDetailRes,
+  GetTaskListRes,
+  EisenhowerAiRecommendationReq,
+  EisenhowerAiRecommendationRes,
+} from '@/types/api/eisenhower';
 import { Task } from '@/types/task.ts';
 
 export const eisenhowerService = {
@@ -47,6 +52,16 @@ export const eisenhowerService = {
 
   delete: async (taskId: number) => {
     const res = await apiClient.delete(`/api/v1/eisenhower/${taskId}`);
+    return res.data;
+  },
+
+  getAiRecommendation: async (
+    data: EisenhowerAiRecommendationReq,
+  ): Promise<EisenhowerAiRecommendationRes> => {
+    const res = await gptClient.post<EisenhowerAiRecommendationRes>(
+      ENDPOINTS.GPT.EISENHOWER.RECOMMEND,
+      data,
+    );
     return res.data;
   },
 };

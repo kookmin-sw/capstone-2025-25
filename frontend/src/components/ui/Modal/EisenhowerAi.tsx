@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
@@ -5,8 +6,10 @@ import { Calendar } from 'lucide-react';
 import { ReactNode } from 'react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import CheckOutlineIcon from '@/assets/eisenhower/check_outline.svg';
-import { useCategoryStore } from '@/store/useCategoryStore';
+
 import { EisenhowerBase } from '@/types/commonTypes';
+import { useEisenhowerAiRecommendation } from '@/hooks/queries/eisenhower/useEisenhowerAiRecommendation';
+import { useCategoryStore } from '@/store/useCategoryStore.ts';
 
 interface Props {
   trigger: ReactNode;
@@ -14,9 +17,22 @@ interface Props {
 }
 
 export default function EisenhowerAi({ trigger, linkedEisenhower }: Props) {
+  const { title, quadrant, dueDate, categoryId } = linkedEisenhower;
+
+  const formattedDueDate = useMemo(() => {
+    const base = dueDate ? new Date(dueDate) : new Date();
+    return base.toISOString().split('T')[0];
+  }, [dueDate]);
+
+  const { recommendation, isLoading } = useEisenhowerAiRecommendation({
+    title,
+    currentQuadrant: quadrant,
+    dueDate: formattedDueDate,
+  });
+
   const { categories } = useCategoryStore();
-  const category = linkedEisenhower.categoryId
-    ? categories.find((c) => c.id === linkedEisenhower.categoryId)
+  const category = categoryId
+    ? categories.find((c) => c.id === categoryId)
     : null;
 
   return (
@@ -42,7 +58,16 @@ export default function EisenhowerAi({ trigger, linkedEisenhower }: Props) {
             <div className="w-2 h-2 bg-blue-600 rounded-full" />
           </div>
           <span>
-            이 일정은 <strong>‘긴급하고 중요한 일’</strong>로 추천되었어요!
+            {isLoading ? (
+              '추천 로딩 중...'
+            ) : (
+              <>
+                <p>
+                  <strong>‘{recommendation?.recommendedQuadrant}’</strong>로
+                  추천되었어요! 이 일정은 {recommendation?.reason}
+                </p>
+              </>
+            )}
           </span>
         </div>
 
