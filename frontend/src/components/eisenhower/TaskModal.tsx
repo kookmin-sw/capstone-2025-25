@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
-import { Tag } from 'lucide-react';
+import { CalendarX2, Tag } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { BadgeSelector } from '@/components/common/BadgeSelector';
@@ -16,8 +16,6 @@ import { eisenhowerCategoryService } from '@/services/eisenhowerCategoryService'
 import { useCategoryStore } from '@/store/useCategoryStore.ts';
 import { toast } from 'sonner';
 import PlusIcon from '@/assets/eisenhower/plus.svg';
-
-import CalendarOutlineIcon from '@/assets/eisenhower/calander_outline.svg';
 
 type TaskModalProps = {
   mode: 'create' | 'edit';
@@ -157,7 +155,7 @@ export function TaskModal({
     mode === 'create' ? (
       <button
         type="button"
-        className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-blue shrink-0"
+        className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-blue shrink-0 cursor-pointer"
       >
         {/*<Plus className="w-5 h-5" />*/}
         <img src={PlusIcon} alt="plus" />
@@ -198,7 +196,13 @@ export function TaskModal({
       trigger={finalTrigger}
       children={
         <div className="p-1">
-          <div className="pb-2 text-[18px]">{quadrantTitles[quadrant]}</div>
+          <div className="flex gap-2">
+            <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
+              {quadrant.replace('Q', '')}
+            </div>
+            <div className="pb-2 text-[18px]">{quadrantTitles[quadrant]}</div>
+          </div>
+
           <div className="pb-2">
             <input
               className="text-3xl font-bold w-full border-transparent outline-none placeholder:text-[#CECFCD]"
@@ -253,7 +257,8 @@ export function TaskModal({
 
           <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-3 pb-1">
             <div className="flex items-center gap-2 text-sm whitespace-nowrap leading-none">
-              <img src={CalendarOutlineIcon} alt="calendar" />
+              {/*<img src={CalendarOutlineIcon} alt="calendar" />*/}
+              <CalendarX2 className="h-4 w-4" />
               <span className="pt-1">마감일</span>
               <div className="pt-1">
                 <SingleDatePicker
@@ -283,17 +288,20 @@ export function TaskModal({
             <DialogClose asChild>
               <Button
                 onClick={handleCreate}
-                disabled={!title.trim() || !dueDate}
-                variant={!title.trim() || !dueDate ? 'disabled' : 'blue'}
+                disabled={!title.trim()}
+                variant={!title.trim() ? 'disabled' : 'blue'}
               >
                 생성하기
               </Button>
             </DialogClose>
           </div>
         ) : isEditing ? (
-          <div className="flex justify-between gap-2">
+          <div className="flex gap-2 justify-end">
             <DialogClose asChild>
-              <Button variant="destructive" onClick={handleDelete}>
+              <Button
+                onClick={handleDelete}
+                className="text-blue bg-[#E8EFFF] hover:bg-[#E8EFFF]"
+              >
                 삭제하기
               </Button>
             </DialogClose>
@@ -301,7 +309,7 @@ export function TaskModal({
               <DialogClose asChild>
                 <Button
                   onClick={handleSave}
-                  disabled={!title.trim() || !dueDate}
+                  disabled={!title.trim()}
                   variant="blue"
                 >
                   저장하기

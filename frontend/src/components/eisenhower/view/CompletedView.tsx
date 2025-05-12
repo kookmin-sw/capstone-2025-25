@@ -55,6 +55,15 @@ export function CompletedView({
     return true;
   });
 
+  const handleUpdateTask = (updatedTask: EisenhowerTask) => {
+    setTasks(
+      (prev) =>
+        updatedTask.isCompleted
+          ? prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
+          : prev.filter((t) => t.id !== updatedTask.id), // 완료 취소 → 리스트에서 제거
+    );
+  };
+
   return (
     <div className="bg-[#E8EFFF] rounded-lg p-4">
       {filteredTasks.length > 0 ? (
@@ -66,6 +75,7 @@ export function CompletedView({
               onClick={() => onTaskClick(task)}
               variant="done"
               categories={categories}
+              onUpdateTask={handleUpdateTask}
             />
           ))}
         </div>

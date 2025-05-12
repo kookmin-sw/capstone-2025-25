@@ -1,17 +1,23 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Bot, Calendar, GripVertical } from 'lucide-react';
+import {
+  Bot,
+  Calendar,
+  GripVertical,
+  SquareArrowOutUpRight,
+} from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { format } from 'date-fns';
 import { MouseEvent } from 'react';
 import { cn } from '@/lib/utils';
 import { EisenhowerBase } from '@/types/commonTypes';
-import { Task } from '@/types/task.ts';
+// import { Task } from '@/types/task.ts';
 import { Category } from '@/types/category.ts';
 import { eisenhowerService } from '@/services/eisenhowerService.ts';
 import { toast } from 'sonner';
 import CheckFillIcon from '@/assets/eisenhower/check_fill.svg';
 import CheckOutlineIcon from '@/assets/eisenhower/check_outline.svg';
+import type { EisenhowerTask } from '@/types/api/eisenhower';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -23,7 +29,7 @@ interface TaskCardProps {
   dragHandle?: 'full';
   className?: string;
   variant?: TaskCardVariant;
-  onUpdateTask?: (task: Task) => void;
+  onUpdateTask?: (task: EisenhowerTask) => void;
 }
 
 export function TaskCard({
@@ -63,16 +69,21 @@ export function TaskCard({
     e.stopPropagation();
 
     if (variant === 'default' || variant === 'done') {
+      const wasCompleted = task.isCompleted;
+
       try {
         const updated = await eisenhowerService.update(task.id, {
-          isCompleted: !task.isCompleted,
+          isCompleted: !wasCompleted,
         });
 
         onUpdateTask?.({
           ...task,
           ...updated.content,
         });
-        toast.success('할 일을 완료했습니다');
+
+        toast.success(
+          wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다',
+        );
       } catch (err) {
         console.error('완료 상태 업데이트 실패:', err);
       }
@@ -102,16 +113,22 @@ export function TaskCard({
         {/* 상단 도구 아이콘 */}
         <div className="absolute p-2 top-1 right-1 flex gap-2">
           {variant === 'default' && (
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 items-center">
               <div
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-[#6E726E] hover:text-gray-600 transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
                 <Bot />
               </div>
+              <div
+                className="text-[#6E726E] hover:text-gray-600 transition-colors w-[22px]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <SquareArrowOutUpRight />
+              </div>
               {dragHandle !== 'full' && (
                 <div {...listeners} className="cursor-move">
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-[#6E726E] hover:text-gray-600">
                     <GripVertical />
                   </span>
                 </div>
@@ -135,10 +152,12 @@ export function TaskCard({
           </div>
         </div>
 
-        {/* 상단 카테고리 뱃지 */}
+        {/* 카테고리 */}
         <div className="flex mb-2 flex-wrap">
-          {category && (
+          {category ? (
             <CategoryBadge label={category.title} bgColor={category.color} />
+          ) : (
+            <div className="h-4"></div>
           )}
         </div>
 
@@ -154,19 +173,23 @@ export function TaskCard({
         </div>
 
         {/* 메모 */}
-        {memo && (
-          <div className="text-xs mb-2 line-clamp-2 text-[#858899]">{memo}</div>
-        )}
+        <div className="text-xs mb-2 line-clamp-2 text-[#858899] ">
+          {memo ? memo : <></>}
+        </div>
 
         {/* 마감일 */}
-        {dueDate && (
-          <div className="text-xs flex items-center mt-auto text-[#525463]">
-            <Calendar className="w-4 h-4 mr-1 text-blue" />
-            <span className="text-center pt-[2px] text-xs">
-              {format(new Date(dueDate), 'yyyy.MM.dd')}
-            </span>
-          </div>
-        )}
+        <div className="text-xs flex items-center mt-auto text-[#525463] ">
+          {dueDate ? (
+            <div className="flex">
+              <Calendar className="w-4 h-4 mr-1 text-blue" />
+              <span className="text-center pt-[2px] text-xs">
+                {format(new Date(dueDate), 'yyyy.MM.dd')}
+              </span>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
     </div>
   );

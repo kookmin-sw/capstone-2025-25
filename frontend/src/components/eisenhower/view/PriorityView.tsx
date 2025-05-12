@@ -32,7 +32,7 @@ function Droppable({
 }) {
   const { setNodeRef } = useDroppable({ id });
   return (
-    <div ref={setNodeRef} className="h-full w-full">
+    <div ref={setNodeRef} className=" w-full">
       {children}
     </div>
   );
@@ -169,10 +169,10 @@ export function PriorityView({
       : 'grid-cols-1 md:grid-cols-2 gap-4';
 
   const quadrantColors: Record<Quadrant, string> = {
-    Q1: 'bg-[#C2D5FF] border-blue border rounded-md',
-    Q2: 'bg-[#DAE6FF] border-blue border rounded-md',
-    Q3: 'bg-[#E8EFFF] border-blue border rounded-md',
-    Q4: 'bg-[#F1F5FF] border-blue border rounded-md',
+    Q1: 'bg-[#C2D5FF] border-blue border',
+    Q2: 'bg-[#DAE6FF] border-blue border',
+    Q3: 'bg-[#E8EFFF] border-blue border',
+    Q4: 'bg-[#F1F5FF] border-blue border',
   };
 
   const { isMobile, isCompact } = useResponsive();
@@ -202,29 +202,37 @@ export function PriorityView({
               key={q}
               onClick={() => setActiveQuadrant(q)}
               className={cn(
-                'w-full py-2 px-1 rounded-[8px] text-sm font-medium border cursor-pointer',
+                'w-full py-2 px-3 rounded-[8px] text-sm font-medium  border cursor-pointer flex items-center gap-2',
+                quadrantColors[q],
                 activeQuadrant === q
-                  ? 'bg-blue text-white border-blue'
-                  : 'bg-white text-blue border-blue',
+                  ? 'text-[#525463] border-[#CDCED6]'
+                  : 'text-[#525463] border-[#CDCED6]',
               )}
             >
+              <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
+                {q.replace('Q', '')}
+              </div>
               {quadrantTitles[q]}
             </button>
           ))}
         </div>
       )}
 
-      <div className={`grid ${gridClass} h-full`}>
+      <div className={`grid ${gridClass} h-full h-screen`}>
         {(Object.keys(tasksByQuadrant) as Quadrant[])
           .filter((q) => !isMobile || q === activeQuadrant)
           .map((quadrant) => {
             const filtered = tasksByQuadrant[quadrant].filter((task) => {
               if (task.isCompleted) return false;
+
               const matchCategory =
                 selectedCategory === 'all' ||
                 getCategoryNameById(task.categoryId, categories) ===
                   selectedCategory;
-              const taskDate = new Date(task.dueDate || '');
+
+              if (!task.dueDate) return matchCategory;
+
+              const taskDate = new Date(task.dueDate);
               return (
                 matchCategory && taskDate >= startDate && taskDate <= endDate
               );
@@ -233,7 +241,11 @@ export function PriorityView({
             return (
               <Droppable key={quadrant} id={quadrant}>
                 <div
-                  className={`px-4 py-5 min-h-[400px] flex flex-col ${quadrantColors[quadrant]}`}
+                  className={cn(
+                    'px-4 py-5 overflow-y-scroll flex flex-col rounded-[16px]',
+                    quadrantColors[quadrant],
+                    viewMode === 'board' ? 'h-[800px]' : 'h-[400px]',
+                  )}
                 >
                   <div className="flex justify-between items-center pb-[14px] gap-2">
                     <div className="flex items-center gap-2">

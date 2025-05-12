@@ -6,8 +6,8 @@ import { Task } from '@/types/task.ts';
 export const eisenhowerService = {
   create: async (payload: {
     title: string;
-    categoryId: number | null;
-    dueDate: string | null;
+    categoryId?: number | null;
+    dueDate?: string | null;
     memo?: string | null;
     quadrant: string;
     order: number;
