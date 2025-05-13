@@ -71,7 +71,6 @@ export default function InventoryItemCard({
     setIsOpen(initiallyOpen);
   }, [initiallyOpen]);
 
-
   const handleSave = () => {
     const updateData: UpdateInventoryItemReq = {
       title,
@@ -105,10 +104,10 @@ export default function InventoryItemCard({
 
   return (
     <>
-      <li className="p-6 bg-white rounded-xl">
+      <li className="px-6 py-4  bg-white rounded-xl">
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <div className="flex items-center justify-between">
-            <div className="w-1/2">
+          <div className="flex items-center justify-between gap-6">
+            <div className="w-1/2 overflow-hidden">
               {isOpen ? (
                 <div className="pb-2">
                   {isEditable ? (
@@ -117,20 +116,20 @@ export default function InventoryItemCard({
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="제목을 입력하세요"
-                      className="!text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                      className="!text-[16px] sm:text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
                     />
                   ) : (
-                      <h3 className="text-[20px] text-gray-700 font-semibold pb-2">
-                        {title}
-                      </h3>
+                    <h3 className="text-[16px] sm:text-[20px] text-gray-700 font-semibold pb-2 truncate">
+                      {title}
+                    </h3>
                   )}
                 </div>
               ) : (
-                <h3 className="text-[20px] text-gray-700 font-semibold pb-2">
+                <h3 className="text-[16px] sm:text-[20px] text-gray-700 font-semibold pb-2 truncate">
                   {title}
                 </h3>
               )}
-              <p className="text-sm text-gray-400">
+              <p className="text-[14px] text-gray-400">
                 {formatDate(item.createdAt)}
               </p>
             </div>
@@ -138,14 +137,13 @@ export default function InventoryItemCard({
             <div className="flex items-center gap-2 flex-shrink-0">
               <button
                 onClick={() => setIsMoveDialogOpen(true)}
-                className="px-4 py-[7px] text-blue rounded-full font-semibold flex items-center gap-1 cursor-pointer border-blue border-[1px]"
+                className="px-4 py-[7px] text-blue text-[14px] sm:text-[16px] rounded-full font-semibold flex items-center gap-1 cursor-pointer border-blue border-[1px]"
               >
-                {/*<FolderInput size={16} className="mr-1" />*/}
                 폴더이동
               </button>
 
               <CollapsibleTrigger asChild>
-                <button className="px-4 py-2 bg-blue-2 text-blue rounded-full font-semibold flex items-center gap-1 cursor-pointer ">
+                <button className="px-4 py-2 bg-blue-2 text-blue text-[14px] sm:text-[16px] rounded-full font-semibold flex items-center gap-1 cursor-pointer ">
                   {buttonText}
                 </button>
               </CollapsibleTrigger>
@@ -155,8 +153,8 @@ export default function InventoryItemCard({
           <CollapsibleContent>
             <div className="w-full bg-gray-scale-200 px-[15px] py-[10px] rounded-lg mt-6 h-[100px]">
               <textarea
-                  readOnly={!isEditable}
-                  className="w-full resize-none h-full focus:outline-none focus:ring-0 focus:border-transparent"
+                readOnly={!isEditable}
+                className="w-full resize-none h-full focus:outline-none focus:ring-0 focus:border-transparent"
                 value={memo}
                 onChange={(e) => setMemo(e.target.value)}
                 placeholder="메모를 입력해주세요"
@@ -168,7 +166,11 @@ export default function InventoryItemCard({
                 className="text-blue cursor-pointer  disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isUpdating}
               >
-                {isUpdating ? '저장 중...' : isEditable ? '저장하기' : '수정하기'}
+                {isUpdating
+                  ? '저장 중...'
+                  : isEditable
+                    ? '저장하기'
+                    : '수정하기'}
               </button>
               <div
                 className="cursor-pointer p-2  rounded-full"
