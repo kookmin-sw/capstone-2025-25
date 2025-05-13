@@ -27,6 +27,7 @@ import { BrainStormingRewriteReq } from '@/types/api/gpt';
 import { Loader2 } from 'lucide-react';
 import BrainstormingLogo from '@/assets/sidebar/color-brainstorming.svg';
 import usePatchBubble from '@/hooks/queries/brainstorming/usePatchBubble';
+import { toast } from 'sonner';
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
@@ -52,6 +53,15 @@ function FlowContent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleRewriteBrainStorming = () => {
+    const emptyNodes = nodes.filter((node) => {
+      return !node.data.label || (node.data.label as string).trim() === '';
+    });
+
+    if (emptyNodes.length > 0) {
+      toast('🚨비어있는 노드 데이터가 있습니다!');
+      return;
+    }
+
     const mindmapData = nodes.map((node) => ({
       context: String(node.data.label || ''),
     }));
