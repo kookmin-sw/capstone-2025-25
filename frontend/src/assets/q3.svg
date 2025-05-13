@@ -1,6 +1,6 @@
-<svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12.75 3.125V21.875" stroke="#414141" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M3.75 13H12.25V21.5H3.75V13Z" fill="#8D5CF6"/>
-<path d="M20.0417 3.125H5.45833C4.30774 3.125 3.375 4.05774 3.375 5.20833V19.7917C3.375 20.9423 4.30774 21.875 5.45833 21.875H20.0417C21.1923 21.875 22.125 20.9423 22.125 19.7917V5.20833C22.125 4.05774 21.1923 3.125 20.0417 3.125Z" stroke="#414141" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M3.375 12.5H22.125" stroke="#414141" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="41" height="40" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="18.6671" height="18.6677" rx="4" transform="matrix(1 0 0 -1 0.671875 40)" fill="#7098FF"/>
+<rect x="1" y="-1" width="16.6671" height="16.6677" rx="3" transform="matrix(1 0 0 -1 22.0029 38)" stroke="#7098FF" stroke-width="2"/>
+<rect x="1" y="-1" width="16.6671" height="16.6677" rx="3" transform="matrix(1 0 0 -1 0.671875 16.6641)" stroke="#7098FF" stroke-width="2"/>
+<rect x="1" y="-1" width="16.6671" height="16.6677" rx="3" transform="matrix(1 0 0 -1 22.0029 16.6641)" stroke="#7098FF" stroke-width="2"/>
 </svg>

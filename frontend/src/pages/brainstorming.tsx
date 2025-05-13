@@ -16,6 +16,7 @@ import useCreateBubble from '@/hooks/queries/brainstorming/useCreateBubble.ts';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import MoveToInventoryModal from '@/components/ui/brainstorming/MoveToInventoryModal';
+import { NodeToTaskModal } from '@/components/ui/Modal/NodeTaskModal.tsx';
 
 export default function Brainstorming() {
   const isMobile = useResponsive();
@@ -42,6 +43,9 @@ export default function Brainstorming() {
     useState(false);
 
   const navigate = useNavigate();
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [taskData, setTaskData] = useState({ id: null, title: '' });
 
   // bubbleList가 변경되면 bubbles 상태를 업데이트
   useEffect(() => {
@@ -252,7 +256,14 @@ export default function Brainstorming() {
     navigate(`/mindmap/${id}?text=${encodedBubbleText}`);
   };
 
-  const createMatrix = () => {};
+  const createMatrix = (bubble: BubbleNodeType) => {
+    setTaskData({
+      id: bubble.bubbleId,
+      title: bubble.title,
+    });
+    setIsDialogOpen(true);
+    setOpenPopoverId(null);
+  };
 
   const handleSaveBubble = (bubble) => {
     setSelectedBubble({
@@ -360,7 +371,7 @@ export default function Brainstorming() {
                       isMobile ? 'text-[14px]' : 'text-[16px]',
                     )}
                     onClick={() => {
-                      createMatrix();
+                      createMatrix(bubble);
                       setOpenPopoverId(null);
                     }}
                   >
@@ -448,6 +459,12 @@ export default function Brainstorming() {
           onSuccess={handleSaveSuccess}
         />
       )}
+
+      <NodeToTaskModal
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        taskData={taskData}
+      />
     </div>
   );
 }
