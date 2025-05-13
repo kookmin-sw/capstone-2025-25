@@ -93,6 +93,13 @@ export default function Brainstorming() {
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [inputText, isMobile]);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      addBubble();
+    }
+  };
+
 
   // 화면 리사이즈 시 버블 위치 재계산
   useEffect(() => {
@@ -253,7 +260,7 @@ export default function Brainstorming() {
           const updated = bubbles.filter((bubble) => bubble.bubbleId !== id);
           bubblesRef.current = updated;
           setBubbles(updated);
-          console.log(bubblesRef.current.length)
+          console.log(bubblesRef.current.length);
           if (bubblesRef.current.length == 0) {
             setIsDialogOpen(true);
           }
@@ -423,6 +430,7 @@ export default function Brainstorming() {
             ref={textareaRef}
             value={inputText}
             rows={1}
+            onKeyDown={handleKeyDown}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="버블에 넣을 텍스트를 입력하세요"
             className={clsx(
