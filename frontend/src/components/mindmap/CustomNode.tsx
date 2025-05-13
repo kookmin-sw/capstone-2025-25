@@ -1,6 +1,6 @@
 import { useMindmapStore } from '@/store/mindMapStore';
 import { Handle, Node, NodeProps, Position } from '@xyflow/react';
-import { CirclePlus } from 'lucide-react';
+import { CirclePlus, X } from 'lucide-react';
 import { useState, useCallback, useEffect, useRef } from 'react';
 
 type CustomNodeData = {
@@ -23,6 +23,7 @@ export default function CustomNode({
   const updateNodeLabel = useMindmapStore((state) => state.updateNodeLabel);
   const updateNodeHeight = useMindmapStore((state) => state.updateNodeHeight);
   const addChildNode = useMindmapStore((state) => state.addChildNode);
+  const deleteNode = useMindmapStore((state) => state.deleteNode);
 
   useEffect(() => {
     setLabelText(data.label || '');
@@ -60,6 +61,14 @@ export default function CustomNode({
     [id, addChildNode],
   );
 
+  const handleDeleteClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      deleteNode(id);
+    },
+    [id, deleteNode],
+  );
+
   return (
     <div
       ref={nodeRef}
@@ -67,6 +76,15 @@ export default function CustomNode({
         isRootNode ? 'bg-blue-50' : ''
       }`}
     >
+      {!isRootNode && (
+        <div
+          className="absolute -top-2 -right-2 bg-gray-scale-400 text-white rounded-full p-1 cursor-pointer z-20 hover:bg-red-600 transition-colors"
+          onClick={handleDeleteClick}
+        >
+          <X size={14} />
+        </div>
+      )}
+
       {isRootNode ? (
         <div className="text-[14px] text-center font-semibold w-full min-h-[20px]">
           {labelText}
