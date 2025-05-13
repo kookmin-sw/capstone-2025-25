@@ -83,7 +83,7 @@ export function PomodoroCompletionChart({
     : defaultChartData;
 
   return (
-    <Card className="h-full w-full border-none shadow-none">
+    <Card className="h-full w-full border-none shadow-none rounded-lg">
       <CardHeader className="pb-2">
         <CardTitle className="text-gray-scale-700 text-[20px] font-semibold">
           {title}
