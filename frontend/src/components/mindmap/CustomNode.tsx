@@ -18,6 +18,8 @@ export default function CustomNode({
   const nodeRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const isRootNode = id === '1';
+
   const updateNodeLabel = useMindmapStore((state) => state.updateNodeLabel);
   const updateNodeHeight = useMindmapStore((state) => state.updateNodeHeight);
   const addChildNode = useMindmapStore((state) => state.addChildNode);
@@ -40,12 +42,14 @@ export default function CustomNode({
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      if (isRootNode) return;
+
       const newValue = e.target.value;
       setLabelText(newValue);
 
       updateNodeLabel(id, newValue);
     },
-    [id, updateNodeLabel],
+    [id, updateNodeLabel, isRootNode],
   );
 
   const handlePlusClick = useCallback(
@@ -59,16 +63,24 @@ export default function CustomNode({
   return (
     <div
       ref={nodeRef}
-      className="px-6 py-4 bg-white border border-[#CDCED6] rounded-md w-[172px] relative"
+      className={`px-6 py-4 bg-white border border-[#CDCED6] rounded-md w-[172px] relative ${
+        isRootNode ? 'bg-blue-50' : ''
+      }`}
     >
-      <textarea
-        ref={textareaRef}
-        value={labelText}
-        onChange={handleChange}
-        placeholder="텍스트를 입력하세요"
-        className="text-[14px] text-center font-semibold w-full outline-none bg-transparent resize-none overflow-hidden min-h-[20px]"
-        rows={1}
-      />
+      {isRootNode ? (
+        <div className="text-[14px] text-center font-semibold w-full min-h-[20px]">
+          {labelText}
+        </div>
+      ) : (
+        <textarea
+          ref={textareaRef}
+          value={labelText}
+          onChange={handleChange}
+          placeholder="텍스트를 입력하세요"
+          className="text-[14px] text-center font-semibold w-full outline-none bg-transparent resize-none overflow-hidden min-h-[20px]"
+          rows={1}
+        />
+      )}
 
       <div
         className="absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2 z-10"
