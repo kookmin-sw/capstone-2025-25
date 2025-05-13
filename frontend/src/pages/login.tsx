@@ -1,7 +1,6 @@
 import kakao from '@/assets/kakao.svg';
 import naver from '@/assets/naver.svg';
 import Bubble from '@/assets/bubble-character.svg';
-import Logo from '@/assets/logo.svg';
 import { useResponsive } from '@/hooks/use-mobile';
 
 export default function LoginPage() {
@@ -19,42 +18,38 @@ export default function LoginPage() {
     <div className="flex justify-center items-center w-full h-screen bg-[#F0F0F5] px-4">
       <div
         className={`flex ${
-          isMobile ? 'flex-col ' : 'flex-row gap-20'
+          isMobile ? 'flex-col' : 'flex-row gap-20'
         } items-center justify-center`}
       >
-        {isMobile && (
-          <>
-            <div>
-              <p>머릿속을 맑게, 오늘을 명확하게!</p>
-              <img src={Logo} alt="logo" />
-            </div>
-          </>
-        )}
         <div>
-          <img
-            src={Bubble}
-            width={isMobile ? 300 : 500}
-            alt="bubble"
-            // className={isMobile ? 'mx-auto' : ''}
-          />
+          <img src={Bubble} width={isMobile ? 300 : 500} alt="bubble" />
         </div>
 
-        <div className="flex flex-col justify-center   w-full">
-          {!isMobile && (
-            <>
-              <div className="text-2xl font-bold mb-6">
-                <h1>머릿속을 맑게,</h1>
-                <h1>오늘을 명확하게!</h1>
-              </div>
-              <div className="mb-6 text-sm text-[#444]">
-                <p>
-                  해야 할 일은 많은데, 뭐부터 할지 막막할 때.
-                  <br />
-                  버블팝에서 생각을 정리하고, 가장 중요한 것에 집중하세요.
+        <div className="flex flex-col justify-center w-full max-w-[345px]">
+          <>
+            <div className="text-2xl font-bold mb-6">
+              <div className="text-center">
+                <p className="block md:hidden text-[24px]">
+                  머릿속을 맑게, 오늘을 명확하게!
                 </p>
               </div>
-            </>
-          )}
+
+              <div className="hidden md:block">
+                <p className="text-[32px]">머릿속을 맑게,</p>
+                <p className="text-[32px]">오늘을 명확하게!</p>
+              </div>
+            </div>
+
+            <div className="mb-6 text-sm text-[#444] text-center md:text-start">
+              <p>
+                해야 할 일은 많은데, 뭐부터 할지 막막할 때.
+                <br />
+                버블팝에서 생각을 정리하고,
+                <br />
+                지금 가장 중요한 것에 집중하세요.
+              </p>
+            </div>
+          </>
 
           <div className="flex flex-col w-full gap-4">
             <button
