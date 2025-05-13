@@ -1,6 +1,6 @@
-<svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M13.25 3.125V21.875" stroke="#414141" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M14.25 4H20.25C21.3546 4 22.25 4.89543 22.25 6V12H14.25V4Z" fill="#8D5CF6"/>
-<path d="M20.5417 3.125H5.95833C4.80774 3.125 3.875 4.05774 3.875 5.20833V19.7917C3.875 20.9423 4.80774 21.875 5.95833 21.875H20.5417C21.6923 21.875 22.625 20.9423 22.625 19.7917V5.20833C22.625 4.05774 21.6923 3.125 20.5417 3.125Z" stroke="#414141" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M3.875 12.5H22.625" stroke="#414141" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="41" height="40" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="40.3359" width="18.6671" height="18.6677" rx="4" transform="rotate(90 40.3359 0)" fill="#7098FF"/>
+<rect x="39.3359" y="22.3281" width="16.6671" height="16.6677" rx="3" transform="rotate(90 39.3359 22.3281)" stroke="#7098FF" stroke-width="2"/>
+<rect x="18.001" y="1" width="16.6671" height="16.6677" rx="3" transform="rotate(90 18.001 1)" stroke="#7098FF" stroke-width="2"/>
+<rect x="18.001" y="22.3281" width="16.6671" height="16.6677" rx="3" transform="rotate(90 18.001 22.3281)" stroke="#7098FF" stroke-width="2"/>
 </svg>
