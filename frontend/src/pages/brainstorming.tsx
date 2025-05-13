@@ -16,6 +16,17 @@ import useCreateBubble from '@/hooks/queries/brainstorming/useCreateBubble.ts';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import MoveToInventoryModal from '@/components/ui/brainstorming/MoveToInventoryModal';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/Dialog.tsx';
+import BrainstormingLogo from '@/assets/sidebar/color-brainstorming.svg';
+import { DialogClose } from '@radix-ui/react-dialog';
+import { Button } from '@/components/ui/button.tsx';
 import { NodeToTaskModal } from '@/components/ui/Modal/NodeTaskModal.tsx';
 
 export default function Brainstorming() {
@@ -31,6 +42,7 @@ export default function Brainstorming() {
   const bubblesRef = useRef<BubbleNodeType[]>([]);
   const textareaRef = useRef(null);
   const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
+  const [isBubbleDialogOpen, setIsBubbleDialogOpen] = useState(false);
   const [selectedBubble, setSelectedBubble] = useState({
     bubbleId: null,
     title: '',
@@ -85,6 +97,12 @@ export default function Brainstorming() {
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [inputText, isMobile]);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      addBubble();
+    }
+  };
 
   // 화면 리사이즈 시 버블 위치 재계산
   useEffect(() => {
@@ -197,18 +215,7 @@ export default function Brainstorming() {
             });
           }
 
-          // const newMaxBottom = newBubbles.reduce((max, bubble) => {
-          //   const bottom = (bubble.y / 100) * scrollHeight + bubble.radius;
-          //   return Math.max(max, bottom);
-          // }, 0);
-
-          // // 바닥 영역에 100px 남기도록 높이를 조정
-          // if (newMaxBottom + 100 > scrollHeight) {
-          //   scroll.style.height = newMaxBottom + 100 + 'px';
-          // }
-
           scrollHeight = scroll.offsetHeight;
-          console.log(scrollHeight);
 
           setBubbles((prev) => [...prev, ...newBubbles]);
           setInputText('');
@@ -242,7 +249,12 @@ export default function Brainstorming() {
     setTimeout(() => {
       deleteBrainstormingMutation(id, {
         onSuccess: () => {
-          setBubbles((prev) => prev.filter((bubble) => bubble.bubbleId !== id));
+          const updated = bubbles.filter((bubble) => bubble.bubbleId !== id);
+          bubblesRef.current = updated;
+          setBubbles(updated);
+          if (bubblesRef.current.length == 0) {
+            setIsBubbleDialogOpen(true);
+          }
         },
         onError: (error) => {
           console.error('버블 삭제 중 오류가 발생했습니다: ', error);
@@ -306,8 +318,24 @@ export default function Brainstorming() {
         className="absolute left-0 top-0 w-screen h-screen
     bg-blue-2"
       ></div>
-      <div className="relative w-full h-full ">
-        <div ref={scrollRef} className="relative w-full h-full overflow-auto ">
+      <Dialog open={isBubbleDialogOpen} onOpenChange={setIsBubbleDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>버블 정리 완료!</DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+          <div>
+            <div className="rounded-[16px] px-6 py-[20px] text-[20px] font-semibold bg-blue-2 flex gap-2 items-start text-gray-scale-700">
+              <p>복잡했던 생각들이 말끔하게 정리됐어요 🎉</p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      <div className="relative w-full h-full overflow-y-auto overflow-x-hidden pb-[50px]">
+        <div
+          ref={scrollRef}
+          className="relative w-full h-full overflow-y-auto overflow-x-hidden "
+        >
           {bubbles.map((bubble) => (
             <Popover
               key={bubble.bubbleId}
@@ -332,7 +360,7 @@ export default function Brainstorming() {
                       'scale-in': bubble.isNew,
                     },
                     {
-                      float: !bubble.isNew,
+                      float: !bubble.isNew && openPopoverId !== bubble.bubbleId,
                     },
                   )}
                 />
@@ -393,6 +421,10 @@ export default function Brainstorming() {
               </PopoverContent>
             </Popover>
           ))}
+          <div
+            className="absolute bottom-0 left-0 w-full h-[50px] opacity-0"
+            style={{ position: 'absolute', bottom: '0', left: '0' }}
+          />
         </div>
         <div
           className={clsx(
@@ -403,40 +435,39 @@ export default function Brainstorming() {
             ref={textareaRef}
             value={inputText}
             rows={1}
+            onKeyDown={handleKeyDown}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="버블에 넣을 텍스트를 입력하세요"
             className={clsx(
-              'border py-[7px] overflow-hidden resize-none border-blue rounded-[48px] px-6 font-semibold font-pretendard flex-1 outline-none placeholder:text-gray-400 break-words whitespace-pre-wrap h-auto',
-              isMobile ? 'text-[12px] ' : 'text-[16px] ',
+              'md:text-[16px] border py-[8px] overflow-hidden resize-none border-blue rounded-[48px] px-6 font-semibold font-pretendard flex-1 outline-none placeholder:text-gray-400 break-words whitespace-pre-wrap h-auto',
             )}
           />
-          {isMobile ? (
-            <button
-              disabled={isPending}
-              onClick={addBubble}
-              className="rounded-[48px] w-[30px] h-[30px] bg-blue text-white font-semibold text-[16px] font-pretendard flex justify-center items-center cursor-pointer"
-            >
-              {isPending ? (
-                <>
-                  <Loader2 className=" animate-spin" />
-                </>
-              ) : (
-                <img src={Arrow} />
-              )}
-            </button>
-          ) : (
-            <button
-              disabled={isPending}
-              onClick={addBubble}
-              className="rounded-[48px] p-2 h-[40px] bg-blue text-white font-semibold text-[16px] font-pretendard w-[140px] cursor-pointer items-center justify-center"
-            >
-              {isPending ? (
-                <Loader2 className="animate-spin mx-12" />
-              ) : (
-                '버블 생성하기'
-              )}
-            </button>
-          )}
+
+          <button
+            disabled={isPending}
+            onClick={addBubble}
+            className="md:hidden rounded-[48px] w-[30px] h-[30px] bg-blue text-white font-semibold text-[16px] font-pretendard flex justify-center items-center cursor-pointer"
+          >
+            {isPending ? (
+              <>
+                <Loader2 className=" animate-spin" />
+              </>
+            ) : (
+              <img src={Arrow} />
+            )}
+          </button>
+
+          <button
+            disabled={isPending}
+            onClick={addBubble}
+            className="hidden md:block rounded-[48px] p-2 h-[40px] bg-blue text-white font-semibold text-[16px] font-pretendard w-[140px] cursor-pointer items-center justify-center"
+          >
+            {isPending ? (
+              <Loader2 className="animate-spin mx-12" />
+            ) : (
+              '버블 생성하기'
+            )}
+          </button>
         </div>
       </div>
 

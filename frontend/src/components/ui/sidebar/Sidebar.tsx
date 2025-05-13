@@ -127,7 +127,7 @@ export default function Sidebar() {
           handleItemClick(item);
         }}
         className={cn(
-          'flex items-center w-full gap-3 text-left transition-all duration-200 rounded-md cursor-pointer relative p-2 cursor-pointer',
+          'flex items-center w-full gap-3 text-left transition-all duration-200 rounded-md cursor-pointer relative p-2',
           active
             ? 'bg-[#F0F0F5] text-[#525463]'
             : 'hover:bg-gray-50 text-[#CDCED6]',
@@ -196,7 +196,7 @@ export default function Sidebar() {
     <div className="h-full">
       <div
         className={cn(
-          'bg-white border-r border-[#E5E5E5] h-full flex flex-col transition-all duration-300 ease-in-out rounded-lg overflow-hidden',
+          'bg-white h-full flex flex-col transition-all duration-300 ease-in-out rounded-2xl overflow-hidden',
           isOpen ? 'w-[218px]' : 'w-[70px]',
         )}
       >
