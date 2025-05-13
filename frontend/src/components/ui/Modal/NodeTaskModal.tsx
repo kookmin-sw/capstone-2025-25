@@ -25,6 +25,7 @@ import { BadgeSelector } from '@/components/common/BadgeSelector.tsx';
 import { useCategoryStore } from '@/store/useCategoryStore.ts';
 import { eisenhowerCategoryService } from '@/services/eisenhowerCategoryService.ts';
 import type { Task } from '@/types/task.ts';
+import { BG_COLORS } from '@/types/category.ts';
 
 type NodeToTaskModalProps = {
   isOpen: boolean;
@@ -53,9 +54,11 @@ export function NodeToTaskModal({
     if (!trimmed || exists) return;
 
     try {
+      const bgColor = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
+
       await eisenhowerCategoryService.create({
         title: trimmed,
-        color: '#E8EFFF',
+        color: bgColor,
       });
       await fetchCategories();
       const added = useCategoryStore
@@ -172,7 +175,7 @@ export function NodeToTaskModal({
                   renderBadge={(opt) => (
                     <CategoryBadge
                       label={opt.label}
-                      bgColor={opt.bgColor}
+                      bgColor={opt?.bgColor ?? '#E8EFFF'}
                       textColor={opt.textColor}
                     />
                   )}

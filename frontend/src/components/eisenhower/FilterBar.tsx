@@ -24,6 +24,7 @@ export function FilterBar({
     {
       label: '모든',
       value: 'all',
+      color: '#E1E1E8',
     },
     ...categories.map((cat) => ({
       label: cat.title,
@@ -45,7 +46,7 @@ export function FilterBar({
             renderBadge={(option) => (
               <CategoryBadge
                 label={option.label}
-                bgColor={option.bgColor}
+                bgColor={option?.bgColor ?? '#E8EFFF'}
                 textColor={option.textColor}
               />
             )}

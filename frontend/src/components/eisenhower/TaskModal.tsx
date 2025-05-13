@@ -16,6 +16,7 @@ import { eisenhowerCategoryService } from '@/services/eisenhowerCategoryService'
 import { useCategoryStore } from '@/store/useCategoryStore.ts';
 import { toast } from 'sonner';
 import PlusIcon from '@/assets/eisenhower/plus.svg';
+import { BG_COLORS } from '@/types/category.ts';
 
 type TaskModalProps = {
   mode: 'create' | 'edit';
@@ -119,9 +120,11 @@ export function TaskModal({
     if (!trimmed || exists) return;
 
     try {
+      const bgColor = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
+
       await eisenhowerCategoryService.create({
         title: trimmed,
-        color: '#E8EFFF',
+        color: bgColor,
       });
       await fetchCategories();
       const added = useCategoryStore
@@ -241,7 +244,7 @@ export function TaskModal({
                   renderBadge={(opt) => (
                     <CategoryBadge
                       label={opt.label}
-                      bgColor={opt.bgColor}
+                      bgColor={opt?.bgColor ?? '#E8EFFF'}
                       textColor={opt.textColor}
                     />
                   )}

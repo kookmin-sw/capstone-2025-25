@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 
 interface CategoryBadgeProps {
   label: string;
-  bgColor?: string;
+  bgColor: string;
   textColor?: string;
   showDelete?: boolean;
   onDelete?: () => void;
@@ -11,7 +11,7 @@ interface CategoryBadgeProps {
 
 export function CategoryBadge({
   label,
-  bgColor = '#E5E7EB',
+  bgColor,
   textColor = '#15161A',
   showDelete,
   onDelete,
