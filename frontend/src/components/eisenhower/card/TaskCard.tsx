@@ -191,7 +191,8 @@ export function TaskCard({
           {category ? (
             <CategoryBadge label={category.title} bgColor={category.color} />
           ) : (
-            <div className="h-4"></div>
+            // <div className="h-[30px]"></div>
+            <></>
           )}
         </div>
 
@@ -208,7 +209,7 @@ export function TaskCard({
 
         {/* 메모 */}
         <div className="text-xs mb-2 line-clamp-2 text-[#858899] ">
-          {memo ? memo : <></>}
+          {memo ? memo : <>비어 있음</>}
         </div>
 
         {/* 마감일 */}
@@ -216,12 +217,15 @@ export function TaskCard({
           {dueDate ? (
             <div className="flex">
               <Calendar className="w-4 h-4 mr-1 text-blue" />
-              <span className="text-center pt-[2px] text-xs">
+              <span className="text-center pt-[1px] text-xs">
                 {format(new Date(dueDate), 'yyyy.MM.dd')}
               </span>
             </div>
           ) : (
-            <></>
+            <div className="flex">
+              <Calendar className="w-4 h-4 mr-1 text-blue" />
+              <span className="text-center pt-[1px] text-xs">날짜 없음</span>
+            </div>
           )}
         </div>
       </div>
