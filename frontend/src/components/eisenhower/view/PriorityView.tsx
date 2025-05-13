@@ -11,7 +11,7 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from '@dnd-kit/sortable';
-import { quadrantTitles } from '@/constants/section';
+import { boardQuadrantTitles, quadrantTitles } from '@/constants/section.tsx';
 import { getCategoryNameById } from '@/utils/category';
 import { useCategoryStore } from '@/store/useCategoryStore';
 import { TaskCard } from '@/components/eisenhower/card/TaskCard';
@@ -185,7 +185,7 @@ export function PriorityView({
     Q4: 'bg-[#F1F5FF] border-blue border',
   };
 
-  const { isMobile, isCompact } = useResponsive();
+  const { isMobile } = useResponsive();
   const [activeQuadrant, setActiveQuadrant] = useState<Quadrant>('Q1');
 
   return (
@@ -201,12 +201,7 @@ export function PriorityView({
       }}
     >
       {isMobile && (
-        <div
-          className={cn(
-            'grid gap-1 mb-4',
-            isCompact ? 'grid-cols-1' : 'grid-cols-2',
-          )}
-        >
+        <div className={cn('grid gap-1 md:mb-4 grid-cols-1')}>
           {(['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).map((q) => (
             <button
               key={q}
@@ -228,7 +223,7 @@ export function PriorityView({
         </div>
       )}
 
-      <div className={`grid ${gridClass} h-full`}>
+      <div className={`grid ${gridClass} h-full overflow-x-auto`}>
         {(Object.keys(tasksByQuadrant) as Quadrant[])
           .filter((q) => !isMobile || q === activeQuadrant)
           .map((quadrant) => {
@@ -259,21 +254,45 @@ export function PriorityView({
                       : 'h-[400px]',
                   )}
                 >
-                  <div className="flex justify-between items-center pb-[14px] gap-2">
-                    <div className="flex items-center gap-2">
+                  {/*<div className="flex justify-between pb-[14px] gap-2">*/}
+                  <div
+                    className={cn(
+                      'flex justify-between pb-[14px] gap-2',
+                      viewMode === 'board' ? '' : 'items-center',
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'flex gap-2',
+                        viewMode === 'board' ? '' : 'items-center',
+                      )}
+                    >
                       <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
                         {quadrant.replace('Q', '')}
                       </div>
+
+                      {/*<div className="flex justify-between gap-2 w-full">*/}
                       <div
                         className={cn(
-                          'font-semibold text-[#525463]',
-                          viewMode === 'board' ? 'text-[16px]' : 'text-[20px]',
+                          'flex justify-between gap-4 w-full',
+                          viewMode === 'board' ? '' : 'items-center',
                         )}
                       >
-                        {quadrantTitles[quadrant]}
-                      </div>
-                      <div className="text-sm text-[#6E726E]">
-                        {filtered.length}
+                        <div
+                          className={cn(
+                            'font-semibold text-[#525463]',
+                            viewMode === 'board'
+                              ? 'text-[16px]'
+                              : 'text-[20px]',
+                          )}
+                        >
+                          {viewMode === 'board'
+                            ? boardQuadrantTitles[quadrant]
+                            : quadrantTitles[quadrant]}
+                        </div>
+                        <div className="text-sm text-[#6E726E]">
+                          {filtered.length}
+                        </div>
                       </div>
                     </div>
                     <TaskModal

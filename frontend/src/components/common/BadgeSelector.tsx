@@ -78,7 +78,9 @@ export function BadgeSelector({
   return (
     <div
       className={
-        displayMode === 'inline' ? 'relative w-40 gap-4 flex items-center' : ''
+        displayMode === 'inline'
+          ? 'relative  w-full gap-4 flex items-center'
+          : ''
       }
     >
       <Popover open={open} onOpenChange={setOpen}>

@@ -2,6 +2,14 @@ import { create } from 'zustand';
 import type { Category } from '@/types/category';
 import { eisenhowerCategoryService } from '@/services/eisenhowerCategoryService';
 
+const colorPalette = [
+  { bgColor: '#E8EFFF', textColor: '#4A90E2' },
+  { bgColor: '#FDF1E6', textColor: '#F2994A' },
+  { bgColor: '#FDEDED', textColor: '#EB5757' },
+  { bgColor: '#F1F8EC', textColor: '#6FCF97' },
+  { bgColor: '#EAF4FB', textColor: '#2D9CDB' },
+];
+
 interface CategoryStore {
   categories: Category[];
   fetchCategories: () => Promise<void>;
@@ -23,18 +31,19 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
 
   addCategory: async (title) => {
     try {
-      const bgColor = '#E8EFFF';
-      const textColor = '#4A90E2';
+      // 랜덤 색상 선택
+      const randomColor =
+        colorPalette[Math.floor(Math.random() * colorPalette.length)];
 
       const res = await eisenhowerCategoryService.create({
         title,
-        color: bgColor,
+        color: randomColor.bgColor,
       });
 
       const newCategory: Category = {
-        ...res.content, // API 응답 (id, title 포함된 객체)
-        color: bgColor,
-        textColor: textColor,
+        ...res.content,
+        color: randomColor.bgColor,
+        textColor: randomColor.textColor,
       };
 
       set((state) => ({
