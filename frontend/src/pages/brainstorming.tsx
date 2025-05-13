@@ -100,7 +100,6 @@ export default function Brainstorming() {
     }
   };
 
-
   // 화면 리사이즈 시 버블 위치 재계산
   useEffect(() => {
     const handleResize = () => {
@@ -212,18 +211,7 @@ export default function Brainstorming() {
             });
           }
 
-          // const newMaxBottom = newBubbles.reduce((max, bubble) => {
-          //   const bottom = (bubble.y / 100) * scrollHeight + bubble.radius;
-          //   return Math.max(max, bottom);
-          // }, 0);
-
-          // // 바닥 영역에 100px 남기도록 높이를 조정
-          // if (newMaxBottom + 100 > scrollHeight) {
-          //   scroll.style.height = newMaxBottom + 100 + 'px';
-          // }
-
           scrollHeight = scroll.offsetHeight;
-          console.log(scrollHeight);
 
           setBubbles((prev) => [...prev, ...newBubbles]);
           setInputText('');
@@ -333,7 +321,7 @@ export default function Brainstorming() {
           </div>
         </DialogContent>
       </Dialog>
-      <div className="relative w-full h-full ">
+      <div className="relative w-full h-full overflow-auto pb-[50px]">
         <div ref={scrollRef} className="relative w-full h-full overflow-auto ">
           {bubbles.map((bubble) => (
             <Popover
@@ -359,7 +347,7 @@ export default function Brainstorming() {
                       'scale-in': bubble.isNew,
                     },
                     {
-                      float: !bubble.isNew,
+                      float: !bubble.isNew && openPopoverId !== bubble.bubbleId,
                     },
                   )}
                 />
@@ -420,6 +408,10 @@ export default function Brainstorming() {
               </PopoverContent>
             </Popover>
           ))}
+          <div
+            className="absolute bottom-0 left-0 w-full h-[50px] opacity-0"
+            style={{ position: 'absolute', bottom: '0', left: '0' }}
+          />
         </div>
         <div
           className={clsx(
