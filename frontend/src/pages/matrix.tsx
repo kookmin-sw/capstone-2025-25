@@ -91,7 +91,7 @@ export default function MatrixPage() {
         <Toaster richColors position="top-center" />
         <main className="flex flex-1 min-h-0 flex-col gap-[15px] h-full">
           <div className="flex flex-col justify-between items-start w-full gap-4">
-            <div className="flex gap-2 w-full justify-between">
+            <div className="flex gap-2 w-full justify-between items-center">
               <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                 <DropdownMenuTrigger
                   asChild
