@@ -105,7 +105,12 @@ export default function MindmapPage() {
   }
 
   return (
-    <div className="relative w-full h-[calc(100vh-88px)]">
+    <div className="w-full h-[calc(100vh-88px)]">
+      <div
+        className="absolute left-0 top-0 w-screen h-screen
+        bg-blue-2"
+      ></div>
+
       <MindmapWrapper />
 
       <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>
