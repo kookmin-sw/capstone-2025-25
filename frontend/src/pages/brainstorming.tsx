@@ -321,8 +321,8 @@ export default function Brainstorming() {
           </div>
         </DialogContent>
       </Dialog>
-      <div className="relative w-full h-full overflow-auto pb-[50px]">
-        <div ref={scrollRef} className="relative w-full h-full overflow-auto ">
+      <div className="relative w-full h-full overflow-y-auto overflow-x-hidden pb-[50px]">
+        <div ref={scrollRef} className="relative w-full h-full overflow-y-auto overflow-x-hidden ">
           {bubbles.map((bubble) => (
             <Popover
               key={bubble.bubbleId}
