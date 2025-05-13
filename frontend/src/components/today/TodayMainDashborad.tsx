@@ -37,14 +37,14 @@ export default function TodayMainDashborad() {
         </div>
       )}
 
-      <div className="w-full lg:w-1/2 bg-white rounded-lg p-4 lg:mr-4 h-auto lg:h-fit overflow-auto self-start">
+      <div className="w-full lg:w-1/2 bg-white rounded-lg px-6 py-4 h-auto lg:h-fit overflow-auto self-start">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-4">
-            <h3 className="text-[20px] text-[`#525463`] font-semibold">
+            <h3 className="text-[20px] text-[#525463] font-semibold">
               오늘의 할 일
             </h3>
             {todayTodoCount && (
-              <p className="text-[`#525463`]">{todayTodoCount}</p>
+              <p className="text-[#525463]">{todayTodoCount}</p>
             )}
           </div>
           <div className="flex items-center gap-2">
@@ -58,7 +58,7 @@ export default function TodayMainDashborad() {
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <div className="my-8 font-semibold">
+          <div className="my-8 font-semibold text-[#52546]">
             {year}년 {month}월 {date}일
           </div>
           <div className="flex items-center gap-2">
