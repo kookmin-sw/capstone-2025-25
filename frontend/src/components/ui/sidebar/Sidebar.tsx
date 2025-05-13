@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { useNavigate, useLocation } from 'react-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Info, Settings } from 'lucide-react';
 
 import TodayTodoIcon from '@/assets/sidebar/color-today-todo.svg';
@@ -78,15 +78,38 @@ export default function Sidebar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
+  const [forceUpdate, setForceUpdate] = useState<number>(0);
+
+  const normalizePath = (path: string): string => {
+    return path.endsWith('/') ? path.slice(0, -1) : path;
+  };
+
+  useEffect(() => {
+    console.log('Current path:', location.pathname);
+    console.log('Normalized path:', normalizePath(location.pathname));
+
+    if (forceUpdate === 0) {
+      setForceUpdate(1);
+    }
+  }, [location.pathname]);
 
   const isActive = (item: NavItem): boolean => {
-    if (location.pathname === item.route) {
+    const normalizedCurrentPath = normalizePath(location.pathname);
+    const normalizedItemPath = normalizePath(item.route);
+
+    if (normalizedCurrentPath === normalizedItemPath) {
       return true;
     }
 
     if (item.activePatterns) {
       return item.activePatterns.some((pattern) => {
-        return location.pathname.startsWith(pattern);
+        const normalizedPattern = normalizePath(pattern);
+
+        return (
+          normalizedCurrentPath === normalizedPattern ||
+          normalizedCurrentPath.startsWith(`${normalizedPattern}/`) ||
+          normalizedCurrentPath.startsWith(normalizedPattern)
+        );
       });
     }
 
@@ -103,7 +126,16 @@ export default function Sidebar() {
 
   const findActiveItem = (): NavItem => {
     const allItems = [...navItems, ...bottomNavItems];
-    return allItems.find((item) => isActive(item)) || navItems[0];
+    const foundItem = allItems.find((item) => isActive(item));
+
+    // 디버깅 로그
+    if (foundItem) {
+      console.log('Active item found:', foundItem.id);
+    } else {
+      console.log('No active item found, defaulting to first item');
+    }
+
+    return foundItem || navItems[0];
   };
 
   const activeItem: NavItem = findActiveItem();
