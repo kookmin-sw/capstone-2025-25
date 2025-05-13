@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect.ts';
 
 export default function DefaultLayout() {
-  useAuthRedirect();
+  // useAuthRedirect();
 
   return (
     <div className="min-h-screen bg-[#F0F0F5] flex flex-col">
