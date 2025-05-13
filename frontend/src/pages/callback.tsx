@@ -25,13 +25,21 @@ export default function OAuthCallbackPage() {
   }, [code, exchangeCodeForTokenMutation, navigate]);
 
   return (
-    <p className="text-center mt-10">
-      {error
-        ? `토큰 발급 실패: ${error.message}`
-        : isPending
-          ? '로그인 처리 중입니다...'
-          : // TODO : 별도의 UI 처리 필요
-            ''}
-    </p>
+    <div className="flex justify-center items-center h-screen">
+      {error ? (
+        <p className="text-center text-red-500 text-lg">
+          토큰 발급 실패: {error.message}
+        </p>
+      ) : isPending ? (
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 border-4 border-t-transparent border-blue-500 rounded-full animate-spin" />
+          <p className="text-center text-gray-600">
+            버블이가 로그인 처리 중입니다
+          </p>
+        </div>
+      ) : (
+        ''
+      )}
+    </div>
   );
 }

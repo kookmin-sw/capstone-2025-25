@@ -7,18 +7,14 @@ const getAccessTokenFromCookie = () => {
   return match ? decodeURIComponent(match[1]) : null;
 };
 
-/**
- * 인증 상태를 검사하고, 토큰이 있으면 /matrix로,
- * 없으면 /login으로 이동
- */
 export const useAuthRedirect = () => {
   const navigate = useNavigate();
   const { token, setToken } = useAuthStore();
 
   useEffect(() => {
     // 스토어에 토큰이 있는 경우
-    if (token) {
-      navigate('/matrix');
+    if (!token) {
+      navigate('/today');
       return;
     }
 
@@ -26,7 +22,7 @@ export const useAuthRedirect = () => {
     const cookieToken = getAccessTokenFromCookie();
     if (cookieToken) {
       setToken(cookieToken);
-      navigate('/matrix');
+      navigate('/today');
       return;
     }
 
