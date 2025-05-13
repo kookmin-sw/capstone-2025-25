@@ -105,7 +105,6 @@ public class PomodoroService {
         int[] times = calculateTotalTimeSummary(executedCycles);
 
         int totalExecutedSeconds = times[2];
-        // TODO 에러로 낼 지, 아니면 0보다 클 때만 기록을 저장하게 조건 제어로 할지 논의 필요
         // 0이면 기록을 저장하지 않고 에러 발생
         if (totalExecutedSeconds <= 59) {
             throw new PomodoroDurationException();

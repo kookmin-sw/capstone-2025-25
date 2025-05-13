@@ -1,5 +1,6 @@
 package capstone.backend.domain.inventory.controller;
 
+
 import capstone.backend.domain.inventory.dto.request.InventoryItemCreateRequest;
 import capstone.backend.domain.inventory.dto.request.InventoryItemUpdateRequest;
 import capstone.backend.domain.inventory.dto.request.InventoryItemMoveRequest;
@@ -33,16 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class InventoryItemController {
 
     private final InventoryItemService inventoryItemService;
-
-    @Operation(summary = "보관함 아이템 생성", description = "보관함 아이템을 생성합니다.")
-    @PostMapping
-    public ApiResponse<InventoryItemResponse> createInventoryItem(
-        @AuthenticationPrincipal CustomOAuth2User user,
-        @RequestBody @Valid InventoryItemCreateRequest request
-    ){
-        InventoryItemResponse response = inventoryItemService.createInventoryItem(request, user.getMemberId());
-        return ApiResponse.ok(response);
-    }
 
     @Operation(summary = "보관함 폴더별 조회", description = "폴더 안에 있는 보관함 아이템들을 조회합니다.")
     @GetMapping("/{folderId}")

@@ -13,12 +13,16 @@ export interface DragOverlayCardProps {
 export function DragOverlayCard({ task, categories }: DragOverlayCardProps) {
   const { title, categoryId, dueDate, memo } = task;
   const categoryName = getCategoryNameById(categoryId, categories);
+  const category = categories.find((c) => c.id === categoryId); // ✅ 여기 추가
 
   return (
     <div className="bg-white rounded-md p-4 shadow-lg w-full flex flex-col">
       <div className="flex mb-2 flex-wrap">
         {categoryId !== null && (
-          <CategoryBadge label={categoryName} bgColor="#E8EFFF" />
+          <CategoryBadge
+            label={categoryName}
+            bgColor={category?.color ?? '#E8EFFF'}
+          />
         )}
       </div>
 

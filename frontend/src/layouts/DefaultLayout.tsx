@@ -2,19 +2,18 @@ import { Outlet } from 'react-router';
 import Sidebar from '@/components/ui/sidebar/Sidebar';
 import Header from '@/components/ui/header/Header';
 import BottomBar from '@/components/ui/sidebar/BottomBar';
-import clsx from 'clsx';
-import { useResponsive } from '@/hooks/use-mobile.ts';
 import { Toaster } from '@/components/ui/sonner';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect.ts';
 
 export default function DefaultLayout() {
-  const isMobile = useResponsive();
+  useAuthRedirect();
   return (
     <div className="min-h-screen bg-[#F0F0F5] flex flex-col">
       <Header />
 
-      <div className="flex flex-1 p-12 gap-9">
+      <div className="flex flex-1 px-4 py-6 md:p-12 gap-9">
         <div className="hidden md:block h-[calc(100vh-136px)] flex-shrink-0 z-10">
-          <div className="h-full rounded-lg shadow-md overflow-hidden">
+          <div className="h-full rounded-2xl overflow-hidden">
             <Sidebar />
           </div>
         </div>

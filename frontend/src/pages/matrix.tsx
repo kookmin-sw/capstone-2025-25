@@ -20,6 +20,7 @@ import { ChevronDown, Grid2X2, Kanban } from 'lucide-react';
 import useMatrixStore from '@/store/matrixStore';
 import { eisenhowerService } from '@/services/eisenhowerService.ts';
 import { useResponsive } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils.ts';
 
 export default function MatrixPage() {
   const {
@@ -80,7 +81,7 @@ export default function MatrixPage() {
   const { isMobile } = useResponsive();
 
   return (
-    <div className="flex min-h-0 flex-1 p-[30px] md:p-[10px] overflow-auto">
+    <div className="flex min-h-0 flex-1 md:p-[30px] overflow-auto">
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
@@ -102,21 +103,23 @@ export default function MatrixPage() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="start"
-                  className="w-40 cursor-pointer"
+                  className="w-40 flex flex-col gap-1"
                 >
                   <DropdownMenuItem
                     onClick={() => setActiveTab('all')}
-                    className={
-                      activeTab === 'all' ? 'bg-muted font-semibold' : ''
-                    }
+                    className={cn(
+                      'cursor-pointer',
+                      activeTab === 'all' ? 'bg-muted font-semibold' : '',
+                    )}
                   >
                     미완료 일정
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => setActiveTab('completed')}
-                    className={
-                      activeTab === 'completed' ? 'bg-muted font-semibold' : ''
-                    }
+                    className={cn(
+                      'cursor-pointer',
+                      activeTab === 'completed' ? 'bg-muted font-semibold' : '',
+                    )}
                   >
                     완료된 일정
                   </DropdownMenuItem>
@@ -128,14 +131,20 @@ export default function MatrixPage() {
                   onValueChange={(val) => setView(val as 'matrix' | 'board')}
                   className="cursor-pointer"
                 >
-                  <TabsList>
-                    <TabsTrigger value="matrix">
+                  <TabsList className="px-2 bg-white rounded-[8px] h-12 flex gap-1">
+                    <TabsTrigger
+                      value="matrix"
+                      className="h-9 data-[state=active]:bg-blue data-[state=active]:text-white bg-white text-blue rounded-md px-2 py-2 transition"
+                    >
                       <div className="flex items-center gap-2">
                         <Grid2X2 />
                         <p>매트릭스</p>
                       </div>
                     </TabsTrigger>
-                    <TabsTrigger value="board">
+                    <TabsTrigger
+                      value="board"
+                      className="h-9 data-[state=active]:bg-blue data-[state=active]:text-white bg-white text-blue rounded-md px-2 py-2 transition"
+                    >
                       <div className="flex items-center gap-2">
                         <Kanban />
                         보드
@@ -153,7 +162,7 @@ export default function MatrixPage() {
             </div>
           </div>
 
-          <div className="mb-6">
+          <div className="md:mb-6">
             <FilterBar
               selectedCategory={selectedCategory}
               startDate={startDate}

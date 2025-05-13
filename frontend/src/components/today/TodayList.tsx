@@ -3,12 +3,14 @@ import useGetTodayTodoList from '@/hooks/queries/today/useGetTodayTodoList';
 import useGetYesterdayTodoList from '@/hooks/queries/today/useGetYesterdayTodoList';
 import useMoveToday from '@/hooks/queries/today/useMoveToday';
 import { cn } from '@/lib/utils';
-import { Calendar, Check, Trash2 } from 'lucide-react';
+import { Calendar, Trash2 } from 'lucide-react';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePatchPomodoro from '@/hooks/queries/pomodoro/usePatchPomodoro.ts';
 import { toast } from 'sonner';
 import useUpdateStatusTodo from '@/hooks/queries/today/useUpdateStatusTodo';
 import useDeleteTodayTodo from '@/hooks/queries/today/useDeleteTodayTodo';
+import CheckIcon from '@/assets/check.svg';
+import CheckFillIcon from '@/assets/check-fill.svg';
 
 interface TodayListProps {
   hideCompleted?: boolean;
@@ -36,6 +38,7 @@ function formatDateToEnglish(dateString: string): string {
 export default function TodayList({ hideCompleted = false }: TodayListProps) {
   const { todayTodoList } = useGetTodayTodoList();
   const { yesterdayTodoList } = useGetYesterdayTodoList();
+
   const { getCategoryNameById } = useGetCategoryList();
   const { moveTodayMutation, isPending } = useMoveToday();
   const { patchPomodoroMutation } = usePatchPomodoro();
@@ -97,43 +100,25 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
         yesterdayTodoList.map((todo) => (
           <div
             key={todo.id}
-            className="p-3 px-6 py-5 rounded-lg bg-gray-scale-200"
+            className="flex flex-col gap-4 py-5 rounded-lg bg-gray-scale-200"
           >
-            <div className="flex items-center justify-between mb-2">
+            <div className="px-5 flex items-center justify-between">
               <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
                 {getCategoryNameById(todo.category_id)}
               </div>
-              <div
-                className={cn(
-                  'w-6 h-6 rounded-full flex items-center justify-center p-1',
-                  todo.isCompleted
-                    ? 'bg-blue'
-                    : 'bg-transparent border-2 border-blue',
-                )}
-              >
-                <Check
-                  className={cn(
-                    'cursor-pointer',
-                    todo.isCompleted ? 'text-white' : 'text-blue',
-                  )}
-                  size={24}
-                  onClick={() =>
-                    handleCompleteTask(todo.id, todo.isCompleted, todo.title)
-                  }
-                />
-              </div>
+              <img src={CheckIcon} className="w-6 h-6 cursor-pointer" />
             </div>
-            <p className="text-[20px] text-[#525463] font-semibold">
+            <p className="px-6 text-[20px] text-[#525463] font-semibold">
               {todo.title}
             </p>
-            <p className="text-[14px] text-[#858899] my-2">{todo.memo}</p>
-            <div className="flex items-center gap-2">
+            <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
+            <div className="px-6 flex items-center gap-2">
               <Calendar size={24} />
               <p className="text-[14px] text-[#525463]">
                 {formatDateToEnglish(todo.dueDate)}
               </p>
             </div>
-            <div className="flex justify-end mt-2">
+            <div className="flex justify-end mb-5 px-6">
               <button
                 className="px-4 py-2 rounded-full bg-white text-blue font-semibold cursor-pointer"
                 onClick={() => handleMoveToToday(todo.id)}
@@ -148,9 +133,9 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
       {filteredTodayTodoList.map((todo) => (
         <div
           key={todo.id}
-          className="p-3 px-6 py-5 rounded-lg bg-white border border-blue"
+          className="flex flex-col gap-4 py-5 rounded-lg bg-white border border-blue"
         >
-          <div className="flex items-center justify-between mb-2">
+          <div className="px-5 flex items-center justify-between">
             <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
               {getCategoryNameById(todo.category_id)}
             </div>
@@ -161,38 +146,28 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
                 onClick={() => handleDeleteTask(todo.id, todo.title)}
                 color="#7098ff"
               />
-              <div
-                className={cn(
-                  'w-6 h-6 rounded-full flex items-center justify-center p-1',
-                  todo.isCompleted
-                    ? 'bg-blue'
-                    : 'bg-transparent border-2 border-blue',
-                )}
-              >
-                <Check
-                  className={cn(
-                    'cursor-pointer',
-                    todo.isCompleted ? 'text-white' : 'text-blue',
-                  )}
-                  size={24}
-                  onClick={() =>
-                    handleCompleteTask(todo.id, todo.isCompleted, todo.title)
-                  }
-                />
-              </div>
+              <img
+                src={todo.isCompleted ? CheckFillIcon : CheckIcon}
+                className="w-6 h-6 cursor-pointer"
+                onClick={() =>
+                  handleCompleteTask(todo.id, todo.isCompleted, todo.title)
+                }
+              />
             </div>
           </div>
-          <p className="text-[20px] text-[#525463] font-semibold">
-            {todo.title}
-          </p>
-          <p className="text-[14px] text-[#858899] my-2">{todo.memo}</p>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-2">
+            <p className="px-6 text-[20px] text-[#525463] font-semibold">
+              {todo.title}
+            </p>
+            <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
+          </div>
+          <div className="px-6 flex items-center gap-2">
             <Calendar size={24} />
             <p className="text-[14px] text-[#525463]">
               {formatDateToEnglish(todo.dueDate)}
             </p>
           </div>
-          <div className="flex justify-end mt-2">
+          <div className="flex justify-end mb-5 px-6">
             <button
               className={cn(
                 'px-4 py-2 rounded-full text-white font-semibold cursor-pointer',
@@ -210,7 +185,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
         </div>
       ))}
       {filteredTodayTodoList.length === 0 && (
-        <div className="bg-white px-4 py-8 rounded-md flex flex-col items-center justify-center text-center min-h-[200px]">
+        <div className="bg-[#F0F0F5] px-4 py-8 rounded-md flex flex-col items-center justify-center min-h-[200px]">
           <p className="font-semibold">
             {hideCompleted && todayTodoList && todayTodoList.length > 0
               ? '완료되지 않은 일이 없어요'
