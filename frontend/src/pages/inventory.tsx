@@ -8,6 +8,7 @@ import CreateFolderModal from '@/components/inventory/modal/CreateFolderMoal';
 import DeleteFolderModal from '@/components/inventory/modal/DeleteFolderMoal';
 import useUpdateFolderName from '@/hooks/queries/inventory/folder/useUpdateFolderName';
 import Plus from '@/assets/plus.svg';
+import { toast } from 'sonner';
 
 export default function InventoryPage() {
   const navigate = useNavigate();
@@ -77,12 +78,22 @@ export default function InventoryPage() {
 
   const handleUpdateFolderName = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
-    if (editingFolderName.trim() === '') return;
+
+    const trimmedName = editingFolderName.trim();
+
+    if (trimmedName === '') {
+      return;
+    }
+
+    if (trimmedName.length > 10) {
+      toast('폴더 이름은 최대 10글자까지 가능합니다.');
+      return;
+    }
 
     updateFolderNameMutation(
       {
         id,
-        data: { name: editingFolderName.trim() },
+        data: { name: trimmedName },
       },
       {
         onSuccess: () => {
@@ -98,7 +109,7 @@ export default function InventoryPage() {
   };
 
   return (
-    <div className='flex flex-col gap-8'>
+    <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <div className="flex  gap-4 items-baseline">
           <h1 className="text-[28px] text-[#525463] font-semibold">
@@ -110,7 +121,7 @@ export default function InventoryPage() {
           className="bg-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer "
           onClick={() => setIsCreateModalOpen(true)}
         >
-          <img src={Plus} className='w-[18px] h-[18px]' />
+          <img src={Plus} className="w-[18px] h-[18px]" />
         </div>
       </div>
 
@@ -146,7 +157,7 @@ export default function InventoryPage() {
                     type="text"
                     value={editingFolderName}
                     onChange={handleFolderNameChange}
-                    onClick={(e) => e.stopPropagation()} // 이벤트 버블링 방지
+                    onClick={(e) => e.stopPropagation()}
                     className="text-[20px] font-semibold p-1 border border-blue rounded focus:outline-none min-w-0"
                     autoFocus
                   />
@@ -191,10 +202,7 @@ export default function InventoryPage() {
                         handleEditClick(e, { id: store.id, name: store.name })
                       }
                     >
-                      <Pencil
-                        className="text-[#A9ABB8] "
-                        size={18}
-                      />
+                      <Pencil className="text-[#A9ABB8] " size={18} />
                     </div>
                     <div
                       className="p-2  rounded-full"
@@ -202,10 +210,7 @@ export default function InventoryPage() {
                         handleDeleteClick(e, { id: store.id, name: store.name })
                       }
                     >
-                      <Trash2
-                        className="text-[#A9ABB8] "
-                        size={18}
-                      />
+                      <Trash2 className="text-[#A9ABB8] " size={18} />
                     </div>
                     <ChevronRight className="text-[#A9ABB8]" />
                   </>
