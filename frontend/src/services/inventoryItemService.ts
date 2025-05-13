@@ -50,10 +50,11 @@ export const inventoryItemService = {
   },
 
   createItem: async (
+    id: number,
     data: CreateInventoryItemReq,
   ): Promise<MoveInventoryItemReq> => {
     const response = await apiClient.post(
-      ENDPOINTS.INVENTORY.ITEM.CREATE_ITEM,
+      ENDPOINTS.INVENTORY.ITEM.CREATE_ITEM(id),
       data,
     );
     return response.data;

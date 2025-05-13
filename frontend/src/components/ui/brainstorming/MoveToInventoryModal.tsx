@@ -44,9 +44,12 @@ export default function MoveToInventoryModal({
 
     createInventoryItemMutation(
       {
-        folderId: selectedFolderId,
-        title: item.title,
-        memo: '',
+        id: item.id,
+        data: {
+          folderId: selectedFolderId,
+          title: item.title,
+          memo: '',
+        },
       },
       {
         onSuccess: () => {
