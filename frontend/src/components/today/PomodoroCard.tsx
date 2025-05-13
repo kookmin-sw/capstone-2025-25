@@ -19,7 +19,9 @@ export function PomodoroCard() {
     pauseTimer,
   } = store;
   const { patchPomodoroMutation } = usePatchPomodoro();
-  const setPatchPomodoroMutation = usePomodoroStore((state) => state.setPatchPomodoroMutation);
+  const setPatchPomodoroMutation = usePomodoroStore(
+    (state) => state.setPatchPomodoroMutation,
+  );
   useEffect(() => {
     setPatchPomodoroMutation(patchPomodoroMutation);
   }, [patchPomodoroMutation, setPatchPomodoroMutation]);
@@ -113,8 +115,8 @@ export function PomodoroCard() {
   };
 
   return (
-    <Card className="h-full w-full border-none shadow-none">
-      <CardHeader className="pb-2">
+    <Card className="h-full w-full border-none shadow-none px-6 py-4">
+      <CardHeader className="pb-2 px-0">
         <CardTitle className="text-gray-scale-700 text-[20px] font-semibold">
           {title}
         </CardTitle>

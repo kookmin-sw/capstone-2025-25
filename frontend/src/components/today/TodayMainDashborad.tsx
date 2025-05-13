@@ -5,7 +5,6 @@ import { PomodoroCard } from '@/components/today/PomodoroCard';
 import useGetTodayTodoCompletedCount from '@/hooks/queries/today/useGetTodayTodoCompletedCount';
 import useGetTodayTodoCount from '@/hooks/queries/today/useGetTodayTodoCount';
 import { usePomodoroStore } from '@/store/pomodoro.ts';
-import { useResponsive } from '@/hooks/use-mobile.ts';
 import { useState } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { useNavigate } from 'react-router';
@@ -13,7 +12,6 @@ import { PomodoroCompletionChart } from '@/components/ui/chart/PomodoroCompletio
 import PlusIcon from '@/assets/plus.svg';
 
 export default function TodayMainDashborad() {
-  const isMobile = useResponsive();
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
@@ -31,8 +29,8 @@ export default function TodayMainDashborad() {
 
   return (
     <div className="flex flex-col lg:flex-row w-full gap-4">
-      {isMobile && currentId && (
-        <div className="w-full">
+      {currentId && (
+        <div className="w-full block lg:hidden">
           <PomodoroCard />
         </div>
       )}
@@ -80,8 +78,8 @@ export default function TodayMainDashborad() {
       </div>
 
       <div className="w-full lg:w-1/2 flex flex-col gap-4 h-auto mt-4 lg:mt-0">
-        {!isMobile && currentId && (
-          <div className="w-full">
+        {currentId && (
+          <div className="w-full hidden lg:block">
             <PomodoroCard />
           </div>
         )}
