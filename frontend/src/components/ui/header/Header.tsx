@@ -25,6 +25,9 @@ export default function Header() {
     }
   };
 
+  const navigateToToday = () => {
+    navigate('/today');
+  };
   const navigateToIntro = () => {
     window.open('https://cheerful-perspective-141321.framer.app/', '_blank');
   };
@@ -45,7 +48,7 @@ export default function Header() {
   return (
     <header className="px-4 py-[7px] md:px-12 h-[50px] flex items-center justify-between sticky top-0 w-full bg-gray-scale-200 border-b border-b-white z-50 ">
       <div className="flex-1 max-w-md">
-        <img src={Logo} />
+        <img src={Logo} onClick={navigateToToday} />
       </div>
       <div className="flex items-center gap-[20px]">
         <div></div>

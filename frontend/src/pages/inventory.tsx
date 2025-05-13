@@ -7,6 +7,7 @@ import useDeleteInventoryFolder from '@/hooks/queries/inventory/folder/useDelete
 import CreateFolderModal from '@/components/inventory/modal/CreateFolderMoal';
 import DeleteFolderModal from '@/components/inventory/modal/DeleteFolderMoal';
 import useUpdateFolderName from '@/hooks/queries/inventory/folder/useUpdateFolderName';
+import Plus from '@/assets/plus.svg';
 
 export default function InventoryPage() {
   const navigate = useNavigate();
@@ -97,19 +98,19 @@ export default function InventoryPage() {
   };
 
   return (
-    <div>
+    <div className='flex flex-col gap-8'>
       <div className="flex items-center justify-between">
-        <div className="flex items-end gap-4 mb-8">
+        <div className="flex  gap-4 items-baseline">
           <h1 className="text-[28px] text-[#525463] font-semibold">
             나의 보관함
           </h1>
           <p className="text-[#525463]">나의 생각을 보관해보세요</p>
         </div>
         <div
-          className="bg-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100"
+          className="bg-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer "
           onClick={() => setIsCreateModalOpen(true)}
         >
-          <Plus size={18} />
+          <img src={Plus} className='w-[18px] h-[18px]' />
         </div>
       </div>
 
@@ -131,10 +132,10 @@ export default function InventoryPage() {
           inventoryFolderList.map((store) => (
             <li
               key={store.id}
-              className="flex items-center justify-between px-8 py-4 bg-white rounded-xl cursor-pointer"
+              className="flex items-center justify-between px-8 py-4 bg-white rounded-xl cursor-pointer border-[1px] border-white hover:border-blue "
               onClick={() => handleRouteToStoreDetail(store.id)}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 min-w-0">
                 <img
                   src={FolderIcon}
                   className="w-[37.5px] h-[30px]"
@@ -146,11 +147,11 @@ export default function InventoryPage() {
                     value={editingFolderName}
                     onChange={handleFolderNameChange}
                     onClick={(e) => e.stopPropagation()} // 이벤트 버블링 방지
-                    className="text-[20px] font-semibold p-1 border border-blue rounded focus:outline-none"
+                    className="text-[20px] font-semibold p-1 border border-blue rounded focus:outline-none min-w-0"
                     autoFocus
                   />
                 ) : (
-                  <p className="text-[20px] text-[#15161A] font-semibold">
+                  <p className="text-[20px] truncatetext-[#15161A] font-semibold">
                     {store.name}
                   </p>
                 )}
@@ -158,18 +159,18 @@ export default function InventoryPage() {
                   {store.itemCount}
                 </p>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 mb:gap-4">
                 {editingFolderId === store.id ? (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     <button
                       onClick={(e) => handleCancelEdit(e)}
-                      className="p-2 hover:bg-gray-100 rounded-full text-gray-500"
+                      className="p-2 cursor-pointer rounded-full text-[#A9ABB8] "
                     >
                       <X size={18} />
                     </button>
                     <button
                       onClick={(e) => handleUpdateFolderName(e, store.id)}
-                      className="px-3 py-1 bg-blue text-white rounded-full text-sm flex items-center"
+                      className="px-3 py-1 bg-blue text-white rounded-full text-[16px] flex items-center cursor-pointer"
                       disabled={isUpdatingFolderName}
                     >
                       {isUpdatingFolderName ? (
@@ -185,24 +186,24 @@ export default function InventoryPage() {
                 ) : (
                   <>
                     <div
-                      className="p-2 hover:bg-gray-100 rounded-full"
+                      className="p-2  rounded-full"
                       onClick={(e) =>
                         handleEditClick(e, { id: store.id, name: store.name })
                       }
                     >
                       <Pencil
-                        className="text-[#A9ABB8] hover:text-blue-500"
+                        className="text-[#A9ABB8] "
                         size={18}
                       />
                     </div>
                     <div
-                      className="p-2 hover:bg-gray-100 rounded-full"
+                      className="p-2  rounded-full"
                       onClick={(e) =>
                         handleDeleteClick(e, { id: store.id, name: store.name })
                       }
                     >
                       <Trash2
-                        className="text-[#A9ABB8] hover:text-red-500"
+                        className="text-[#A9ABB8] "
                         size={18}
                       />
                     </div>

@@ -51,18 +51,17 @@ export default function CreateFolderModal({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>보관함 추가</DialogTitle>
-          <DialogDescription>
-            새 보관함의 이름을 입력해주세요.
-          </DialogDescription>
+          <DialogTitle>폴더 추가</DialogTitle>
+          <DialogDescription>새 폴더의 이름을 입력해주세요.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="py-4">
+        {/*<form onSubmit={handleSubmit}>*/}
+          <div>
             <Input
               value={folderName}
               onChange={(e) => setFolderName(e.target.value)}
-              placeholder="보관함 이름"
-              className="w-full"
+              placeholder="폴더 이름"
+              className="w-full h-auto border  focus:border-blue"
+              style={{ fontSize: '16px', padding: '10px 15px' }}
               autoFocus
               disabled={isPending}
             />
@@ -78,6 +77,7 @@ export default function CreateFolderModal({
               </Button>
               <Button
                 type="submit"
+                onClick={handleSubmit}
                 disabled={isPending || !folderName.trim()}
                 className="bg-blue text-white"
               >
@@ -92,7 +92,7 @@ export default function CreateFolderModal({
               </Button>
             </div>
           </DialogFooter>
-        </form>
+        {/*</form>*/}
       </DialogContent>
     </Dialog>
   );

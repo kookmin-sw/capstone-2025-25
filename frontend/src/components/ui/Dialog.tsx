@@ -62,7 +62,7 @@ function DialogContent({
       >
         {children}
         <DialogPrimitive.Close className="ring-offset-background absolute top-4 right-4 rounded-full opacity-70 transition-opacity hover:opacity-100 disabled:pointer-events-none cursor-pointer active:bg-[#E5E5E5] focus:outline-none focus:ring-0 focus:ring-offset-0 w-10 h-10 bg-blue-2 flex items-center justify-center">
-          <img src={XIcon}  />
+          <img src={XIcon} className='w-4 h-4'  />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
