@@ -80,7 +80,7 @@ export default function MatrixPage() {
   const { isMobile } = useResponsive();
 
   return (
-    <div className="flex min-h-0 flex-1 p-[30px] overflow-auto">
+    <div className="flex min-h-0 flex-1  overflow-auto">
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
