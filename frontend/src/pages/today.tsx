@@ -19,11 +19,11 @@ export default function TodayListPage() {
   const randomQuote = QUOTES[randomIndex];
   return (
     <div className="w-full">
-      <h1 className="block lg:hidden text-[28px] text-[#525463] font-semibold mb-6">
+      <h1 className="block lg:hidden text-[20px] md:text-[28px] text-[#525463] font-semibold mb-6">
         오늘의 할 일
       </h1>
 
-      <div className="w-full bg-white p-4 md:p-6 rounded-lg text-[20px] text-[#525463] font-semibold mb-10">
+      <div className="w-full bg-white p-4 md:p-6 rounded-2xl text-[16px] md:text-[20px] text-[#525463] font-semibold mb-6 md:mb-10">
         {randomQuote}
       </div>
 

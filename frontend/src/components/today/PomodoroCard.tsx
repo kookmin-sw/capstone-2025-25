@@ -115,7 +115,7 @@ export function PomodoroCard() {
   };
 
   return (
-    <Card className="h-full w-full border-none shadow-none px-6 py-4">
+    <Card className="h-full w-full border-none shadow-none px-6 py-4 rounded-2xl">
       <CardHeader className="pb-2 px-0">
         <CardTitle className="text-gray-scale-700 text-[20px] font-semibold">
           {title}

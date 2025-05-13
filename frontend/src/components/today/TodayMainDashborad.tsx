@@ -35,7 +35,7 @@ export default function TodayMainDashborad() {
         </div>
       )}
 
-      <div className="w-full lg:w-1/2 flex flex-col gap-8 bg-white rounded-lg px-6 py-4 h-auto lg:h-fit overflow-auto self-start">
+      <div className="w-full lg:w-1/2 flex flex-col gap-8 bg-white rounded-2xl px-6 py-4 h-auto lg:h-fit overflow-auto self-start">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <h3 className="text-[20px] text-[#525463] font-semibold">

@@ -18,9 +18,11 @@ export default function ReminderList() {
   };
 
   return (
-    <div className="w-full mb-0 lg:mb-6 flex flex-col gap-[17px]">
+    <div className="w-full mb-0 lg:mb-6 flex flex-col gap-2 md:gap-[17px]">
       <div className="flex items-center gap-4 mb-2 ml-4">
-        <h4 className="text-[20px] text-[#525463] font-semibold">리마인더</h4>
+        <h4 className="text-[16px] md:text-[20px] text-[#525463] font-semibold">
+          리마인더
+        </h4>
         <p
           className="text-blue text-[14px] cursor-pointer"
           onClick={handleRouteToInventory}
@@ -35,7 +37,7 @@ export default function ReminderList() {
             inventoryRecentList.map((remind) => (
               <div
                 key={remind.id}
-                className="flex flex-col gap-4 bg-white rounded-lg px-6 py-4 cursor-pointer flex-none"
+                className="flex flex-col gap-4 bg-white rounded-2xl px-6 py-4 cursor-pointer flex-none"
                 style={{ width: '16rem' }}
                 onClick={() => handleClickReminder(remind.folderId, remind.id)}
               >

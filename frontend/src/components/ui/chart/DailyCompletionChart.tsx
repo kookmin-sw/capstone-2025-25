@@ -64,7 +64,7 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
     : defaultChartData;
 
   return (
-    <Card className="h-full w-full border-none shadow-none rounded-lg px-6 py-4">
+    <Card className="h-full w-full border-none shadow-none rounded-2xl px-6 py-4">
       <CardHeader className="pb-2 px-0">
         <CardTitle className="text-[#525463] text-[20px] font-semibold">
           {title}
