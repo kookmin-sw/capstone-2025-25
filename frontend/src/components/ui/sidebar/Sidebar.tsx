@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { useNavigate, useLocation } from 'react-router';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Info, Settings } from 'lucide-react';
 
 import TodayTodoIcon from '@/assets/sidebar/color-today-todo.svg';
@@ -28,29 +28,29 @@ const navItems: NavItem[] = [
     activeIcon: TodayTodoIcon,
     defaultIcon: TodayTodoHWIcon,
     label: '오늘의 할 일',
-    route: '/today',
+    route: '/today/',
   },
   {
     id: 'brainstorming',
     activeIcon: BrainStormingIcon,
     defaultIcon: BrainStormingHWIcon,
     label: '브레인스토밍',
-    route: '/brainstorming',
-    activePatterns: ['/mindmap'],
+    route: '/brainstorming/',
+    activePatterns: ['/mindmap/'],
   },
   {
     id: 'matrix',
     activeIcon: EisenHowerIcon,
     defaultIcon: EisenHowerHWIcon,
     label: '아이젠하워',
-    route: '/matrix',
+    route: '/matrix/',
   },
   {
     id: 'inventory',
     activeIcon: StoreIcon,
     defaultIcon: StoreHWIcon,
     label: '보관함',
-    route: '/inventory',
+    route: '/inventory/',
     activePatterns: ['/inventory/'],
   },
 ];
@@ -61,7 +61,7 @@ const bottomNavItems: NavItem[] = [
     activeIcon: <Info size={24} className="text-blue-500" />,
     defaultIcon: <Info size={24} className="text-gray-400" />,
     label: '서비스 소개',
-    route: '/service-info',
+    route: '/service-info/',
     externalLink: 'https://cheerful-perspective-141321.framer.app/',
   },
   {
@@ -69,7 +69,7 @@ const bottomNavItems: NavItem[] = [
     activeIcon: <Settings size={24} className="text-blue-500" />,
     defaultIcon: <Settings size={24} className="text-gray-400" />,
     label: '설정',
-    route: '/settings',
+    route: '/settings/',
   },
 ];
 
@@ -78,38 +78,19 @@ export default function Sidebar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
-  const [forceUpdate, setForceUpdate] = useState<number>(0);
-
-  const normalizePath = (path: string): string => {
-    return path.endsWith('/') ? path.slice(0, -1) : path;
-  };
-
-  useEffect(() => {
-    console.log('Current path:', location.pathname);
-    console.log('Normalized path:', normalizePath(location.pathname));
-
-    if (forceUpdate === 0) {
-      setForceUpdate(1);
-    }
-  }, [location.pathname]);
 
   const isActive = (item: NavItem): boolean => {
-    const normalizedCurrentPath = normalizePath(location.pathname);
-    const normalizedItemPath = normalizePath(item.route);
+    if (location.pathname === item.route) {
+      return true;
+    }
 
-    if (normalizedCurrentPath === normalizedItemPath) {
+    if (location.pathname === item.route.slice(0, -1)) {
       return true;
     }
 
     if (item.activePatterns) {
       return item.activePatterns.some((pattern) => {
-        const normalizedPattern = normalizePath(pattern);
-
-        return (
-          normalizedCurrentPath === normalizedPattern ||
-          normalizedCurrentPath.startsWith(`${normalizedPattern}/`) ||
-          normalizedCurrentPath.startsWith(normalizedPattern)
-        );
+        return location.pathname.startsWith(pattern);
       });
     }
 
@@ -126,16 +107,7 @@ export default function Sidebar() {
 
   const findActiveItem = (): NavItem => {
     const allItems = [...navItems, ...bottomNavItems];
-    const foundItem = allItems.find((item) => isActive(item));
-
-    // 디버깅 로그
-    if (foundItem) {
-      console.log('Active item found:', foundItem.id);
-    } else {
-      console.log('No active item found, defaulting to first item');
-    }
-
-    return foundItem || navItems[0];
+    return allItems.find((item) => isActive(item)) || navItems[0];
   };
 
   const activeItem: NavItem = findActiveItem();
