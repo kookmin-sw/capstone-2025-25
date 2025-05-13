@@ -6,7 +6,7 @@ const useGetTodayTaskAnalysis = () => {
   const { data, isLoading, error, isPending } =
     useQuery<GetTodayTaskAnalysisRes>({
       queryKey: ['todayTaskAnalysis'],
-      queryFn: () => analysisService.getList(),
+      queryFn: () => analysisService.getTodayTask(),
       refetchOnWindowFocus: false,
       retry: 1,
     });
