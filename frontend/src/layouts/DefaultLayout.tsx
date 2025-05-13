@@ -12,8 +12,8 @@ export default function DefaultLayout() {
     <div className="min-h-screen bg-[#F0F0F5] flex flex-col">
       <Header />
 
-      <div className="flex flex-1 p-12 gap-9 overflow-visible">
-        <div className="hidden md:block sticky top-[66px] self-start h-[calc(100vh-88px)] flex-shrink-0 z-50">
+      <div className="flex flex-1 p-12 gap-9">
+        <div className="hidden md:block h-[calc(100vh-136px)] flex-shrink-0 z-10">
           <div className="h-full rounded-lg shadow-md overflow-hidden">
             <Sidebar />
           </div>

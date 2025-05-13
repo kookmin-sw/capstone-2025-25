@@ -196,7 +196,7 @@ export default function Sidebar() {
     <div className="h-full">
       <div
         className={cn(
-          'bg-white border-r border-[#E5E5E5] h-full flex flex-col transition-all duration-300 ease-in-out rounded-lg',
+          'bg-white border-r border-[#E5E5E5] h-full flex flex-col transition-all duration-300 ease-in-out rounded-lg overflow-hidden',
           isOpen ? 'w-[218px]' : 'w-[70px]',
         )}
       >
@@ -243,15 +243,19 @@ export default function Sidebar() {
           )}
         </div>
 
-        <div className="py-[10px] flex-1 ">
-          <div className="flex flex-col gap-[18px] px-4">
-            {navItems.map((item) => renderNavItem(item))}
-          </div>
-        </div>
+        <div className="flex-1 overflow-y-auto">
+          <div className="min-h-0 flex flex-col h-full">
+            <div className="py-[10px] flex-1">
+              <div className="flex flex-col gap-[18px] px-4">
+                {navItems.map((item) => renderNavItem(item))}
+              </div>
+            </div>
 
-        <div className="py-[10px] mt-auto flex-shrink-0">
-          <div className="flex flex-col gap-[18px] px-4 mb-4">
-            {bottomNavItems.map((item) => renderNavItem(item))}
+            <div className="py-[10px] mt-auto">
+              <div className="flex flex-col gap-[18px] px-4 mb-4">
+                {bottomNavItems.map((item) => renderNavItem(item))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
