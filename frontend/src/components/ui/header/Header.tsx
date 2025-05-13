@@ -1,10 +1,15 @@
 import { useAuthStore } from '@/store/authStore';
-import { Bell } from 'lucide-react';
+import { Bell, Info, Settings, LogOut, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import Logo from '@/assets/logo.svg';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePomodoroControl from '@/hooks/usePomodoroControl';
 import { authService } from '@/services/authService.ts';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 export default function Header() {
   const { isAuthenticated } = useAuthStore();
@@ -20,6 +25,14 @@ export default function Header() {
     }
   };
 
+  const navigateToIntro = () => {
+    navigate('/intro');
+  };
+
+  const navigateToSettings = () => {
+    navigate('/settings');
+  };
+
   const currentId = usePomodoroStore((s) => s.id);
   const currentElapsedTime = usePomodoroStore((s) => s.elapsedTime);
 
@@ -30,7 +43,7 @@ export default function Header() {
     `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
   return (
-    <header className="px-7.5 py-2.5 h-[50px] flex items-center justify-between sticky top-0 w-full bg-gray-scale-200 border-b border-b-white z-100 ">
+    <header className="px-7.5 py-2.5 h-[50px] flex items-center justify-between sticky top-0 w-full bg-gray-scale-200 border-b border-b-white z-50 ">
       <div className="flex-1 max-w-md">
         <img src={Logo} />
       </div>
@@ -47,12 +60,51 @@ export default function Header() {
             <button className="cursor-pointer">
               <Bell size={20} className="text-blue" fill="#7098FF" />
             </button>
-            <div className="w-6 h-6 rounded-full flex items-center justify-center bg-[#D3EE17] border border-blue cursor-pointer"></div>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="w-6 h-6 rounded-full flex items-center justify-center bg-[#D3EE17] border border-blue cursor-pointer"></div>
+              </PopoverTrigger>
+              <PopoverContent className="w-40 p-0 mr-4 md:hidden z-100">
+                <div className="py-1">
+                  <button
+                    onClick={navigateToIntro}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <Info size={16} />
+                    <span>서비스 소개</span>
+                  </button>
+                  <button
+                    onClick={navigateToSettings}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <Settings size={16} />
+                    <span>설정</span>
+                  </button>
+                  <button
+                    onClick={handleAuthAction}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    {isAuthenticated ? (
+                      <>
+                        <LogOut size={16} />
+                        <span>로그아웃</span>
+                      </>
+                    ) : (
+                      <>
+                        <LogIn size={16} />
+                        <span>로그인</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
           </>
         )}
 
         <button
-          className="px-6 py-[6px] bg-blue text-white rounded-lg font-semibold cursor-pointer"
+          className="px-6 py-[6px] bg-blue text-white rounded-lg font-semibold cursor-pointer hidden md:block"
           onClick={handleAuthAction}
         >
           {isAuthenticated ? '로그아웃' : '로그인'}
