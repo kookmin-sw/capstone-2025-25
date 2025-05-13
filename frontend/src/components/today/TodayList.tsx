@@ -155,10 +155,12 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
               />
             </div>
           </div>
-          <p className="px-6 text-[20px] text-[#525463] font-semibold">
-            {todo.title}
-          </p>
-          <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
+          <div className="flex flex-col gap-2">
+            <p className="px-6 text-[20px] text-[#525463] font-semibold">
+              {todo.title}
+            </p>
+            <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
+          </div>
           <div className="px-6 flex items-center gap-2">
             <Calendar size={24} />
             <p className="text-[14px] text-[#525463]">
@@ -183,7 +185,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
         </div>
       ))}
       {filteredTodayTodoList.length === 0 && (
-        <div className="bg-white px-4 py-8 rounded-md flex flex-col items-center justify-center text-center min-h-[200px]">
+        <div className="bg-[#F0F0F5] px-4 py-8 rounded-md flex flex-col items-center justify-center min-h-[200px]">
           <p className="font-semibold">
             {hideCompleted && todayTodoList && todayTodoList.length > 0
               ? '완료되지 않은 일이 없어요'

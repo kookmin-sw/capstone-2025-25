@@ -37,14 +37,14 @@ export default function ReminderList() {
             inventoryRecentList.map((remind) => (
               <div
                 key={remind.id}
-                className="flex flex-col gap-4 bg-white rounded-2xl px-6 py-4 cursor-pointer flex-none"
+                className="flex flex-col gap-3 md:gap-4 bg-white rounded-2xl px-6 py-4 cursor-pointer flex-none"
                 style={{ width: '16rem' }}
                 onClick={() => handleClickReminder(remind.folderId, remind.id)}
               >
-                <h3 className="text-[20px] text-[#525463] font-semibold">
+                <h3 className="text-[16px] md:text-[20px] text-[#525463] font-semibold">
                   {remind.title}
                 </h3>
-                <p className="text-gray-scale-500">
+                <p className="text-[14px] md:text-[16px] text-gray-scale-500">
                   {remind.memo || '입력된 메모가 없습니다'}
                 </p>
               </div>
