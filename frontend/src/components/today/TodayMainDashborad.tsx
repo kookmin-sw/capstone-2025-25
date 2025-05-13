@@ -10,6 +10,7 @@ import { useResponsive } from '@/hooks/use-mobile.ts';
 import { useState } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { useNavigate } from 'react-router';
+import { PomodoroCompletionChart } from '@/components/ui/chart/PomodoroCompletionChar';
 
 export default function TodayMainDashborad() {
   const isMobile = useResponsive();
@@ -88,7 +89,7 @@ export default function TodayMainDashborad() {
           <DailyCompletionChart title="할 일 완료 분석" />
         </div>
         <div className="w-full">
-          <DailyCompletionChart title="뽀모도로 시간 분석" />
+          <PomodoroCompletionChart title="뽀모도로 시간 분석" />
         </div>
       </div>
     </div>

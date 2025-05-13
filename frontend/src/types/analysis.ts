@@ -4,3 +4,9 @@ export type TodayTaskAnalysis = {
   dayOfWeek: string;
   completedNum: 0;
 };
+
+export type PomodoroAnalysis = {
+  dailyPomodoroSummaryId: number;
+  createdAt: string;
+  totalTime: string;
+};

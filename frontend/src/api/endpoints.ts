@@ -96,5 +96,6 @@ export const ENDPOINTS = {
   /* 분석 관련 API */
   ANALYSIS: {
     TODAY_TASK: '/api/v2/today-task/analysis',
+    POMODORO: '/api/v2/data/pomodoro/week',
   },
 };
