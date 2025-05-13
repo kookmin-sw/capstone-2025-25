@@ -20,14 +20,14 @@ export default function DefaultLayout() {
         </div>
 
         <div className="flex-1 min-w-0">
-          <main className="w-full h-full">
+          <main className="w-full h-full md:pb-0 pb-16">
             <Outlet />
             <Toaster />
           </main>
         </div>
       </div>
 
-      <div className="block md:hidden">
+      <div className="block md:hidden fixed bottom-0 left-0 right-0 bg-white z-50">
         <BottomBar />
       </div>
     </div>
