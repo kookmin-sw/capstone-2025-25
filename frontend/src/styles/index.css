@@ -209,3 +209,7 @@ body {
 .float {
   animation: float 3s ease-in-out infinite;
 }
+
+.react-flow__attribution {
+  display: none !important;
+}

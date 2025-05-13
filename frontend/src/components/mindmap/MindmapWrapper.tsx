@@ -27,6 +27,7 @@ import { BrainStormingRewriteReq } from '@/types/api/gpt';
 import { Loader2 } from 'lucide-react';
 import BrainstormingLogo from '@/assets/sidebar/color-brainstorming.svg';
 import usePatchBubble from '@/hooks/queries/brainstorming/usePatchBubble';
+import { toast } from 'sonner';
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
@@ -52,6 +53,15 @@ function FlowContent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleRewriteBrainStorming = () => {
+    const emptyNodes = nodes.filter((node) => {
+      return !node.data.label || (node.data.label as string).trim() === '';
+    });
+
+    if (emptyNodes.length > 0) {
+      toast('🚨비어있는 노드 데이터가 있습니다!');
+      return;
+    }
+
     const mindmapData = nodes.map((node) => ({
       context: String(node.data.label || ''),
     }));
@@ -102,39 +112,20 @@ function FlowContent() {
       style={flowStyles}
       defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       nodesDraggable={false}
+      deleteKeyCode={null}
     >
       <Controls />
 
       <Panel position="bottom-center">
         <div className="mb-12 z-10 bg-[rgba(255,255,255,0.6)] rounded-4xl px-6 py-4 w-auto">
           <div className="flex items-center gap-3">
-            <Modal
-              trigger={
-                <Button
-                  className="w-[139px] h-[48px] text-center rounded-4xl bg-blue-2 text-blue font-semibold"
-                  disabled={isPending}
-                  onClick={() => navigate('/brainstorming')}
-                >
-                  취소
-                </Button>
-              }
-              title="취소"
-              description="마인드맵 작성을 취소하시겠습니까?"
-              footer={
-                <div className="w-full flex items-center justify-end">
-                  <DialogClose asChild>
-                    <Button size="sm" className="bg-blue text-white">
-                      적용하기
-                    </Button>
-                  </DialogClose>
-                </div>
-              }
+            <Button
+              className="w-[139px] h-[48px] text-center rounded-4xl bg-blue-2 text-blue font-semibold"
+              disabled={isPending}
+              onClick={() => navigate('/brainstorming')}
             >
-              <div className="rounded-[7px] px-6 py-[20px] text-[20px] font-semibold bg-blue-2">
-                마인드맵 내용은 저장되지 않으며, 다시 확인할 수 없습니다.
-              </div>
-            </Modal>
-
+              취소
+            </Button>
             <Button
               onClick={handleRewriteBrainStorming}
               className="w-[139px] h-[48px] text-center rounded-4xl bg-blue text-white font-semibold"

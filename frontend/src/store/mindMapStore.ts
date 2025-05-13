@@ -133,6 +133,7 @@ type MindmapState = {
   updateNodeHeight: (nodeId: string, height: number) => void;
   setDirection: (direction: 'TB' | 'LR') => void;
   addChildNode: (parentNodeId: string) => void;
+  deleteNode: (nodeId: string) => void;
   initializeWithQuestions: (rootText: string, questions: string[]) => void;
 };
 
@@ -248,6 +249,47 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
       const { nodes, edges } = getLayoutedElements(
         updatedNodes,
         updatedEdges,
+        state.direction,
+      );
+
+      return { nodes, edges };
+    });
+  },
+
+  deleteNode: (nodeId) => {
+    if (nodeId === ROOT_NODE_ID) return;
+
+    set((state) => {
+      const nodesToDelete = new Set<string>();
+
+      const findDescendants = (id: string) => {
+        nodesToDelete.add(id);
+
+        state.edges.forEach((edge) => {
+          if (edge.source === id) {
+            findDescendants(edge.target);
+          }
+        });
+      };
+
+      findDescendants(nodeId);
+
+      const newEdges = state.edges.filter(
+        (edge) =>
+          !nodesToDelete.has(edge.source) && !nodesToDelete.has(edge.target),
+      );
+
+      const newNodes = state.nodes.filter(
+        (node) => !nodesToDelete.has(node.id),
+      );
+
+      nodesToDelete.forEach((id) => {
+        nodeHeightMap.delete(id);
+      });
+
+      const { nodes, edges } = getLayoutedElements(
+        newNodes,
+        newEdges,
         state.direction,
       );
 
