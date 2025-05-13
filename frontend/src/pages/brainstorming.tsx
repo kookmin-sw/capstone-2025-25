@@ -312,7 +312,7 @@ export default function Brainstorming() {
   return (
     <div
       ref={containerRef}
-      className={clsx('w-full h-full lg:pb-[0px]', isMobile && 'pb-[50px]')}
+      className={clsx('w-full h-full ')}
     >
       <div
         className="absolute left-0 top-0 w-screen h-screen
@@ -421,14 +421,10 @@ export default function Brainstorming() {
               </PopoverContent>
             </Popover>
           ))}
-          <div
-            className="absolute bottom-0 left-0 w-full h-[50px] opacity-0"
-            style={{ position: 'absolute', bottom: '0', left: '0' }}
-          />
         </div>
         <div
           className={clsx(
-            'absolute bottom-[35px] left-1/2 transform -translate-x-1/2 bg-white/60 rounded-[48px] flex w-10/12 max-w-[704px] justify-center h-fit items-center gap-4 px-3 py-3 sm:gap-2 sm:px-4 sm:py-3 ',
+            'absolute bottom-[0px] left-1/2 transform -translate-x-1/2 bg-white/60 rounded-[48px] flex w-10/12 max-w-[704px] justify-center h-fit items-center gap-4 px-3 py-3  ',
           )}
         >
           <textarea
@@ -437,9 +433,9 @@ export default function Brainstorming() {
             rows={1}
             onKeyDown={handleKeyDown}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="버블에 넣을 텍스트를 입력하세요"
+            placeholder="지금 머릿속에 떠오르는 생각을 적어보세요!"
             className={clsx(
-              'md:text-[16px] border py-[8px] overflow-hidden resize-none border-blue rounded-[48px] px-6 font-semibold font-pretendard flex-1 outline-none placeholder:text-gray-400 break-words whitespace-pre-wrap h-auto',
+              'md:text-[16px] border py-[8px] overflow-hidden resize-none border-blue rounded-[48px] px-6 font-semibold font-pretendard flex-1 outline-none placeholder:text-gray-400 break-words whitespace-pre-wrap h-auto w-full truncate placeholder:whitespace-nowrap placeholder:overflow-hidden placeholder:text-ellipsis',
             )}
           />
 
