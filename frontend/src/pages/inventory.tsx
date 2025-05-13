@@ -97,7 +97,7 @@ export default function InventoryPage() {
   };
 
   return (
-    <div className="p-10">
+    <div>
       <div className="flex items-center justify-between">
         <div className="flex items-end gap-4 mb-8">
           <h1 className="text-[28px] text-[#525463] font-semibold">
