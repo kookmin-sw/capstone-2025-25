@@ -1,7 +1,7 @@
 import { useAuthStore } from '@/store/authStore';
 import { Bell } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import TmpLogo from '@/assets/tmp-logo.svg';
+import Logo from '@/assets/logo.svg';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePomodoroControl from '@/hooks/usePomodoroControl';
 import { authService } from '@/services/authService.ts';
@@ -32,7 +32,7 @@ export default function Header() {
   return (
     <header className="px-7.5 py-2.5 h-[50px] flex items-center justify-between sticky top-0 w-full bg-gray-scale-200 border-b border-b-white z-100 ">
       <div className="flex-1 max-w-md">
-        <img src={TmpLogo} />
+        <img src={Logo} />
       </div>
       <div className="flex items-center gap-[20px]">
         <div></div>
