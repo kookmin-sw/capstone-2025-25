@@ -14,7 +14,7 @@ export function useResponsive() {
       setIsCompact(width < COMPACT_BREAKPOINT);
     };
 
-    handleResize(); // 초기 값 설정
+    handleResize();
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
