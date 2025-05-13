@@ -7,7 +7,7 @@ import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { BadgeSelector } from '@/components/common/BadgeSelector';
 import { TaskCard } from '@/components/eisenhower/card/TaskCard';
-import { quadrantTitles } from '@/constants/section';
+import { quadrantTitles } from '@/constants/section.tsx';
 // import { useCategoryStore } from '@/store/useCategoryStore';
 import type { Task } from '@/types/task';
 import { Quadrant } from '@/types/commonTypes';

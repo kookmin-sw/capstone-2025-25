@@ -22,7 +22,7 @@ export function FilterBar({
 
   const categoryOptions = [
     {
-      label: '모든 카테고리',
+      label: '모든',
       value: 'all',
     },
     ...categories.map((cat) => ({
@@ -52,10 +52,13 @@ export function FilterBar({
             withSearch={false}
           />
 
+          <div className="bg-[#F0F0F5] rounded-md h-6 w-1 md:block hidden"></div>
           {/* 날짜 필터 */}
-          <div className="relative flex gap-2 items-center">
+          <div className="relative flex gap-4 items-center">
             <div className="flex items-center space-x-2 cursor-pointer">
-              <span className="text-sm font-medium">날짜</span>
+              <span className="text-sm font-medium whitespace-nowrap">
+                날짜
+              </span>
             </div>
             <div>
               <DateRangePicker
