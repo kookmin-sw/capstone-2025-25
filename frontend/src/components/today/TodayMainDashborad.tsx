@@ -57,7 +57,6 @@ export default function TodayMainDashborad() {
             </button>
           </div>
         </div>
-
         <div className="flex items-center justify-between">
           <div className="my-8 font-semibold">
             {year}년 {month}월 {date}일
@@ -72,10 +71,13 @@ export default function TodayMainDashborad() {
           </div>
         </div>
 
-        <TodayCompleteChart
-          totalCount={todayTodoCount ?? 0}
-          completedCount={todayTodoCompletedCount ?? 0}
-        />
+        {todayTodoCount !== undefined && todayTodoCount > 0 && (
+          <TodayCompleteChart
+            totalCount={todayTodoCount}
+            completedCount={todayTodoCompletedCount ?? 0}
+          />
+        )}
+
         <TodayList hideCompleted={hideCompleted} />
       </div>
 
