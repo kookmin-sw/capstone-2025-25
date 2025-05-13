@@ -54,7 +54,7 @@ export default function LoginPage() {
           <div className="flex flex-col w-full gap-4">
             <button
               onClick={handleKakaoLogin}
-              className="w-full flex items-center justify-between gap-2 bg-[#FEE502] text-[#3C1E1E] px-6 py-4 rounded-md hover:bg-[#FFDC3C]"
+              className="w-full flex items-center justify-between gap-2 bg-[#FEE502] text-[#3C1E1E] px-6 py-4 rounded-md hover:bg-[#FFDC3C] cursor-pointer"
             >
               <img src={kakao} alt="kakao" className="w-6 h-6" />
               <p className="text-[16px] mx-auto">카카오로 시작하기</p>
@@ -63,7 +63,7 @@ export default function LoginPage() {
 
             <button
               onClick={handleNaverLogin}
-              className="w-full flex items-center justify-between gap-2 bg-[#04C759] text-white px-6 py-4 rounded-md hover:bg-[#02b350]"
+              className="w-full flex items-center justify-between gap-2 bg-[#04C759] text-white px-6 py-4 rounded-md hover:bg-[#02b350] cursor-pointer"
             >
               <img src={naver} alt="naver" className="w-6 h-6" />
               <p className="text-[16px] mx-auto">네이버로 시작하기</p>
