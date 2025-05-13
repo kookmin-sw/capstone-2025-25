@@ -102,6 +102,7 @@ function FlowContent() {
       style={flowStyles}
       defaultViewport={{ x: 0, y: 0, zoom: 1 }}
       nodesDraggable={false}
+      deleteKeyCode={null}
     >
       <Controls />
 
