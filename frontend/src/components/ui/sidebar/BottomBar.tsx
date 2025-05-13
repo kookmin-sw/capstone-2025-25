@@ -45,7 +45,7 @@ const navItems: NavItem[] = [
     activeIcon: StoreIcon,
     defaultIcon: StoreHWIcon,
     label: '보관함',
-    route: '/store',
+    route: '/inventory',
   },
 ];
 
