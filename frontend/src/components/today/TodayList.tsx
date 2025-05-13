@@ -9,6 +9,8 @@ import usePatchPomodoro from '@/hooks/queries/pomodoro/usePatchPomodoro.ts';
 import { toast } from 'sonner';
 import useUpdateStatusTodo from '@/hooks/queries/today/useUpdateStatusTodo';
 import useDeleteTodayTodo from '@/hooks/queries/today/useDeleteTodayTodo';
+import CheckIcon from '@/assets/check.svg';
+import CheckFillIcon from '@/assets/check-fill.svg';
 
 interface TodayListProps {
   hideCompleted?: boolean;
@@ -95,10 +97,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
     <div className="mt-4 space-y-4">
       {yesterdayTodoList &&
         yesterdayTodoList.map((todo) => (
-          <div
-            key={todo.id}
-            className="p-3 px-6 py-5 rounded-lg bg-gray-scale-200"
-          >
+          <div key={todo.id} className="px-6 py-5 rounded-lg bg-gray-scale-200">
             <div className="flex items-center justify-between mb-2">
               <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
                 {getCategoryNameById(todo.category_id)}
@@ -148,7 +147,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
       {filteredTodayTodoList.map((todo) => (
         <div
           key={todo.id}
-          className="p-3 px-6 py-5 rounded-lg bg-white border border-blue"
+          className="px-6 py-5 rounded-lg bg-white border border-blue"
         >
           <div className="flex items-center justify-between mb-2">
             <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
@@ -161,25 +160,13 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
                 onClick={() => handleDeleteTask(todo.id, todo.title)}
                 color="#7098ff"
               />
-              <div
-                className={cn(
-                  'w-6 h-6 rounded-full flex items-center justify-center p-1',
-                  todo.isCompleted
-                    ? 'bg-blue'
-                    : 'bg-transparent border-2 border-blue',
-                )}
-              >
-                <Check
-                  className={cn(
-                    'cursor-pointer',
-                    todo.isCompleted ? 'text-white' : 'text-blue',
-                  )}
-                  size={24}
-                  onClick={() =>
-                    handleCompleteTask(todo.id, todo.isCompleted, todo.title)
-                  }
-                />
-              </div>
+              <img
+                src={todo.isCompleted ? CheckFillIcon : CheckIcon}
+                className="w-6 h-6 cursor-pointer"
+                onClick={() =>
+                  handleCompleteTask(todo.id, todo.isCompleted, todo.title)
+                }
+              />
             </div>
           </div>
           <p className="text-[20px] text-[#525463] font-semibold">

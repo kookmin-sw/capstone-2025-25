@@ -52,11 +52,11 @@ export default function TodayMainDashborad() {
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <div className="font-semibold text-[#52546]">
+          <div className="font-semibold text-[#525463]">
             {year}년 {month}월 {date}일
           </div>
           <div className="flex items-center gap-2">
-            <p className="text-[14px] text-gray-scale-700">완료된 일 숨기기</p>
+            <p className="text-gray-scale-700">완료된 일 숨기기</p>
             <Switch
               checked={hideCompleted}
               onCheckedChange={setHideCompleted}
