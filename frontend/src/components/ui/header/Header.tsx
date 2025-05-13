@@ -26,7 +26,7 @@ export default function Header() {
   };
 
   const navigateToIntro = () => {
-    navigate('/intro');
+    window.open('https://cheerful-perspective-141321.framer.app/', '_blank');
   };
 
   const navigateToSettings = () => {

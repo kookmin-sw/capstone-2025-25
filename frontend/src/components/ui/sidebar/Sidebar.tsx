@@ -19,6 +19,7 @@ type NavItem = {
   label: string;
   route: string;
   activePatterns?: string[];
+  externalLink?: string;
 };
 
 const navItems: NavItem[] = [
@@ -61,6 +62,7 @@ const bottomNavItems: NavItem[] = [
     defaultIcon: <Info size={24} className="text-gray-400" />,
     label: '서비스 소개',
     route: '/service-info',
+    externalLink: 'https://cheerful-perspective-141321.framer.app/',
   },
   {
     id: 'settings',
@@ -91,8 +93,12 @@ export default function Sidebar() {
     return false;
   };
 
-  const handleItemClick = (route: string): void => {
-    navigate(route);
+  const handleItemClick = (item: NavItem): void => {
+    if (item.externalLink) {
+      window.open(item.externalLink, '_blank');
+    } else {
+      navigate(item.route);
+    }
   };
 
   const findActiveItem = (): NavItem => {
@@ -118,7 +124,7 @@ export default function Sidebar() {
       <button
         key={item.id}
         onClick={() => {
-          handleItemClick(item.route);
+          handleItemClick(item);
         }}
         className={cn(
           'flex items-center w-full gap-3 text-left transition-all duration-200 rounded-md cursor-pointer relative p-2 cursor-pointer',
@@ -170,15 +176,17 @@ export default function Sidebar() {
           )}
         </div>
         {isOpen && (
-          <p
-            className={cn(
-              'whitespace-nowrap transition-opacity duration-300',
-              active ? 'font-medium' : '',
-              isTransitioning ? 'opacity-0' : 'opacity-100',
-            )}
-          >
-            {item.label}
-          </p>
+          <div className="flex items-center">
+            <p
+              className={cn(
+                'whitespace-nowrap transition-opacity duration-300',
+                active ? 'font-medium' : '',
+                isTransitioning ? 'opacity-0' : 'opacity-100',
+              )}
+            >
+              {item.label}
+            </p>
+          </div>
         )}
       </button>
     );

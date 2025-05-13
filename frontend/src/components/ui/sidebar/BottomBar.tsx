@@ -16,6 +16,8 @@ type NavItem = {
   defaultIcon: string | React.ReactNode;
   label: string;
   route: string;
+  activePatterns?: string[];
+  externalLink?: string;
 };
 
 const navItems: NavItem[] = [
@@ -32,6 +34,7 @@ const navItems: NavItem[] = [
     defaultIcon: BrainStormingHWIcon,
     label: '브레인스토밍',
     route: '/brainstorming',
+    activePatterns: ['/mindmap'],
   },
   {
     id: 'matrix',
@@ -46,6 +49,7 @@ const navItems: NavItem[] = [
     defaultIcon: StoreHWIcon,
     label: '보관함',
     route: '/inventory',
+    activePatterns: ['/inventory/'],
   },
 ];
 
@@ -53,22 +57,36 @@ export default function BottomBar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isActive = (itemRoute: string): boolean => {
-    return location.pathname === itemRoute;
+  const isActive = (item: NavItem): boolean => {
+    if (location.pathname === item.route) {
+      return true;
+    }
+
+    if (item.activePatterns) {
+      return item.activePatterns.some((pattern) => {
+        return location.pathname.startsWith(pattern);
+      });
+    }
+
+    return false;
   };
 
-  const handleItemClick = (route: string): void => {
-    navigate(route);
+  const handleItemClick = (item: NavItem): void => {
+    if (item.externalLink) {
+      window.open(item.externalLink, '_blank');
+    } else {
+      navigate(item.route);
+    }
   };
 
   const renderNavItem = (item: NavItem) => {
-    const active = isActive(item.route);
+    const active = isActive(item);
     const isIconComponent = typeof item.activeIcon !== 'string';
 
     return (
       <button
         key={item.id}
-        onClick={() => handleItemClick(item.route)}
+        onClick={() => handleItemClick(item)}
         className={cn(
           'flex flex-col items-center justify-center flex-1 py-2 px-1 cursor-pointer',
           active ? 'text-blue-500' : 'text-gray-400',
