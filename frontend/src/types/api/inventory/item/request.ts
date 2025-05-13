@@ -6,3 +6,9 @@ export type UpdateInventoryItemReq = {
 export type MoveInventoryItemReq = {
   folderId: number;
 };
+
+export type CreateInventoryItemReq = {
+  folderId: number;
+  title: string;
+  memo: string;
+};

@@ -35,4 +35,12 @@ export const inventoryFolderService = {
     );
     return response.data;
   },
+
+  updateName: async (id: number, data: { name: string }) => {
+    const res = await apiClient.patch(
+      ENDPOINTS.INVENTORY.FOLDER.UPDATE_NAME(id),
+      data,
+    );
+    return res.data;
+  },
 };

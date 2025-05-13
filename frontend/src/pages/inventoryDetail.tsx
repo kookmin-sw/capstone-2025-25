@@ -1,16 +1,45 @@
+import { useEffect, useRef } from 'react';
 import FolderIcon from '@/assets/folder.png';
 import useGetInventoryItemList from '@/hooks/queries/inventory/item/useGetInventoryItemList';
-import { useParams } from 'react-router';
+import { useParams, useSearchParams } from 'react-router';
 import { parseIdParam } from '@/lib/parseIdParam';
 import InventoryItemCard from '@/components/inventory/InventoryItemCard';
 import useGetInventoryFolderDetail from '@/hooks/queries/inventory/folder/useGetInventoryFolderDetail';
 
+type ItemRefs = {
+  [key: number]: HTMLDivElement | null;
+};
+
 export default function StoreDetail() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const itemIdParam = searchParams.get('itemId');
+  const highlightedItemId = itemIdParam ? parseInt(itemIdParam) : null;
+
   const numericId = parseIdParam(id);
+
+  const itemRefs = useRef<ItemRefs>({});
 
   const { inventoryFolderDetail } = useGetInventoryFolderDetail(numericId);
   const { inventoryItemList } = useGetInventoryItemList(numericId);
+
+  useEffect(() => {
+    if (highlightedItemId !== null && itemRefs.current[highlightedItemId]) {
+      setTimeout(() => {
+        const element = itemRefs.current[highlightedItemId];
+        if (element) {
+          element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+        }
+      }, 100);
+    }
+  }, [inventoryItemList, highlightedItemId]);
+
+  const setItemRef = (id: number) => (el: HTMLDivElement | null) => {
+    itemRefs.current[id] = el;
+  };
 
   return (
     <div className="p-10">
@@ -26,7 +55,14 @@ export default function StoreDetail() {
       <ul className="flex flex-col gap-4">
         {inventoryItemList && inventoryItemList.length > 0 ? (
           inventoryItemList.map((item) => (
-            <InventoryItemCard key={item.id} item={item} />
+            <div key={item.id} ref={setItemRef(item.id)}>
+              <InventoryItemCard
+                item={item}
+                initiallyOpen={
+                  highlightedItemId !== null && item.id === highlightedItemId
+                }
+              />
+            </div>
           ))
         ) : (
           <div className="text-center p-6 bg-white rounded-xl text-gray-500">

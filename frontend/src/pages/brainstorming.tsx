@@ -15,6 +15,7 @@ import useDeleteBubble from '@/hooks/queries/brainstorming/useDeleteBubble.ts';
 import useCreateBubble from '@/hooks/queries/brainstorming/useCreateBubble.ts';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import MoveToInventoryModal from '@/components/ui/brainstorming/MoveToInventoryModal';
 
 export default function Brainstorming() {
   const isMobile = useResponsive();
@@ -29,6 +30,16 @@ export default function Brainstorming() {
   const bubblesRef = useRef<BubbleNodeType[]>([]);
   const textareaRef = useRef(null);
   const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
+  const [selectedBubble, setSelectedBubble] = useState({
+    bubbleId: null,
+    title: '',
+  });
+  const [toBeSavedBubbleId, setToBeSavedBubbleId] = useState<number | null>(
+    null,
+  );
+
+  const [isMoveToInventoryDialogOpen, setIsMoveToInventoryDialogOpen] =
+    useState(false);
 
   const navigate = useNavigate();
 
@@ -156,7 +167,7 @@ export default function Brainstorming() {
       return;
     }
     const scroll = scrollRef.current;
-    let scrollWidth = scroll.offsetWidth;
+    const scrollWidth = scroll.offsetWidth;
     let scrollHeight = scroll.offsetHeight;
 
     createBubbleMutation(
@@ -242,7 +253,38 @@ export default function Brainstorming() {
   };
 
   const createMatrix = () => {};
-  const saveBubble = () => {};
+
+  const handleSaveBubble = (bubble) => {
+    setSelectedBubble({
+      bubbleId: bubble.bubbleId,
+      title: bubble.title,
+    });
+    setOpenPopoverId(null);
+    setToBeSavedBubbleId(bubble.bubbleId); // 보관할 버블 ID 저장
+    setIsMoveToInventoryDialogOpen(true);
+  };
+
+  // 보관 성공 시 실행할 함수
+  const handleSaveSuccess = () => {
+    if (toBeSavedBubbleId) {
+      // 애니메이션을 위해 isDeleting 상태 설정
+      setBubbles((prev) =>
+        prev.map((bubble) =>
+          bubble.bubbleId === toBeSavedBubbleId
+            ? { ...bubble, isDeleting: true }
+            : bubble,
+        ),
+      );
+
+      // 애니메이션이 끝난 후 버블 제거
+      setTimeout(() => {
+        setBubbles((prev) =>
+          prev.filter((bubble) => bubble.bubbleId !== toBeSavedBubbleId),
+        );
+        setToBeSavedBubbleId(null); // 상태 초기화
+      }, 250);
+    }
+  };
 
   return (
     <div
@@ -255,7 +297,7 @@ export default function Brainstorming() {
       ></div>
       <div className="relative w-full h-full ">
         <div ref={scrollRef} className="relative w-full h-full overflow-auto ">
-          {bubbles.map((bubble, index) => (
+          {bubbles.map((bubble) => (
             <Popover
               key={bubble.bubbleId}
               open={openPopoverId === bubble.bubbleId}
@@ -331,8 +373,7 @@ export default function Brainstorming() {
                       isMobile ? 'text-[14px]' : 'text-[16px]',
                     )}
                     onClick={() => {
-                      saveBubble();
-                      setOpenPopoverId(null);
+                      handleSaveBubble(bubble);
                     }}
                   >
                     보관
@@ -387,6 +428,26 @@ export default function Brainstorming() {
           )}
         </div>
       </div>
+
+      {selectedBubble.bubbleId && (
+        <MoveToInventoryModal
+          isOpen={isMoveToInventoryDialogOpen}
+          onOpenChange={(open) => {
+            setIsMoveToInventoryDialogOpen(open);
+            if (!open) {
+              if (!toBeSavedBubbleId) {
+                setSelectedBubble({ bubbleId: null, title: '' });
+                setToBeSavedBubbleId(null);
+              }
+            }
+          }}
+          item={{
+            id: selectedBubble.bubbleId,
+            title: selectedBubble.title,
+          }}
+          onSuccess={handleSaveSuccess}
+        />
+      )}
     </div>
   );
 }

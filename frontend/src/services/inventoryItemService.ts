@@ -1,7 +1,9 @@
 import { apiClient } from '@/api/client';
 import { ENDPOINTS } from '@/api/endpoints';
 import {
+  CreateInventoryItemReq,
   InventoryItemListRes,
+  InventoryRecentListRes,
   MoveInventoryItemReq,
   UpdateInventoryItemReq,
 } from '@/types/api/inventory/item';
@@ -31,9 +33,27 @@ export const inventoryItemService = {
     );
     return response.data;
   },
+
   moveFolder: async (id: number, data: MoveInventoryItemReq): Promise<void> => {
     const response = await apiClient.patch(
       ENDPOINTS.INVENTORY.ITEM.MOVE_FOLDER(id),
+      data,
+    );
+    return response.data;
+  },
+
+  getRecentList: async (): Promise<InventoryRecentListRes> => {
+    const response = await apiClient.get<InventoryRecentListRes>(
+      ENDPOINTS.INVENTORY.ITEM.RECENT,
+    );
+    return response.data;
+  },
+
+  createItem: async (
+    data: CreateInventoryItemReq,
+  ): Promise<MoveInventoryItemReq> => {
+    const response = await apiClient.post(
+      ENDPOINTS.INVENTORY.ITEM.CREATE_ITEM,
       data,
     );
     return response.data;

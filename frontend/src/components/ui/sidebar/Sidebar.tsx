@@ -18,6 +18,7 @@ type NavItem = {
   defaultIcon: string | React.ReactNode;
   label: string;
   route: string;
+  activePatterns?: string[];
 };
 
 const navItems: NavItem[] = [
@@ -34,6 +35,7 @@ const navItems: NavItem[] = [
     defaultIcon: BrainStormingHWIcon,
     label: '브레인스토밍',
     route: '/brainstorming',
+    activePatterns: ['/mindmap'],
   },
   {
     id: 'matrix',
@@ -43,11 +45,12 @@ const navItems: NavItem[] = [
     route: '/matrix',
   },
   {
-    id: 'store',
+    id: 'inventory',
     activeIcon: StoreIcon,
     defaultIcon: StoreHWIcon,
     label: '보관함',
     route: '/inventory',
+    activePatterns: ['/inventory/'],
   },
 ];
 
@@ -74,17 +77,30 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
-  const isActive = (itemRoute: string): boolean => {
-    return location.pathname === itemRoute;
+  const isActive = (item: NavItem): boolean => {
+    if (location.pathname === item.route) {
+      return true;
+    }
+
+    if (item.activePatterns) {
+      return item.activePatterns.some((pattern) => {
+        return location.pathname.startsWith(pattern);
+      });
+    }
+
+    return false;
   };
 
   const handleItemClick = (route: string): void => {
     navigate(route);
   };
 
-  const activeItem: NavItem =
-    [...navItems, ...bottomNavItems].find((item) => isActive(item.route)) ||
-    navItems[0];
+  const findActiveItem = (): NavItem => {
+    const allItems = [...navItems, ...bottomNavItems];
+    return allItems.find((item) => isActive(item)) || navItems[0];
+  };
+
+  const activeItem: NavItem = findActiveItem();
 
   const toggleSidebar = (open: boolean): void => {
     setIsTransitioning(true);
@@ -94,7 +110,8 @@ export default function Sidebar() {
     }, 300);
   };
 
-  const renderNavItem = (item: NavItem, active: boolean) => {
+  const renderNavItem = (item: NavItem) => {
+    const active = isActive(item);
     const isIconComponent = typeof item.activeIcon !== 'string';
 
     return (
@@ -220,19 +237,13 @@ export default function Sidebar() {
 
         <div className="py-[10px] flex-1 ">
           <div className="flex flex-col gap-[18px] px-4">
-            {navItems.map((item) => {
-              const active = isActive(item.route);
-              return renderNavItem(item, active);
-            })}
+            {navItems.map((item) => renderNavItem(item))}
           </div>
         </div>
 
         <div className="py-[10px] mt-auto flex-shrink-0">
           <div className="flex flex-col gap-[18px] px-4 mb-4">
-            {bottomNavItems.map((item) => {
-              const active = isActive(item.route);
-              return renderNavItem(item, active);
-            })}
+            {bottomNavItems.map((item) => renderNavItem(item))}
           </div>
         </div>
       </div>

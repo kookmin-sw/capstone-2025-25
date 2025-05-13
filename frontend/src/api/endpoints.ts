@@ -50,6 +50,8 @@ export const ENDPOINTS = {
     GET_COUNT: '/api/v2/today-task/count',
     COMPLETE_COUNT: '/api/v2/today-task/completed',
     MOVE_TODAY: (id: number) => `/api/v2/today-task/move-today/${id}`,
+    UPDATE_STATUS: (id: number) => `/api/v2/today-task/status/${id}`,
+    DELETE: (id: number) => `/api/v2/today-task/${id}`,
   },
 
   POMODORO: {
@@ -79,12 +81,20 @@ export const ENDPOINTS = {
       CREATE: '/api/v2/inventory/folder',
       DELETE: (id: number) => `/api/v2/inventory/folder/${id}`,
       DETAIL: (id: number) => `/api/v2/inventory/folder/${id}`,
+      UPDATE_NAME: (id: number) => `/api/v2/inventory/folder/${id}`,
     },
     ITEM: {
       LIST: (id: number) => `/api/v2/inventory/${id}`,
       UPDATE_ITEM: (id: number) => `/api/v2/inventory/item/${id}`,
       MOVE_FOLDER: (id: number) => `/api/v2/inventory/move/${id}`,
       DELETE: (id: number) => `/api/v2/inventory/item/${id}`,
+      RECENT: '/api/v2/inventory/recent',
+      CREATE_ITEM: '/api/v2/inventory',
     },
+  },
+
+  /* 분석 관련 API */
+  ANALYSIS: {
+    TODAY_TASK: '/api/v2/today-task/analysis',
   },
 };

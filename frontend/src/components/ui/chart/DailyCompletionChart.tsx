@@ -12,29 +12,57 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-
-const todoChartData = [
-  { day: 'SUN', completed: 5 },
-  { day: 'MON', completed: 1 },
-  { day: 'TUE', completed: 2 },
-  { day: 'WED', completed: 3 },
-  { day: 'THU', completed: 4 },
-  { day: 'FRI', completed: 5 },
-  { day: 'SAT', completed: 6 },
-];
+import useGetTodayTaskAnalysis from '@/hooks/queries/analysis/useGetTodayTaskAnalysis';
 
 const todoChartConfig = {
-  completed: {
+  completedNum: {
     label: '완료한 일',
     color: '#7098ff',
   },
 } satisfies ChartConfig;
+
+type DayOfWeekMap = {
+  [key in 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN']: string;
+};
+
+const dayOfWeekMapping: DayOfWeekMap = {
+  MON: '월',
+  TUE: '화',
+  WED: '수',
+  THU: '목',
+  FRI: '금',
+  SAT: '토',
+  SUN: '일',
+};
 
 type DailyCompletionChartProps = {
   title: string;
 };
 
 export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
+  const { todayTaskAnalysisList } = useGetTodayTaskAnalysis();
+
+  const defaultChartData = [
+    { day: '일', dayOfWeek: 'SUN', completedNum: 0 },
+    { day: '월', dayOfWeek: 'MON', completedNum: 0 },
+    { day: '화', dayOfWeek: 'TUE', completedNum: 0 },
+    { day: '수', dayOfWeek: 'WED', completedNum: 0 },
+    { day: '목', dayOfWeek: 'THU', completedNum: 0 },
+    { day: '금', dayOfWeek: 'FRI', completedNum: 0 },
+    { day: '토', dayOfWeek: 'SAT', completedNum: 0 },
+  ];
+
+  const chartData = todayTaskAnalysisList?.length
+    ? todayTaskAnalysisList.map((item) => ({
+        day:
+          dayOfWeekMapping[item.dayOfWeek as keyof DayOfWeekMap] ||
+          item.dayOfWeek,
+        dayOfWeek: item.dayOfWeek,
+        completedNum: item.completedNum,
+        taskDate: item.taskDate,
+      }))
+    : defaultChartData;
+
   return (
     <Card className="h-full w-full border-none shadow-none">
       <CardHeader className="pb-2">
@@ -47,7 +75,7 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
           <ChartContainer config={todoChartConfig} className="h-full w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={todoChartData}
+                data={chartData}
                 margin={{
                   top: 10,
                   right: 30,
@@ -68,17 +96,10 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
                   content={<ChartTooltipContent hideLabel />}
                 />
                 <Bar
-                  dataKey="completed"
+                  dataKey="completedNum"
                   fill="var(--color-completed)"
                   radius={8}
-                >
-                  {/* <LabelList
-                    position="top"
-                    offset={12}
-                    className="fill-foreground"
-                    fontSize={12}
-                  /> */}
-                </Bar>
+                ></Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>

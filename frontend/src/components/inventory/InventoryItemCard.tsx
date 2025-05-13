@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Trash2, Loader2, FolderInput } from 'lucide-react';
 import {
   Collapsible,
@@ -28,6 +28,7 @@ type InventoryItemCardProps = {
     createdAt: string;
     folderId: number;
   };
+  initiallyOpen?: boolean;
 };
 
 const formatDate = (dateString: string) => {
@@ -47,8 +48,11 @@ const formatDate = (dateString: string) => {
   return `${year}.${month}.${day} (${weekDay})`;
 };
 
-export default function InventoryItemCard({ item }: InventoryItemCardProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function InventoryItemCard({
+  item,
+  initiallyOpen = false,
+}: InventoryItemCardProps) {
+  const [isOpen, setIsOpen] = useState(initiallyOpen);
   const [title, setTitle] = useState(item.title);
   const [memo, setMemo] = useState(item.memo || '');
 
@@ -60,6 +64,10 @@ export default function InventoryItemCard({ item }: InventoryItemCardProps) {
 
   const { deleteInventoryItemMutation, isPending: isDeleting } =
     useDeleteInventoryItem(item.folderId);
+
+  useEffect(() => {
+    setIsOpen(initiallyOpen);
+  }, [initiallyOpen]);
 
   const handleSave = () => {
     const updateData: UpdateInventoryItemReq = {

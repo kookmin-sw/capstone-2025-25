@@ -48,4 +48,20 @@ export const todayService = {
     );
     return response.data;
   },
+
+  updateStatus: async (
+    id: number,
+    data: { isCompleted: boolean },
+  ): Promise<void> => {
+    const response = await apiClient.patch(
+      ENDPOINTS.TODAY.UPDATE_STATUS(id),
+      data,
+    );
+    return response.data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    const response = await apiClient.delete(ENDPOINTS.TODAY.DELETE(id));
+    return response.data;
+  },
 };

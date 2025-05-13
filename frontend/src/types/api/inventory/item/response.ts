@@ -7,3 +7,9 @@ export type InventoryItemListRes = {
     content: InventoryItem[];
   };
 };
+
+export type InventoryRecentListRes = {
+  statusCode: number;
+  error: string | null;
+  content: InventoryItem[];
+};
