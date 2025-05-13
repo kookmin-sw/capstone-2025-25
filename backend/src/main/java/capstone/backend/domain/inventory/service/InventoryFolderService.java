@@ -28,7 +28,7 @@ public class InventoryFolderService {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        InventoryFolder inventoryFolder = InventoryFolder.from(member, inventoryFolderRequest);
+        InventoryFolder inventoryFolder = InventoryFolder.from(member, inventoryFolderRequest, false);
         return InventoryFolderResponse.from(inventoryFolderRepository.save(inventoryFolder));
     }
 
@@ -80,6 +80,7 @@ public class InventoryFolderService {
         InventoryFolder defaultFolder = InventoryFolder.builder()
             .name("기본 폴더")
             .member(member)
+            .isDefault(true)
             .build();
         inventoryFolderRepository.save(defaultFolder);
     }
