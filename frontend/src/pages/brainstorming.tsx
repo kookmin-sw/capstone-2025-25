@@ -97,10 +97,13 @@ export default function Brainstorming() {
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [inputText, isMobile]);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      addBubble();
+      if (!isPending) {
+        addBubble();
+      }
     }
   };
 
@@ -310,10 +313,7 @@ export default function Brainstorming() {
   };
 
   return (
-    <div
-      ref={containerRef}
-      className={clsx('w-full h-full ')}
-    >
+    <div ref={containerRef} className={clsx('w-full h-full ')}>
       <div
         className="absolute left-0 top-0 w-screen h-screen
     bg-blue-2"
