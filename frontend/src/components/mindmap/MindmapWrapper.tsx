@@ -113,6 +113,7 @@ function FlowContent() {
                 <Button
                   className="w-[139px] h-[48px] text-center rounded-4xl bg-blue-2 text-blue font-semibold"
                   disabled={isPending}
+                  onClick={() => navigate('/brainstorming')}
                 >
                   취소
                 </Button>
