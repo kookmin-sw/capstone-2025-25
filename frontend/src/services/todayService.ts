@@ -41,4 +41,11 @@ export const todayService = {
     );
     return response.data;
   },
+
+  createTodayTask: async (eisenhowerId: number): Promise<MoveTodayRes> => {
+    const response = await apiClient.post<MoveTodayRes>(
+      ENDPOINTS.TODAY.CREATE(eisenhowerId),
+    );
+    return response.data;
+  },
 };

@@ -3,13 +3,13 @@ import Sidebar from '@/components/ui/sidebar/Sidebar';
 import Header from '@/components/ui/header/Header';
 import BottomBar from '@/components/ui/sidebar/BottomBar';
 import clsx from 'clsx';
-import { useIsMobile } from '@/hooks/use-mobile.ts';
+import { useResponsive } from '@/hooks/use-mobile.ts';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect.ts';
 import { Toaster } from '@/components/ui/sonner';
 
 export default function DefaultLayout() {
   useAuthRedirect();
-  const isMobile = useIsMobile();
+  const isMobile = useResponsive();
   return (
     <div className="min-h-screen bg-[#F0F0F5] flex flex-col">
       <Header />

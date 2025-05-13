@@ -6,10 +6,10 @@ import useGetTodayTodoCompletedCount from '@/hooks/queries/today/useGetTodayTodo
 import useGetTodayTodoCount from '@/hooks/queries/today/useGetTodayTodoCount';
 import { Plus } from 'lucide-react';
 import { usePomodoroStore } from '@/store/pomodoro.ts';
-import { useIsMobile } from '@/hooks/use-mobile.ts';
+import { useResponsive } from '@/hooks/use-mobile.ts';
 
 export default function TodayMainDashborad() {
-  const isMobile = useIsMobile();
+  const isMobile = useResponsive();
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
@@ -22,9 +22,9 @@ export default function TodayMainDashborad() {
   return (
     <div className="flex flex-col lg:flex-row w-full gap-4">
       {isMobile && currentId && (
-          <div className=" w-full">
-            <PomodoroCard />
-          </div>
+        <div className=" w-full">
+          <PomodoroCard />
+        </div>
       )}
       <div className="w-full lg:w-1/2 bg-white rounded-lg p-4 lg:mr-4 h-auto lg:min-h-[616px] overflow-auto">
         <div className="flex justify-between items-center mb-4">

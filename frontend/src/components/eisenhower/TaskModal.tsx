@@ -172,24 +172,33 @@ export function TaskModal({
 
   const finalTrigger = trigger ?? defaultTrigger;
 
-  useEffect(() => {
-    const fetchTaskDetail = async () => {
-      if (mode === 'edit' && task?.id) {
-        try {
-          const result = await eisenhowerService.getDetail(task.id);
-          const detail = result.content;
-          setTitle(detail.title);
-          setMemo(detail.memo);
-          setDueDate(detail.dueDate ?? '');
-          setCategoryId(detail.categoryId ?? null);
-        } catch (err) {
-          console.error('단일 작업 조회 실패:', err);
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const fetchTaskDetail = async () => {
+  //     if (mode === 'edit' && task?.id) {
+  //       try {
+  //         const result = await eisenhowerService.getDetail(task.id);
+  //         const detail = result.content;
+  //         setTitle(detail.title);
+  //         setMemo(detail.memo);
+  //         setDueDate(detail.dueDate ?? '');
+  //         setCategoryId(detail.categoryId ?? null);
+  //       } catch (err) {
+  //         console.error('단일 작업 조회 실패:', err);
+  //       }
+  //     }
+  //   };
+  //
+  //   fetchTaskDetail();
+  // }, [mode, task]);
 
-    fetchTaskDetail();
-  }, [mode, task]);
+  useEffect(() => {
+    if (mode === 'edit' && task) {
+      setTitle(task.title);
+      setMemo(task.memo ?? '');
+      setDueDate(task.dueDate ?? '');
+      setCategoryId(task.categoryId ?? null);
+    }
+  }, [task, mode]);
 
   return (
     <Modal

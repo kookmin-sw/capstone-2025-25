@@ -155,12 +155,22 @@ export function PriorityView({
   };
 
   const handleUpdateTask = (updatedTask: Task) => {
-    setTasksByQuadrant((prev) => ({
-      ...prev,
-      [updatedTask.quadrant]: prev[updatedTask.quadrant].map((t) =>
-        t.id === updatedTask.id ? updatedTask : t,
-      ),
-    }));
+    setTasksByQuadrant((prev) => {
+      const newState: Record<Quadrant, Task[]> = {
+        Q1: [],
+        Q2: [],
+        Q3: [],
+        Q4: [],
+      };
+
+      for (const q of Object.keys(prev) as Quadrant[]) {
+        newState[q] = prev[q].filter((t) => t.id !== updatedTask.id);
+      }
+
+      newState[updatedTask.quadrant].push(updatedTask);
+
+      return newState;
+    });
   };
 
   const gridClass =
@@ -242,7 +252,7 @@ export function PriorityView({
               <Droppable key={quadrant} id={quadrant}>
                 <div
                   className={cn(
-                    'px-4 py-5 overflow-y-scroll flex flex-col rounded-[16px]',
+                    'px-4 py-5 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px]',
                     quadrantColors[quadrant],
                     viewMode === 'board'
                       ? 'h-[calc(100vh-160px)]'
