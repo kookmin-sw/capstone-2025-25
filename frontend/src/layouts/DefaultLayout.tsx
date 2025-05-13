@@ -13,7 +13,7 @@ export default function DefaultLayout() {
       <Header />
 
       <div className="flex flex-1 p-4 overflow-visible">
-        <div className="hidden lg:block sticky top-[66px] self-start h-[calc(100vh-88px)] mr-4 flex-shrink-0 z-50">
+        <div className="hidden md:block sticky top-[66px] self-start h-[calc(100vh-88px)] mr-4 flex-shrink-0 z-50">
           <div className="h-full rounded-lg shadow-md overflow-hidden">
             <Sidebar />
           </div>
@@ -27,7 +27,7 @@ export default function DefaultLayout() {
         </div>
       </div>
 
-      <div className="block lg:hidden">
+      <div className="block md:hidden">
         <BottomBar />
       </div>
     </div>
