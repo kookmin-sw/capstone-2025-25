@@ -1,7 +1,7 @@
 package capstone.backend.domain.inventory.repository;
 
 import capstone.backend.domain.inventory.entity.InventoryItem;
-import capstone.backend.domain.inventory.response.InventoryItemResponse;
+import capstone.backend.domain.inventory.dto.response.InventoryItemResponse;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;

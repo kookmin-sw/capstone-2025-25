@@ -1,4 +1,4 @@
-package capstone.backend.domain.inventory.request;
+package capstone.backend.domain.inventory.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 

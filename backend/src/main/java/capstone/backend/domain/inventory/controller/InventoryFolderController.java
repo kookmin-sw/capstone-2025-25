@@ -1,7 +1,7 @@
 package capstone.backend.domain.inventory.controller;
 
-import capstone.backend.domain.inventory.request.InventoryFolderRequest;
-import capstone.backend.domain.inventory.response.InventoryFolderResponse;
+import capstone.backend.domain.inventory.dto.request.InventoryFolderRequest;
+import capstone.backend.domain.inventory.dto.response.InventoryFolderResponse;
 import capstone.backend.domain.inventory.service.InventoryFolderService;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;

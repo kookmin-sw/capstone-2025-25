@@ -3,7 +3,7 @@ package capstone.backend.domain.inventory.entity;
 
 import static lombok.AccessLevel.*;
 
-import capstone.backend.domain.inventory.request.InventoryFolderRequest;
+import capstone.backend.domain.inventory.dto.request.InventoryFolderRequest;
 import capstone.backend.domain.member.scheme.Member;
 import jakarta.persistence.*;
 import java.util.ArrayList;
