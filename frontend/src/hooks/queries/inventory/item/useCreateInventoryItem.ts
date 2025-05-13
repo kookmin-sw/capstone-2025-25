@@ -6,8 +6,8 @@ const useCreateInventoryItem = () => {
   const queryClient = useQueryClient();
 
   const { mutate, isPending, isError, error, data, reset } = useMutation({
-    mutationFn: (data: CreateInventoryItemReq) =>
-      inventoryItemService.createItem(data),
+    mutationFn: ({ id, data }: { id: number; data: CreateInventoryItemReq }) =>
+      inventoryItemService.createItem(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bubbleList'] });
     },

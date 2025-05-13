@@ -89,12 +89,13 @@ export const ENDPOINTS = {
       MOVE_FOLDER: (id: number) => `/api/v2/inventory/move/${id}`,
       DELETE: (id: number) => `/api/v2/inventory/item/${id}`,
       RECENT: '/api/v2/inventory/recent',
-      CREATE_ITEM: '/api/v2/inventory',
+      CREATE_ITEM: (id: number) => `/api/v2/bubble/confirm-inventory/${id}`,
     },
   },
 
   /* 분석 관련 API */
   ANALYSIS: {
     TODAY_TASK: '/api/v2/today-task/analysis',
+    POMODORO: '/api/v2/data/pomodoro/week',
   },
 };
