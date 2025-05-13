@@ -1,8 +1,10 @@
 package capstone.backend.domain.inventory.controller;
 
-import capstone.backend.domain.inventory.request.InventoryItemUpdateRequest;
-import capstone.backend.domain.inventory.request.InventoryItemMoveRequest;
-import capstone.backend.domain.inventory.response.InventoryItemResponse;
+
+import capstone.backend.domain.inventory.dto.request.InventoryItemCreateRequest;
+import capstone.backend.domain.inventory.dto.request.InventoryItemUpdateRequest;
+import capstone.backend.domain.inventory.dto.request.InventoryItemMoveRequest;
+import capstone.backend.domain.inventory.dto.response.InventoryItemResponse;
 import capstone.backend.domain.inventory.service.InventoryItemService;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;

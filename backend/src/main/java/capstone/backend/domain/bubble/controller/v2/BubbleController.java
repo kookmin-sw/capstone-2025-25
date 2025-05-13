@@ -2,13 +2,12 @@ package capstone.backend.domain.bubble.controller.v2;
 
 
 import capstone.backend.domain.bubble.dto.request.BubbleUpdateRequest;
-import capstone.backend.domain.bubble.dto.request.ConfirmBubbleRequest;
 import capstone.backend.domain.bubble.dto.request.PromptRequest;
 import capstone.backend.domain.bubble.dto.response.BubbleDTO;
 import capstone.backend.domain.bubble.service.BubbleService;
 import capstone.backend.domain.bubble.service.WebFluxService;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
-import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
+import capstone.backend.domain.inventory.dto.request.InventoryItemCreateRequest;
 import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.member.service.MemberService;
 import capstone.backend.global.api.dto.ApiResponse;

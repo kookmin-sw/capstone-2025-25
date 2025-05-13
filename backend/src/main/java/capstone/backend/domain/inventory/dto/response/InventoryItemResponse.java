@@ -1,4 +1,4 @@
-package capstone.backend.domain.inventory.response;
+package capstone.backend.domain.inventory.dto.response;
 
 import capstone.backend.domain.inventory.entity.InventoryItem;
 import java.time.LocalDateTime;

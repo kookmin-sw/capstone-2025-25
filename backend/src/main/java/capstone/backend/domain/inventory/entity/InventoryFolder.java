@@ -3,7 +3,7 @@ package capstone.backend.domain.inventory.entity;
 
 import static lombok.AccessLevel.*;
 
-import capstone.backend.domain.inventory.request.InventoryFolderRequest;
+import capstone.backend.domain.inventory.dto.request.InventoryFolderRequest;
 import capstone.backend.domain.member.scheme.Member;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -31,13 +31,17 @@ public class InventoryFolder {
     @Column(nullable = false, length = 10)
     private String name;
 
+    @Column(nullable = false)
+    private boolean isDefault;
+
     @OneToMany(mappedBy = "folder", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<InventoryItem> items = new ArrayList<>();
 
-    public static InventoryFolder from(Member member, InventoryFolderRequest inventoryFolderRequest) {
+    public static InventoryFolder from(Member member, InventoryFolderRequest inventoryFolderRequest, boolean isDefault) {
         return InventoryFolder.builder()
             .member(member)
             .name(inventoryFolderRequest.name())
+            .isDefault(isDefault)
             .build();
     }
 

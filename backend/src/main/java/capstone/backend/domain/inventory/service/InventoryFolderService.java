@@ -4,8 +4,8 @@ import capstone.backend.domain.inventory.entity.InventoryFolder;
 import capstone.backend.domain.inventory.exception.FolderDeletionNotAllowedException;
 import capstone.backend.domain.inventory.exception.FolderNotFoundException;
 import capstone.backend.domain.inventory.repository.InventoryFolderRepository;
-import capstone.backend.domain.inventory.request.InventoryFolderRequest;
-import capstone.backend.domain.inventory.response.InventoryFolderResponse;
+import capstone.backend.domain.inventory.dto.request.InventoryFolderRequest;
+import capstone.backend.domain.inventory.dto.response.InventoryFolderResponse;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
@@ -28,7 +28,7 @@ public class InventoryFolderService {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
-        InventoryFolder inventoryFolder = InventoryFolder.from(member, inventoryFolderRequest);
+        InventoryFolder inventoryFolder = InventoryFolder.from(member, inventoryFolderRequest, false);
         return InventoryFolderResponse.from(inventoryFolderRepository.save(inventoryFolder));
     }
 
@@ -80,6 +80,7 @@ public class InventoryFolderService {
         InventoryFolder defaultFolder = InventoryFolder.builder()
             .name("기본 폴더")
             .member(member)
+            .isDefault(true)
             .build();
         inventoryFolderRepository.save(defaultFolder);
     }

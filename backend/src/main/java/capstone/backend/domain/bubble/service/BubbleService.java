@@ -8,7 +8,7 @@ import capstone.backend.domain.bubble.exception.BubbleNotFoundException;
 import capstone.backend.domain.bubble.repository.BubbleRepository;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerItemCreateRequest;
 import capstone.backend.domain.eisenhower.service.EisenhowerItemService;
-import capstone.backend.domain.inventory.request.InventoryItemCreateRequest;
+import capstone.backend.domain.inventory.dto.request.InventoryItemCreateRequest;
 import capstone.backend.domain.inventory.service.InventoryItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
