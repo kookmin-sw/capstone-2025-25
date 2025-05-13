@@ -3,8 +3,10 @@ import Sidebar from '@/components/ui/sidebar/Sidebar';
 import Header from '@/components/ui/header/Header';
 import BottomBar from '@/components/ui/sidebar/BottomBar';
 import { Toaster } from '@/components/ui/sonner';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect.ts';
 
 export default function DefaultLayout() {
+  useAuthRedirect();
   return (
     <div className="min-h-screen bg-[#F0F0F5] flex flex-col">
       <Header />
