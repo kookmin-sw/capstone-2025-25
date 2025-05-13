@@ -3,7 +3,7 @@ import TodayMainDashborad from '@/components/today/TodayMainDashborad';
 
 export default function TodayListPage() {
   return (
-    <div className="w-full px-6">
+    <div className="w-full">
       <h1 className="block lg:hidden text-[28px] text-[#525463] font-semibold mb-6">
         오늘의 할 일
       </h1>

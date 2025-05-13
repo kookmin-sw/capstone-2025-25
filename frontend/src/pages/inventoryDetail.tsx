@@ -42,7 +42,7 @@ export default function StoreDetail() {
   };
 
   return (
-    <div className="p-10">
+    <div>
       <div className="flex items-center gap-2 mb-8">
         <img src={FolderIcon} className="w-[37.5px] h-[30px]" alt="폴더" />
         {inventoryFolderDetail && (
