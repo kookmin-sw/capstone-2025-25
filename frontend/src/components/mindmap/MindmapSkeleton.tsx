@@ -2,13 +2,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export function MindmapSkeleton() {
   return (
-    <div className="w-full h-[calc(100vh-88px)]">
+    <div className="w-full h-full">
       <div
         className="absolute left-0 top-0 w-screen h-screen
         bg-blue-2"
       ></div>
 
-      <div className="w-full h-[calc(100vh-88px)] flex flex-col items-center justify-center p-4 relative z-10">
+      <div className="w-full h-full flex flex-col items-center justify-center p-4 relative z-10">
         <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-12 relative overflow-hidden border border-blue-100">
           <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400"></div>
           <div className="absolute -top-20 -left-20 w-40 h-40 rounded-full bg-blue-50 opacity-50"></div>

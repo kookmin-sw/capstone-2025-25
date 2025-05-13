@@ -105,10 +105,10 @@ export default function MindmapPage() {
   }
 
   return (
-    <div className="w-full h-[calc(100vh-88px)]">
+    <div className="w-full h-full">
       <div
         className="absolute left-0 top-0 w-screen h-screen
-        bg-blue-2"
+      bg-blue-2"
       ></div>
 
       <MindmapWrapper />
