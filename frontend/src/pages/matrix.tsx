@@ -128,14 +128,20 @@ export default function MatrixPage() {
                   onValueChange={(val) => setView(val as 'matrix' | 'board')}
                   className="cursor-pointer"
                 >
-                  <TabsList>
-                    <TabsTrigger value="matrix">
+                  <TabsList className="px-2 bg-white rounded-[8px]">
+                    <TabsTrigger
+                      value="matrix"
+                      className="data-[state=active]:bg-blue data-[state=active]:text-white bg-white text-blue rounded-md px-2 py-2 transition"
+                    >
                       <div className="flex items-center gap-2">
                         <Grid2X2 />
                         <p>매트릭스</p>
                       </div>
                     </TabsTrigger>
-                    <TabsTrigger value="board">
+                    <TabsTrigger
+                      value="board"
+                      className="data-[state=active]:bg-blue data-[state=active]:text-white bg-white text-blue rounded-md px-2 py-2 transition"
+                    >
                       <div className="flex items-center gap-2">
                         <Kanban />
                         보드

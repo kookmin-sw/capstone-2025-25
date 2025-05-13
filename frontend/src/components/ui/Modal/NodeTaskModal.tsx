@@ -204,7 +204,7 @@ export function NodeToTaskModal({
                   className="w-full"
                   onValueChange={(value) => setPriority(value as Quadrant)}
                 >
-                  <TabsList className="grid grid-cols-4 w-full h-12">
+                  <TabsList className="grid grid-cols-4 w-full h-12 px-[30px]">
                     <TabsTrigger value="Q1">
                       <img src={q1Image} alt="q1" className="w-6 h-6" />
                     </TabsTrigger>
