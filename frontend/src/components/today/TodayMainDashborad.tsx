@@ -4,13 +4,13 @@ import { TodayCompleteChart } from '@/components/ui/chart/TodayCompleteChart';
 import { PomodoroCard } from '@/components/today/PomodoroCard';
 import useGetTodayTodoCompletedCount from '@/hooks/queries/today/useGetTodayTodoCompletedCount';
 import useGetTodayTodoCount from '@/hooks/queries/today/useGetTodayTodoCount';
-import { Plus } from 'lucide-react';
 import { usePomodoroStore } from '@/store/pomodoro.ts';
 import { useResponsive } from '@/hooks/use-mobile.ts';
 import { useState } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { useNavigate } from 'react-router';
 import { PomodoroCompletionChart } from '@/components/ui/chart/PomodoroCompletionChar';
+import PlusIcon from '@/assets/plus.svg';
 
 export default function TodayMainDashborad() {
   const isMobile = useResponsive();
@@ -49,11 +49,7 @@ export default function TodayMainDashborad() {
           </div>
           <div className="flex items-center gap-2">
             <button className="p-2 bg-gray-scale-200 rounded-full cursor-pointer">
-              <Plus
-                size={18}
-                className="text-blue"
-                onClick={handleRouteToEisenhower}
-              />
+              <img src={PlusIcon} onClick={handleRouteToEisenhower} />
             </button>
           </div>
         </div>
