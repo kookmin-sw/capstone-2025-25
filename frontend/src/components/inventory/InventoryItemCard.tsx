@@ -107,9 +107,9 @@ export default function InventoryItemCard({
       <li className="px-6 py-4  bg-white rounded-xl">
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <div className="flex items-center justify-between gap-6">
-            <div className="w-1/2 overflow-hidden">
+            <div className="w-1/2 overflow-hidden flex flex-col gap-2">
               {isOpen ? (
-                <div className="pb-2">
+                <div>
                   {isEditable ? (
                     <Input
                       autoFocus
@@ -119,13 +119,13 @@ export default function InventoryItemCard({
                       className="!text-[16px] sm:text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
                     />
                   ) : (
-                    <h3 className="text-[16px] sm:text-[20px] text-gray-700 font-semibold pb-2 truncate">
+                    <h3 className="text-[16px] sm:text-[20px] text-gray-700 font-semibold  truncate">
                       {title}
                     </h3>
                   )}
                 </div>
               ) : (
-                <h3 className="text-[16px] sm:text-[20px] text-gray-700 font-semibold pb-2 truncate">
+                <h3 className="text-[16px] sm:text-[20px] text-gray-700 font-semibold  truncate">
                   {title}
                 </h3>
               )}
@@ -135,18 +135,17 @@ export default function InventoryItemCard({
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
+              <CollapsibleTrigger asChild>
+                <button className="px-4 py-2 bg-blue-2 text-blue text-[14px] sm:text-[16px] rounded-full font-semibold flex items-center gap-1 cursor-pointer ">
+                  {buttonText}
+                </button>
+              </CollapsibleTrigger>
               <button
                 onClick={() => setIsMoveDialogOpen(true)}
                 className="px-4 py-[7px] text-blue text-[14px] sm:text-[16px] rounded-full font-semibold flex items-center gap-1 cursor-pointer border-blue border-[1px]"
               >
                 폴더이동
               </button>
-
-              <CollapsibleTrigger asChild>
-                <button className="px-4 py-2 bg-blue-2 text-blue text-[14px] sm:text-[16px] rounded-full font-semibold flex items-center gap-1 cursor-pointer ">
-                  {buttonText}
-                </button>
-              </CollapsibleTrigger>
             </div>
           </div>
 

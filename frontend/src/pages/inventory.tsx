@@ -198,21 +198,32 @@ export default function InventoryPage() {
                   </div>
                 ) : (
                   <div className="flex items-center gap-3 sm:gap-7">
-                    <Pencil
-                      className="text-[#A9ABB8] "
-                      size={18}
-                      onClick={(e) =>
-                        handleEditClick(e, { id: store.id, name: store.name })
-                      }
-                    />
+                    {!store.isDefault && (
+                      <>
+                        <Pencil
+                          className="text-[#A9ABB8]"
+                          size={18}
+                          onClick={(e) =>
+                            handleEditClick(e, {
+                              id: store.id,
+                              name: store.name,
+                            })
+                          }
+                        />
 
-                    <Trash2
-                      className="text-[#A9ABB8] "
-                      size={18}
-                      onClick={(e) =>
-                        handleDeleteClick(e, { id: store.id, name: store.name })
-                      }
-                    />
+                        <Trash2
+                          className="text-[#A9ABB8] "
+                          size={18}
+                          onClick={(e) =>
+                            handleDeleteClick(e, {
+                              id: store.id,
+                              name: store.name,
+                            })
+                          }
+                        />
+                      </>
+                    )}
+
                     <ChevronRight size={18} className="text-[#A9ABB8]" />
                   </div>
                 )}
