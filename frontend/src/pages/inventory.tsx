@@ -8,7 +8,8 @@ import CreateFolderModal from '@/components/inventory/modal/CreateFolderMoal';
 import DeleteFolderModal from '@/components/inventory/modal/DeleteFolderMoal';
 import useUpdateFolderName from '@/hooks/queries/inventory/folder/useUpdateFolderName';
 import Plus from '@/assets/plus.svg';
-import { toast } from 'sonner';
+import ArrowRight from '@/assets/arrow_right.svg'
+import {showToast} from "@/components/common/Toast.tsx";
 
 export default function InventoryPage() {
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ export default function InventoryPage() {
     }
 
     if (trimmedName.length > 10) {
-      toast('폴더 이름은 최대 10글자까지 가능합니다.');
+      showToast('error','폴더 이름은 최대 10글자까지 가능합니다.');
       return;
     }
 
@@ -111,11 +112,11 @@ export default function InventoryPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
-        <div className="flex  gap-4 items-baseline">
-          <h1 className="text-[20px] sm:text-[28px] text-[#525463] font-semibold">
+        <div className="flex flex-col gap-1 md:gap-4 items-baseline md:flex-row ">
+          <h1 className=" text-[28px] text-[#525463] font-semibold">
             나의 보관함
           </h1>
-          <p className="text-[12px] sm:text-[16px] text-[#525463]">
+          <p className=":text-[16px] text-[#525463]">
             나의 생각을 보관해보세요
           </p>
         </div>
@@ -197,7 +198,7 @@ export default function InventoryPage() {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-3 sm:gap-7">
+                  <div className="flex items-center gap-5 sm:gap-7">
                     {!store.isDefault && (
                       <>
                         <Pencil
@@ -224,7 +225,7 @@ export default function InventoryPage() {
                       </>
                     )}
 
-                    <ChevronRight size={18} className="text-[#A9ABB8]" />
+                    <img src={ArrowRight}  className="text-[#A9ABB8]" />
                   </div>
                 )}
               </div>

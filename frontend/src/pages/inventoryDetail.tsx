@@ -50,15 +50,15 @@ export default function StoreDetail() {
 
   return (
     <div>
-      <div className="flex items-center gap-2 sm:gap-4 mb-8">
+      <div className="flex items-center gap-4 mb-8">
         <img
           src={ArrowLeft}
           onClick={moveToInventory}
-          className="cursor-pointer mr-2 sm:mr-0"
+          className="cursor-pointer "
         />
         <img src={FolderIcon} className="w-[37.5px] h-[30px]" alt="폴더" />
         {inventoryFolderDetail && (
-          <h1 className="text-[20px] sm:text-[28px] text-gray-700 font-semibold">
+          <h1 className="text-[28px] text-gray-700 font-semibold">
             {inventoryFolderDetail.name}
           </h1>
         )}

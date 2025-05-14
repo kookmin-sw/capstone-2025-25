@@ -136,16 +136,16 @@ export default function InventoryItemCard({
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="제목을 입력하세요"
-                      className="!text-[16px] sm:text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                      className="!text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
                     />
                   ) : (
-                    <h3 className="text-[16px] sm:text-[20px] text-gray-700 font-semibold truncate">
+                    <h3 className="text-[20px] text-gray-700 font-semibold truncate">
                       {title}
                     </h3>
                   )}
                 </div>
               ) : (
-                <h3 className="text-[16px] sm:text-[20px] text-gray-700 font-semibold truncate">
+                <h3 className="text-[20px] text-gray-700 font-semibold truncate">
                   {title}
                 </h3>
               )}
@@ -224,7 +224,7 @@ export default function InventoryItemCard({
             </DialogDescription>
           </DialogHeader>
           <div className="">
-            <div className="rounded-[7px] px-6 py-[20px] text-[16px] font-medium bg-blue-2">
+            <div className="rounded-[7px] px-6 py-[20px] text-[16px] font-medium bg-blue-2 text-gray-700">
               <p>"{title}" 항목이 영구적으로 삭제됩니다.</p>
               <p className="">이 작업은 되돌릴 수 없습니다.</p>
             </div>
