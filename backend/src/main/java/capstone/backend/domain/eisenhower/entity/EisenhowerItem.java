@@ -108,4 +108,8 @@ public class EisenhowerItem {
     public void setCompletedStatus(boolean isCompleted){
         this.isCompleted = isCompleted;
     }
+
+    public void deleteCategory() {
+        this.category = null;
+    }
 }
