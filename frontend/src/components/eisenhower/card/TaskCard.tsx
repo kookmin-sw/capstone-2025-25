@@ -23,7 +23,8 @@ import { Button } from '@/components/ui/button.tsx';
 import { DialogClose } from '@radix-ui/react-dialog';
 import EisenhowerAi from '@/components/ui/Modal/EisenhowerAi.tsx';
 import { todayService } from '@/services/todayService.ts';
-import {showToast} from "@/components/common/Toast.tsx";
+import { showToast } from '@/components/common/Toast.tsx';
+import useCreateTodayTask from '@/hooks/queries/today/useCreateTodayTask';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -63,6 +64,8 @@ export function TaskCard({
     isDragging,
   } = useSortable({ id, data: { ...task } });
 
+  const { createTodoTaskMutation } = useCreateTodayTask();
+
   const style = { transform: CSS.Transform.toString(transform), transition };
 
   const handleClick = (e: MouseEvent) => {
@@ -90,11 +93,28 @@ export function TaskCard({
         // toast.success(
         //   wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다',
         // );
-        showToast('success',  wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다');
+        showToast(
+          'success',
+          wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다',
+        );
       } catch (err) {
         console.error('완료 상태 업데이트 실패:', err);
       }
     }
+  };
+
+  const handleCreateTodayTask = (id: number) => {
+    createTodoTaskMutation(id, {
+      onSuccess: (data) => {
+        if (data.statusCode === 500) {
+          showToast('error', `${data.error}`);
+
+          return;
+        }
+
+        showToast('success', '오늘의 할 일에 추가했어요!');
+      },
+    });
   };
 
   return (
@@ -146,15 +166,7 @@ export function TaskCard({
                     <DialogClose asChild>
                       <Button
                         variant="blue"
-                        onClick={async () => {
-                          try {
-                            await todayService.createTodayTask(task.id);
-                            toast.success('오늘의 할 일에 추가했어요!');
-                          } catch (err) {
-                            console.error('오늘의 할 일 추가 실패:', err);
-                            toast.error('추가에 실패했습니다');
-                          }
-                        }}
+                        onClick={() => handleCreateTodayTask(task.id)}
                       >
                         추가하기
                       </Button>
