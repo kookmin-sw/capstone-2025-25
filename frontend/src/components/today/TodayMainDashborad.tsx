@@ -8,7 +8,7 @@ import { usePomodoroStore } from '@/store/pomodoro.ts';
 import { useState } from 'react';
 import { Switch } from '@/components/ui/switch';
 import { useNavigate } from 'react-router';
-import { PomodoroCompletionChart } from '@/components/ui/chart/PomodoroCompletionChar';
+import { PomodoroCompletionChart } from '@/components/ui/chart/PomodoroCompletionChart';
 import PlusIcon from '@/assets/plus.svg';
 
 export default function TodayMainDashborad() {

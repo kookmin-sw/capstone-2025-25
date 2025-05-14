@@ -12,12 +12,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import useGetTodayTaskAnalysis from '@/hooks/queries/analysis/useGetTodayTaskAnalysis';
+import useGetPomodoroAnalysis from '@/hooks/queries/analysis/useGetPomodoroAnalysis';
 import { useMemo } from 'react';
 
-const todoChartConfig = {
-  completedNum: {
-    label: '완료한 일',
+const pomodoroChartConfig = {
+  totalTime: {
+    label: '집중한 시간',
     color: '#7098ff',
   },
 } satisfies ChartConfig;
@@ -36,12 +36,14 @@ const dayOfWeekMapping: DayOfWeekMap = {
   SUN: '일',
 };
 
-type DailyCompletionChartProps = {
+type PomodoroCompletionChartProps = {
   title: string;
 };
 
-export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
-  const { todayTaskAnalysisList } = useGetTodayTaskAnalysis();
+export function PomodoroCompletionChart({
+  title,
+}: PomodoroCompletionChartProps) {
+  const { pomodoroAnalysisList } = useGetPomodoroAnalysis();
 
   const chartData = useMemo(() => {
     const result = [];
@@ -55,32 +57,51 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
       const dayOfWeekCodes = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
       const dayOfWeek = dayOfWeekCodes[dayIndex];
 
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+
       result.push({
         day: dayOfWeekMapping[dayOfWeek as keyof DayOfWeekMap],
         dayOfWeek,
-        completedNum: 0,
+        createdAt: formattedDate,
+        totalTime: 0,
       });
     }
 
-    if (!todayTaskAnalysisList?.length) {
+    if (!pomodoroAnalysisList?.length) {
       return result;
     }
 
     const dataMap = new Map();
-    todayTaskAnalysisList.forEach((item) => {
-      dataMap.set(item.dayOfWeek, item.completedNum);
+    pomodoroAnalysisList.forEach((item) => {
+      dataMap.set(item.dayOfWeek, item.totalTime);
     });
 
     return result.map((item) => {
       if (dataMap.has(item.dayOfWeek)) {
         return {
           ...item,
-          completedNum: dataMap.get(item.dayOfWeek),
+          totalTime: dataMap.get(item.dayOfWeek),
         };
       }
       return item;
     });
-  }, [todayTaskAnalysisList]);
+  }, [pomodoroAnalysisList]);
+
+  const formatTimeFromSeconds = (totalSeconds: number): string => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    let formattedTime = '';
+    if (hours > 0) formattedTime += `${hours}h `;
+    if (minutes > 0 || hours > 0) formattedTime += `${minutes}m `;
+    if (seconds > 0) formattedTime += `${seconds}s`;
+
+    return formattedTime.trim() || '0s';
+  };
 
   return (
     <Card className="h-full w-full border-none shadow-none rounded-2xl px-6 py-4">
@@ -91,7 +112,10 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
       </CardHeader>
       <CardContent className="h-[calc(100%-5rem)]">
         <div className="h-full w-full">
-          <ChartContainer config={todoChartConfig} className="h-full w-full">
+          <ChartContainer
+            config={pomodoroChartConfig}
+            className="h-full w-full"
+          >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData}
@@ -113,19 +137,23 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent hideLabel />}
-                  formatter={(value) => {
+                  formatter={(value: number) => {
                     return (
                       <div className="flex items-center gap-2">
                         <div className="w-2.5 h-2.5 bg-blue" />
                         <p>
-                          <span className="mr-2 text-gray-700">완료한 일</span>
-                          <span className="font-semibold">{value}개</span>
+                          <span className="mr-2 text-gray-700">
+                            집중한 시간
+                          </span>
+                          <span className="font-semibold">
+                            {value ? formatTimeFromSeconds(value) : '0s'}
+                          </span>
                         </p>
                       </div>
                     );
                   }}
                 />
-                <Bar dataKey="completedNum" fill="#7098ff" radius={8}></Bar>
+                <Bar dataKey="totalTime" fill="#7098ff" radius={8}></Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>

@@ -13,24 +13,24 @@ const useGetCategoryList = () => {
 
   const getCategoryNameById = (id: number | string) => {
     if (!data?.content || data.content.length === 0) {
-      return '기타';
+      return null;
     }
 
     const category = data.content.find(
       (cat) => cat.id === id || cat.id === Number(id),
     );
-    return category ? category.title : '기타';
+    return category ? category.title : null;
   };
 
   const getCategoryColorById = (id: number | string) => {
     if (!data?.content || data.content.length === 0) {
-      return '#e2e8f0'; // 기본 색상
+      return null;
     }
 
     const category = data.content.find(
       (cat) => cat.id === id || cat.id === Number(id),
     );
-    return category?.color || '#e2e8f0';
+    return category?.color || null;
   };
 
   return {

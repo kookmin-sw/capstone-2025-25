@@ -10,7 +10,6 @@ import '@xyflow/react/dist/style.css';
 import CustomNode from '@/components/mindmap/CustomNode';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
-import { Modal } from '@/components/common/Modal';
 import {
   Dialog,
   DialogContent,
@@ -37,7 +36,11 @@ const flowStyles = {
   background: '#E8EFFF',
 };
 
-function FlowContent() {
+interface FlowContentProps {
+  onCompletedSuccessfully?: () => void;
+}
+
+function FlowContent({ onCompletedSuccessfully }: FlowContentProps) {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const bubbleText = searchParams.get('text') || '';
@@ -62,7 +65,23 @@ function FlowContent() {
       return;
     }
 
-    const mindmapData = nodes.map((node) => ({
+    const defaultQuestionNodeIds = ['node-1', 'node-2', 'node-3', 'node-4'];
+
+    const nodesWithChildren = new Set<string>();
+
+    edges.forEach((edge) => {
+      nodesWithChildren.add(edge.source);
+    });
+
+    const filteredNodes = nodes.filter((node) => {
+      if (defaultQuestionNodeIds.includes(node.id)) {
+        return nodesWithChildren.has(node.id);
+      }
+
+      return true;
+    });
+
+    const mindmapData = filteredNodes.map((node) => ({
       context: String(node.data.label || ''),
     }));
 
@@ -93,7 +112,12 @@ function FlowContent() {
         },
         {
           onSuccess: () => {
-            navigate('/brainstorming');
+            if (onCompletedSuccessfully) {
+              onCompletedSuccessfully();
+            }
+            setTimeout(() => {
+              navigate('/brainstorming');
+            }, 50);
           },
         },
       );
@@ -173,10 +197,14 @@ function FlowContent() {
   );
 }
 
-function MindmapWrapper() {
+interface MindmapWrapperProps {
+  onCompletedSuccessfully?: () => void;
+}
+
+function MindmapWrapper({ onCompletedSuccessfully }: MindmapWrapperProps) {
   return (
     <ReactFlowProvider>
-      <FlowContent />
+      <FlowContent onCompletedSuccessfully={onCompletedSuccessfully} />
     </ReactFlowProvider>
   );
 }

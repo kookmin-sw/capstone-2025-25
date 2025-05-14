@@ -24,6 +24,7 @@ import { DialogClose } from '@radix-ui/react-dialog';
 import EisenhowerAi from '@/components/ui/Modal/EisenhowerAi.tsx';
 import { todayService } from '@/services/todayService.ts';
 import { showToast } from '@/components/common/Toast.tsx';
+import useCreateTodayTask from '@/hooks/queries/today/useCreateTodayTask';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -63,6 +64,8 @@ export function TaskCard({
     isDragging,
   } = useSortable({ id, data: { ...task } });
 
+  const { createTodoTaskMutation } = useCreateTodayTask();
+
   const style = { transform: CSS.Transform.toString(transform), transition };
 
   const handleClick = (e: MouseEvent) => {
@@ -100,6 +103,20 @@ export function TaskCard({
     }
   };
 
+  const handleCreateTodayTask = (id: number) => {
+    createTodoTaskMutation(id, {
+      onSuccess: (data) => {
+        if (data.statusCode === 500) {
+          showToast('error', `${data.error}`);
+
+          return;
+        }
+
+        showToast('success', '오늘의 할 일에 추가했어요!');
+      },
+    });
+  };
+
   return (
     <div className="group w-full">
       <div
@@ -124,7 +141,7 @@ export function TaskCard({
         <div className="absolute p-2 top-1 right-1 flex gap-2">
           {variant === 'default' && (
             <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 items-center">
-              <div onClick={(e) => e.stopPropagation()}>
+              {/* <div onClick={(e) => e.stopPropagation()}>
                 <EisenhowerAi
                   trigger={
                     <div className="text-[#6E726E] hover:text-gray-600 transition-colors">
@@ -133,7 +150,7 @@ export function TaskCard({
                   }
                   linkedEisenhower={task}
                 />
-              </div>
+              </div> */}
 
               <div onClick={(e) => e.stopPropagation()}>
                 <Modal
@@ -149,15 +166,7 @@ export function TaskCard({
                     <DialogClose asChild>
                       <Button
                         variant="blue"
-                        onClick={async () => {
-                          try {
-                            await todayService.createTodayTask(task.id);
-                            toast.success('오늘의 할 일에 추가했어요!');
-                          } catch (err) {
-                            console.error('오늘의 할 일 추가 실패:', err);
-                            toast.error('추가에 실패했습니다');
-                          }
-                        }}
+                        onClick={() => handleCreateTodayTask(task.id)}
                       >
                         추가하기
                       </Button>
