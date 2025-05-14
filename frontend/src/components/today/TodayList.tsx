@@ -16,7 +16,9 @@ interface TodayListProps {
   hideCompleted?: boolean;
 }
 
-function formatDateToEnglish(dateString: string): string {
+function formatDateToEnglish(dateString: string | null): string {
+  if (!dateString) return '날짜 없음';
+
   if (typeof dateString === 'string') {
     const [yearStr, monthStr, dayStr] = dateString.split('-');
 
@@ -25,6 +27,10 @@ function formatDateToEnglish(dateString: string): string {
     const day = parseInt(dayStr, 10);
 
     const date = new Date(year, month - 1, day);
+    if (isNaN(date.getTime())) {
+      return '날짜 없음';
+    }
+
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -32,7 +38,7 @@ function formatDateToEnglish(dateString: string): string {
     });
   }
 
-  return '';
+  return '날짜 없음';
 }
 
 export default function TodayList({ hideCompleted = false }: TodayListProps) {
@@ -110,6 +116,18 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
     );
   };
 
+  // 날짜 표시 함수
+  const renderDate = (dueDate: string | null | undefined) => {
+    return (
+      <div className="px-6 flex items-center gap-2">
+        <Calendar size={24} />
+        <p className="text-[14px] text-[#525463]">
+          {formatDateToEnglish(dueDate || null)}
+        </p>
+      </div>
+    );
+  };
+
   return (
     <div className="mt-4 space-y-4">
       {yesterdayTodoList &&
@@ -126,12 +144,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
               {todo.title}
             </p>
             <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
-            <div className="px-6 flex items-center gap-2">
-              <Calendar size={24} />
-              <p className="text-[14px] text-[#525463]">
-                {formatDateToEnglish(todo.dueDate)}
-              </p>
-            </div>
+            {renderDate(todo.dueDate)}
             <div className="flex justify-end mb-5 px-6">
               <button
                 className="px-4 py-2 rounded-full bg-white text-blue font-semibold cursor-pointer"
@@ -173,12 +186,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
             </p>
             <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
           </div>
-          <div className="px-6 flex items-center gap-2">
-            <Calendar size={24} />
-            <p className="text-[14px] text-[#525463]">
-              {formatDateToEnglish(todo.dueDate)}
-            </p>
-          </div>
+          {renderDate(todo.dueDate)}
           <div className="flex justify-end mb-5 px-6">
             <button
               className={cn(
