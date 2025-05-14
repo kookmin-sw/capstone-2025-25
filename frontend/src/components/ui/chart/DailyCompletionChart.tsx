@@ -13,6 +13,7 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import useGetTodayTaskAnalysis from '@/hooks/queries/analysis/useGetTodayTaskAnalysis';
+import { useMemo } from 'react';
 
 const todoChartConfig = {
   completedNum: {
@@ -42,26 +43,44 @@ type DailyCompletionChartProps = {
 export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
   const { todayTaskAnalysisList } = useGetTodayTaskAnalysis();
 
-  const defaultChartData = [
-    { day: '일', dayOfWeek: 'SUN', completedNum: 0 },
-    { day: '월', dayOfWeek: 'MON', completedNum: 0 },
-    { day: '화', dayOfWeek: 'TUE', completedNum: 0 },
-    { day: '수', dayOfWeek: 'WED', completedNum: 0 },
-    { day: '목', dayOfWeek: 'THU', completedNum: 0 },
-    { day: '금', dayOfWeek: 'FRI', completedNum: 0 },
-    { day: '토', dayOfWeek: 'SAT', completedNum: 0 },
-  ];
+  const chartData = useMemo(() => {
+    const result = [];
+    const today = new Date();
 
-  const chartData = todayTaskAnalysisList?.length
-    ? todayTaskAnalysisList.map((item) => ({
-        day:
-          dayOfWeekMapping[item.dayOfWeek as keyof DayOfWeekMap] ||
-          item.dayOfWeek,
-        dayOfWeek: item.dayOfWeek,
-        completedNum: item.completedNum,
-        taskDate: item.taskDate,
-      }))
-    : defaultChartData;
+    for (let i = 1; i <= 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+
+      const dayIndex = date.getDay();
+      const dayOfWeekCodes = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      const dayOfWeek = dayOfWeekCodes[dayIndex];
+
+      result.push({
+        day: dayOfWeekMapping[dayOfWeek as keyof DayOfWeekMap],
+        dayOfWeek,
+        completedNum: 0,
+      });
+    }
+
+    if (!todayTaskAnalysisList?.length) {
+      return result;
+    }
+
+    const dataMap = new Map();
+    todayTaskAnalysisList.forEach((item) => {
+      dataMap.set(item.dayOfWeek, item.completedNum);
+    });
+
+    return result.map((item) => {
+      if (dataMap.has(item.dayOfWeek)) {
+        return {
+          ...item,
+          completedNum: dataMap.get(item.dayOfWeek),
+        };
+      }
+      return item;
+    });
+  }, [todayTaskAnalysisList]);
 
   return (
     <Card className="h-full w-full border-none shadow-none rounded-2xl px-6 py-4">
@@ -95,11 +114,7 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
                   cursor={false}
                   content={<ChartTooltipContent hideLabel />}
                 />
-                <Bar
-                  dataKey="completedNum"
-                  fill="var(--color-completed)"
-                  radius={8}
-                ></Bar>
+                <Bar dataKey="completedNum" fill="#7098ff" radius={8}></Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
