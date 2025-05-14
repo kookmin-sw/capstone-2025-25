@@ -23,7 +23,7 @@ import { Button } from '@/components/ui/button.tsx';
 import { DialogClose } from '@radix-ui/react-dialog';
 import EisenhowerAi from '@/components/ui/Modal/EisenhowerAi.tsx';
 import { todayService } from '@/services/todayService.ts';
-import {showToast} from "@/components/common/Toast.tsx";
+import { showToast } from '@/components/common/Toast.tsx';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -90,7 +90,10 @@ export function TaskCard({
         // toast.success(
         //   wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다',
         // );
-        showToast('success',  wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다');
+        showToast(
+          'success',
+          wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다',
+        );
       } catch (err) {
         console.error('완료 상태 업데이트 실패:', err);
       }
@@ -189,14 +192,11 @@ export function TaskCard({
         </div>
 
         {/* 카테고리 */}
-        <div className="flex mb-2 flex-wrap">
-          {category ? (
+        {category && (
+          <div className="flex mb-2 flex-wrap">
             <CategoryBadge label={category.title} bgColor={category.color} />
-          ) : (
-            // <div className="h-[30px]"></div>
-            <></>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="flex items-center mb-2 flex-grow">
           <div
