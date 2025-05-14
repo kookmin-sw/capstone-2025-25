@@ -32,7 +32,7 @@ function Droppable({
 }) {
   const { setNodeRef,isOver } = useDroppable({ id });
   return (
-    <div ref={setNodeRef} className={cn("h-full", isOver && 'border-[1px] rounded-[8px] md:rounded-[16px] border-blue')}>
+    <div ref={setNodeRef} className={cn(" w-full h-full", isOver && 'border-[1px] rounded-[8px] md:rounded-[16px] border-blue')}>
       {children}
     </div>
   );
@@ -252,14 +252,14 @@ export function PriorityView({
             });
 
             return (
-              <Droppable key={quadrant} id={quadrant}>
+              <Droppable key={quadrant} id={quadrant} >
                 <div
                   className={cn(
-                    'px-4 py-5 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px] w-[100%]',
+                    'px-4 py-5 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px] w-full',
                     quadrantColors[quadrant],
                     viewMode === 'board'
                       ? 'h-[calc(100vh-160px)] min-w-[268px]'
-                      : 'h-[400px]',
+                      : 'h-[400px] ',
                   )}
                 >
                   {/*<div className="flex justify-between pb-[14px] gap-2">*/}
