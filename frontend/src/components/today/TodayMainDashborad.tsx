@@ -22,7 +22,6 @@ export default function TodayMainDashborad() {
   const { todayTodoCount } = useGetTodayTodoCount();
   const { todayTodoCompletedCount } = useGetTodayTodoCompletedCount();
   const currentId = usePomodoroStore((s) => s.id);
-  console.log(currentId)
 
   const handleRouteToEisenhower = () => {
     navigate('/matrix');
@@ -47,8 +46,8 @@ export default function TodayMainDashborad() {
             )}
           </div>
           <div className="flex items-center gap-2">
-            <button className="p-2 bg-gray-scale-200 rounded-full cursor-pointer">
-              <img src={PlusIcon} onClick={handleRouteToEisenhower} />
+            <button className="p-[11px] bg-gray-scale-200 rounded-full cursor-pointer">
+              <img src={PlusIcon} className='w-[18px] h-[18px]' onClick={handleRouteToEisenhower} />
             </button>
           </div>
         </div>
@@ -65,14 +64,13 @@ export default function TodayMainDashborad() {
             />
           </div>
         </div>
-        <div>
+        <div className='flex flex-col gap-4'>
           {todayTodoCount !== undefined && todayTodoCount > 0 && (
             <TodayCompleteChart
               totalCount={todayTodoCount}
               completedCount={todayTodoCompletedCount ?? 0}
             />
           )}
-
           <TodayList hideCompleted={hideCompleted} />
         </div>
       </div>

@@ -90,7 +90,7 @@ export function TodayCompleteChart({
           </ChartContainer>
         </div>
         <div className="w-full md:w-1/2 lg:w-1/2 text-center md:text-left">
-          <p className="text-[14px] text-gray-scale-900 font-semibold mb-4 md:mb-6 break-keep">
+          <p className="text-[14px] text-gray-scale-900 font-semibold mb-4 md:mb-3 break-keep">
             오늘의 할 일의 <br />
             <span className="text-[32px] bg-neon-green text-blue rounded-full px-2 py-1">
               {completionPercentage}%
