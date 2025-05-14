@@ -10,27 +10,26 @@ const getAccessTokenFromCookie = () => {
 export const useAuthRedirect = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { token, setToken } = useAuthStore();
+  const { token, setToken, isTokenValid } = useAuthStore();
 
   useEffect(() => {
     const cookieToken = getAccessTokenFromCookie();
     const path = location.pathname;
 
-    // 1. 쿠키에만 토큰이 있는 경우 → 스토어에 저장
-    if (!token && cookieToken) {
+    // 쿠키에만 토큰이 있고, 현재는 토큰이 저장 안 돼 있을 때만 setToken
+    if (!token && cookieToken && isTokenValid) {
       setToken(cookieToken);
       return;
     }
 
-    // 2. 로그인된 상태에서 /login 접근 시 메인으로 리디렉트
-    if ((token || cookieToken) && path === '/login') {
+    if (isTokenValid && (token || cookieToken) && path === '/login') {
       navigate('/today', { replace: true });
       return;
     }
 
-    // 3. 토큰이 아예 없는 상태에서 로그인 페이지가 아니라면 → 로그인으로
-    if (!token && !cookieToken && path !== '/login') {
+    // 토큰이 없거나 유효하지 않을 때만 /login 으로
+    if ((!token || !isTokenValid) && path !== '/login') {
       navigate('/login', { replace: true });
     }
-  }, [token, setToken, navigate, location.pathname]);
+  }, [token, setToken, isTokenValid, navigate, location.pathname]);
 };
