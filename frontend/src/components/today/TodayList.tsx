@@ -6,12 +6,11 @@ import { cn } from '@/lib/utils';
 import { Calendar, Trash2 } from 'lucide-react';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePatchPomodoro from '@/hooks/queries/pomodoro/usePatchPomodoro.ts';
-import { toast } from 'sonner';
 import useUpdateStatusTodo from '@/hooks/queries/today/useUpdateStatusTodo';
 import useDeleteTodayTodo from '@/hooks/queries/today/useDeleteTodayTodo';
 import CheckIcon from '@/assets/check.svg';
 import CheckFillIcon from '@/assets/check-fill.svg';
-import {showToast} from "@/components/common/Toast.tsx";
+import { showToast } from '@/components/common/Toast.tsx';
 
 interface TodayListProps {
   hideCompleted?: boolean;
@@ -73,9 +72,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
         onSuccess: () => {
           if (newCompletedState) {
             showToast('success', `"${title}"을(를) 완료했습니다`);
-            // toast.success(`"${title}"을(를) 완료했습니다`);
           } else {
-            // toast.info(`"${title}"을(를) 미완료 상태로 변경했습니다`);
             showToast('success', `"${title}"을(를) 미완료 상태로 변경했습니다`);
           }
         },
@@ -86,7 +83,6 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
   const handleDeleteTask = (id: number, title: string) => {
     deleteTodayTodoMutation(id, {
       onSuccess: () => {
-        // toast.success(`"${title}"을 오늘의 할 일에서 삭제했습니다.`);
         showToast('success', `"${title}"을 오늘의 할 일에서 삭제했습니다.`);
       },
     });
@@ -98,6 +94,22 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
       : todayTodoList
     : [];
 
+  const renderCategoryBadge = (categoryId: number | string) => {
+    const categoryName = getCategoryNameById(categoryId);
+
+    if (!categoryName) {
+      return (
+        <div className="invisible h-[30px] w-[80px]" aria-hidden="true"></div>
+      );
+    }
+
+    return (
+      <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
+        {categoryName}
+      </div>
+    );
+  };
+
   return (
     <div className="mt-4 space-y-4">
       {yesterdayTodoList &&
@@ -107,9 +119,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
             className="flex flex-col gap-4 py-5 rounded-lg bg-gray-scale-200"
           >
             <div className="px-5 flex items-center justify-between">
-              <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
-                {getCategoryNameById(todo.category_id)}
-              </div>
+              {renderCategoryBadge(todo.category_id)}
               <img src={CheckIcon} className="w-6 h-6 cursor-pointer" />
             </div>
             <p className="px-6 text-[20px] text-[#525463] font-semibold">
@@ -140,9 +150,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
           className="flex flex-col gap-4 py-5 rounded-lg bg-white border border-blue"
         >
           <div className="px-5 flex items-center justify-between">
-            <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
-              {getCategoryNameById(todo.category_id)}
-            </div>
+            {renderCategoryBadge(todo.category_id)}
             <div className="flex items-center gap-2">
               <Trash2
                 className="cursor-pointer text-gray-400 hover:text-red-500"
