@@ -5,6 +5,7 @@ import Logo from '@/assets/logo.svg';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePomodoroControl from '@/hooks/usePomodoroControl';
 import { authService } from '@/services/authService.ts';
+import WithdrawalModal from "@/components/ui/Modal/WithdrawalModal.tsx";
 import {
   Popover,
   PopoverContent,
@@ -30,14 +31,12 @@ export default function Header() {
   };
 
   const navigateToToday = () => {
-    navigate('/today');
+    if (location.pathname !== '/today') {
+      navigate('/today');
+    }
   };
   const navigateToIntro = () => {
     window.open('https://cheerful-perspective-141321.framer.app/', '_blank');
-  };
-
-  const navigateToSettings = () => {
-    navigate('/settings');
   };
 
   const currentId = usePomodoroStore((s) => s.id);
@@ -79,29 +78,22 @@ export default function Header() {
             <Popover>
               <PopoverTrigger asChild>
                 {/*<div className="w-6 h-6 rounded-full flex items-center justify-center bg-[#D3EE17] border border-blue cursor-pointer"></div>*/}
-                <div className="w-7 h-7">
+                <div className="w-7 h-7 cursor-pointer">
                   <img src={Bubble} alt="bubble" />
                 </div>
               </PopoverTrigger>
-              <PopoverContent className="w-40 p-0 mr-4 md:hidden z-100">
+              <PopoverContent className="w-40 p-1 mr-4 md:hidden z-100">
                 <div className="py-1">
                   <button
                     onClick={navigateToIntro}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="rounded-[8px] w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 outline-none cursor-pointer"
                   >
                     <Info size={16} />
                     <span>서비스 소개</span>
                   </button>
                   <button
-                    onClick={navigateToSettings}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <Settings size={16} />
-                    <span>설정</span>
-                  </button>
-                  <button
                     onClick={handleAuthAction}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className=" rounded-[8px] w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 outline-none cursor-pointer"
                   >
                     {isAuthenticated ? (
                       <>
@@ -115,6 +107,14 @@ export default function Header() {
                       </>
                     )}
                   </button>
+                  <WithdrawalModal trigger={
+                    <button
+                        className=" rounded-[8px] w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 outline-none cursor-pointer"
+                    >
+                      <Settings size={16} />
+                      <span>회원 탈퇴</span>
+                    </button>
+                  }/>
                 </div>
               </PopoverContent>
             </Popover>
