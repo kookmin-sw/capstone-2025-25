@@ -234,7 +234,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
         <div className="bg-[#F0F0F5] px-4 py-8 rounded-md flex flex-col items-center justify-center min-h-[200px]">
           <p className="font-semibold">
             {hideCompleted && todayTodoList && todayTodoList.length > 0
-              ? '완료되지 않은 일이 없어요'
+              ? '오늘의 할 일을 모두 완료했어요!'
               : '아직 오늘의 할 일이 없어요'}
           </p>
           <p
