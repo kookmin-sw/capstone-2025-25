@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -43,10 +43,15 @@ export function NodeToTaskModal({
   taskData,
   task,
 }: NodeToTaskModalProps) {
-  const [title, setTitle] = useState(task?.title || '');
-  const [dueDate, setDueDate] = useState<string | null>(
-    new Date().toISOString().split('T')[0],
-  );
+  const [title, setTitle] = useState(task?.title ?? taskData.title);
+
+  const [dueDate, setDueDate] = useState<string | null>('');
+
+  useEffect(() => {
+    if (isOpen && taskData.title) {
+      setTitle(taskData.title);
+    }
+  }, [isOpen, taskData.title]);
 
   const handleAddCategory = async (title: string) => {
     const trimmed = title.trim();
