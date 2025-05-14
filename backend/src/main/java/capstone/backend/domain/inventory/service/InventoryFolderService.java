@@ -9,6 +9,7 @@ import capstone.backend.domain.inventory.dto.response.InventoryFolderResponse;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class InventoryFolderService {
 
     //폴더 조회
     public List<InventoryFolderResponse> getInventoryFolders(Long memberId){
-        return inventoryFolderRepository.findAllByMemberId(memberId)
+        return inventoryFolderRepository.findAllByMemberIdOrderByCreatedAt(memberId)
             .stream()
             .map(InventoryFolderResponse::from)
             .toList();
@@ -81,6 +82,7 @@ public class InventoryFolderService {
             .name("기본 폴더")
             .member(member)
             .isDefault(true)
+            .createdAt(LocalDateTime.now())
             .build();
         inventoryFolderRepository.save(defaultFolder);
     }

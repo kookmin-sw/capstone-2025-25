@@ -41,7 +41,7 @@ public class InventoryItemService {
 
     //보관함 조회
     public Page<InventoryItemResponse> getInventoryItems(Long folderId, Long memberId, Pageable pageable) {
-        return inventoryItemRepository.findByMemberIdAndFolderId(memberId, folderId, pageable);
+        return inventoryItemRepository.findByMemberIdAndFolderIdOrderByCreatedAt(memberId, folderId, pageable);
     }
 
     //보관함 아이템 상세 조회
