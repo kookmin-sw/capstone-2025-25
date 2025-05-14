@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CalendarIcon } from 'lucide-react';
+
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import {
@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import Calendar from '@/assets/eisenhower/calander_fill.svg';
 
 type DateRangePickerProps = {
   startDate: Date;
@@ -53,11 +54,14 @@ export function DateRangePicker({
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <button className="flex items-center w-full md:w-auto min-w-[200px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <div className="w-7 h-7 flex items-center justify-center bg-blue rounded-full">
-              <CalendarIcon className="w-4 h-4 text-[#E8EFFF]" />
+              {/*<CalendarIcon className="w-4 h-4 text-[#E8EFFF]" />*/}
+              <img src={Calendar} alt="calendar" />
             </div>
-            <span className="text-sm leading-none">{formatDateRange()}</span>
+            <span className="text-sm leading-none whitespace-nowrap">
+              {formatDateRange()}
+            </span>
           </div>
         </button>
       </PopoverTrigger>
