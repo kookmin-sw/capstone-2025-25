@@ -59,7 +59,7 @@ export function DateRangePicker({
               {/*<CalendarIcon className="w-4 h-4 text-[#E8EFFF]" />*/}
               <img src={Calendar} alt="calendar" />
             </div>
-            <span className="text-sm leading-none whitespace-nowrap">
+            <span className="leading-none whitespace-nowrap">
               {formatDateRange()}
             </span>
           </div>

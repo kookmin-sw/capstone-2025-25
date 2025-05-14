@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import useCreateInventoryFolder from '@/hooks/queries/inventory/folder/useCreateInventoryFolder';
 import { toast } from 'sonner';
+import {showToast} from "@/components/common/Toast.tsx";
 
 type CreateFolderModalProps = {
   isOpen: boolean;
@@ -35,7 +36,7 @@ export default function CreateFolderModal({
     }
 
     if (trimmedName.length > 10) {
-      toast('폴더 이름은 최대 10글자까지 가능합니다.');
+      showToast('error','폴더 이름은 최대 10글자까지 가능합니다.');
       return;
     }
 

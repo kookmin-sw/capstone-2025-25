@@ -89,54 +89,64 @@ export default function MatrixPage() {
       >
         {/*<Toaster richColors position="top-center" />*/}
         <main className="flex flex-1 min-h-0 flex-col gap-[15px] h-full w-full">
-          <div className="flex flex-col justify-between items-start w-full gap-4 ">
-            <div className="flex gap-2 w-full justify-between items-center">
-              <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-                <DropdownMenuTrigger
-                  asChild
-                  className="flex gap-5 cursor-pointer"
-                >
-                  <button className="text-[28px]  text-[#525463] h-8 font-semibold inline-flex items-center gap-[5px] cursor-pointer">
-                    {activeTab === 'all' ? '미완료 일정' : '완료된 일정'}
-                    <ChevronDown
+          <div className="flex flex-col justify-between  w-full gap-4 ">
+            <div className="flex gap-2 w-full justify-between items-start">
+              <div className="flex flex-col gap-1 md:gap-4 md:flex-row items-start md:items-baseline">
+                <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+                  <DropdownMenuTrigger
+                    asChild
+                    className="flex gap-5 cursor-pointer"
+                  >
+                    <button className="text-[28px]  h-[42px]  shrink-0 text-[#525463] h-8 font-semibold inline-flex items-center gap-[5px] cursor-pointer">
+                      {activeTab === 'all' ? '미완료 일정' : '완료된 일정'}
+                      <ChevronDown
+                        className={cn(
+                          'w-8 h-8 transition-transform',
+                          isOpen ? 'rotate-180' : 'rotate-0',
+                        )}
+                      />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="start"
+                    className="w-40 flex flex-col gap-1"
+                  >
+                    <DropdownMenuItem
+                      onClick={() => setActiveTab('all')}
                       className={cn(
-                        'w-8 h-8 transition-transform',
-                        isOpen ? 'rotate-180' : 'rotate-0',
+                        'cursor-pointer',
+                        activeTab === 'all' ? 'bg-muted font-semibold' : '',
                       )}
-                    />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="start"
-                  className="w-40 flex flex-col gap-1"
-                >
-                  <DropdownMenuItem
-                    onClick={() => setActiveTab('all')}
-                    className={cn(
-                      'cursor-pointer',
-                      activeTab === 'all' ? 'bg-muted font-semibold' : '',
-                    )}
-                  >
-                    미완료 일정
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setActiveTab('completed')}
-                    className={cn(
-                      'cursor-pointer',
-                      activeTab === 'completed' ? 'bg-muted font-semibold' : '',
-                    )}
-                  >
-                    완료된 일정
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    >
+                      <h1>미완료 일정</h1>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setActiveTab('completed')}
+                      className={cn(
+                        'cursor-pointer',
+                        activeTab === 'completed'
+                          ? 'bg-muted font-semibold'
+                          : '',
+                      )}
+                    >
+                      <h1>미완료 일정</h1>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <div className="text-4 text-[#6E726E] h-fit  break-words text-ellipsis overflow-hidden whitespace-nowrap flex-1">
+                  {activeTab === 'completed'
+                    ? '완료된 일정을 확인하고, 필요하면 다시 실행할 수 있어요!'
+                    : '중요도와 긴급도에 따라 정리하고, 우선순위를 정해 실행해보세요!'}
+                </div>
+              </div>
               {activeTab === 'all' && !isMobile && (
                 <Tabs
                   value={view}
                   onValueChange={(val) => setView(val as 'matrix' | 'board')}
                   className="cursor-pointer"
                 >
-                  <TabsList className="px-2 bg-white rounded-[8px] h-12 flex gap-1">
+                  <TabsList className="px-2 bg-white rounded-[8px] h-12 flex gap-2">
                     <TabsTrigger
                       value="matrix"
                       className="h-9 data-[state=active]:bg-blue data-[state=active]:text-white bg-white text-blue rounded-md px-2 py-2 transition"
@@ -158,12 +168,6 @@ export default function MatrixPage() {
                   </TabsList>
                 </Tabs>
               )}
-            </div>
-
-            <div className="text-4 text-[#6E726E]">
-              {activeTab === 'completed'
-                ? '완료된 일정을 확인하고, 필요하면 다시 실행할 수 있어요!'
-                : '중요도와 긴급도에 따라 정리하고, 우선순위를 정해 실행해보세요!'}
             </div>
           </div>
 

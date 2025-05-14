@@ -27,6 +27,7 @@ import { Loader2 } from 'lucide-react';
 import BrainstormingLogo from '@/assets/sidebar/color-brainstorming.svg';
 import usePatchBubble from '@/hooks/queries/brainstorming/usePatchBubble';
 import { toast } from 'sonner';
+import {showToast} from "@/components/common/Toast.tsx";
 
 const nodeTypes: NodeTypes = {
   custom: CustomNode,
@@ -61,7 +62,7 @@ function FlowContent({ onCompletedSuccessfully }: FlowContentProps) {
     });
 
     if (emptyNodes.length > 0) {
-      toast('🚨비어있는 노드 데이터가 있습니다!');
+      showToast('error','비어있는 노드 데이터가 있습니다!' )
       return;
     }
 
@@ -174,8 +175,8 @@ function FlowContent({ onCompletedSuccessfully }: FlowContentProps) {
                   </DialogDescription>
                 </DialogHeader>
                 <div>
-                  <div className="rounded-[7px] px-6 py-[20px] text-[20px] font-semibold bg-blue-2 flex gap-2 items-start">
-                    <img src={BrainstormingLogo} />
+                  <div className="rounded-[7px] px-6 py-[20px] text-[20px] font-semibold bg-blue-2 flex gap-2 items-start text-gray-scale-700">
+                    <img className='mt-1' src={BrainstormingLogo} />
                     <p>{summary}</p>
                   </div>
                 </div>

@@ -63,7 +63,7 @@ export default function Header() {
         {currentId && (
           <div
             onClick={moveToPomododro}
-            className="cursor-pointer text-[#7098FF] font-medium bg-blue-2 border rounded-4xl border-blue px-4 py-[6px] text-[20px] h-9 w-[87px] flex justify-center items-center"
+            className="cursor-pointer text-[#7098FF] font-medium bg-blue-2 border rounded-4xl border-blue px-4  text-[16px] h-[31px] w-[75px] flex justify-center items-center"
           >
             {format(remaining)}
           </div>
@@ -78,7 +78,7 @@ export default function Header() {
             <Popover>
               <PopoverTrigger asChild>
                 {/*<div className="w-6 h-6 rounded-full flex items-center justify-center bg-[#D3EE17] border border-blue cursor-pointer"></div>*/}
-                <div className="w-7 h-7 cursor-pointer">
+                <div className="w-6 h-6 cursor-pointer">
                   <img src={Bubble} alt="bubble" />
                 </div>
               </PopoverTrigger>
@@ -122,7 +122,7 @@ export default function Header() {
         )}
 
         <button
-          className="px-6 py-[6px] bg-blue text-white rounded-lg font-semibold cursor-pointer hidden md:block"
+          className="px-2 py-[3px] w-[90px] h-[31px] text-[16px] bg-blue text-white rounded-lg font-semibold cursor-pointer hidden md:block"
           onClick={handleAuthAction}
         >
           {isAuthenticated ? '로그아웃' : '로그인'}
