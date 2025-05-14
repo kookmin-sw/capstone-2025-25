@@ -46,7 +46,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
   const { todayTodoList } = useGetTodayTodoList();
   const { yesterdayTodoList } = useGetYesterdayTodoList();
 
-  const { getCategoryNameById } = useGetCategoryList();
+  const { getCategoryNameById, getCategoryColorById } = useGetCategoryList();
   const { moveTodayMutation, isPending } = useMoveToday();
   const { patchPomodoroMutation } = usePatchPomodoro();
   const { updateStatusMutation } = useUpdateStatusTodo();
@@ -123,13 +123,19 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
 
   const renderCategoryBadge = (categoryId: number | string) => {
     const categoryName = getCategoryNameById(categoryId);
+    const categoryColor = getCategoryColorById(categoryId);
 
     if (!categoryName) {
       return null;
     }
 
+    console.log(categoryName, categoryColor);
+
     return (
-      <div className="inline-flex px-3 py-[3.5px] bg-blue-2 text-gray-scale-900 rounded-full mb-2 self-start">
+      <div
+        className="inline-flex px-3 py-[3.5px] text-gray-scale-900 rounded-full mb-2 self-start"
+        style={{ backgroundColor: categoryColor || '#E9F0FF' }}
+      >
         {categoryName}
       </div>
     );
