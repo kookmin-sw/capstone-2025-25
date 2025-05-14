@@ -22,6 +22,7 @@ export default function TodayMainDashborad() {
   const { todayTodoCount } = useGetTodayTodoCount();
   const { todayTodoCompletedCount } = useGetTodayTodoCompletedCount();
   const currentId = usePomodoroStore((s) => s.id);
+  console.log(currentId)
 
   const handleRouteToEisenhower = () => {
     navigate('/matrix');

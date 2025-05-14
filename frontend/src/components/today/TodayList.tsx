@@ -59,7 +59,17 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
   };
 
   const setTimer = usePomodoroStore((s) => s.setTimer);
+  const currentId = usePomodoroStore((s) => s.id);
   const handleDelete = (id: number, title: string) => {
+    if (currentId) {
+      if (currentId === id) {
+
+        return;
+      } else {
+        showToast('error', '이미 진행 중인 뽀모도로가 있습니다.');
+        return;
+      }
+    }
     setTimer(id, title, patchPomodoroMutation);
   };
 

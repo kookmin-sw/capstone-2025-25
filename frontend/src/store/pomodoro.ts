@@ -57,14 +57,14 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
           data: {
             executedCycles: [
               {
-                workDuration: (totalElapsed - pausedTime),
+                workDuration: totalElapsed - pausedTime,
                 breakDuration: 0,
               },
             ],
           },
         });
       }
-      set({
+      const state = {
         id: id,
         title: title,
         isRunning: false,
@@ -72,7 +72,10 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
         startTimestamp: 0,
         intervalId: null,
         pausedTime: 0,
-      });
+      };
+      set(state);
+      console.log(state)
+      localStorage.setItem('pomodoro-state', JSON.stringify(state));
     }
   },
   resetTimer: (
@@ -90,7 +93,7 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       data: {
         executedCycles: [
           {
-            workDuration: (totalElapsed - pausedTime),
+            workDuration: totalElapsed - pausedTime,
             breakDuration: 0,
           },
         ],
@@ -121,13 +124,13 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       data: {
         executedCycles: [
           {
-            workDuration: (totalElapsed - pausedTime),
+            workDuration: totalElapsed - pausedTime,
             breakDuration: 0,
           },
         ],
       },
     });
-    set({
+    const state = {
       id: null,
       title: '',
       isRunning: false,
@@ -135,7 +138,9 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       startTimestamp: 0,
       intervalId: null,
       pausedTime: 0,
-    });
+    };
+    set(state);
+    localStorage.setItem('pomodoro-state', JSON.stringify(state));
   },
 
   startTimer: () => {
@@ -154,7 +159,7 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       typeof usePatchPomodoro
     >['patchPomodoroMutation'],
   ) => {
-    const { intervalId, getTotalElapsedTime,pausedTime } = get();
+    const { intervalId, getTotalElapsedTime, pausedTime } = get();
     if (intervalId !== null) {
       clearInterval(intervalId);
     }
@@ -165,7 +170,7 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
         data: {
           executedCycles: [
             {
-              workDuration: (totalElapsed - pausedTime),
+              workDuration: totalElapsed - pausedTime,
               breakDuration: 0,
             },
           ],
