@@ -15,27 +15,27 @@ export function TodayCompleteChart({
   const chartRef = useRef<HTMLDivElement>(null);
   const [fontSize, setFontSize] = useState(24);
 
-  // 컨테이너 크기에 따라 폰트 크기 조정
   useEffect(() => {
     const updateFontSize = () => {
       if (chartRef.current) {
         const containerWidth = chartRef.current.offsetWidth;
-        // 컨테이너 너비에 따라 폰트 크기 계산
         const newSize = Math.max(14, Math.min(24, containerWidth * 0.09));
         setFontSize(newSize);
       }
     };
 
-    // 초기 로드 시 폰트 크기 설정
     updateFontSize();
 
-    // 창 크기 변경 시 폰트 크기 업데이트
     window.addEventListener('resize', updateFontSize);
     return () => window.removeEventListener('resize', updateFontSize);
   }, []);
 
   const completionPercentage =
-    totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+    totalCount > 0 && completedCount > 0
+      ? totalCount === completedCount
+        ? 100
+        : Math.round((completedCount / totalCount) * 100)
+      : 0;
 
   const remainingPercentage = 100 - completionPercentage;
 
@@ -65,6 +65,8 @@ export function TodayCompleteChart({
       color: 'hsl(var(--chart-2))',
     },
   } satisfies ChartConfig;
+
+  const isAllCompleted = totalCount > 0 && completedCount === totalCount;
 
   return (
     <Card className="flex flex-col bg-blue-2 border-0 p-0">
@@ -103,8 +105,17 @@ export function TodayCompleteChart({
             <span className="break-keep">를 완료했어요!</span>
           </p>
           <p className="text-[14px] text-gray-scale-700 break-keep">
-            조금만 더 힘내서 <br className="hidden lg:block" />할 일을 모두
-            달성해봐요!
+            {isAllCompleted ? (
+              <>
+                할 일을 모두 완료했어요! <br className="hidden lg:block" />
+                오늘 하루도 수고하셨습니다!
+              </>
+            ) : (
+              <>
+                조금만 더 힘내서 <br className="hidden lg:block" />할 일을 모두
+                달성해봐요!
+              </>
+            )}
           </p>
         </div>
       </CardContent>
