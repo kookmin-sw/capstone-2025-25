@@ -30,13 +30,14 @@ function Droppable({
   id: string;
   children: React.ReactNode;
 }) {
-  const { setNodeRef } = useDroppable({ id });
+  const { setNodeRef,isOver } = useDroppable({ id });
   return (
-    <div ref={setNodeRef} className="h-full">
+    <div ref={setNodeRef} className={cn("h-full", isOver && 'border-[1px] rounded-[8px] md:rounded-[16px] border-blue')}>
       {children}
     </div>
   );
 }
+
 
 export function PriorityView({
   selectedCategory,
@@ -203,22 +204,24 @@ export function PriorityView({
       {isMobile && (
         <div className={cn('grid gap-1 md:mb-4 grid-cols-1')}>
           {(['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).map((q) => (
-            <button
-              key={q}
-              onClick={() => setActiveQuadrant(q)}
-              className={cn(
-                'w-full py-2 px-3 rounded-[8px] text-sm font-medium  border cursor-pointer flex items-center gap-2',
-                quadrantColors[q],
-                activeQuadrant === q
-                  ? 'text-[#525463] border-[#CDCED6]'
-                  : 'text-[#525463] border-[#CDCED6]',
-              )}
-            >
-              <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
-                {q.replace('Q', '')}
-              </div>
-              {quadrantTitles[q]}
-            </button>
+            <Droppable key={q} id={q}>
+              <button
+                key={q}
+                onClick={() => setActiveQuadrant(q)}
+                className={cn(
+                  'w-full py-2 px-3 rounded-[8px] text-sm font-medium  border cursor-pointer flex items-center gap-2',
+                  quadrantColors[q],
+                  activeQuadrant === q
+                    ? 'text-[#525463] border-[#CDCED6]'
+                    : 'text-[#525463] border-[#CDCED6]',
+                )}
+              >
+                <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
+                  {q.replace('Q', '')}
+                </div>
+                {quadrantTitles[q]}
+              </button>
+            </Droppable>
           ))}
         </div>
       )}
