@@ -145,7 +145,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
             </p>
             <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
             {renderDate(todo.dueDate)}
-            <div className="flex justify-end mb-5 px-6">
+            <div className="flex justify-end px-6">
               <button
                 className="px-4 py-2 rounded-full bg-white text-blue font-semibold cursor-pointer"
                 onClick={() => handleMoveToToday(todo.id)}
@@ -187,7 +187,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
             <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
           </div>
           {renderDate(todo.dueDate)}
-          <div className="flex justify-end mb-5 px-6">
+          <div className="flex justify-end px-6">
             <button
               className={cn(
                 'px-4 py-2 rounded-full text-white font-semibold cursor-pointer',
