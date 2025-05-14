@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InventoryItemRepository extends JpaRepository<InventoryItem, Long> {
-    Page<InventoryItemResponse> findByMemberIdAndFolderId(Long memberId, Long folderId, Pageable pageable);
+    Page<InventoryItemResponse> findByMemberIdAndFolderIdOrderByCreatedAt(Long memberId, Long folderId, Pageable pageable);
     InventoryItemResponse findByMemberIdAndId(Long memberId, Long inventoryId);
     Optional<InventoryItem> findByIdAndMemberId(Long inventoryId, Long memberId);
     List<InventoryItemResponse> findTop5ByMemberIdOrderByCreatedAtDesc(Long memberId);
