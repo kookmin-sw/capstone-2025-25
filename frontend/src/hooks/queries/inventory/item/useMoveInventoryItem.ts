@@ -12,6 +12,9 @@ const useMoveInventoryItem = (folderId: number) => {
       queryClient.invalidateQueries({
         queryKey: ['inventoryItemList', folderId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['inventoryFolderList'],
+      });
     },
   });
 
