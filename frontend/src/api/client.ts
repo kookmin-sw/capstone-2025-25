@@ -3,6 +3,7 @@ import { ENDPOINTS } from '@/api/endpoints.ts';
 import { BASE_URL, GPT_BASE_URL } from '@/constants/auth.ts';
 import { getCookie, setCookie } from '@/utils/cookie.ts';
 import { useAuthStore } from '@/store/authStore.ts';
+import { toast } from 'sonner';
 
 /*
 백엔드 API 클라이언트
@@ -42,33 +43,78 @@ apiClient.interceptors.request.use((config) => {
 TODO: 추후 인증 관련 로직 결정되면 그에 맞게 수정 필요.
 refreshToken 처리 로직 추가
 */
+
+let refreshPromise: Promise<string> | null = null;
+let refreshFailed = false;
+
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const { isTokenValid, setToken, setTokenValidity } =
+      useAuthStore.getState();
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const accessToken = getCookie('accessToken');
+    const shouldRetry =
+      (!accessToken || !isTokenValid || error.response?.status === 401) &&
+      !originalRequest._retry &&
+      !refreshFailed;
+
+    if (shouldRetry) {
       originalRequest._retry = true;
 
+      if (!refreshPromise) {
+        const refreshToken = getCookie('refreshToken');
+        if (!refreshToken) {
+          console.error('refreshToken 없음');
+          setToken(null);
+          setTokenValidity(false);
+          toast.error('로그인이 필요합니다.');
+          refreshFailed = true;
+          return Promise.reject(error);
+        }
+
+        refreshPromise = axios
+          .post(
+            `${BASE_URL}${ENDPOINTS.AUTH.REFRESH_TOKEN}`,
+            { refreshToken },
+            {
+              headers: { 'Content-Type': 'application/json' },
+              withCredentials: true,
+            },
+          )
+          .then((res) => {
+            const newAccessToken = res.data?.content?.accessToken;
+            if (!newAccessToken) throw new Error('accessToken 없음');
+
+            setCookie('accessToken', newAccessToken);
+            setToken(newAccessToken);
+            setTokenValidity(true);
+
+            return newAccessToken;
+          })
+          .catch((err) => {
+            console.error('토큰 재발급 실패:', err);
+            setToken(null);
+            setTokenValidity(false);
+            toast.error('로그인이 필요합니다.');
+            refreshFailed = true;
+            throw err;
+          })
+          .finally(() => {
+            refreshPromise = null;
+          });
+      }
+
       try {
-        const res = await axios.post(
-          `${BASE_URL}${ENDPOINTS.AUTH.REFRESH_TOKEN}`,
-          {},
-          { withCredentials: true },
-        );
+        const newAccessToken = await refreshPromise;
 
-        const newAccessToken = res.data?.content?.accessToken;
-        if (!newAccessToken) throw new Error('accessToken 없음');
-
-        setCookie('accessToken', newAccessToken);
-
+        originalRequest.headers = originalRequest.headers || {};
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
         return apiClient(originalRequest);
-      } catch (reissueError) {
-        console.error('토큰 재발급 실패:', reissueError);
-        useAuthStore.getState().setToken(null);
-        window.location.href = '/login';
-        return Promise.reject(reissueError);
+      } catch (err) {
+        return Promise.reject(err);
       }
     }
 
