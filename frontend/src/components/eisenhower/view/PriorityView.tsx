@@ -504,6 +504,7 @@ export function PriorityView({
                         >
                           {/*<div className='p-10' onClick={()=>{console.log("clicked")}}>sdfdsf</div>*/}
                           <TaskCard
+                              onUpdateTask={handleUpdateTask}
                             task={task}
                             layout={viewMode}
                             categories={categories}

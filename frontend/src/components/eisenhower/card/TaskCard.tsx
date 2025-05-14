@@ -51,15 +51,12 @@ export function TaskCard({
   variant = 'default',
   onUpdateTask,
 }: TaskCardProps) {
-  console.log('taskcard',task)
+
   const { id, title, memo } = task;
   const dueDate = task.dueDate
   const category = task.categoryId
     ? categories.find((cat) => cat.id === task.categoryId)
     : null;
-
-
-
 
   const {
     attributes,
@@ -99,6 +96,7 @@ export function TaskCard({
         // toast.success(
         //   wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다',
         // );
+
         showToast(
           'success',
           wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다',

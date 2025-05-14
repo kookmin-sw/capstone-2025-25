@@ -196,7 +196,6 @@ export default function MatrixPage() {
               onDateChange={setDateRange}
             />
           )}
-
           <DragOverlay>
             {activeTask && (
               <DragOverlayCard task={activeTask} categories={categories} />
