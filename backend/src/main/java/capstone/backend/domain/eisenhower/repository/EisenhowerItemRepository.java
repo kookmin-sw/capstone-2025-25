@@ -15,4 +15,5 @@ public interface EisenhowerItemRepository extends JpaRepository<EisenhowerItem, 
 
     List<EisenhowerItem> findAllByDueDateAndIsCompleted(LocalDate today, boolean isCompleted);
 
+    List<EisenhowerItem> findAllByMemberIdAndCategoryId(Long memberId, Long categoryId);
 }
