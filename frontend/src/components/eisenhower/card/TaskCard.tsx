@@ -28,7 +28,6 @@ import useCreateTodayTask from '@/hooks/queries/today/useCreateTodayTask';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
-
 interface TaskCardProps {
   task: EisenhowerBase;
   categories: Category[];
@@ -40,7 +39,6 @@ interface TaskCardProps {
   onUpdateTask?: (task: EisenhowerTask) => void;
 }
 
-
 export function TaskCard({
   task,
   categories,
@@ -51,9 +49,8 @@ export function TaskCard({
   variant = 'default',
   onUpdateTask,
 }: TaskCardProps) {
-
   const { id, title, memo } = task;
-  const dueDate = task.dueDate
+  const dueDate = task.dueDate;
   const category = task.categoryId
     ? categories.find((cat) => cat.id === task.categoryId)
     : null;
@@ -73,8 +70,6 @@ export function TaskCard({
 
   const handleClick = (e: MouseEvent) => {
     const checkIcon = e.currentTarget.querySelector('.check-icon');
-    // if (checkIcon && checkIcon.contains(e.target as Node)) return;
-    // if (!isDragging && variant === 'default' && onClick) onClick();
   };
 
   const handleTaskComplete = async (e: MouseEvent) => {
@@ -246,7 +241,5 @@ export function TaskCard({
         </div>
       </div>
     </div>
-
-
   );
 }

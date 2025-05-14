@@ -7,7 +7,6 @@ import { DragOverlayCard } from '@/components/eisenhower/card/DragOverlayCard';
 import { useTaskFilters } from '@/hooks/useTaskFilters';
 import { useTaskDnD } from '@/hooks/useTaskDnD';
 import { useCategoryStore } from '@/store/useCategoryStore';
-import { Toaster } from 'sonner';
 import type { Task } from '@/types/task';
 import { PriorityView } from '@/components/eisenhower/view/PriorityView';
 import {

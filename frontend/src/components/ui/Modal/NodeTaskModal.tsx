@@ -29,6 +29,7 @@ import { BG_COLORS } from '@/types/category.ts';
 
 import { showToast } from '@/components/common/Toast.tsx';
 import useCreateCategory from '@/hooks/queries/category/useCreateCategory.ts';
+import useMatrixStore from '@/store/matrixStore.ts';
 
 type NodeToTaskModalProps = {
   isOpen: boolean;
@@ -46,11 +47,17 @@ export function NodeToTaskModal({
   taskData,
   task,
 }: NodeToTaskModalProps) {
+  const [priority, setPriority] = useState<Quadrant>('Q1');
   const [title, setTitle] = useState(task?.title ?? taskData.title);
 
   const [dueDate, setDueDate] = useState<string | null>('');
 
   const { createCategoryMutation } = useCreateCategory();
+
+  const currentTasksInQuadrant = useMatrixStore
+    .getState()
+    .allTasks.filter((t) => t.quadrant === priority);
+  const nextOrder = currentTasksInQuadrant.length + 1;
 
   useEffect(() => {
     if (isOpen && taskData.title) {
@@ -68,18 +75,26 @@ export function NodeToTaskModal({
     createCategoryMutation(
       { title: trimmed, color: bgColor },
       {
-        onSuccess: (data) => {
-          fetchCategories();
-          const added = useCategoryStore
-            .getState()
-            .categories.find((c) => c.title === trimmed);
-          if (added) {
-            setCategoryId(added.id);
+        onSuccess: async (data) => {
+          const newCategoryId = data.result?.id;
+
+          await fetchCategories();
+
+          if (newCategoryId) {
+            setCategoryId(newCategoryId);
+          } else {
+            const added = useCategoryStore
+              .getState()
+              .categories.find((c) => c.title === trimmed);
+            if (added) {
+              setCategoryId(added.id);
+            }
           }
+
           if (data.statusCode === 400) {
             showToast('error', '카테고리는 10자 이하로 입력해주세요.');
           } else {
-            showToast('error', '카테고리 생성에 실패했어요.');
+            showToast('success', '카테고리 생성을 성공했어요.');
           }
         },
       },
@@ -100,7 +115,6 @@ export function NodeToTaskModal({
   };
   const navigate = useNavigate();
 
-  const [priority, setPriority] = useState<Quadrant>('Q1');
   const [memo, setMemo] = useState<string>('');
 
   const { createMatrixMutation } = useCreateMatrix();
@@ -114,23 +128,28 @@ export function NodeToTaskModal({
 
   const handleConfirmCreateTask = () => {
     if (!taskData.id || !dueDate) return;
-    resetForm();
+
+    const currentTasks = useMatrixStore
+      .getState()
+      .allTasks.filter((t) => t.quadrant === priority);
+    const nextOrder = currentTasks.length + 1;
+
     createMatrixMutation(
       {
         bubbleId: taskData.id,
         payload: {
-          title: taskData.title,
-          categoryId: 3, // 일단 "기타" 고정
+          title: title.trim(),
+          categoryId,
           dueDate,
           quadrant: priority,
-          order: 1,
+          order: nextOrder,
           memo,
         },
       },
       {
         onSuccess: () => {
-          onOpenChange(false); // 모달 닫기
-          navigate('/matrix'); // 페이지 이동
+          onOpenChange(false);
+          navigate('/matrix');
         },
         onError: (err) => {
           console.error('생성 실패:', err);
@@ -138,6 +157,8 @@ export function NodeToTaskModal({
         },
       },
     );
+
+    resetForm();
   };
 
   const { categories, fetchCategories } = useCategoryStore();
