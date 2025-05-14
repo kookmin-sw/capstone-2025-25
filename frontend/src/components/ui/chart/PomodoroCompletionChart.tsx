@@ -13,6 +13,7 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import useGetPomodoroAnalysis from '@/hooks/queries/analysis/useGetPomodoroAnalysis';
+import { useMemo } from 'react';
 
 const pomodoroChartConfig = {
   totalTime: {
@@ -44,48 +45,55 @@ export function PomodoroCompletionChart({
 }: PomodoroCompletionChartProps) {
   const { pomodoroAnalysisList } = useGetPomodoroAnalysis();
 
-  const generateLastSevenDays = () => {
-    const days = [];
+  const chartData = useMemo(() => {
+    const result = [];
     const today = new Date();
 
-    for (let i = 6; i >= 0; i--) {
+    for (let i = 1; i <= 7; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
 
-      const dayOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][
-        date.getDay()
-      ];
-      const formattedDate = date.toISOString().split('T')[0];
+      const dayIndex = date.getDay();
+      const dayOfWeekCodes = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      const dayOfWeek = dayOfWeekCodes[dayIndex];
 
-      days.push({
-        date: formattedDate,
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+
+      result.push({
         day: dayOfWeekMapping[dayOfWeek as keyof DayOfWeekMap],
-        dayOfWeek: dayOfWeek,
-        totalTime: '0',
+        dayOfWeek,
+        createdAt: formattedDate,
+        totalTime: 0,
       });
     }
-    return days;
-  };
 
-  const defaultChartData = generateLastSevenDays();
+    if (!pomodoroAnalysisList?.length) {
+      return result;
+    }
 
-  const chartData = pomodoroAnalysisList?.length
-    ? defaultChartData.map((defaultDay) => {
-        const matchingData = pomodoroAnalysisList.find(
-          (item) => item.createdAt === defaultDay.date,
-        );
+    const dataMap = new Map();
+    pomodoroAnalysisList.forEach((item) => {
+      dataMap.set(item.dayOfWeek, parseInt(item.totalTime, 10) || 0);
+    });
 
+    return result.map((item) => {
+      if (dataMap.has(item.dayOfWeek)) {
         return {
-          ...defaultDay,
-          totalTime: matchingData ? matchingData.totalTime : '0',
+          ...item,
+          totalTime: dataMap.get(item.dayOfWeek),
         };
-      })
-    : defaultChartData;
+      }
+      return item;
+    });
+  }, [pomodoroAnalysisList]);
 
   return (
-    <Card className="h-full w-full border-none shadow-none rounded-2xl">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-gray-scale-700 text-[20px] font-semibold">
+    <Card className="h-full w-full border-none shadow-none rounded-2xl px-6 py-4">
+      <CardHeader className="pb-2 px-0">
+        <CardTitle className="text-[#525463] text-[20px] font-semibold">
           {title}
         </CardTitle>
       </CardHeader>
@@ -117,11 +125,7 @@ export function PomodoroCompletionChart({
                   cursor={false}
                   content={<ChartTooltipContent hideLabel />}
                 />
-                <Bar
-                  dataKey="totalTime"
-                  fill="var(--color-completed)"
-                  radius={8}
-                ></Bar>
+                <Bar dataKey="totalTime" fill="#7098ff" radius={8}></Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>

@@ -11,6 +11,7 @@ import useDeleteTodayTodo from '@/hooks/queries/today/useDeleteTodayTodo';
 import CheckIcon from '@/assets/check.svg';
 import CheckFillIcon from '@/assets/check-fill.svg';
 import { showToast } from '@/components/common/Toast.tsx';
+import { useNavigate } from 'react-router';
 
 interface TodayListProps {
   hideCompleted?: boolean;
@@ -50,6 +51,8 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
   const { patchPomodoroMutation } = usePatchPomodoro();
   const { updateStatusMutation } = useUpdateStatusTodo();
   const { deleteTodayTodoMutation } = useDeleteTodayTodo();
+
+  const navigate = useNavigate();
 
   const handleMoveToToday = (id: number) => {
     moveTodayMutation(id);
@@ -92,6 +95,10 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
         showToast('success', `"${title}"을 오늘의 할 일에서 삭제했습니다.`);
       },
     });
+  };
+
+  const handleRouteToEisenhower = () => {
+    navigate('/matrix');
   };
 
   const filteredTodayTodoList = todayTodoList
@@ -211,7 +218,10 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
               ? '완료되지 않은 일이 없어요'
               : '아직 오늘의 할 일이 없어요'}
           </p>
-          <p className="text-[14px] text-[#525463] mt-2 cursor-pointer hover:text-blue">
+          <p
+            className="text-[14px] text-[#525463] mt-2 cursor-pointer hover:text-blue"
+            onClick={handleRouteToEisenhower}
+          >
             오늘의 할 일 추가하기 {'>'}
           </p>
         </div>
