@@ -182,7 +182,7 @@ export default function Brainstorming() {
   // 버블 추가
   const addBubble = () => {
     if (!inputText.trim()) return;
-    if (bubblesRef.current.length >= 7) {
+    if (bubblesRef.current.length >= 20) {
       showToast('error', '버블이 너무 많습니다! 생각을 먼저 정리해보세요.');
       // alert('버블이 너무 많습니다! 생각을 먼저 정리해보세요.');
       return;
