@@ -4,8 +4,10 @@ import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryCreateRe
 import capstone.backend.domain.eisenhower.dto.response.EisenhowerCategoryResponse;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryUpdateRequest;
 import capstone.backend.domain.eisenhower.entity.EisenhowerCategory;
+import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.exception.CategoryNotFoundException;
 import capstone.backend.domain.eisenhower.repository.EisenhowerCategoryRepository;
+import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
@@ -21,6 +23,7 @@ public class EisenhowerCategoryService {
 
     private final EisenhowerCategoryRepository eisenhowerCategoryRepository;
     private final MemberRepository memberRepository;
+    private final EisenhowerItemRepository eisenhowerItemRepository;
 
     public List<EisenhowerCategoryResponse> getEisenhowerCategories(Long memberId) {
         return eisenhowerCategoryRepository.findAllByMemberId(memberId)
@@ -55,6 +58,12 @@ public class EisenhowerCategoryService {
     public void deleteEisenhowerCategory(Long memberId, Long categoryId) {
         EisenhowerCategory eisenhowerCategory = eisenhowerCategoryRepository.findByIdAndMemberId(categoryId, memberId)
                 .orElseThrow(CategoryNotFoundException::new);
+
+        List<EisenhowerItem> items = eisenhowerItemRepository.findAllByMemberIdAndCategoryId(memberId, categoryId);
+
+        for (EisenhowerItem item : items) {
+            item.deleteCategory();
+        }
 
         eisenhowerCategoryRepository.delete(eisenhowerCategory);
     }
