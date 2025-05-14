@@ -141,7 +141,7 @@ export function TaskCard({
         <div className="absolute p-2 top-1 right-1 flex gap-2">
           {variant === 'default' && (
             <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 items-center">
-              <div onClick={(e) => e.stopPropagation()}>
+              {/* <div onClick={(e) => e.stopPropagation()}>
                 <EisenhowerAi
                   trigger={
                     <div className="text-[#6E726E] hover:text-gray-600 transition-colors">
@@ -150,7 +150,7 @@ export function TaskCard({
                   }
                   linkedEisenhower={task}
                 />
-              </div>
+              </div> */}
 
               <div onClick={(e) => e.stopPropagation()}>
                 <Modal
