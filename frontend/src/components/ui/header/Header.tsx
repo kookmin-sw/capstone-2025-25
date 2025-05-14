@@ -5,6 +5,7 @@ import Logo from '@/assets/logo.svg';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePomodoroControl from '@/hooks/usePomodoroControl';
 import { authService } from '@/services/authService.ts';
+import WithdrawalModal from "@/components/ui/Modal/WithdrawalModal.tsx";
 import {
   Popover,
   PopoverContent,
@@ -23,20 +24,19 @@ export default function Header() {
     if (isAuthenticated) {
       // setToken(null);
       authService.logout();
+      localStorage.removeItem('pomodoro-state')
     } else {
       navigate('/login');
     }
   };
 
   const navigateToToday = () => {
-    navigate('/today');
+    if (location.pathname !== '/today') {
+      navigate('/today');
+    }
   };
   const navigateToIntro = () => {
     window.open('https://cheerful-perspective-141321.framer.app/', '_blank');
-  };
-
-  const navigateToSettings = () => {
-    navigate('/settings');
   };
 
   const currentId = usePomodoroStore((s) => s.id);
@@ -49,7 +49,9 @@ export default function Header() {
     `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
   const moveToPomododro = () => {
-    navigate('/today');
+    if (location.pathname !== '/today') {
+      navigate('/today');
+    }
   };
   return (
     <header className="px-4 py-[7px] md:px-12 h-[50px] flex items-center justify-between sticky top-0 w-full bg-gray-scale-200 border-b border-b-white z-50 ">
@@ -61,7 +63,7 @@ export default function Header() {
         {currentId && (
           <div
             onClick={moveToPomododro}
-            className="text-[#7098FF] font-medium bg-blue-2 border rounded-4xl border-blue px-4 py-[6px] text-[20px] h-9 w-[87px] flex justify-center items-center"
+            className="cursor-pointer text-[#7098FF] font-medium bg-blue-2 border rounded-4xl border-blue px-4 py-[6px] text-[20px] h-9 w-[87px] flex justify-center items-center"
           >
             {format(remaining)}
           </div>
@@ -76,29 +78,22 @@ export default function Header() {
             <Popover>
               <PopoverTrigger asChild>
                 {/*<div className="w-6 h-6 rounded-full flex items-center justify-center bg-[#D3EE17] border border-blue cursor-pointer"></div>*/}
-                <div className="w-7 h-7">
+                <div className="w-7 h-7 cursor-pointer">
                   <img src={Bubble} alt="bubble" />
                 </div>
               </PopoverTrigger>
-              <PopoverContent className="w-40 p-0 mr-4 md:hidden z-100">
+              <PopoverContent className="w-40 p-1 mr-4 md:hidden z-100">
                 <div className="py-1">
                   <button
                     onClick={navigateToIntro}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className="rounded-[8px] w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 outline-none cursor-pointer"
                   >
                     <Info size={16} />
                     <span>서비스 소개</span>
                   </button>
                   <button
-                    onClick={navigateToSettings}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <Settings size={16} />
-                    <span>설정</span>
-                  </button>
-                  <button
                     onClick={handleAuthAction}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    className=" rounded-[8px] w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 outline-none cursor-pointer"
                   >
                     {isAuthenticated ? (
                       <>
@@ -112,6 +107,14 @@ export default function Header() {
                       </>
                     )}
                   </button>
+                  <WithdrawalModal trigger={
+                    <button
+                        className=" rounded-[8px] w-[150px] flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 outline-none cursor-pointer"
+                    >
+                      <Settings size={16} />
+                      <span>회원 탈퇴</span>
+                    </button>
+                  }/>
                 </div>
               </PopoverContent>
             </Popover>
