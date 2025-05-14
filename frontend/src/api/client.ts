@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { ENDPOINTS } from '@/api/endpoints.ts';
 import { BASE_URL, GPT_BASE_URL } from '@/constants/auth.ts';
-import { getCookie } from '@/utils/cookie.ts';
+import { getCookie, setCookie } from '@/utils/cookie.ts';
+import { useAuthStore } from '@/store/authStore.ts';
 
 /*
 백엔드 API 클라이언트
@@ -53,19 +54,21 @@ apiClient.interceptors.response.use(
         const res = await axios.post(
           `${BASE_URL}${ENDPOINTS.AUTH.REFRESH_TOKEN}`,
           {},
-          {
-            withCredentials: true,
-          },
+          { withCredentials: true },
         );
 
         const newAccessToken = res.data?.content?.accessToken;
-        if (!newAccessToken) throw new Error('재발급 실패: accessToken 없음');
+        if (!newAccessToken) throw new Error('accessToken 없음');
 
+        setCookie('accessToken', newAccessToken);
+
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return apiClient(originalRequest);
       } catch (reissueError) {
         console.error('토큰 재발급 실패:', reissueError);
-        localStorage.removeItem('token');
+        useAuthStore.getState().setToken(null);
         window.location.href = '/login';
+        return Promise.reject(reissueError);
       }
     }
 
