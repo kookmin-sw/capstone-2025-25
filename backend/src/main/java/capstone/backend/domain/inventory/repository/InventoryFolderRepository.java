@@ -6,6 +6,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InventoryFolderRepository extends JpaRepository<InventoryFolder, Long> {
-    List<InventoryFolder> findAllByMemberId(Long memberId);
+    List<InventoryFolder> findAllByMemberIdOrderByCreatedAt(Long memberId);
     Optional<InventoryFolder> findByIdAndMemberId(Long id, Long memberId);
 }

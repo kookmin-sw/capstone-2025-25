@@ -6,18 +6,20 @@ import { cn } from '@/lib/utils';
 import { Calendar, Trash2 } from 'lucide-react';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePatchPomodoro from '@/hooks/queries/pomodoro/usePatchPomodoro.ts';
-import { toast } from 'sonner';
 import useUpdateStatusTodo from '@/hooks/queries/today/useUpdateStatusTodo';
 import useDeleteTodayTodo from '@/hooks/queries/today/useDeleteTodayTodo';
 import CheckIcon from '@/assets/check.svg';
 import CheckFillIcon from '@/assets/check-fill.svg';
-import {showToast} from "@/components/common/Toast.tsx";
+import { showToast } from '@/components/common/Toast.tsx';
+import { useNavigate } from 'react-router';
 
 interface TodayListProps {
   hideCompleted?: boolean;
 }
 
-function formatDateToEnglish(dateString: string): string {
+function formatDateToEnglish(dateString: string | null): string {
+  if (!dateString) return '날짜 없음';
+
   if (typeof dateString === 'string') {
     const [yearStr, monthStr, dayStr] = dateString.split('-');
 
@@ -26,6 +28,10 @@ function formatDateToEnglish(dateString: string): string {
     const day = parseInt(dayStr, 10);
 
     const date = new Date(year, month - 1, day);
+    if (isNaN(date.getTime())) {
+      return '날짜 없음';
+    }
+
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -33,7 +39,7 @@ function formatDateToEnglish(dateString: string): string {
     });
   }
 
-  return '';
+  return '날짜 없음';
 }
 
 export default function TodayList({ hideCompleted = false }: TodayListProps) {
@@ -45,6 +51,8 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
   const { patchPomodoroMutation } = usePatchPomodoro();
   const { updateStatusMutation } = useUpdateStatusTodo();
   const { deleteTodayTodoMutation } = useDeleteTodayTodo();
+
+  const navigate = useNavigate();
 
   const handleMoveToToday = (id: number) => {
     moveTodayMutation(id);
@@ -73,9 +81,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
         onSuccess: () => {
           if (newCompletedState) {
             showToast('success', `"${title}"을(를) 완료했습니다`);
-            // toast.success(`"${title}"을(를) 완료했습니다`);
           } else {
-            // toast.info(`"${title}"을(를) 미완료 상태로 변경했습니다`);
             showToast('success', `"${title}"을(를) 미완료 상태로 변경했습니다`);
           }
         },
@@ -86,10 +92,13 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
   const handleDeleteTask = (id: number, title: string) => {
     deleteTodayTodoMutation(id, {
       onSuccess: () => {
-        // toast.success(`"${title}"을 오늘의 할 일에서 삭제했습니다.`);
         showToast('success', `"${title}"을 오늘의 할 일에서 삭제했습니다.`);
       },
     });
+  };
+
+  const handleRouteToEisenhower = () => {
+    navigate('/matrix');
   };
 
   const filteredTodayTodoList = todayTodoList
@@ -97,6 +106,34 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
       ? todayTodoList.filter((todo) => !todo.isCompleted)
       : todayTodoList
     : [];
+
+  const renderCategoryBadge = (categoryId: number | string) => {
+    const categoryName = getCategoryNameById(categoryId);
+
+    if (!categoryName) {
+      return (
+        <div className="invisible h-[30px] w-[80px]" aria-hidden="true"></div>
+      );
+    }
+
+    return (
+      <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
+        {categoryName}
+      </div>
+    );
+  };
+
+  // 날짜 표시 함수
+  const renderDate = (dueDate: string | null | undefined) => {
+    return (
+      <div className="px-6 flex items-center gap-2">
+        <Calendar size={24} />
+        <p className="text-[14px] text-[#525463]">
+          {formatDateToEnglish(dueDate || null)}
+        </p>
+      </div>
+    );
+  };
 
   return (
     <div className="mt-4 space-y-4">
@@ -107,22 +144,15 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
             className="flex flex-col gap-4 py-5 rounded-lg bg-gray-scale-200"
           >
             <div className="px-5 flex items-center justify-between">
-              <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
-                {getCategoryNameById(todo.category_id)}
-              </div>
+              {renderCategoryBadge(todo.category_id)}
               <img src={CheckIcon} className="w-6 h-6 cursor-pointer" />
             </div>
             <p className="px-6 text-[20px] text-[#525463] font-semibold">
               {todo.title}
             </p>
             <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
-            <div className="px-6 flex items-center gap-2">
-              <Calendar size={24} />
-              <p className="text-[14px] text-[#525463]">
-                {formatDateToEnglish(todo.dueDate)}
-              </p>
-            </div>
-            <div className="flex justify-end mb-5 px-6">
+            {renderDate(todo.dueDate)}
+            <div className="flex justify-end px-6">
               <button
                 className="px-4 py-2 rounded-full bg-white text-blue font-semibold cursor-pointer"
                 onClick={() => handleMoveToToday(todo.id)}
@@ -140,9 +170,7 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
           className="flex flex-col gap-4 py-5 rounded-lg bg-white border border-blue"
         >
           <div className="px-5 flex items-center justify-between">
-            <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
-              {getCategoryNameById(todo.category_id)}
-            </div>
+            {renderCategoryBadge(todo.category_id)}
             <div className="flex items-center gap-2">
               <Trash2
                 className="cursor-pointer text-gray-400 hover:text-red-500"
@@ -165,13 +193,8 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
             </p>
             <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
           </div>
-          <div className="px-6 flex items-center gap-2">
-            <Calendar size={24} />
-            <p className="text-[14px] text-[#525463]">
-              {formatDateToEnglish(todo.dueDate)}
-            </p>
-          </div>
-          <div className="flex justify-end mb-5 px-6">
+          {renderDate(todo.dueDate)}
+          <div className="flex justify-end px-6">
             <button
               className={cn(
                 'px-4 py-2 rounded-full text-white font-semibold cursor-pointer',
@@ -195,7 +218,10 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
               ? '완료되지 않은 일이 없어요'
               : '아직 오늘의 할 일이 없어요'}
           </p>
-          <p className="text-[14px] text-[#525463] mt-2 cursor-pointer hover:text-blue">
+          <p
+            className="text-[14px] text-[#525463] mt-2 cursor-pointer hover:text-blue"
+            onClick={handleRouteToEisenhower}
+          >
             오늘의 할 일 추가하기 {'>'}
           </p>
         </div>

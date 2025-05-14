@@ -6,17 +6,21 @@ import static lombok.AccessLevel.*;
 import capstone.backend.domain.inventory.dto.request.InventoryFolderRequest;
 import capstone.backend.domain.member.scheme.Member;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PRIVATE)
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 public class InventoryFolder {
     @Id
@@ -33,6 +37,9 @@ public class InventoryFolder {
 
     @Column(nullable = false)
     private boolean isDefault;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "folder", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<InventoryItem> items = new ArrayList<>();

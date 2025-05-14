@@ -3,28 +3,37 @@ import { persist } from 'zustand/middleware';
 
 interface AuthState {
   token: string | null;
-  isAuthenticated: boolean;
   isTokenValid: boolean;
+  hasHydrated: boolean;
+
   setToken: (token: string | null) => void;
   setTokenValidity: (valid: boolean) => void;
+  setHasHydrated: (hydrated: boolean) => void;
+  resetAuth: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       token: null,
-      isAuthenticated: false,
-      isTokenValid: true,
-      setToken: (token) => set({ token, isAuthenticated: !!token }),
+      isTokenValid: false,
+      hasHydrated: false,
+
+      setToken: (token) => set({ token }),
       setTokenValidity: (valid) => set({ isTokenValid: valid }),
+      setHasHydrated: (hydrated) => set({ hasHydrated: hydrated }),
+      resetAuth: () =>
+        set({
+          token: null,
+          isTokenValid: false,
+          hasHydrated: false,
+        }),
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({
-        token: state.token,
-        isAuthenticated: state.isAuthenticated,
-        isTokenValid: state.isTokenValid,
-      }),
+      onRehydrateStorage: () => () => {
+        useAuthStore.getState().setHasHydrated(true);
+      },
     },
   ),
 );

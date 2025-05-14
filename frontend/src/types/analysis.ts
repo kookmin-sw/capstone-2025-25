@@ -8,5 +8,6 @@ export type TodayTaskAnalysis = {
 export type PomodoroAnalysis = {
   dailyPomodoroSummaryId: number;
   createdAt: string;
-  totalTime: string;
+  dayOfWeek: string;
+  totalTime: number;
 };

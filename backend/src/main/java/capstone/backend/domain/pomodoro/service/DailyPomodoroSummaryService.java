@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,9 +24,7 @@ public class DailyPomodoroSummaryService {
 
     // 뽀모도로 완료 시 오늘 날짜의 총 뽀모도로 이용량 기록.
     @Transactional
-    public void updateDailyPomodoroSummary(Long memberId, int executedSeconds) {
-        Duration executedDuration = Duration.ofSeconds(executedSeconds);
-
+    public void updateDailyPomodoroSummary(Long memberId, Long executedSeconds) {
         DailyPomodoroSummary summary = dailyPomodoroSummaryRepository
                 .findByMemberIdAndCreatedAt(memberId, LocalDate.now())
                 .orElseGet(() -> {
@@ -36,7 +32,7 @@ public class DailyPomodoroSummaryService {
                     return DailyPomodoroSummary.create(member);
                 });
 
-        summary.addToTotalTime(executedDuration);
+        summary.addToTotalTime(executedSeconds);
 
         dailyPomodoroSummaryRepository.save(summary);
     }
@@ -62,13 +58,12 @@ public class DailyPomodoroSummaryService {
 
     // 금주 뽀모도로 총 이용시간
     public List<DailyPomodoroDTO> findWeeklyPomodoroSummary(Long memberId, LocalDate baseDate) {
-        // 기준 날짜를 포함하는 주의 일요일과 토요일 계산
-        DayOfWeek dayOfWeek = baseDate.getDayOfWeek();
-        LocalDate sunday = baseDate.minusDays(dayOfWeek.getValue() % 7);
-        LocalDate saturday = sunday.plusDays(6);
+        // 기준 날짜를 기준으로 1주일 전 ~ 하루 전까지 계산
+        LocalDate startDate = baseDate.minusDays(7); // 7일 전
+        LocalDate endDate = baseDate.minusDays(1);   // 하루 전
 
         return dailyPomodoroSummaryRepository.findAllByMemberIdAndCreatedAtBetweenOrderByCreatedAtAsc(
-                memberId, sunday, saturday)
+                        memberId, startDate, endDate)
                 .stream()
                 .map(DailyPomodoroDTO::new)
                 .toList();

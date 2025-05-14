@@ -4,17 +4,14 @@ package capstone.backend.domain.pomodoro.schema;
 import capstone.backend.domain.member.scheme.Member;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Duration;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@EntityListeners(AuditingEntityListener.class)
 @Builder
 public class DailyPomodoroSummary {
 
@@ -26,33 +23,43 @@ public class DailyPomodoroSummary {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @CreatedDate
+    @Column(updatable = false)
     private LocalDate createdAt;
 
-    // Duration은 HH:mm:ss 형태를 초 단위로 내부에서 처리 (INTERVAL type)
     @Column(name = "total_time")
-    private Duration totalTime;
+    private Long totalTime;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, updatable = false)
+    private DayOfWeek dayOfWeek;
+
+    // 요일 추가로 인한 @CreatedDate 제거, 생성 시 날짜 및 요일 동시 추가하는게 로직상 자연스럽고 일관적임.
     public static DailyPomodoroSummary create(Member member) {
+        LocalDate now = LocalDate.now();
         return DailyPomodoroSummary.builder()
                 .member(member)
-                .totalTime(Duration.ZERO)
+                .createdAt(now)
+                .dayOfWeek(now.getDayOfWeek())
+                .totalTime(0L)
                 .build();
     }
 
-    public void addToTotalTime(Duration additional) {
-        if (this.totalTime == Duration.ZERO) {
-            this.totalTime = additional;
-        } else {
-            this.totalTime = this.totalTime.plus(additional);
+    public void addToTotalTime(Long additionalSeconds) {
+        if (this.totalTime == null) {
+            this.totalTime = 0L;
         }
+        this.totalTime += additionalSeconds;
     }
 
-    public String getTotalTime() {
-        long seconds = totalTime.getSeconds();
-        long hours = seconds / 3600;
-        long minutes = (seconds % 3600) / 60;
-        long secs = seconds % 60;
-        return String.format("%02d:%02d:%02d", hours, minutes, secs);
+    public String getDayOfWeek() {
+        return switch (dayOfWeek) {
+            case MONDAY -> "MON";
+            case TUESDAY -> "TUE";
+            case WEDNESDAY -> "WED";
+            case THURSDAY -> "THU";
+            case FRIDAY -> "FRI";
+            case SATURDAY -> "SAT";
+            case SUNDAY -> "SUN";
+        };
     }
 }

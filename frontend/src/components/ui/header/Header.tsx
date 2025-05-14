@@ -13,7 +13,9 @@ import {
 import Bubble from '@/assets/bubble-character.svg';
 
 export default function Header() {
-  const { isAuthenticated } = useAuthStore();
+  const { token, isTokenValid } = useAuthStore();
+  const isAuthenticated = !!token && isTokenValid;
+
   const navigate = useNavigate();
   usePomodoroControl();
 

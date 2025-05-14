@@ -7,13 +7,15 @@ import java.time.LocalDate;
 public record DailyPomodoroDTO(
         Long dailyPomodoroSummaryId,
         LocalDate createdAt,
-        String totalTime
+        Long totalTime,
+        String dayOfWeek
 ) {
     public DailyPomodoroDTO(DailyPomodoroSummary summary) {
         this(
                 summary.getId(),
                 summary.getCreatedAt(),
-                summary.getTotalTime()
+                summary.getTotalTime(),
+                summary.getDayOfWeek()
         );
     }
 }
