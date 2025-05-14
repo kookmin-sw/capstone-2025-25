@@ -29,6 +29,7 @@ export default function MindmapPage() {
   const bubbleText = searchParams.get('text') || '';
   const [isInitialized, setIsInitialized] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [isCompletedSuccessfully, setIsCompletedSuccessfully] = useState(false);
 
   const initializeWithQuestions = useMindmapStore(
     (state) => state.initializeWithQuestions,
@@ -37,8 +38,8 @@ export default function MindmapPage() {
   const { analzeBrainStormingMutation, isPending } = useBrainStormingAnalyze();
 
   const shouldBlock = useCallback(() => {
-    return isInitialized;
-  }, [isInitialized]);
+    return isInitialized && !isCompletedSuccessfully;
+  }, [isInitialized, isCompletedSuccessfully]);
 
   const blocker = useBlocker(shouldBlock) as Blocker | undefined;
 
@@ -63,7 +64,7 @@ export default function MindmapPage() {
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isInitialized) {
+      if (isInitialized && !isCompletedSuccessfully) {
         e.preventDefault();
 
         const message = '현재 페이지를 벗어나면 마인드맵은 저장되지 않습니다.';
@@ -79,7 +80,7 @@ export default function MindmapPage() {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [isInitialized]);
+  }, [isInitialized, isCompletedSuccessfully]);
 
   useEffect(() => {
     if (bubbleText) {
@@ -111,7 +112,9 @@ export default function MindmapPage() {
       bg-blue-2"
       ></div>
 
-      <MindmapWrapper />
+      <MindmapWrapper
+        onCompletedSuccessfully={() => setIsCompletedSuccessfully(true)}
+      />
 
       <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>
         <DialogContent className="sm:max-w-lg">
@@ -125,13 +128,10 @@ export default function MindmapPage() {
           </div>
           <DialogFooter>
             <div className="w-full flex items-center justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={handleCancel}
-              >
+              <Button variant="outline" onClick={handleCancel}>
                 취소
               </Button>
-              <Button onClick={handleProceed} variant='blue'>
+              <Button onClick={handleProceed} variant="blue">
                 확인
               </Button>
             </div>
