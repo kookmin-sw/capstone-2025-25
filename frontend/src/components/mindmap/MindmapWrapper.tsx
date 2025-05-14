@@ -65,7 +65,23 @@ function FlowContent({ onCompletedSuccessfully }: FlowContentProps) {
       return;
     }
 
-    const mindmapData = nodes.map((node) => ({
+    const defaultQuestionNodeIds = ['node-1', 'node-2', 'node-3', 'node-4'];
+
+    const nodesWithChildren = new Set<string>();
+
+    edges.forEach((edge) => {
+      nodesWithChildren.add(edge.source);
+    });
+
+    const filteredNodes = nodes.filter((node) => {
+      if (defaultQuestionNodeIds.includes(node.id)) {
+        return nodesWithChildren.has(node.id);
+      }
+
+      return true;
+    });
+
+    const mindmapData = filteredNodes.map((node) => ({
       context: String(node.data.label || ''),
     }));
 
