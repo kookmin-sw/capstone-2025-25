@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   DndContext,
   rectIntersection,
@@ -22,6 +22,32 @@ import { TaskModal } from '@/components/eisenhower/TaskModal';
 import { eisenhowerService } from '@/services/eisenhowerService';
 import { cn } from '@/lib/utils.ts';
 import { useResponsive } from '@/hooks/use-mobile.ts';
+import { useSortable } from '@dnd-kit/sortable';
+import {
+  useSensor,
+  useSensors,
+  PointerSensor,
+  MouseSensor,
+  TouchSensor,
+  KeyboardSensor,
+} from '@dnd-kit/core';
+import MoveToFolderModal from '@/components/inventory/modal/MoveToFolderModal.tsx';
+import PlusIcon from '@/assets/eisenhower/plus.svg';
+
+const useCustomSensors = () => {
+  const pointerSensor = useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 5, // 5px 이상 이동 시 드래그 시작
+      delay: 100, // 100ms 지연 후 드래그 시작
+    },
+  });
+
+  const mouseSensor = useSensor(MouseSensor);
+  const touchSensor = useSensor(TouchSensor);
+  const keyboardSensor = useSensor(KeyboardSensor);
+
+  return useSensors(pointerSensor, mouseSensor, touchSensor, keyboardSensor);
+};
 
 function Droppable({
   id,
@@ -30,14 +56,84 @@ function Droppable({
   id: string;
   children: React.ReactNode;
 }) {
-  const { setNodeRef,isOver } = useDroppable({ id });
+  const { setNodeRef, isOver } = useDroppable({ id });
   return (
-    <div ref={setNodeRef} className={cn(" w-full h-full", isOver && 'border-[1px] rounded-[8px] md:rounded-[16px] border-blue')}>
+    <div
+      ref={setNodeRef}
+      className={cn(
+        ' w-full h-full',
+        isOver && 'border-[1px] rounded-[8px] md:rounded-[16px] border-blue',
+      )}
+    >
       {children}
     </div>
   );
 }
 
+function SortableTaskCard({
+  task,
+  children,
+  onClick,
+}: {
+  task: any;
+  children: React.ReactNode;
+  onClick?: () => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: task.id,
+    activationConstraint: {
+      distance: 5, // 최소 5px 이상 이동해야 드래그
+    },
+  });
+
+  const movedRef = useRef(false);
+  const startPosRef = useRef<{ x: number; y: number } | null>(null);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    startPosRef.current = { x: e.clientX, y: e.clientY };
+    movedRef.current = false;
+
+    // 필수: DnD 작동하도록 설정
+    listeners.onPointerDown?.(e);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!startPosRef.current) return;
+    const dx = Math.abs(e.clientX - startPosRef.current.x);
+    const dy = Math.abs(e.clientY - startPosRef.current.y);
+    if (dx > 4 || dy > 4) {
+      movedRef.current = true;
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (movedRef.current) {
+      console.log('🛑 Drag 중 → Click 방지');
+    } else {
+      console.log('✅ 클릭 감지');
+      onClick?.();
+    }
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onClick={handleClick}
+    >
+      <div {...listeners}>{children}</div>
+    </div>
+  );
+}
 
 export function PriorityView({
   selectedCategory,
@@ -149,6 +245,7 @@ export function PriorityView({
   };
 
   const handleCreateTask = (newTask: Task) => {
+    console.log('newTask', newTask)
     setTasksByQuadrant((prev) => ({
       ...prev,
       [newTask.quadrant]: [...prev[newTask.quadrant], newTask],
@@ -174,6 +271,24 @@ export function PriorityView({
     });
   };
 
+  const handleDeleteTask = (deleteTask: Task) => {
+    setTasksByQuadrant((prev) => {
+      const newState: Record<Quadrant, Task[]> = {
+        Q1: [],
+        Q2: [],
+        Q3: [],
+        Q4: [],
+      };
+
+      for (const q of Object.keys(prev) as Quadrant[]) {
+        newState[q] = prev[q].filter((t) => t.id !== deleteTask.id);
+      }
+
+      return newState;
+    });
+  };
+
+
   const gridClass =
     viewMode === 'board'
       ? 'grid-cols-1 md:grid-cols-4 gap-4'
@@ -188,9 +303,35 @@ export function PriorityView({
 
   const { isMobile } = useResponsive();
   const [activeQuadrant, setActiveQuadrant] = useState<Quadrant>('Q1');
+  const sensors = useCustomSensors();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState();
+  const handleTaskModal = (task) => {
+    console.log(task);
+    setIsModalOpen(true);
+    setSelectedTask(task);
+    setModalMode('edit');
+  };
+  const [modalMode, setModalMode] = useState('create');
+  const handleCreateModal = (quadrant) => {
+    const task = {
+      title:'',
+      categoryId:null,
+      dueDate:null,
+      memo:null,
+      quadrant: quadrant,
+    };
+    setSelectedTask(task);
+    setIsModalOpen(true);
+    setModalMode('create');
+  };
+  const handleCloseModal =() =>{
+    setSelectedTask(undefined);
+  }
 
   return (
     <DndContext
+      sensors={sensors}
       collisionDetection={rectIntersection}
       onDragEnd={handleDragEnd}
       onDragStart={({ active }) => {
@@ -201,30 +342,30 @@ export function PriorityView({
         if (t) setActiveTask(t);
       }}
     >
-      {isMobile && (
-        <div className={cn('grid gap-1 md:mb-4 grid-cols-1')}>
-          {(['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).map((q) => (
-            <Droppable key={q} id={q}>
-              <button
-                key={q}
-                onClick={() => setActiveQuadrant(q)}
-                className={cn(
-                  'w-full py-2 px-3 rounded-[8px] text-sm font-medium  border cursor-pointer flex items-center gap-2',
-                  quadrantColors[q],
-                  activeQuadrant === q
-                    ? 'text-[#525463] border-[#CDCED6]'
-                    : 'text-[#525463] border-[#CDCED6]',
-                )}
-              >
-                <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
-                  {q.replace('Q', '')}
-                </div>
-                {quadrantTitles[q]}
-              </button>
-            </Droppable>
-          ))}
-        </div>
-      )}
+      {/*{isMobile && (*/}
+      {/*  <div className={cn('grid gap-1 md:mb-4 grid-cols-1')}>*/}
+      {/*    {(['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).map((q) => (*/}
+      {/*      <Droppable key={q} id={q}>*/}
+      {/*        <button*/}
+      {/*          key={q}*/}
+      {/*          onClick={() => setActiveQuadrant(q)}*/}
+      {/*          className={cn(*/}
+      {/*            'w-full py-2 px-3 rounded-[8px] text-sm font-medium  border cursor-pointer flex items-center gap-2',*/}
+      {/*            quadrantColors[q],*/}
+      {/*            activeQuadrant === q*/}
+      {/*              ? 'text-[#525463] border-[#CDCED6]'*/}
+      {/*              : 'text-[#525463] border-[#CDCED6]',*/}
+      {/*          )}*/}
+      {/*        >*/}
+      {/*          <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">*/}
+      {/*            {q.replace('Q', '')}*/}
+      {/*          </div>*/}
+      {/*          {quadrantTitles[q]}*/}
+      {/*        </button>*/}
+      {/*      </Droppable>*/}
+      {/*    ))}*/}
+      {/*  </div>*/}
+      {/*)}*/}
 
       <div
         className={cn(
@@ -245,14 +386,43 @@ export function PriorityView({
 
               if (!task.dueDate) return matchCategory;
 
-              const taskDate = new Date(task.dueDate);
+              const stripTime = (date: Date) => {
+                return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+              };
+              const taskDate = stripTime(new Date(task.dueDate));
+              const s = stripTime(new Date(startDate));
+              const e = stripTime(new Date(endDate));
               return (
-                matchCategory && taskDate >= startDate && taskDate <= endDate
+                matchCategory && taskDate >= s && taskDate <= e
               );
             });
 
             return (
-              <Droppable key={quadrant} id={quadrant} >
+              <Droppable key={quadrant} id={quadrant}>
+                {isMobile && (
+                  <div className={cn('grid gap-1 md:mb-4 grid-cols-1')}>
+                    {(['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).map((q) => (
+                      <Droppable key={q} id={q}>
+                        <button
+                          key={q}
+                          onClick={() => setActiveQuadrant(q)}
+                          className={cn(
+                            'w-full py-2 px-3 rounded-[8px] text-sm font-medium  border cursor-pointer flex items-center gap-2',
+                            quadrantColors[q],
+                            activeQuadrant === q
+                              ? 'text-[#525463] border-[#CDCED6]'
+                              : 'text-[#525463] border-[#CDCED6]',
+                          )}
+                        >
+                          <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
+                            {q.replace('Q', '')}
+                          </div>
+                          {quadrantTitles[q]}
+                        </button>
+                      </Droppable>
+                    ))}
+                  </div>
+                )}
                 <div
                   className={cn(
                     'px-4 py-5 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px] w-full',
@@ -265,49 +435,59 @@ export function PriorityView({
                   {/*<div className="flex justify-between pb-[14px] gap-2">*/}
                   <div
                     className={cn(
-                      'flex justify-between pb-[14px] gap-2',
+                      'flex justify-between pb-[14px] w-full',
                       viewMode === 'board' ? '' : 'items-center',
                     )}
                   >
                     <div
                       className={cn(
-                        'flex gap-2',
+                        'flex gap-2 w-full justify-between',
                         viewMode === 'board' ? '' : 'items-center',
                       )}
                     >
-                      <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
-                        {quadrant.replace('Q', '')}
-                      </div>
+                      <div className="flex gap-1">
+                        <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
+                          {quadrant.replace('Q', '')}
+                        </div>
 
-                      {/*<div className="flex justify-between gap-2 w-full">*/}
-                      <div
-                        className={cn(
-                          'flex justify-between gap-4 w-full',
-                          viewMode === 'board' ? '' : 'items-center',
-                        )}
-                      >
+                        {/*<div className="flex justify-between gap-2 w-full">*/}
                         <div
                           className={cn(
-                            'font-semibold text-[#525463]',
-                            viewMode === 'board'
-                              ? 'text-[16px]'
-                              : 'text-[20px]',
+                            'flex justify-between gap-4 w-full',
+                            viewMode === 'board' ? '' : 'items-center',
                           )}
                         >
-                          {viewMode === 'board'
-                            ? boardQuadrantTitles[quadrant]
-                            : quadrantTitles[quadrant]}
-                        </div>
-                        <div className="text-sm text-[#6E726E]">
-                          {filtered.length}
+                          <div
+                            className={cn(
+                              'font-semibold text-[#525463]',
+                              viewMode === 'board'
+                                ? 'text-[16px]'
+                                : 'text-[20px]',
+                            )}
+                          >
+                            {viewMode === 'board'
+                              ? boardQuadrantTitles[quadrant]
+                              : quadrantTitles[quadrant]}
+                          </div>
+                          <div className="text-sm text-[#6E726E]">
+                            {filtered.length}
+                          </div>
                         </div>
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => handleCreateModal(quadrant)}
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-blue shrink-0 cursor-pointer"
+                      >
+                        {/*<Plus className="w-5 h-5" />*/}
+                        <img src={PlusIcon} alt="plus" />
+                      </button>
                     </div>
-                    <TaskModal
-                      mode="create"
-                      quadrant={quadrant}
-                      onCreateTask={handleCreateTask}
-                    />
+                    {/*<TaskModal*/}
+                    {/*  mode="create"*/}
+                    {/*  quadrant={quadrant}*/}
+                    {/*  onCreateTask={handleCreateTask}*/}
+                    {/*/>*/}
                   </div>
                   <SortableContext
                     items={filtered.map((task) => String(task.id))}
@@ -315,24 +495,33 @@ export function PriorityView({
                   >
                     <div className="space-y-2 flex-1 overflow-y-auto scrollbar-hide">
                       {filtered.map((task) => (
-                        <TaskModal
-                          key={task.id}
-                          mode="edit"
-                          quadrant={task.quadrant}
+                        <SortableTaskCard
                           task={task}
-                          onUpdateTask={handleUpdateTask}
-                          trigger={
-                            <div>
-                              <TaskCard
-                                key={String(task.id)}
-                                task={task}
-                                layout={viewMode}
-                                onUpdateTask={handleUpdateTask}
-                                categories={categories}
-                              />
-                            </div>
-                          }
-                        />
+                          key={String(task.id)}
+                          onClick={() => {
+                            handleTaskModal(task);
+                          }}
+                        >
+                          {/*<div className='p-10' onClick={()=>{console.log("clicked")}}>sdfdsf</div>*/}
+                          <TaskCard
+                            task={task}
+                            layout={viewMode}
+                            categories={categories}
+                          />
+                          {/*<TaskModal*/}
+                          {/*    key={task.id}*/}
+                          {/*    mode="edit"*/}
+                          {/*    quadrant={task.quadrant}*/}
+                          {/*    task={task}*/}
+                          {/*    trigger={*/}
+                          {/*        <TaskCard*/}
+                          {/*            task={task}*/}
+                          {/*            layout={viewMode}*/}
+                          {/*            categories={categories}*/}
+                          {/*        />*/}
+                          {/*    }*/}
+                          {/*/>*/}
+                        </SortableTaskCard>
                       ))}
                     </div>
                   </SortableContext>
@@ -341,6 +530,17 @@ export function PriorityView({
             );
           })}
       </div>
+      <TaskModal
+        mode={modalMode}
+        task={selectedTask}
+        isOpen={isModalOpen}
+        onOpenChange={() => {
+          setIsModalOpen(false);
+        }}
+        onCreateTask={handleCreateTask}
+        onUpdateTask={handleUpdateTask}
+        onDeleteTask={handleDeleteTask}
+      />
 
       <DragOverlay>
         {activeTask && (

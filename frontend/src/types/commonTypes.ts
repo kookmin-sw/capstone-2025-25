@@ -9,4 +9,5 @@ export interface EisenhowerBase {
   order: number;
   isCompleted: boolean;
   createdAt: string;
+  categoryId?: number | null;
 }

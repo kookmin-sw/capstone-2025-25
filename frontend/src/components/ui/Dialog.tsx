@@ -96,7 +96,7 @@ function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
 function DialogTitle({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Title>) {
+}: React.ComponentProps<typeof DialogPrimitive.Title>  & React.ComponentProps<'div'>) {
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
