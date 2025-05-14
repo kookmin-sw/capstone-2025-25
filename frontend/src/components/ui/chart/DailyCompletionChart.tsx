@@ -63,7 +63,7 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
     }
 
     if (!todayTaskAnalysisList?.length) {
-      return result;
+      return result.reverse();
     }
 
     const dataMap = new Map();
@@ -71,7 +71,7 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
       dataMap.set(item.dayOfWeek, item.completedNum);
     });
 
-    return result.map((item) => {
+    return result.reverse().map((item) => {
       if (dataMap.has(item.dayOfWeek)) {
         return {
           ...item,
@@ -81,6 +81,8 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
       return item;
     });
   }, [todayTaskAnalysisList]);
+
+  console.log('chartData', chartData);
 
   return (
     <Card className="h-full w-full border-none shadow-none rounded-2xl px-6 py-4">
