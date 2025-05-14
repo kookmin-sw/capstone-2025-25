@@ -19,7 +19,7 @@ export default function DefaultLayout() {
       <Header />
 
       <div className="flex flex-1 px-4 py-6 md:p-12 gap-9">
-        <div className="hidden md:block h-[calc(100vh-136px)] flex-shrink-0 z-10">
+        <div className="hidden md:block h-[calc(100vh-136px)] flex-shrink-0 z-10 sticky top-[98px]" >
           <div className="h-full rounded-2xl overflow-hidden">
             <Sidebar />
           </div>

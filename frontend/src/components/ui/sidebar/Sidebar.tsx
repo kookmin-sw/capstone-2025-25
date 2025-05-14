@@ -86,7 +86,7 @@ export default function Sidebar() {
       return true;
     }
 
-    if (location.pathname === item.route.slice(0, -1)) {
+    if (location.pathname === item.route?.slice(0, -1)) {
       return true;
     }
 
@@ -206,7 +206,7 @@ export default function Sidebar() {
           isOpen ? 'w-[218px]' : 'w-[70px]',
         )}
       >
-        <div className="flex items-center justify-between h-[60px] flex-shrink-0">
+        <div className="flex items-center justify-between h-[70px] flex-shrink-0">
           {isOpen ? (
             <>
               <div className="flex items-center gap-3 overflow-hidden pl-6">
@@ -259,8 +259,19 @@ export default function Sidebar() {
 
             <div className="py-[10px] mt-auto">
               <div className="flex flex-col gap-[18px] px-4 mb-4">
-                <WithdrawalModal/>
-
+                <WithdrawalModal
+                  trigger={renderNavItem({
+                    id: 'withdrawal',
+                    activeIcon: (
+                      <Settings size={24} className="text-blue-500" />
+                    ),
+                    defaultIcon: (
+                      <Settings size={24} className="text-gray-400" />
+                    ),
+                    label: '회원탈퇴',
+                  })
+                }
+                />
                 {bottomNavItems.map((item) => renderNavItem(item))}
               </div>
             </div>
