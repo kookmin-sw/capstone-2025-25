@@ -129,7 +129,7 @@ export function TaskCard({
         {/* 상단 도구 아이콘 */}
         <div className="absolute p-2 top-1 right-1 flex gap-2">
           {variant === 'default' && (
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 items-center">
+            <div className=" transition-opacity flex gap-2 items-center">
               {/*<div onClick={(e) => e.stopPropagation()}>*/}
               {/*  <EisenhowerAi*/}
               {/*    trigger={*/}
