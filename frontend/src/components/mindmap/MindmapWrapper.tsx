@@ -117,10 +117,10 @@ function FlowContent() {
       <Controls />
 
       <Panel position="bottom-center">
-        <div className="mb-12 z-10 bg-[rgba(255,255,255,0.6)] rounded-4xl px-6 py-4 w-auto">
+        <div className="z-10 bg-[rgba(255,255,255,0.6)] rounded-4xl px-6 py-4 w-auto">
           <div className="flex items-center gap-3">
             <Button
-              className="w-[139px] h-[48px] text-center rounded-4xl bg-blue-2 text-blue font-semibold"
+              variant={isPending ? 'disabled' : 'outline'}
               disabled={isPending}
               onClick={() => navigate('/brainstorming')}
             >
@@ -128,7 +128,7 @@ function FlowContent() {
             </Button>
             <Button
               onClick={handleRewriteBrainStorming}
-              className="w-[139px] h-[48px] text-center rounded-4xl bg-blue text-white font-semibold"
+              variant="blue"
               disabled={isPending}
             >
               {isPending ? (
@@ -158,11 +158,7 @@ function FlowContent() {
                 <DialogFooter>
                   <div className="w-full flex items-center justify-end">
                     <DialogClose asChild>
-                      <Button
-                        onClick={handlePatchBrainStorming}
-                        size="sm"
-                        className="bg-blue text-white"
-                      >
+                      <Button onClick={handlePatchBrainStorming} variant="blue">
                         적용하기
                       </Button>
                     </DialogClose>
