@@ -2,18 +2,24 @@
 
 
 <div align="center">
-<img src="https://github.com/user-attachments/assets/11c79eb9-ae70-4cee-947d-8a72494638d5" height="100">
+
 </div>
 
-### 1. 프로젝트 소개
+### 1. 서비스 한 줄 소개
+쏟아지는 생각 속에서 나만의 흐름을 정리해주는 서비스 "Bubble-pop"
 
-플로윈은 ADHD 증상을 겪고 있는 성인뿐만 아니라, 주의력 결핍이나 산만한 생각으로 고민하는 사용자들을 위한 서비스입니다. 정신과 방문에 대한 심리적 부담이나 높은 검사 비용으로 인해 진단과 치료를 시도하기 어려운 사람들을 위해 보다 쉽게 접근할 수 있는 ADHD 관련 서비스를 기획하고 있습니다. 이를 통해 ADHD 및 정신과 치료에 대한 인식을 개선하고, 더 많은 사람이 부담 없이 필요한 도움을 받을 수 있도록 돕는 것이 목표입니다.
+### 2. 서비스 소개 페이지
+https://kookmin-sw.github.io/capstone-2025-25/
+
+### 3. 서비스 URL
+https://www.bubble-pop.kr
+
 
 <!--### 2. 소개 영상
 
 프로젝트 소개하는 영상을 추가하세요-->
 
-### 2. Flowin 팀
+### 4. 팀원 소개
 
 <div>
   
@@ -26,7 +32,7 @@
 
 <br/> 
 
-### 3. 사용법
+### 5. 사용법
 
 ```bash
 git clone https://github.com/kookmin-sw/capstone-2025-25.git
