@@ -26,7 +26,9 @@ import { useCategoryStore } from '@/store/useCategoryStore.ts';
 import { eisenhowerCategoryService } from '@/services/eisenhowerCategoryService.ts';
 import type { Task } from '@/types/task.ts';
 import { BG_COLORS } from '@/types/category.ts';
-import { toast } from 'sonner';
+
+import { showToast } from '@/components/common/Toast.tsx';
+import useCreateCategory from '@/hooks/queries/category/useCreateCategory.ts';
 
 type NodeToTaskModalProps = {
   isOpen: boolean;
@@ -48,42 +50,40 @@ export function NodeToTaskModal({
 
   const [dueDate, setDueDate] = useState<string | null>('');
 
+  const { createCategoryMutation } = useCreateCategory();
+
   useEffect(() => {
     if (isOpen && taskData.title) {
       setTitle(taskData.title);
     }
   }, [isOpen, taskData.title]);
 
-  const handleAddCategory = async (title: string) => {
+  const handleAddCategory = (title: string) => {
     const trimmed = title.trim();
     const exists = categories.some((cat) => cat.title === trimmed);
     if (!trimmed || exists) return;
 
-    if (categories.length >= 10) {
-      toast.error('카테고리는 최대 10개까지만 생성할 수 있어요.');
-      return;
-    }
+    const bgColor = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
 
-    try {
-      const bgColor = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
-
-      await eisenhowerCategoryService.create({
-        title: trimmed,
-        color: bgColor,
-      });
-      await fetchCategories();
-      const added = useCategoryStore
-        .getState()
-        .categories.find((c) => c.title === trimmed);
-
-      if (added) {
-        setCategoryId(added.id);
-      } else {
-        console.warn('새 카테고리 추가 후 찾을 수 없음');
-      }
-    } catch (err) {
-      console.error('카테고리 생성 실패:', err);
-    }
+    createCategoryMutation(
+      { title: trimmed, color: bgColor },
+      {
+        onSuccess: (data) => {
+          fetchCategories();
+          const added = useCategoryStore
+            .getState()
+            .categories.find((c) => c.title === trimmed);
+          if (added) {
+            setCategoryId(added.id);
+          }
+          if (data.statusCode === 400) {
+            showToast('error', '카테고리는 10자 이하로 입력해주세요.');
+          } else {
+            showToast('error', '카테고리 생성에 실패했어요.');
+          }
+        },
+      },
+    );
   };
 
   const handleDeleteCategory = async (value: string) => {

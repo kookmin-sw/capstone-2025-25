@@ -86,7 +86,7 @@ export function BadgeSelector({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <div
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-4 cursor-pointer"
             onClick={() => setOpen(!open)}
           >
             {displayMode === 'inline' && (

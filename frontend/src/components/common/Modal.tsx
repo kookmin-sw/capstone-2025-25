@@ -16,6 +16,8 @@ type ModalProps = {
   children: ReactNode;
   footer?: ReactNode;
   maxWidth?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export function Modal({

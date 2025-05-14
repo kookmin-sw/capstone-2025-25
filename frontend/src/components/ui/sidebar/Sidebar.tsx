@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { useNavigate, useLocation } from 'react-router';
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Info, Settings } from 'lucide-react';
 
 import TodayTodoIcon from '@/assets/sidebar/color-today-todo.svg';
 import TodayTodoHWIcon from '@/assets/sidebar/bw-today-todo.svg';
@@ -65,13 +65,13 @@ const bottomNavItems: NavItem[] = [
     route: '/service-info/',
     externalLink: 'https://cheerful-perspective-141321.framer.app/',
   },
-  // {
-  //   id: 'settings',
-  //   activeIcon: <Settings size={24} className="text-blue-500" />,
-  //   defaultIcon: <Settings size={24} className="text-gray-400" />,
-  //   label: '회원탈퇴',
-  //   route: '/settings',
-  // },
+  {
+    id: 'withdrawal',
+    activeIcon: <Settings size={24} className="text-blue-500" />,
+    defaultIcon: <Settings size={24} className="text-gray-400" />,
+    label: '회원탈퇴',
+    route: '/withdrawal/', // 가짜 경로, 클릭 시 모달 열 용도
+  },
 ];
 
 export default function Sidebar() {
@@ -79,6 +79,7 @@ export default function Sidebar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
+  const [isWithdrawalOpen, setIsWithdrawalOpen] = useState(false);
 
   const isActive = (item: NavItem): boolean => {
     if (location.pathname === item.route) {
@@ -258,7 +259,10 @@ export default function Sidebar() {
 
             <div className="py-[10px] mt-auto">
               <div className="flex flex-col gap-[18px] px-4 mb-4">
-                <WithdrawalModal />
+                <WithdrawalModal
+                  open={isWithdrawalOpen}
+                  onOpenChange={setIsWithdrawalOpen}
+                />
                 {bottomNavItems.map((item) => renderNavItem(item))}
               </div>
             </div>

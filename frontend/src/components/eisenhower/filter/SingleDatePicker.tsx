@@ -28,7 +28,7 @@ export function SingleDatePicker({
           disabled={disabled}
         >
           <div className="flex items-center">
-            <span className="text-sm">
+            <span className="text-sm whitespace-nowrap">
               {parsedDate && isValid(parsedDate)
                 ? format(parsedDate, 'yyyy년 MM월 dd일', { locale: ko })
                 : '날짜 없음'}
