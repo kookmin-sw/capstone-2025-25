@@ -223,7 +223,12 @@ export function PriorityView({
         </div>
       )}
 
-      <div className={cn(`grid ${gridClass} h-full overflow-x-auto`, viewMode=='board' && 'flex')}>
+      <div
+        className={cn(
+          `grid ${gridClass} h-full overflow-x-auto`,
+          viewMode == 'board' && 'flex',
+        )}
+      >
         {(Object.keys(tasksByQuadrant) as Quadrant[])
           .filter((q) => !isMobile || q === activeQuadrant)
           .map((quadrant) => {
@@ -247,7 +252,7 @@ export function PriorityView({
               <Droppable key={quadrant} id={quadrant}>
                 <div
                   className={cn(
-                    'px-4 py-5 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px] ',
+                    'px-4 py-5 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px] w-[100%]',
                     quadrantColors[quadrant],
                     viewMode === 'board'
                       ? 'h-[calc(100vh-160px)] min-w-[268px]'
