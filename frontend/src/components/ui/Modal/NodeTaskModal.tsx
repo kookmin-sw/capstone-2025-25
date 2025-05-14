@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -26,6 +26,7 @@ import { useCategoryStore } from '@/store/useCategoryStore.ts';
 import { eisenhowerCategoryService } from '@/services/eisenhowerCategoryService.ts';
 import type { Task } from '@/types/task.ts';
 import { BG_COLORS } from '@/types/category.ts';
+import { toast } from 'sonner';
 
 type NodeToTaskModalProps = {
   isOpen: boolean;
@@ -43,15 +44,25 @@ export function NodeToTaskModal({
   taskData,
   task,
 }: NodeToTaskModalProps) {
-  const [title, setTitle] = useState(task?.title || '');
-  const [dueDate, setDueDate] = useState<string | null>(
-    new Date().toISOString().split('T')[0],
-  );
+  const [title, setTitle] = useState(task?.title ?? taskData.title);
+
+  const [dueDate, setDueDate] = useState<string | null>('');
+
+  useEffect(() => {
+    if (isOpen && taskData.title) {
+      setTitle(taskData.title);
+    }
+  }, [isOpen, taskData.title]);
 
   const handleAddCategory = async (title: string) => {
     const trimmed = title.trim();
     const exists = categories.some((cat) => cat.title === trimmed);
     if (!trimmed || exists) return;
+
+    if (categories.length >= 10) {
+      toast.error('카테고리는 최대 10개까지만 생성할 수 있어요.');
+      return;
+    }
 
     try {
       const bgColor = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];

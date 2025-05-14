@@ -22,7 +22,7 @@ export function FilterBar({
 
   const categoryOptions = [
     {
-      label: '모든',
+      label: '전체',
       value: 'all',
       color: '#E1E1E8',
     },

@@ -79,9 +79,10 @@ export default function MatrixPage() {
   }, []);
 
   const { isMobile } = useResponsive();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex min-h-0 flex-1 md:p-[30px] overflow-auto">
+    <div className="flex min-h-0 flex-1  overflow-auto">
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
@@ -90,15 +91,20 @@ export default function MatrixPage() {
         {/*<Toaster richColors position="top-center" />*/}
         <main className="flex flex-1 min-h-0 flex-col gap-[15px] h-full">
           <div className="flex flex-col justify-between items-start w-full gap-4">
-            <div className="flex gap-2 w-full justify-between">
-              <DropdownMenu>
+            <div className="flex gap-2 w-full justify-between items-center">
+              <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                 <DropdownMenuTrigger
                   asChild
                   className="flex gap-5 cursor-pointer"
                 >
-                  <button className="text-[32px] h-8 font-bold inline-flex items-center gap-[5px] cursor-pointer">
+                  <button className="text-[28px]  text-[#525463] h-8 font-semibold inline-flex items-center gap-[5px] cursor-pointer">
                     {activeTab === 'all' ? '미완료 일정' : '완료된 일정'}
-                    <ChevronDown className="w-8 h-8" />
+                    <ChevronDown
+                      className={cn(
+                        'w-8 h-8 transition-transform',
+                        isOpen ? 'rotate-180' : 'rotate-0',
+                      )}
+                    />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -162,7 +168,7 @@ export default function MatrixPage() {
             </div>
           </div>
 
-          <div className="md:mb-6">
+          <div>
             <FilterBar
               selectedCategory={selectedCategory}
               startDate={startDate}
@@ -190,6 +196,7 @@ export default function MatrixPage() {
               onDateChange={setDateRange}
             />
           )}
+
           <DragOverlay>
             {activeTask && (
               <DragOverlayCard task={activeTask} categories={categories} />

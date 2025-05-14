@@ -287,7 +287,7 @@ export function TaskModal({
           <div>
             <label className="text-sm block py-1">메모</label>
             <textarea
-              className="w-full min-h-[100px] border border-gray-300 rounded-[7px] px-3 py-2 text-sm placeholder:text-gray-400"
+              className="w-full min-h-[80px] bg-[#F0F0F5] rounded-[8px] px-3 py-2 text-sm placeholder:text-gray-400"
               placeholder="일정에 관한 메모를 입력하세요."
               value={memo ?? ''}
               onChange={(e) => setMemo(e.target.value)}
