@@ -4,8 +4,14 @@ import Header from '@/components/ui/header/Header';
 import BottomBar from '@/components/ui/sidebar/BottomBar';
 import { Toaster } from '@/components/ui/sonner';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect.ts';
+import { useEffect } from 'react';
+import { authService } from '@/services/authService.ts';
 
 export default function DefaultLayout() {
+  useEffect(() => {
+    authService.tryRefresh();
+  }, []);
+
   useAuthRedirect();
 
   return (
