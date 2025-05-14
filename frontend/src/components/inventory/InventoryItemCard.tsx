@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Trash2, Loader2, FolderInput } from 'lucide-react';
+import { Trash2, Loader2 } from 'lucide-react';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+
 import { Input } from '@/components/ui/Input';
 import useUpdateInventoryItem from '@/hooks/queries/inventory/item/useUpdateInventoryItem';
 import { UpdateInventoryItemReq } from '@/types/api/inventory/item';
@@ -55,6 +56,10 @@ export default function InventoryItemCard({
   const [isOpen, setIsOpen] = useState(initiallyOpen);
   const [title, setTitle] = useState(item.title);
   const [memo, setMemo] = useState(item.memo || '');
+  const [isEditable, setIsEditable] = useState(false);
+
+  const [originalTitle, setOriginalTitle] = useState(item.title);
+  const [originalMemo, setOriginalMemo] = useState(item.memo || '');
 
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
@@ -69,6 +74,13 @@ export default function InventoryItemCard({
     setIsOpen(initiallyOpen);
   }, [initiallyOpen]);
 
+  useEffect(() => {
+    setTitle(item.title);
+    setMemo(item.memo || '');
+    setOriginalTitle(item.title);
+    setOriginalMemo(item.memo || '');
+  }, [item]);
+
   const handleSave = () => {
     const updateData: UpdateInventoryItemReq = {
       title,
@@ -79,10 +91,16 @@ export default function InventoryItemCard({
       { id: item.id, data: updateData },
       {
         onSuccess: () => {
-          setIsOpen(false);
+          setIsEditable(false);
+          setOriginalTitle(title);
+          setOriginalMemo(memo);
         },
       },
     );
+  };
+
+  const handleEdit = () => {
+    setIsEditable(true);
   };
 
   const handleDelete = () => {
@@ -93,75 +111,103 @@ export default function InventoryItemCard({
     });
   };
 
-  const buttonText = isOpen ? '접기' : item.memo ? '메모보기' : '메모입력';
+  const handleToggle = (newOpenState: boolean) => {
+    if (isEditable && !newOpenState) {
+      setTitle(originalTitle);
+      setMemo(originalMemo);
+      setIsEditable(false);
+    }
+    setIsOpen(newOpenState);
+  };
+
+  const buttonText = isOpen ? '접기' : '메모보기';
 
   return (
     <>
-      <li className="p-6 bg-white rounded-xl">
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <div className="flex items-center justify-between">
-            <div className="w-1/2">
+      <li className="px-6 py-4 bg-white rounded-xl">
+        <Collapsible open={isOpen} onOpenChange={handleToggle}>
+          <div className="flex items-center justify-between gap-6">
+            <div className="w-1/2 overflow-hidden flex flex-col gap-2">
               {isOpen ? (
-                <div className="pb-2">
-                  <Input
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="제목을 입력하세요"
-                    className="!text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
-                  />
+                <div>
+                  {isEditable ? (
+                    <Input
+                      autoFocus
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="제목을 입력하세요"
+                      className="!text-[16px] sm:text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                    />
+                  ) : (
+                    <h3 className="text-[16px] sm:text-[20px] text-gray-700 font-semibold truncate">
+                      {title}
+                    </h3>
+                  )}
                 </div>
               ) : (
-                <h3 className="text-[20px] text-gray-700 font-semibold pb-2">
+                <h3 className="text-[16px] sm:text-[20px] text-gray-700 font-semibold truncate">
                   {title}
                 </h3>
               )}
-              <p className="text-sm text-gray-400">
+              <p className="text-[14px] text-gray-400">
                 {formatDate(item.createdAt)}
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setIsMoveDialogOpen(true)}
-                className="px-4 py-2 bg-green-50 text-green-600 rounded-full font-semibold flex items-center gap-1 cursor-pointer"
-              >
-                <FolderInput size={16} className="mr-1" />
-                폴더이동
-              </button>
-
+            <div className="flex items-center gap-2 flex-shrink-0">
               <CollapsibleTrigger asChild>
-                <button className="px-4 py-2 bg-blue-2 text-blue rounded-full font-semibold flex items-center gap-1 cursor-pointer">
+                <button className="px-4 py-2 bg-blue-2 text-blue text-[14px] sm:text-[16px] rounded-full font-semibold flex items-center gap-1 cursor-pointer">
                   {buttonText}
                 </button>
               </CollapsibleTrigger>
+              <button
+                onClick={() => setIsMoveDialogOpen(true)}
+                className="px-4 py-[7px] text-blue text-[14px] sm:text-[16px] rounded-full font-semibold flex items-center gap-1 cursor-pointer border-blue border-[1px]"
+              >
+                폴더이동
+              </button>
             </div>
           </div>
 
           <CollapsibleContent>
-            <textarea
-              className="w-full bg-gray-scale-200 p-6 rounded-lg resize-none mt-6"
-              value={memo}
-              onChange={(e) => setMemo(e.target.value)}
-              placeholder="메모를 입력해주세요"
-            />
-
+            <div className="w-full bg-gray-scale-200 px-[15px] py-[10px] rounded-lg mt-6 h-[100px]">
+              <textarea
+                readOnly={!isEditable}
+                className="w-full resize-none h-full focus:outline-none focus:ring-0 focus:border-transparent bg-transparent"
+                value={memo}
+                onChange={(e) => setMemo(e.target.value)}
+                placeholder="메모를 입력해주세요"
+              />
+            </div>
             <div className="flex items-center justify-end gap-4 mt-4">
+              {isEditable && (
+                <button
+                  onClick={() => {
+                    setTitle(originalTitle);
+                    setMemo(originalMemo);
+                    setIsEditable(false);
+                  }}
+                  className="text-gray-500 cursor-pointer"
+                >
+                  취소
+                </button>
+              )}
               <button
-                onClick={handleSave}
-                className="text-blue cursor-pointer hover:text-blue-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={isEditable ? handleSave : handleEdit}
+                className="text-blue cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isUpdating}
               >
-                {isUpdating ? '저장 중...' : '저장하기'}
+                {isUpdating
+                  ? '저장 중...'
+                  : isEditable
+                    ? '저장하기'
+                    : '수정하기'}
               </button>
               <div
-                className="cursor-pointer p-2 hover:bg-gray-100 rounded-full"
+                className="cursor-pointer p-2 rounded-full"
                 onClick={() => setIsDeleteDialogOpen(true)}
               >
-                <Trash2
-                  size={21}
-                  color="#CDCED6"
-                  className="hover:text-red-500"
-                />
+                <Trash2 size={21} color="#CDCED6" className="" />
               </div>
             </div>
           </CollapsibleContent>
@@ -177,10 +223,10 @@ export default function InventoryItemCard({
               이 항목을 정말 삭제하시겠습니까?
             </DialogDescription>
           </DialogHeader>
-          <div className="py-4">
-            <div className="rounded-[7px] px-6 py-[20px] text-[16px] font-medium bg-red-50 text-red-600">
+          <div className="">
+            <div className="rounded-[7px] px-6 py-[20px] text-[16px] font-medium bg-blue-2">
               <p>"{title}" 항목이 영구적으로 삭제됩니다.</p>
-              <p className="mt-2">이 작업은 되돌릴 수 없습니다.</p>
+              <p className="">이 작업은 되돌릴 수 없습니다.</p>
             </div>
           </div>
           <DialogFooter>
@@ -194,7 +240,7 @@ export default function InventoryItemCard({
               <Button
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="bg-red-600 hover:bg-red-700 text-white"
+                className="bg-blue text-white"
               >
                 {isDeleting ? (
                   <div className="flex items-center justify-center">

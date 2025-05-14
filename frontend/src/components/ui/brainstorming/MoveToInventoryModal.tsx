@@ -72,7 +72,7 @@ export default function MoveToInventoryModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-4 max-h-[300px] overflow-y-auto">
+        <div className=" max-h-[300px] overflow-y-auto">
           {isLoading ? (
             <div className="flex items-center justify-center py-6">
               <Loader2 className="h-8 w-8 animate-spin text-blue" />

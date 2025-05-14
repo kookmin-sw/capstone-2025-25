@@ -11,6 +11,7 @@ import useUpdateStatusTodo from '@/hooks/queries/today/useUpdateStatusTodo';
 import useDeleteTodayTodo from '@/hooks/queries/today/useDeleteTodayTodo';
 import CheckIcon from '@/assets/check.svg';
 import CheckFillIcon from '@/assets/check-fill.svg';
+import {showToast} from "@/components/common/Toast.tsx";
 
 interface TodayListProps {
   hideCompleted?: boolean;
@@ -71,9 +72,11 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
       {
         onSuccess: () => {
           if (newCompletedState) {
-            toast.success(`"${title}"을(를) 완료했습니다`);
+            showToast('success', `"${title}"을(를) 완료했습니다`);
+            // toast.success(`"${title}"을(를) 완료했습니다`);
           } else {
-            toast.info(`"${title}"을(를) 미완료 상태로 변경했습니다`);
+            // toast.info(`"${title}"을(를) 미완료 상태로 변경했습니다`);
+            showToast('success', `"${title}"을(를) 미완료 상태로 변경했습니다`);
           }
         },
       },
@@ -83,7 +86,8 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
   const handleDeleteTask = (id: number, title: string) => {
     deleteTodayTodoMutation(id, {
       onSuccess: () => {
-        toast.success(`"${title}"을 오늘의 할 일에서 삭제했습니다.`);
+        // toast.success(`"${title}"을 오늘의 할 일에서 삭제했습니다.`);
+        showToast('success', `"${title}"을 오늘의 할 일에서 삭제했습니다.`);
       },
     });
   };

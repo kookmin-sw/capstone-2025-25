@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button.tsx';
 import { DialogClose } from '@radix-ui/react-dialog';
 import EisenhowerAi from '@/components/ui/Modal/EisenhowerAi.tsx';
 import { todayService } from '@/services/todayService.ts';
+import {showToast} from "@/components/common/Toast.tsx";
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -86,9 +87,10 @@ export function TaskCard({
           ...updated.content,
         });
 
-        toast.success(
-          wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다',
-        );
+        // toast.success(
+        //   wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다',
+        // );
+        showToast('success',  wasCompleted ? '완료를 취소했습니다' : '할 일을 완료했습니다');
       } catch (err) {
         console.error('완료 상태 업데이트 실패:', err);
       }

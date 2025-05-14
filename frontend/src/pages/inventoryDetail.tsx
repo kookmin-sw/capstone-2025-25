@@ -5,12 +5,15 @@ import { useParams, useSearchParams } from 'react-router';
 import { parseIdParam } from '@/lib/parseIdParam';
 import InventoryItemCard from '@/components/inventory/InventoryItemCard';
 import useGetInventoryFolderDetail from '@/hooks/queries/inventory/folder/useGetInventoryFolderDetail';
+import ArrowLeft from '@/assets/arrow_left.svg';
+import { useNavigate } from 'react-router';
 
 type ItemRefs = {
   [key: number]: HTMLDivElement | null;
 };
 
 export default function StoreDetail() {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const itemIdParam = searchParams.get('itemId');
@@ -41,12 +44,21 @@ export default function StoreDetail() {
     itemRefs.current[id] = el;
   };
 
+  const moveToInventory = () => {
+    navigate('/inventory');
+  };
+
   return (
     <div>
-      <div className="flex items-center gap-2 mb-8">
+      <div className="flex items-center gap-2 sm:gap-4 mb-8">
+        <img
+          src={ArrowLeft}
+          onClick={moveToInventory}
+          className="cursor-pointer mr-2 sm:mr-0"
+        />
         <img src={FolderIcon} className="w-[37.5px] h-[30px]" alt="폴더" />
         {inventoryFolderDetail && (
-          <h1 className="text-2xl text-gray-700 font-semibold">
+          <h1 className="text-[20px] sm:text-[28px] text-gray-700 font-semibold">
             {inventoryFolderDetail.name}
           </h1>
         )}

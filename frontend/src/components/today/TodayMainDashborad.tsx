@@ -64,7 +64,6 @@ export default function TodayMainDashborad() {
             />
           </div>
         </div>
-
         <div>
           {todayTodoCount !== undefined && todayTodoCount > 0 && (
             <TodayCompleteChart
