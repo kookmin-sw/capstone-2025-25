@@ -6,8 +6,11 @@ import { Toaster } from '@/components/ui/sonner';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect.ts';
 import { useEffect } from 'react';
 import { authService } from '@/services/authService.ts';
+import { usePageView } from '@/hooks/usePageView.ts';
 
 export default function DefaultLayout() {
+  usePageView();
+
   useEffect(() => {
     authService.tryRefresh();
   }, []);
