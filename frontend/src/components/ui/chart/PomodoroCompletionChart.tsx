@@ -71,7 +71,7 @@ export function PomodoroCompletionChart({
     }
 
     if (!pomodoroAnalysisList?.length) {
-      return result;
+      return result.reverse(); // 배열을 뒤집습니다
     }
 
     const dataMap = new Map();
@@ -79,7 +79,8 @@ export function PomodoroCompletionChart({
       dataMap.set(item.dayOfWeek, item.totalTime);
     });
 
-    return result.map((item) => {
+    return result.reverse().map((item) => {
+      // 배열을 뒤집습니다
       if (dataMap.has(item.dayOfWeek)) {
         return {
           ...item,
