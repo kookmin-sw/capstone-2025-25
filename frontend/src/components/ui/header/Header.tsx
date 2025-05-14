@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import Bubble from '@/assets/bubble-character.svg';
 
 export default function Header() {
   const { isAuthenticated } = useAuthStore();
@@ -66,7 +67,10 @@ export default function Header() {
 
             <Popover>
               <PopoverTrigger asChild>
-                <div className="w-6 h-6 rounded-full flex items-center justify-center bg-[#D3EE17] border border-blue cursor-pointer"></div>
+                {/*<div className="w-6 h-6 rounded-full flex items-center justify-center bg-[#D3EE17] border border-blue cursor-pointer"></div>*/}
+                <div className="w-7 h-7">
+                  <img src={Bubble} alt="bubble" />
+                </div>
               </PopoverTrigger>
               <PopoverContent className="w-40 p-0 mr-4 md:hidden z-100">
                 <div className="py-1">

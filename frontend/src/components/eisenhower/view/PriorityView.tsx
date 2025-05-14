@@ -30,13 +30,14 @@ function Droppable({
   id: string;
   children: React.ReactNode;
 }) {
-  const { setNodeRef } = useDroppable({ id });
+  const { setNodeRef,isOver } = useDroppable({ id });
   return (
-    <div ref={setNodeRef} className="h-full">
+    <div ref={setNodeRef} className={cn(" w-full h-full", isOver && 'border-[1px] rounded-[8px] md:rounded-[16px] border-blue')}>
       {children}
     </div>
   );
 }
+
 
 export function PriorityView({
   selectedCategory,
@@ -203,27 +204,34 @@ export function PriorityView({
       {isMobile && (
         <div className={cn('grid gap-1 md:mb-4 grid-cols-1')}>
           {(['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).map((q) => (
-            <button
-              key={q}
-              onClick={() => setActiveQuadrant(q)}
-              className={cn(
-                'w-full py-2 px-3 rounded-[8px] text-sm font-medium  border cursor-pointer flex items-center gap-2',
-                quadrantColors[q],
-                activeQuadrant === q
-                  ? 'text-[#525463] border-[#CDCED6]'
-                  : 'text-[#525463] border-[#CDCED6]',
-              )}
-            >
-              <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
-                {q.replace('Q', '')}
-              </div>
-              {quadrantTitles[q]}
-            </button>
+            <Droppable key={q} id={q}>
+              <button
+                key={q}
+                onClick={() => setActiveQuadrant(q)}
+                className={cn(
+                  'w-full py-2 px-3 rounded-[8px] text-sm font-medium  border cursor-pointer flex items-center gap-2',
+                  quadrantColors[q],
+                  activeQuadrant === q
+                    ? 'text-[#525463] border-[#CDCED6]'
+                    : 'text-[#525463] border-[#CDCED6]',
+                )}
+              >
+                <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">
+                  {q.replace('Q', '')}
+                </div>
+                {quadrantTitles[q]}
+              </button>
+            </Droppable>
           ))}
         </div>
       )}
 
-      <div className={`grid ${gridClass} h-full overflow-x-auto`}>
+      <div
+        className={cn(
+          `grid ${gridClass} h-full overflow-x-auto`,
+          viewMode == 'board' && 'flex',
+        )}
+      >
         {(Object.keys(tasksByQuadrant) as Quadrant[])
           .filter((q) => !isMobile || q === activeQuadrant)
           .map((quadrant) => {
@@ -244,14 +252,14 @@ export function PriorityView({
             });
 
             return (
-              <Droppable key={quadrant} id={quadrant}>
+              <Droppable key={quadrant} id={quadrant} >
                 <div
                   className={cn(
-                    'px-4 py-5 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px]',
+                    'px-4 py-5 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px] w-full',
                     quadrantColors[quadrant],
                     viewMode === 'board'
-                      ? 'h-[calc(100vh-160px)]'
-                      : 'h-[400px]',
+                      ? 'h-[calc(100vh-160px)] min-w-[268px]'
+                      : 'h-[400px] ',
                   )}
                 >
                   {/*<div className="flex justify-between pb-[14px] gap-2">*/}

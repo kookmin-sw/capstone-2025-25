@@ -25,7 +25,7 @@ import {
   DialogTitle,
 } from '@/components/ui/Dialog.tsx';
 import { NodeToTaskModal } from '@/components/ui/Modal/NodeTaskModal.tsx';
-import {showToast} from '@/components/common/Toast.tsx';
+import { showToast } from '@/components/common/Toast.tsx';
 
 export default function Brainstorming() {
   const isMobile = useResponsive();
@@ -146,7 +146,9 @@ export default function Brainstorming() {
       if (centerX - offset - diameter >= 0)
         candidateX.push(centerX - offset - diameter);
     }
-
+    if (candidates.length == 0) {
+      candidateX.push(centerX - radius);
+    }
     // 각 x 좌표에 대해 가능한 y 위치 계산
     for (const x of candidateX) {
       let y = 10;
@@ -167,18 +169,14 @@ export default function Brainstorming() {
     }
 
     // 가장 위에 붙일 수 있는 후보 위치들 중 하나 선택
-    const minY = Math.min(...candidates.map((c) => c.y));
-    const filtered = candidates.filter((c) => c.y === minY);
-    const chosen = filtered[Math.floor(Math.random() * filtered.length)];
-    //
-    // if (chosen.y + diameter > containerHeight) {
-    //   setContainerSize((prev) => ({
-    //     ...prev,
-    //     height: chosen.y + diameter , // +100은 여유
-    //   }));
-    // }
-
-    return chosen;
+    if (candidates.length > 0) {
+      const minY = Math.min(...candidates.map((c) => c.y));
+      const filtered = candidates.filter((c) => c.y === minY);
+      const chosen = filtered[Math.floor(Math.random() * filtered.length)];
+      return chosen;
+    } else {
+      return { x: 0, y: 0 };
+    }
   };
 
   // 버블 추가

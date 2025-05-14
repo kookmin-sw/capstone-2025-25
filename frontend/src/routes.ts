@@ -24,4 +24,6 @@ export default [
     route('inventory/:id', 'pages/inventoryDetail.tsx'),
     route('brainstorming', 'pages/brainstorming.tsx'),
   ]),
+
+  route('*', 'pages/NotFound.tsx'),
 ] satisfies RouteConfig;

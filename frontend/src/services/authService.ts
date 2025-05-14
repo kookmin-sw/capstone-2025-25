@@ -1,6 +1,7 @@
 import { apiClient } from '@/api/client';
 import { ENDPOINTS } from '@/api/endpoints';
 import { useAuthStore } from '../store/authStore.ts';
+import { getCookie } from '@/utils/cookie.ts';
 
 export const authService = {
   login: (token: string) => {
@@ -45,5 +46,17 @@ export const authService = {
 
     authService.login(token);
     return token;
+  },
+
+  withdraw: async () => {
+    const accessToken = getCookie('accessToken');
+    if (!accessToken) throw new Error('accessToken 없음');
+
+    return await apiClient.delete(ENDPOINTS.AUTH.WITHDRAW, {
+      data: {
+        accessToken,
+      },
+      withCredentials: true,
+    });
   },
 };
