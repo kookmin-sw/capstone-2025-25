@@ -109,7 +109,7 @@ export default function Header() {
                   </button>
                   <WithdrawalModal trigger={
                     <button
-                        className=" rounded-[8px] w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 outline-none cursor-pointer"
+                        className=" rounded-[8px] w-[150px] flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 outline-none cursor-pointer"
                     >
                       <Settings size={16} />
                       <span>회원 탈퇴</span>

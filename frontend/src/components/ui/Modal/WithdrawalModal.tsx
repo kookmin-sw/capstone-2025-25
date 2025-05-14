@@ -1,7 +1,7 @@
 import { Modal } from '@/components/common/Modal';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Button } from '@/components/ui/button';
-import { Settings } from 'lucide-react';
+import {Loader2, Settings} from 'lucide-react';
 import { useWithdrawAuth } from '@/hooks/useWithdrawAuth.ts';
 import { ReactNode } from 'react';
 import {
@@ -30,36 +30,23 @@ export default function WithdrawalModal({ trigger }: WithdrawalModalProps) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger> {trigger || defaultTrigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>회원 탈퇴</DialogTitle>
           <DialogDescription className="whitespace-pre-line">
-            정말 회원 탈퇴를 진행하시겠습니까? <br />이 작업은 되돌릴 수 없습니다.
+            정말 회원 탈퇴를 진행하시겠습니까? <br />이 작업은 되돌릴 수
+            없습니다.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="blue" onClick={withdraw}>
-            탈퇴하기
-          </Button>
+          <div className="w-full flex items-center justify-end gap-2">
+            <Button variant="blue" onClick={withdraw}>
+              탈퇴하기
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-
-    // <Modal
-    //     trigger={trigger ?? defaultTrigger}
-    //     children={
-    //         <div className="text-sm text-gray-700">
-    //             정말 회원 탈퇴를 진행하시겠습니까? <br />이 작업은 되돌릴 수 없습니다.
-    //         </div>
-    //     }
-    //     footer={
-    //         <DialogClose asChild>
-    //             <Button variant="destructive" onClick={withdraw}>
-    //                 탈퇴하기
-    //             </Button>
-    //         </DialogClose>
-    //     }
-    // />
   );
 }
