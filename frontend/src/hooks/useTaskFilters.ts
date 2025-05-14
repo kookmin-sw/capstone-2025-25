@@ -2,12 +2,9 @@ import { useState } from 'react';
 
 export function useTaskFilters() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [startDate, setStartDate] = useState<Date>(new Date(Date.now()));
-  const [endDate, setEndDate] = useState<Date>(() => {
-    const today = new Date();
-    today.setDate(today.getDate() + 10);
-    return today;
-  });
+
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const setDateRange = (start: Date, end: Date) => {
     setStartDate(start);

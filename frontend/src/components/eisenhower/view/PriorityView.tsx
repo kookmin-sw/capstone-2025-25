@@ -142,8 +142,8 @@ export function PriorityView({
   viewMode,
 }: {
   selectedCategory: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | null;
+  endDate: Date | null;
   viewMode: 'matrix' | 'board';
 }) {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
@@ -245,7 +245,7 @@ export function PriorityView({
   };
 
   const handleCreateTask = (newTask: Task) => {
-    console.log('newTask', newTask)
+    console.log('newTask', newTask);
     setTasksByQuadrant((prev) => ({
       ...prev,
       [newTask.quadrant]: [...prev[newTask.quadrant], newTask],
@@ -288,7 +288,6 @@ export function PriorityView({
     });
   };
 
-
   const gridClass =
     viewMode === 'board'
       ? 'grid-cols-1 md:grid-cols-4 gap-4'
@@ -315,19 +314,19 @@ export function PriorityView({
   const [modalMode, setModalMode] = useState('create');
   const handleCreateModal = (quadrant) => {
     const task = {
-      title:'',
-      categoryId:null,
-      dueDate:null,
-      memo:null,
+      title: '',
+      categoryId: null,
+      dueDate: null,
+      memo: null,
       quadrant: quadrant,
     };
     setSelectedTask(task);
     setIsModalOpen(true);
     setModalMode('create');
   };
-  const handleCloseModal =() =>{
+  const handleCloseModal = () => {
     setSelectedTask(undefined);
-  }
+  };
 
   return (
     <DndContext
@@ -384,17 +383,17 @@ export function PriorityView({
                 getCategoryNameById(task.categoryId, categories) ===
                   selectedCategory;
 
-              if (!task.dueDate) return matchCategory;
+              if (!task.dueDate || !startDate || !endDate) {
+                return matchCategory;
+              }
 
-              const stripTime = (date: Date) => {
-                return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-              };
+              const stripTime = (date: Date) =>
+                new Date(date.getFullYear(), date.getMonth(), date.getDate());
               const taskDate = stripTime(new Date(task.dueDate));
               const s = stripTime(new Date(startDate));
               const e = stripTime(new Date(endDate));
-              return (
-                matchCategory && taskDate >= s && taskDate <= e
-              );
+
+              return matchCategory && taskDate >= s && taskDate <= e;
             });
 
             return (
@@ -504,7 +503,7 @@ export function PriorityView({
                         >
                           {/*<div className='p-10' onClick={()=>{console.log("clicked")}}>sdfdsf</div>*/}
                           <TaskCard
-                              onUpdateTask={handleUpdateTask}
+                            onUpdateTask={handleUpdateTask}
                             task={task}
                             layout={viewMode}
                             categories={categories}
