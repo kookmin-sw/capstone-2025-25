@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import FolderIcon from '@/assets/folder.png';
-import { ChevronRight, Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { ChevronRight, Loader2, Pencil, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import useGetInventoryFolderList from '@/hooks/queries/inventory/folder/useGetInventoryFolderList';
 import useDeleteInventoryFolder from '@/hooks/queries/inventory/folder/useDeleteInventoryFolder';
@@ -8,6 +8,7 @@ import CreateFolderModal from '@/components/inventory/modal/CreateFolderMoal';
 import DeleteFolderModal from '@/components/inventory/modal/DeleteFolderMoal';
 import useUpdateFolderName from '@/hooks/queries/inventory/folder/useUpdateFolderName';
 import Plus from '@/assets/plus.svg';
+import { toast } from 'sonner';
 
 export default function InventoryPage() {
   const navigate = useNavigate();
@@ -77,12 +78,22 @@ export default function InventoryPage() {
 
   const handleUpdateFolderName = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
-    if (editingFolderName.trim() === '') return;
+
+    const trimmedName = editingFolderName.trim();
+
+    if (trimmedName === '') {
+      return;
+    }
+
+    if (trimmedName.length > 10) {
+      toast('폴더 이름은 최대 10글자까지 가능합니다.');
+      return;
+    }
 
     updateFolderNameMutation(
       {
         id,
-        data: { name: editingFolderName.trim() },
+        data: { name: trimmedName },
       },
       {
         onSuccess: () => {
@@ -98,19 +109,21 @@ export default function InventoryPage() {
   };
 
   return (
-    <div className='flex flex-col gap-8'>
+    <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <div className="flex  gap-4 items-baseline">
-          <h1 className="text-[28px] text-[#525463] font-semibold">
+          <h1 className="text-[20px] sm:text-[28px] text-[#525463] font-semibold">
             나의 보관함
           </h1>
-          <p className="text-[#525463]">나의 생각을 보관해보세요</p>
+          <p className="text-[12px] sm:text-[16px] text-[#525463]">
+            나의 생각을 보관해보세요
+          </p>
         </div>
         <div
           className="bg-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer "
           onClick={() => setIsCreateModalOpen(true)}
         >
-          <img src={Plus} className='w-[18px] h-[18px]' />
+          <img src={Plus} className="w-[18px] h-[18px]" />
         </div>
       </div>
 
@@ -132,13 +145,13 @@ export default function InventoryPage() {
           inventoryFolderList.map((store) => (
             <li
               key={store.id}
-              className="flex items-center justify-between px-8 py-4 bg-white rounded-xl cursor-pointer border-[1px] border-white hover:border-blue "
+              className="flex items-center justify-between gap-2 sm:gap-10 px-8 py-4 bg-white rounded-xl cursor-pointer border-[1px] border-white hover:border-blue "
               onClick={() => handleRouteToStoreDetail(store.id)}
             >
-              <div className="flex items-center gap-4 min-w-0">
+              <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-grow overflow-hidden">
                 <img
                   src={FolderIcon}
-                  className="w-[37.5px] h-[30px]"
+                  className="w-[37.5px] h-[30px] flex-shrink-0"
                   alt="폴더"
                 />
                 {editingFolderId === store.id ? (
@@ -146,16 +159,16 @@ export default function InventoryPage() {
                     type="text"
                     value={editingFolderName}
                     onChange={handleFolderNameChange}
-                    onClick={(e) => e.stopPropagation()} // 이벤트 버블링 방지
-                    className="text-[20px] font-semibold p-1 border border-blue rounded focus:outline-none min-w-0"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[20px] font-semibold p-1 border border-blue rounded focus:outline-none min-w-0 flex-grow"
                     autoFocus
                   />
                 ) : (
-                  <p className="text-[20px] truncatetext-[#15161A] font-semibold">
+                  <p className="text-[20px] text-[#15161A] font-semibold truncate max-w-[50%] overflow-hidden">
                     {store.name}
                   </p>
                 )}
-                <p className="text-[#A9ABB8] font-semibold">
+                <p className="text-[#A9ABB8] font-semibold flex-shrink-0">
                   {store.itemCount}
                 </p>
               </div>
@@ -184,31 +197,35 @@ export default function InventoryPage() {
                     </button>
                   </div>
                 ) : (
-                  <>
-                    <div
-                      className="p-2  rounded-full"
-                      onClick={(e) =>
-                        handleEditClick(e, { id: store.id, name: store.name })
-                      }
-                    >
-                      <Pencil
-                        className="text-[#A9ABB8] "
-                        size={18}
-                      />
-                    </div>
-                    <div
-                      className="p-2  rounded-full"
-                      onClick={(e) =>
-                        handleDeleteClick(e, { id: store.id, name: store.name })
-                      }
-                    >
-                      <Trash2
-                        className="text-[#A9ABB8] "
-                        size={18}
-                      />
-                    </div>
-                    <ChevronRight className="text-[#A9ABB8]" />
-                  </>
+                  <div className="flex items-center gap-3 sm:gap-7">
+                    {!store.isDefault && (
+                      <>
+                        <Pencil
+                          className="text-[#A9ABB8]"
+                          size={18}
+                          onClick={(e) =>
+                            handleEditClick(e, {
+                              id: store.id,
+                              name: store.name,
+                            })
+                          }
+                        />
+
+                        <Trash2
+                          className="text-[#A9ABB8] "
+                          size={18}
+                          onClick={(e) =>
+                            handleDeleteClick(e, {
+                              id: store.id,
+                              name: store.name,
+                            })
+                          }
+                        />
+                      </>
+                    )}
+
+                    <ChevronRight size={18} className="text-[#A9ABB8]" />
+                  </div>
                 )}
               </div>
             </li>
