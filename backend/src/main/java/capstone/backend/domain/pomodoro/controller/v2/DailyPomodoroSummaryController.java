@@ -48,11 +48,10 @@ public class DailyPomodoroSummaryController {
     }
 
     @GetMapping("/week")
-    @Operation(summary = "금주 뽀모도로 총 시간")
+    @Operation(summary = "금주 뽀모도로 총 시간", description = "오늘 날짜를 기준으로 일주일 전부터 어제까지의 데이터 전송")
     public ApiResponse<List<DailyPomodoroDTO>> weeklyTotalPomodoroTime(
             @AuthenticationPrincipal CustomOAuth2User user
     ) {
         return ApiResponse.ok(dailyPomodoroSummaryService.findWeeklyPomodoroSummary(user.getMemberId(), LocalDate.now()));
     }
-
 }
