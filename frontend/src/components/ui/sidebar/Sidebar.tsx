@@ -65,13 +65,13 @@ const bottomNavItems: NavItem[] = [
     route: '/service-info/',
     externalLink: 'https://cheerful-perspective-141321.framer.app/',
   },
-  {
-    id: 'withdrawal',
-    activeIcon: <Settings size={24} className="text-blue-500" />,
-    defaultIcon: <Settings size={24} className="text-gray-400" />,
-    label: '회원탈퇴',
-    route: '/withdrawal/', // 가짜 경로, 클릭 시 모달 열 용도
-  },
+  // {
+  //   id: 'withdrawal',
+  //   activeIcon: <Settings size={24} className="text-blue-500" />,
+  //   defaultIcon: <Settings size={24} className="text-gray-400" />,
+  //   label: '회원탈퇴',
+  //   route: '/withdrawal/', // 가짜 경로, 클릭 시 모달 열 용도
+  // },
 ];
 
 export default function Sidebar() {
@@ -259,10 +259,8 @@ export default function Sidebar() {
 
             <div className="py-[10px] mt-auto">
               <div className="flex flex-col gap-[18px] px-4 mb-4">
-                <WithdrawalModal
-                  open={isWithdrawalOpen}
-                  onOpenChange={setIsWithdrawalOpen}
-                />
+                <WithdrawalModal/>
+
                 {bottomNavItems.map((item) => renderNavItem(item))}
               </div>
             </div>

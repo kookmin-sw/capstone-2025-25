@@ -15,14 +15,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex justify-center items-center w-full h-screen bg-[#F0F0F5] px-4">
+    <div className="flex justify-center items-center w-full h-screen bg-[#F0F0F5] px-10">
       <div
         className={`flex ${
           isMobile ? 'flex-col' : 'flex-row gap-20'
         } items-center justify-center`}
       >
         <div>
-          <img src={Bubble} width={isMobile ? 300 : 500} alt="bubble" />
+          <img
+              src={Bubble}
+              width={isMobile ? 'auto' : 450}
+              alt="bubble"
+              style={{
+                filter: 'drop-shadow(0px 9.29px 250px #7098FF)'
+              }}
+          />
         </div>
 
         <div className="flex flex-col justify-center w-full max-w-[345px]">
@@ -30,7 +37,8 @@ export default function LoginPage() {
             <div className="text-2xl font-bold mb-6">
               <div className="text-center">
                 <p className="block md:hidden text-[24px]">
-                  머릿속을 맑게, 오늘을 명확하게!
+                  <p className="text-[24px]">머릿속을 맑게,</p>
+                  <p className="text-[24px]">오늘을 명확하게!</p>
                 </p>
               </div>
 
@@ -40,7 +48,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="mb-6 text-sm text-[#444] text-center md:text-start">
+            <div className="mb-6 text-[16px] text-center md:text-start">
               <p>
                 해야 할 일은 많은데, 뭐부터 할지 막막할 때.
                 <br />
