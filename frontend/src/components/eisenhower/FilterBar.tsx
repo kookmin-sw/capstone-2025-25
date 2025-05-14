@@ -5,8 +5,8 @@ import { BadgeSelector } from '@/components/common/BadgeSelector';
 
 interface FilterBarProps {
   selectedCategory: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | null;
+  endDate: Date | null;
   onCategoryChange: (category: string) => void;
   onDateChange: (start: Date, end: Date) => void;
 }

@@ -9,8 +9,8 @@ import { Task } from '@/types/task.ts';
 interface CompletedScheduleViewProps {
   tasks: Task[];
   selectedCategory: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | null;
+  endDate: Date | null;
   onCategoryChange: (category: string) => void;
   onDateChange: (start: Date, end: Date) => void;
   onTaskClick: (task: EisenhowerTask) => void;
@@ -46,7 +46,10 @@ export function CompletedView({
 
   const filteredTasks = tasks.filter((task) => {
     const due = task.dueDate ? new Date(task.dueDate) : null;
-    if (due && (due < startDate || due > endDate)) return false;
+
+    if (due && startDate && endDate) {
+      if (due < startDate || due > endDate) return false;
+    }
 
     const categoryName = getCategoryNameById(task.categoryId, categories);
     if (selectedCategory !== 'all' && categoryName !== selectedCategory)
