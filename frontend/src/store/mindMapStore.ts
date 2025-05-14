@@ -15,11 +15,12 @@ import {
   initialEdges,
 } from '@/components/mindmap/initailElements';
 
-const NODE_WIDTH = 172;
+const BASE_NODE_WIDTH = 172;
 const MIN_NODE_HEIGHT = 60;
 const ROOT_NODE_ID = '1';
 
 const nodeHeightMap = new Map<string, number>();
+const nodeWidthMap = new Map<string, number>();
 
 const nodeStyles = {
   transition: 'all 0.5s ease',
@@ -33,9 +34,39 @@ const edgeStyles = {
 
 initialNodes.forEach((node) => {
   nodeHeightMap.set(node.id, MIN_NODE_HEIGHT);
+  nodeWidthMap.set(node.id, BASE_NODE_WIDTH);
 });
 
-/* 레이아웃 계산 함수 */
+const calculateNodeWidth = (text: string): number => {
+  const avgCharWidth = 9;
+
+  const maxLines = 4;
+
+  const charsPerLine = Math.floor((BASE_NODE_WIDTH - 40) / avgCharWidth);
+
+  const estimatedLines = Math.min(
+    maxLines,
+    Math.ceil(text.length / charsPerLine),
+  );
+
+  if (estimatedLines <= 1) {
+    return Math.max(BASE_NODE_WIDTH, text.length * avgCharWidth + 40);
+  } else {
+    return BASE_NODE_WIDTH;
+  }
+};
+
+const calculateNodeHeight = (text: string, width: number): number => {
+  const avgCharWidth = 9;
+  const lineHeight = 20;
+
+  const charsPerLine = Math.floor((width - 40) / avgCharWidth);
+
+  const estimatedLines = Math.max(1, Math.ceil(text.length / charsPerLine));
+
+  return Math.max(MIN_NODE_HEIGHT, 30 + estimatedLines * lineHeight);
+};
+
 const getLayoutedElements = (
   nodes: Node[],
   edges: Edge[],
@@ -49,17 +80,24 @@ const getLayoutedElements = (
 
   dagreGraph.setGraph({
     rankdir: direction,
-    nodesep: isHorizontal ? 60 : 30,
-    ranksep: isHorizontal ? 80 : 120,
-    edgesep: 20,
-    marginx: 20,
-    marginy: 40,
+    nodesep: isHorizontal ? 80 : 50,
+    ranksep: isHorizontal ? 120 : 160,
+    edgesep: 30,
+    marginx: 30,
+    marginy: 50,
   });
 
   nodes.forEach((node) => {
-    const nodeHeight = nodeHeightMap.get(node.id) || MIN_NODE_HEIGHT;
+    const nodeText = (node.data.label as string) || '';
+    const nodeWidth = nodeWidthMap.get(node.id) || calculateNodeWidth(nodeText);
+    nodeWidthMap.set(node.id, nodeWidth);
+
+    const nodeHeight =
+      nodeHeightMap.get(node.id) || calculateNodeHeight(nodeText, nodeWidth);
+    nodeHeightMap.set(node.id, nodeHeight);
+
     dagreGraph.setNode(node.id, {
-      width: NODE_WIDTH,
+      width: nodeWidth,
       height: nodeHeight,
     });
   });
@@ -75,11 +113,11 @@ const getLayoutedElements = (
     return { nodes, edges };
   }
 
-  const diffX = rootPosition.x - (dagreeRootPos.x - NODE_WIDTH / 2);
-  const diffY =
-    rootPosition.y -
-    (dagreeRootPos.y -
-      (nodeHeightMap.get(ROOT_NODE_ID) || MIN_NODE_HEIGHT) / 2);
+  const rootWidth = nodeWidthMap.get(ROOT_NODE_ID) || BASE_NODE_WIDTH;
+  const rootHeight = nodeHeightMap.get(ROOT_NODE_ID) || MIN_NODE_HEIGHT;
+
+  const diffX = rootPosition.x - (dagreeRootPos.x - rootWidth / 2);
+  const diffY = rootPosition.y - (dagreeRootPos.y - rootHeight / 2);
 
   const newNodes = nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
@@ -87,9 +125,11 @@ const getLayoutedElements = (
       return node;
     }
 
+    const nodeWidth = nodeWidthMap.get(node.id) || BASE_NODE_WIDTH;
     const nodeHeight = nodeHeightMap.get(node.id) || MIN_NODE_HEIGHT;
+
     const position = {
-      x: nodeWithPosition.x - NODE_WIDTH / 2 + diffX,
+      x: nodeWithPosition.x - nodeWidth / 2 + diffX,
       y: nodeWithPosition.y - nodeHeight / 2 + diffY,
     };
 
@@ -98,6 +138,11 @@ const getLayoutedElements = (
       targetPosition: isHorizontal ? Position.Left : Position.Top,
       sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
       position,
+      style: {
+        ...nodeStyles,
+        width: nodeWidth,
+        height: nodeHeight,
+      },
     };
   });
 
@@ -131,6 +176,7 @@ type MindmapState = {
   onEdgesChange: (changes: EdgeChange[]) => void;
   updateNodeLabel: (nodeId: string, newLabel: string) => void;
   updateNodeHeight: (nodeId: string, height: number) => void;
+  updateNodeWidth: (nodeId: string, width: number) => void;
   setDirection: (direction: 'TB' | 'LR') => void;
   addChildNode: (parentNodeId: string) => void;
   deleteNode: (nodeId: string) => void;
@@ -155,8 +201,14 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
   },
 
   updateNodeLabel: (nodeId, newLabel) => {
-    set((state) => ({
-      nodes: state.nodes.map((node) => {
+    set((state) => {
+      const newWidth = calculateNodeWidth(newLabel);
+      const newHeight = calculateNodeHeight(newLabel, newWidth);
+
+      nodeWidthMap.set(nodeId, newWidth);
+      nodeHeightMap.set(nodeId, newHeight);
+
+      const updatedNodes = state.nodes.map((node) => {
         if (node.id === nodeId) {
           return {
             ...node,
@@ -164,11 +216,24 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
               ...node.data,
               label: newLabel,
             },
+            style: {
+              ...node.style,
+              width: newWidth,
+              height: newHeight,
+            },
           };
         }
         return node;
-      }),
-    }));
+      });
+
+      const { nodes, edges } = getLayoutedElements(
+        updatedNodes,
+        state.edges,
+        state.direction,
+      );
+
+      return { nodes, edges };
+    });
   },
 
   updateNodeHeight: (nodeId, height) => {
@@ -176,6 +241,22 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
 
     if (nodeHeightMap.get(nodeId) !== actualHeight) {
       nodeHeightMap.set(nodeId, actualHeight);
+
+      const { nodes, edges } = getLayoutedElements(
+        get().nodes,
+        get().edges,
+        get().direction,
+      );
+
+      set({ nodes, edges });
+    }
+  },
+
+  updateNodeWidth: (nodeId, width) => {
+    const actualWidth = Math.max(width, BASE_NODE_WIDTH);
+
+    if (nodeWidthMap.get(nodeId) !== actualWidth) {
+      nodeWidthMap.set(nodeId, actualWidth);
 
       const { nodes, edges } = getLayoutedElements(
         get().nodes,
@@ -213,6 +294,7 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
       const newNodeId = `node-${randomId}`;
 
       nodeHeightMap.set(newNodeId, MIN_NODE_HEIGHT);
+      nodeWidthMap.set(newNodeId, BASE_NODE_WIDTH);
 
       const parentNode = state.nodes.find((node) => node.id === parentNodeId);
       if (!parentNode) return state;
@@ -231,7 +313,11 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
         targetPosition: state.direction === 'LR' ? Position.Left : Position.Top,
         sourcePosition:
           state.direction === 'LR' ? Position.Right : Position.Bottom,
-        style: nodeStyles,
+        style: {
+          ...nodeStyles,
+          width: BASE_NODE_WIDTH,
+          height: MIN_NODE_HEIGHT,
+        },
       };
 
       const newEdge: Edge = {
@@ -285,6 +371,7 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
 
       nodesToDelete.forEach((id) => {
         nodeHeightMap.delete(id);
+        nodeWidthMap.delete(id);
       });
 
       const { nodes, edges } = getLayoutedElements(
@@ -299,6 +386,12 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
 
   initializeWithQuestions: (rootText: string, questions: string[]) => {
     set((state) => {
+      const rootWidth = calculateNodeWidth(rootText);
+      const rootHeight = calculateNodeHeight(rootText, rootWidth);
+
+      nodeWidthMap.set(ROOT_NODE_ID, rootWidth);
+      nodeHeightMap.set(ROOT_NODE_ID, rootHeight);
+
       const rootNode: Node = {
         id: ROOT_NODE_ID,
         type: 'custom',
@@ -310,19 +403,29 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
         targetPosition: state.direction === 'LR' ? Position.Left : Position.Top,
         sourcePosition:
           state.direction === 'LR' ? Position.Right : Position.Bottom,
-        style: nodeStyles,
+        style: {
+          ...nodeStyles,
+          width: rootWidth,
+          height: rootHeight,
+        },
       };
 
       const newNodes: Node[] = [rootNode];
       const newEdges: Edge[] = [];
 
       nodeHeightMap.clear();
-      nodeHeightMap.set(ROOT_NODE_ID, MIN_NODE_HEIGHT);
+      nodeWidthMap.clear();
+      nodeHeightMap.set(ROOT_NODE_ID, rootHeight);
+      nodeWidthMap.set(ROOT_NODE_ID, rootWidth);
 
       questions.forEach((question, index) => {
         const nodeId = `node-${index + 1}`;
 
-        nodeHeightMap.set(nodeId, MIN_NODE_HEIGHT);
+        const nodeWidth = calculateNodeWidth(question);
+        const nodeHeight = calculateNodeHeight(question, nodeWidth);
+
+        nodeWidthMap.set(nodeId, nodeWidth);
+        nodeHeightMap.set(nodeId, nodeHeight);
 
         const childNode: Node = {
           id: nodeId,
@@ -336,7 +439,11 @@ export const useMindmapStore = create<MindmapState>((set, get) => ({
             state.direction === 'LR' ? Position.Left : Position.Top,
           sourcePosition:
             state.direction === 'LR' ? Position.Right : Position.Bottom,
-          style: nodeStyles,
+          style: {
+            ...nodeStyles,
+            width: nodeWidth,
+            height: nodeHeight,
+          },
         };
 
         const edge: Edge = {
