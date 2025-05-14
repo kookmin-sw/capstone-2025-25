@@ -113,9 +113,9 @@ export default function InventoryPage() {
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1 md:gap-4 items-baseline md:flex-row ">
-          <h1 className=" text-[28px] text-[#525463] font-semibold">
+          <p className=" text-[28px] text-[#525463] font-semibold">
             나의 보관함
-          </h1>
+          </p>
           <p className=":text-[16px] text-[#525463]">
             나의 생각을 보관해보세요
           </p>
