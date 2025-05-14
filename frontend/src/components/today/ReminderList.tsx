@@ -18,7 +18,7 @@ export default function ReminderList() {
   };
 
   return (
-    <div className="w-full mb-0 lg:mb-6 flex flex-col gap-2 md:gap-[17px] ">
+    <div className="w-full mb-6 flex flex-col gap-2 md:gap-[17px] ">
       <div className="flex items-center gap-4 mb-2 ml-2  md:ml-2">
         <h4 className="text-[20px] text-[#525463] font-semibold">
           리마인더

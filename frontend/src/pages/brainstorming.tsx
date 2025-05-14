@@ -373,7 +373,7 @@ export default function Brainstorming() {
                       setOpenPopoverId(null);
                     }}
                     className={clsx(
-                      'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
+                      'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200  cursor-pointer',
                       isMobile ? 'text-[14px]' : 'text-[16px]',
                     )}
                   >
@@ -382,7 +382,7 @@ export default function Brainstorming() {
                   <div className="w-[80px] h-[1px] bg-gray-200"></div>
                   <button
                     className={clsx(
-                      'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
+                      'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 cursor-pointer',
                       isMobile ? 'text-[14px]' : 'text-[16px]',
                     )}
                     onClick={() => {
@@ -395,7 +395,7 @@ export default function Brainstorming() {
                   <div className="w-[80px] h-[1px] bg-gray-200"></div>
                   <button
                     className={clsx(
-                      'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
+                      'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 cursor-pointer',
                       isMobile ? 'text-[14px]' : 'text-[16px]',
                     )}
                     onClick={() => {
@@ -408,7 +408,7 @@ export default function Brainstorming() {
                   <div className="w-[80px] h-[1px] bg-gray-200"></div>
                   <button
                     className={clsx(
-                      'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 py-2 cursor-pointer',
+                      'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 cursor-pointer',
                       isMobile ? 'text-[14px]' : 'text-[16px]',
                     )}
                     onClick={() => {
