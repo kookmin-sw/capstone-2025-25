@@ -40,6 +40,7 @@ export default function Brainstorming() {
   const textareaRef = useRef(null);
   const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
   const [isBubbleDialogOpen, setIsBubbleDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedBubble, setSelectedBubble] = useState({
     bubbleId: null,
     title: '',
@@ -98,7 +99,7 @@ export default function Brainstorming() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (!isPending) {
+      if (!isPending && !isSubmitting) {
         addBubble();
       }
     }
@@ -184,12 +185,12 @@ export default function Brainstorming() {
     if (!inputText.trim()) return;
     if (bubblesRef.current.length >= 20) {
       showToast('error', '버블이 너무 많습니다! 생각을 먼저 정리해보세요.');
-      // alert('버블이 너무 많습니다! 생각을 먼저 정리해보세요.');
       return;
     }
     const scroll = scrollRef.current;
     const scrollWidth = scroll.offsetWidth;
     let scrollHeight = scroll.offsetHeight;
+    setIsSubmitting(true);
 
     createBubbleMutation(
       { text: inputText },
@@ -233,6 +234,9 @@ export default function Brainstorming() {
 
         onError: (error) => {
           console.error('버블 생성 중 오류가 발생했습니다: ', error);
+        },
+        onSettled: () => {
+          setIsSubmitting(false);
         },
       },
     );
@@ -399,7 +403,7 @@ export default function Brainstorming() {
                       setOpenPopoverId(null);
                     }}
                   >
-                    매트릭스
+                    아이젠하워
                   </button>
                   <div className="w-[80px] h-[1px] bg-gray-200"></div>
                   <button

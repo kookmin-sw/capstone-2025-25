@@ -86,7 +86,6 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
       clearInterval(intervalId);
     }
     const totalElapsed = getTotalElapsedTime();
-    console.log(totalElapsed - pausedTime);
     patchPomodoroMutation({
       data: {
         executedCycles: [

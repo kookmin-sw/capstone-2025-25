@@ -23,6 +23,7 @@ export default function Header() {
     if (isAuthenticated) {
       // setToken(null);
       authService.logout();
+      localStorage.removeItem('pomodoro-state')
     } else {
       navigate('/login');
     }
@@ -49,7 +50,9 @@ export default function Header() {
     `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 
   const moveToPomododro = () => {
-    navigate('/today');
+    if (location.pathname !== '/today') {
+      navigate('/today');
+    }
   };
   return (
     <header className="px-4 py-[7px] md:px-12 h-[50px] flex items-center justify-between sticky top-0 w-full bg-gray-scale-200 border-b border-b-white z-50 ">
@@ -61,7 +64,7 @@ export default function Header() {
         {currentId && (
           <div
             onClick={moveToPomododro}
-            className="text-[#7098FF] font-medium bg-blue-2 border rounded-4xl border-blue px-4 py-[6px] text-[20px] h-9 w-[87px] flex justify-center items-center"
+            className="cursor-pointer text-[#7098FF] font-medium bg-blue-2 border rounded-4xl border-blue px-4 py-[6px] text-[20px] h-9 w-[87px] flex justify-center items-center"
           >
             {format(remaining)}
           </div>
