@@ -119,7 +119,7 @@ export default function MindmapPage() {
             <DialogTitle>마인드맵 작성을 취소하시겠습니까?</DialogTitle>
           </DialogHeader>
           <div>
-            <div className="rounded-[7px] px-6 py-[20px] text-[20px] font-semibold bg-blue-2">
+            <div className="rounded-[16px] px-6 py-[20px] text-[20px] font-semibold bg-blue-2 text-gray-scale-700">
               마인드맵 내용은 저장되지 않으며, 다시 확인할 수 없습니다.
             </div>
           </div>
@@ -128,11 +128,10 @@ export default function MindmapPage() {
               <Button
                 variant="outline"
                 onClick={handleCancel}
-                className="bg-white text-gray-700"
               >
                 취소
               </Button>
-              <Button onClick={handleProceed} className="bg-blue text-white">
+              <Button onClick={handleProceed} variant='blue'>
                 확인
               </Button>
             </div>

@@ -246,7 +246,6 @@ export function NodeToTaskModal({
           <div className="w-[180px] flex justify-end">
             <DialogClose asChild>
               <Button
-                size="sm"
                 variant={!title.trim() ? 'disabled' : 'blue'}
                 className="flex-1"
                 onClick={handleConfirmCreateTask}

@@ -24,10 +24,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/Dialog.tsx';
-import BrainstormingLogo from '@/assets/sidebar/color-brainstorming.svg';
-import { DialogClose } from '@radix-ui/react-dialog';
-import { Button } from '@/components/ui/button.tsx';
 import { NodeToTaskModal } from '@/components/ui/Modal/NodeTaskModal.tsx';
+import {showToast} from '@/components/common/Toast.tsx';
 
 export default function Brainstorming() {
   const isMobile = useResponsive();
@@ -38,7 +36,6 @@ export default function Brainstorming() {
   const { createBubbleMutation, isPending } = useCreateBubble();
   const [bubbles, setBubbles] = useState<BubbleNodeType[]>([]);
   const [inputText, setInputText] = useState('');
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const bubblesRef = useRef<BubbleNodeType[]>([]);
   const textareaRef = useRef(null);
   const [openPopoverId, setOpenPopoverId] = useState<number | null>(null);
@@ -187,8 +184,9 @@ export default function Brainstorming() {
   // 버블 추가
   const addBubble = () => {
     if (!inputText.trim()) return;
-    if (bubblesRef.current.length >= 20) {
-      alert('버블이 너무 많습니다! 생각을 먼저 정리해보세요.');
+    if (bubblesRef.current.length >= 7) {
+      showToast('error', '버블이 너무 많습니다! 생각을 먼저 정리해보세요.');
+      // alert('버블이 너무 많습니다! 생각을 먼저 정리해보세요.');
       return;
     }
     const scroll = scrollRef.current;
@@ -438,7 +436,8 @@ export default function Brainstorming() {
               'md:text-[16px] border py-[8px] overflow-hidden resize-none border-blue rounded-[48px] px-6 font-semibold font-pretendard flex-1 outline-none placeholder:text-gray-400 break-words whitespace-pre-wrap h-auto w-full truncate placeholder:whitespace-nowrap placeholder:overflow-hidden placeholder:text-ellipsis',
             )}
           />
-
+          {/*<Toast message="안녕" type="success" />*/}
+          {/*<Toast message='안녕' type='error'/>*/}
           <button
             disabled={isPending}
             onClick={addBubble}
