@@ -68,18 +68,26 @@ export function NodeToTaskModal({
     createCategoryMutation(
       { title: trimmed, color: bgColor },
       {
-        onSuccess: (data) => {
-          fetchCategories();
-          const added = useCategoryStore
-            .getState()
-            .categories.find((c) => c.title === trimmed);
-          if (added) {
-            setCategoryId(added.id);
+        onSuccess: async (data) => {
+          const newCategoryId = data.result?.id;
+
+          await fetchCategories();
+
+          if (newCategoryId) {
+            setCategoryId(newCategoryId);
+          } else {
+            const added = useCategoryStore
+              .getState()
+              .categories.find((c) => c.title === trimmed);
+            if (added) {
+              setCategoryId(added.id);
+            }
           }
+
           if (data.statusCode === 400) {
             showToast('error', '카테고리는 10자 이하로 입력해주세요.');
           } else {
-            showToast('error', '카테고리 생성에 실패했어요.');
+            showToast('success', '카테고리 생성을 성공했어요.');
           }
         },
       },
