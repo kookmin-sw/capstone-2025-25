@@ -11,6 +11,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-GKS1P1FHDB"
@@ -18,16 +21,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <script
           dangerouslySetInnerHTML={{
             __html: `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-GKS1P1FHDB', { send_page_view: false });
-    `,
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){ dataLayer.push(arguments); }
+              gtag('js', new Date());
+              gtag('config', 'G-GKS1P1FHDB');
+            `,
           }}
-        ></script>
-
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        />
         <title>Bubble Pop</title>
         <meta property="og:title" content="Bubble Pop" />
         <meta
