@@ -27,8 +27,9 @@ import { showToast } from '@/components/common/Toast.tsx';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
+
 interface TaskCardProps {
-  task: EisenhowerBase & { categoryId?: number | null };
+  task: EisenhowerBase;
   categories: Category[];
   onClick?: () => void;
   layout?: 'matrix' | 'board';
@@ -37,6 +38,7 @@ interface TaskCardProps {
   variant?: TaskCardVariant;
   onUpdateTask?: (task: EisenhowerTask) => void;
 }
+
 
 export function TaskCard({
   task,
@@ -48,11 +50,15 @@ export function TaskCard({
   variant = 'default',
   onUpdateTask,
 }: TaskCardProps) {
-  const { id, title, memo, dueDate, categoryId } = task;
-
-  const category = categoryId
-    ? categories.find((cat) => cat.id === categoryId)
+  console.log('taskcard',task)
+  const { id, title, memo } = task;
+  const dueDate = task.dueDate
+  const category = task.categoryId
+    ? categories.find((cat) => cat.id === task.categoryId)
     : null;
+
+
+
 
   const {
     attributes,
@@ -67,8 +73,8 @@ export function TaskCard({
 
   const handleClick = (e: MouseEvent) => {
     const checkIcon = e.currentTarget.querySelector('.check-icon');
-    if (checkIcon && checkIcon.contains(e.target as Node)) return;
-    if (!isDragging && variant === 'default' && onClick) onClick();
+    // if (checkIcon && checkIcon.contains(e.target as Node)) return;
+    // if (!isDragging && variant === 'default' && onClick) onClick();
   };
 
   const handleTaskComplete = async (e: MouseEvent) => {
@@ -124,16 +130,16 @@ export function TaskCard({
         <div className="absolute p-2 top-1 right-1 flex gap-2">
           {variant === 'default' && (
             <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 items-center">
-              <div onClick={(e) => e.stopPropagation()}>
-                <EisenhowerAi
-                  trigger={
-                    <div className="text-[#6E726E] hover:text-gray-600 transition-colors">
-                      <Bot />
-                    </div>
-                  }
-                  linkedEisenhower={task}
-                />
-              </div>
+              {/*<div onClick={(e) => e.stopPropagation()}>*/}
+              {/*  <EisenhowerAi*/}
+              {/*    trigger={*/}
+              {/*      <div className="text-[#6E726E] hover:text-gray-600 transition-colors">*/}
+              {/*        <Bot />*/}
+              {/*      </div>*/}
+              {/*    }*/}
+              {/*    linkedEisenhower={task}*/}
+              {/*  />*/}
+              {/*</div>*/}
 
               <div onClick={(e) => e.stopPropagation()}>
                 <Modal
@@ -165,13 +171,13 @@ export function TaskCard({
                   }
                 ></Modal>
               </div>
-              {dragHandle !== 'full' && (
-                <div {...listeners} className="cursor-move">
-                  <span className="text-xs text-[#6E726E] hover:text-gray-600">
-                    <GripVertical />
-                  </span>
-                </div>
-              )}
+              {/*{dragHandle !== 'full' && (*/}
+              {/*  <div {...listeners} className="cursor-move">*/}
+              {/*    <span className="text-xs text-[#6E726E] hover:text-gray-600">*/}
+              {/*      <GripVertical />*/}
+              {/*    </span>*/}
+              {/*  </div>*/}
+              {/*)}*/}
             </div>
           )}
           <div
@@ -220,7 +226,8 @@ export function TaskCard({
             <div className="flex">
               <Calendar className="w-4 h-4 mr-1 text-blue" />
               <span className="text-center pt-[1px] text-xs">
-                {format(new Date(dueDate), 'yyyy.MM.dd')}
+                {dueDate}
+                {/*{format(new Date(dueDate), 'yyyy.MM.dd')}*/}
               </span>
             </div>
           ) : (
@@ -232,5 +239,7 @@ export function TaskCard({
         </div>
       </div>
     </div>
+
+
   );
 }
