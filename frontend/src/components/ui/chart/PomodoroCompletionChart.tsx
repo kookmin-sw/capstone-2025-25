@@ -76,7 +76,7 @@ export function PomodoroCompletionChart({
 
     const dataMap = new Map();
     pomodoroAnalysisList.forEach((item) => {
-      dataMap.set(item.dayOfWeek, parseInt(item.totalTime, 10) || 0);
+      dataMap.set(item.dayOfWeek, item.totalTime);
     });
 
     return result.map((item) => {
@@ -89,6 +89,19 @@ export function PomodoroCompletionChart({
       return item;
     });
   }, [pomodoroAnalysisList]);
+
+  const formatTimeFromSeconds = (totalSeconds: number): string => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    let formattedTime = '';
+    if (hours > 0) formattedTime += `${hours}h `;
+    if (minutes > 0 || hours > 0) formattedTime += `${minutes}m `;
+    if (seconds > 0) formattedTime += `${seconds}s`;
+
+    return formattedTime.trim() || '0s';
+  };
 
   return (
     <Card className="h-full w-full border-none shadow-none rounded-2xl px-6 py-4">
@@ -124,6 +137,21 @@ export function PomodoroCompletionChart({
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent hideLabel />}
+                  formatter={(value: number) => {
+                    return (
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 bg-blue" />
+                        <p>
+                          <span className="mr-2 text-gray-700">
+                            집중한 시간
+                          </span>
+                          <span className="font-semibold">
+                            {value ? formatTimeFromSeconds(value) : '0s'}
+                          </span>
+                        </p>
+                      </div>
+                    );
+                  }}
                 />
                 <Bar dataKey="totalTime" fill="#7098ff" radius={8}></Bar>
               </BarChart>

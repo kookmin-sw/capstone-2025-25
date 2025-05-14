@@ -9,5 +9,5 @@ export type PomodoroAnalysis = {
   dailyPomodoroSummaryId: number;
   createdAt: string;
   dayOfWeek: string;
-  totalTime: string;
+  totalTime: number;
 };

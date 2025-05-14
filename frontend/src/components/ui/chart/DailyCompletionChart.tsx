@@ -113,6 +113,17 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent hideLabel />}
+                  formatter={(value) => {
+                    return (
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 bg-blue" />
+                        <p>
+                          <span className="mr-2 text-gray-700">완료한 일</span>
+                          <span className="font-semibold">{value}개</span>
+                        </p>
+                      </div>
+                    );
+                  }}
                 />
                 <Bar dataKey="completedNum" fill="#7098ff" radius={8}></Bar>
               </BarChart>
