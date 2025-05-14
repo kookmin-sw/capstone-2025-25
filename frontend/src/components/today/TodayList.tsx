@@ -111,19 +111,16 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
     const categoryName = getCategoryNameById(categoryId);
 
     if (!categoryName) {
-      return (
-        <div className="invisible h-[30px] w-[80px]" aria-hidden="true"></div>
-      );
+      return null;
     }
 
     return (
-      <div className="px-3 py-[6px] bg-blue-2 text-gray-scale-900 inline-block rounded-full">
+      <div className="inline-flex px-3 py-[6px] bg-blue-2 text-gray-scale-900 rounded-full mb-2 self-start">
         {categoryName}
       </div>
     );
   };
 
-  // 날짜 표시 함수
   const renderDate = (dueDate: string | null | undefined) => {
     return (
       <div className="px-6 flex items-center gap-2">
@@ -141,16 +138,22 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
         yesterdayTodoList.map((todo) => (
           <div
             key={todo.id}
-            className="flex flex-col gap-4 py-5 rounded-lg bg-gray-scale-200"
+            className="relative flex flex-col gap-4 py-5 rounded-lg bg-gray-scale-200"
           >
-            <div className="px-5 flex items-center justify-between">
-              {renderCategoryBadge(todo.category_id)}
+            <div className="absolute top-5 right-5">
               <img src={CheckIcon} className="w-6 h-6 cursor-pointer" />
             </div>
-            <p className="px-6 text-[20px] text-[#525463] font-semibold">
-              {todo.title}
-            </p>
-            <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
+
+            <div className="px-6 pr-20 flex flex-col items-start w-full">
+              {renderCategoryBadge(todo.category_id)}
+              <p className="text-[20px] text-[#525463] font-semibold w-full line-clamp-2 overflow-hidden">
+                {todo.title}
+              </p>
+              <p className="text-[14px] text-[#858899] mt-2 w-full line-clamp-2 overflow-hidden">
+                {todo.memo}
+              </p>
+            </div>
+
             {renderDate(todo.dueDate)}
             <div className="flex justify-end px-6">
               <button
@@ -167,32 +170,34 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
       {filteredTodayTodoList.map((todo) => (
         <div
           key={todo.id}
-          className="flex flex-col gap-4 py-5 rounded-lg bg-white border border-blue"
+          className="relative flex flex-col gap-4 py-5 rounded-lg bg-white border border-blue"
         >
-          <div className="px-5 flex items-center justify-between">
-            {renderCategoryBadge(todo.category_id)}
-            <div className="flex items-center gap-2">
-              <Trash2
-                className="cursor-pointer text-gray-400 hover:text-red-500"
-                size={24}
-                onClick={() => handleDeleteTask(todo.id, todo.title)}
-                color="#7098ff"
-              />
-              <img
-                src={todo.isCompleted ? CheckFillIcon : CheckIcon}
-                className="w-6 h-6 cursor-pointer"
-                onClick={() =>
-                  handleCompleteTask(todo.id, todo.isCompleted, todo.title)
-                }
-              />
-            </div>
+          <div className="absolute top-5 right-5 flex items-center gap-2">
+            <Trash2
+              className="cursor-pointer text-gray-400 hover:text-red-500"
+              size={24}
+              onClick={() => handleDeleteTask(todo.id, todo.title)}
+              color="#7098ff"
+            />
+            <img
+              src={todo.isCompleted ? CheckFillIcon : CheckIcon}
+              className="w-6 h-6 cursor-pointer"
+              onClick={() =>
+                handleCompleteTask(todo.id, todo.isCompleted, todo.title)
+              }
+            />
           </div>
-          <div className="flex flex-col gap-2">
-            <p className="px-6 text-[20px] text-[#525463] font-semibold">
+
+          <div className="px-6 pr-20 flex flex-col items-start w-full">
+            {renderCategoryBadge(todo.category_id)}
+            <p className="text-[20px] text-[#525463] font-semibold w-full line-clamp-2 overflow-hidden">
               {todo.title}
             </p>
-            <p className="px-6 text-[14px] text-[#858899]">{todo.memo}</p>
+            <p className="text-[14px] text-[#858899] mt-2 w-full line-clamp-2 overflow-hidden">
+              {todo.memo}
+            </p>
           </div>
+
           {renderDate(todo.dueDate)}
           <div className="flex justify-end px-6">
             <button
