@@ -15,7 +15,7 @@ export const analysisService = {
 
   getPomodoro: async (): Promise<GetPomodoroanalysisRes> => {
     const response = await apiClient.get<GetPomodoroanalysisRes>(
-      ENDPOINTS.ANALYSIS.TODAY_TASK,
+      ENDPOINTS.ANALYSIS.POMODORO,
     );
     return response.data;
   },
