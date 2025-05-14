@@ -17,6 +17,7 @@ import { useCategoryStore } from '@/store/useCategoryStore.ts';
 import { toast } from 'sonner';
 import PlusIcon from '@/assets/eisenhower/plus.svg';
 import { BG_COLORS } from '@/types/category.ts';
+import {showToast} from "@/components/common/Toast.tsx";
 
 type TaskModalProps = {
   mode: 'create' | 'edit';
@@ -105,7 +106,8 @@ export function TaskModal({
       try {
         await eisenhowerService.delete(task.id);
         onDeleteTask?.(task.id);
-        toast.success('할 일이 삭제되었습니다.');
+        // toast.success('할 일이 삭제되었습니다.');
+        showToast('success','할 일이 삭제되었습니다.' )
       } catch (err) {
         console.error('삭제 실패:', err);
       }
@@ -312,7 +314,7 @@ export function TaskModal({
             <DialogClose asChild>
               <Button
                 onClick={handleDelete}
-                className="text-blue bg-[#E8EFFF] hover:bg-[#E8EFFF]"
+                variant='outline'
               >
                 삭제하기
               </Button>

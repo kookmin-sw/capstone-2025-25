@@ -2,6 +2,7 @@ export type InventoryFolder = {
   id: number;
   name: string;
   itemCount: number;
+  isDefault: boolean;
 };
 
 export type InventoryItem = {

@@ -28,15 +28,15 @@ export default function DeleteFolderModal({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>보관함 삭제</DialogTitle>
+          <DialogTitle>폴더 삭제</DialogTitle>
           <DialogDescription>
-            정말 이 보관함을 삭제하시겠습니까?
+            정말 이 폴더를 삭제하시겠습니까?
           </DialogDescription>
         </DialogHeader>
-        <div className="py-4">
-          <div className="rounded-[7px] px-6 py-[20px] text-[16px] font-medium bg-blue-2">
-            <p>"{folderName}" 보관함과 그 안의 모든 내용이 삭제됩니다.</p>
-            <p className="mt-2">이 작업은 되돌릴 수 없습니다.</p>
+        <div className="">
+          <div className="rounded-[16px] px-6 py-[20px] text-[16px] font-medium bg-blue-2 text-gray-scale-700">
+            <p>"{folderName}" 폴더와 그 안의 모든 내용이 삭제됩니다.</p>
+            <p>이 작업은 되돌릴 수 없습니다.</p>
           </div>
         </div>
         <DialogFooter>
