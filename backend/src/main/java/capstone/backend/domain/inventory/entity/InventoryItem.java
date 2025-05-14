@@ -4,6 +4,7 @@ import capstone.backend.domain.inventory.dto.request.InventoryItemCreateRequest;
 import capstone.backend.domain.member.scheme.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,12 +18,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class InventoryItem {
 
     @Id
@@ -52,7 +55,6 @@ public class InventoryItem {
             .folder(folder)
             .title(request.title())
             .memo(request.memo())
-            .createdAt(LocalDateTime.now())
             .build();
     }
 

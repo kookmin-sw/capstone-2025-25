@@ -13,11 +13,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor(access = PRIVATE)
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 public class InventoryFolder {
     @Id
@@ -35,7 +38,7 @@ public class InventoryFolder {
     @Column(nullable = false)
     private boolean isDefault;
 
-    @Column(nullable = false)
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "folder", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -46,7 +49,6 @@ public class InventoryFolder {
             .member(member)
             .name(inventoryFolderRequest.name())
             .isDefault(isDefault)
-            .createdAt(LocalDateTime.now())
             .build();
     }
 
