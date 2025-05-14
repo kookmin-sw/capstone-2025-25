@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { useNavigate, useLocation } from 'react-router';
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Info, Settings } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Info } from 'lucide-react';
 
 import TodayTodoIcon from '@/assets/sidebar/color-today-todo.svg';
 import TodayTodoHWIcon from '@/assets/sidebar/bw-today-todo.svg';
@@ -11,6 +11,7 @@ import EisenHowerIcon from '@/assets/sidebar/color-eisenhower.svg';
 import EisenHowerHWIcon from '@/assets/sidebar/bw-eisenhower.svg';
 import StoreIcon from '@/assets/sidebar/color-store.svg';
 import StoreHWIcon from '@/assets/sidebar/bw-store.svg';
+import WithdrawalModal from '@/components/ui/Modal/WithdrawalModal.tsx';
 
 type NavItem = {
   id: string;
@@ -64,13 +65,13 @@ const bottomNavItems: NavItem[] = [
     route: '/service-info',
     externalLink: 'https://cheerful-perspective-141321.framer.app/',
   },
-  {
-    id: 'settings',
-    activeIcon: <Settings size={24} className="text-blue-500" />,
-    defaultIcon: <Settings size={24} className="text-gray-400" />,
-    label: '설정',
-    route: '/settings',
-  },
+  // {
+  //   id: 'settings',
+  //   activeIcon: <Settings size={24} className="text-blue-500" />,
+  //   defaultIcon: <Settings size={24} className="text-gray-400" />,
+  //   label: '회원탈퇴',
+  //   route: '/settings',
+  // },
 ];
 
 export default function Sidebar() {
@@ -253,6 +254,7 @@ export default function Sidebar() {
 
             <div className="py-[10px] mt-auto">
               <div className="flex flex-col gap-[18px] px-4 mb-4">
+                <WithdrawalModal />
                 {bottomNavItems.map((item) => renderNavItem(item))}
               </div>
             </div>
