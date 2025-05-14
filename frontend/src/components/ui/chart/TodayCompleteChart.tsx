@@ -1,7 +1,12 @@
-import { LabelList, Pie, PieChart } from 'recharts';
+import { Cell, Pie, PieChart } from 'recharts';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChartConfig, ChartContainer } from '@/components/ui/chart';
-import { useState, useEffect, useRef } from 'react';
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
+import { useRef } from 'react';
 
 type TodayCompleteChartProps = {
   totalCount: number;
@@ -13,22 +18,6 @@ export function TodayCompleteChart({
   completedCount,
 }: TodayCompleteChartProps) {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [fontSize, setFontSize] = useState(24);
-
-  useEffect(() => {
-    const updateFontSize = () => {
-      if (chartRef.current) {
-        const containerWidth = chartRef.current.offsetWidth;
-        const newSize = Math.max(14, Math.min(24, containerWidth * 0.09));
-        setFontSize(newSize);
-      }
-    };
-
-    updateFontSize();
-
-    window.addEventListener('resize', updateFontSize);
-    return () => window.removeEventListener('resize', updateFontSize);
-  }, []);
 
   const completionPercentage =
     totalCount > 0 && completedCount > 0
@@ -41,28 +30,20 @@ export function TodayCompleteChart({
 
   const chartData = [
     {
-      type: 'remainRate',
-      visitors: remainingPercentage,
+      name: '남은 할 일',
+      value: remainingPercentage,
       fill: '#D9D9D9',
     },
     {
-      type: 'completionRate',
-      visitors: completionPercentage,
+      name: '완료한 할 일',
+      value: completionPercentage,
       fill: '#7098ff',
     },
   ];
 
   const chartConfig = {
-    visitors: {
-      label: 'Visitors',
-    },
-    completionRate: {
-      label: `${completionPercentage}%`,
-      color: 'hsl(var(--chart-1))',
-    },
-    remainRate: {
-      label: '',
-      color: 'hsl(var(--chart-2))',
+    value: {
+      label: 'Percentage',
     },
   } satisfies ChartConfig;
 
@@ -79,20 +60,32 @@ export function TodayCompleteChart({
             <PieChart>
               <Pie
                 data={chartData}
-                dataKey="visitors"
+                dataKey="value"
+                nameKey="name"
                 startAngle={90}
                 endAngle={-270}
+                cx="50%"
+                cy="50%"
+                outerRadius="80%"
               >
-                <LabelList
-                  dataKey="type"
-                  stroke="none"
-                  fill="#CEFF73"
-                  formatter={(value: keyof typeof chartConfig) =>
-                    chartConfig[value]?.label
-                  }
-                  style={{ fontSize: `${fontSize}px` }}
-                />
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
               </Pie>
+              <ChartTooltip
+                content={<ChartTooltipContent hideLabel />}
+                formatter={(value: number, name: string) => {
+                  return (
+                    <div className="flex items-center gap-2">
+                      <div className="w-2.5 h-2.5 bg-blue" />
+                      <p>
+                        <span className="mr-2 text-gray-700">{name}</span>
+                        <span className="font-semibold">{value}%</span>
+                      </p>
+                    </div>
+                  );
+                }}
+              />
             </PieChart>
           </ChartContainer>
         </div>
