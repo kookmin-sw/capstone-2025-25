@@ -1,12 +1,9 @@
 package capstone.backend.domain.pomodoro.service;
 
 import static capstone.backend.domain.pomodoro.util.PomodoroTimeUtils.calculateTotalTimeSummary;
-import static capstone.backend.domain.pomodoro.util.PomodoroTimeUtils.convertSecondsToLocalTime;
 
 import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
-import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
-import capstone.backend.domain.member.scheme.Member;
 import capstone.backend.domain.pomodoro.dto.request.CreatePomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.request.RecordPomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.response.PomodoroDTO;
@@ -16,7 +13,6 @@ import capstone.backend.domain.pomodoro.exception.PomodoroNotFoundException;
 import capstone.backend.domain.pomodoro.repository.PomodoroRepository;
 import capstone.backend.domain.pomodoro.schema.Pomodoro;
 import capstone.backend.domain.pomodoro.schema.PomodoroCycle;
-import java.time.LocalTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,20 +32,20 @@ public class PomodoroService {
     @Transactional
     public PomodoroDTO createPomodoro(Long memberId, CreatePomodoroRequest request) {
 
-        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-
-        // 총 계획 시간 파싱 (times[0] = 집중시간, times[1] = 휴식시간)
-        int[] times = calculateTotalTimeSummary(request.plannedCycles());
-
-        Pomodoro pomodoro = Pomodoro.create(
-                member,
-                request.title(),
-                LocalTime.parse(request.totalPlannedTime()),
-                request.plannedCycles(),
-                convertSecondsToLocalTime(times[0]),
-                convertSecondsToLocalTime(times[1])
-        );
-
+//        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+//
+//        // 총 계획 시간 파싱 (times[0] = 집중시간, times[1] = 휴식시간)
+//        int[] times = calculateTotalTimeSummary(request.plannedCycles());
+//
+//        Pomodoro pomodoro = Pomodoro.create(
+//                member,
+//                request.title(),
+//                LocalTime.parse(request.totalPlannedTime()),
+//                request.plannedCycles(),
+//                convertSecondsToLocalTime(times[0]),
+//                convertSecondsToLocalTime(times[1])
+//        );
+//
 //        // eisenhowerId가 있으면 매핑
 //        Optional.ofNullable(request.eisenhowerId())
 //                .ifPresent(eisenhowerId -> {
@@ -59,9 +55,10 @@ public class PomodoroService {
 //                    eisenhowerItem.connectPomodoro(pomodoro); // 연관관계 설정
 //                    eisenhowerItemRepository.save(eisenhowerItem);
 //                });
-
-        Pomodoro save = pomodoroRepository.save(pomodoro);
-        return new PomodoroDTO(save.getId());
+//
+//        Pomodoro save = pomodoroRepository.save(pomodoro);
+//        return new PomodoroDTO(save.getId());
+        return null;
     }
 
     // (언링크 + 링크) 뽀모도로 전체 조회
@@ -102,10 +99,10 @@ public class PomodoroService {
         List<PomodoroCycle> executedCycles = request.executedCycles();
 
         // 최적화된 시간 계산
-        int[] times = calculateTotalTimeSummary(executedCycles);
+        long[] times = calculateTotalTimeSummary(executedCycles);
 
-        int totalExecutedSeconds = times[2];
-        // 0이면 기록을 저장하지 않고 에러 발생
+        long totalExecutedSeconds = times[2];
+        // 1분 미만이면 기록을 저장하지 않고 에러 발생
         if (totalExecutedSeconds <= 59) {
             throw new PomodoroDurationException();
         }

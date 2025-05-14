@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Entity
@@ -27,9 +26,8 @@ public class DailyPomodoroSummary {
     @Column(updatable = false)
     private LocalDate createdAt;
 
-    // Duration은 HH:mm:ss 형태를 초 단위로 내부에서 처리 (INTERVAL type)
     @Column(name = "total_time")
-    private Duration totalTime;
+    private Long totalTime;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, updatable = false)
@@ -42,16 +40,15 @@ public class DailyPomodoroSummary {
                 .member(member)
                 .createdAt(now)
                 .dayOfWeek(now.getDayOfWeek())
-                .totalTime(Duration.ZERO)
+                .totalTime(0L)
                 .build();
     }
 
-    public void addToTotalTime(Duration additional) {
-        if (this.totalTime == Duration.ZERO) {
-            this.totalTime = additional;
-        } else {
-            this.totalTime = this.totalTime.plus(additional);
+    public void addToTotalTime(Long additionalSeconds) {
+        if (this.totalTime == null) {
+            this.totalTime = 0L;
         }
+        this.totalTime += additionalSeconds;
     }
 
     public String getDayOfWeek() {

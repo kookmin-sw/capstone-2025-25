@@ -12,17 +12,17 @@ public class PomodoroTimeUtils {
         throw new UnsupportedOperationException("유틸 클래스는 인스턴스화할 수 없습니다.");
     }
 
-    public static int[] calculateTotalTimeSummary(List<PomodoroCycle> cycles) {
-        int totalWorkingSeconds = 0;
-        int totalBreakSeconds = 0;
+    public static long[] calculateTotalTimeSummary(List<PomodoroCycle> cycles) {
+        long totalWorkingSeconds = 0;
+        long totalBreakSeconds = 0;
 
         for (PomodoroCycle cycle : cycles) {
-            totalWorkingSeconds += Optional.ofNullable(cycle.getWorkDuration()).orElse(0);
-            totalBreakSeconds += Optional.ofNullable(cycle.getBreakDuration()).orElse(0);
+            totalWorkingSeconds += Optional.ofNullable(cycle.getWorkDuration()).orElse(0L);
+            totalBreakSeconds += Optional.ofNullable(cycle.getBreakDuration()).orElse(0L);
         }
 
         // 전부 초단위로 변경
-        return new int[]{
+        return new long[]{
                 totalWorkingSeconds,
                 totalBreakSeconds,
                 totalWorkingSeconds + totalBreakSeconds
