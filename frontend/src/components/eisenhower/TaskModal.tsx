@@ -1,12 +1,10 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
-import { CalendarX2, Folder, Loader2, Tag } from 'lucide-react';
+import { CalendarX2, Tag } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { SingleDatePicker } from '@/components/eisenhower/filter/SingleDatePicker';
 import { BadgeSelector } from '@/components/common/BadgeSelector';
-import { TaskCard } from '@/components/eisenhower/card/TaskCard';
 import { quadrantTitles } from '@/constants/section.tsx';
 // import { useCategoryStore } from '@/store/useCategoryStore';
 import type { Task } from '@/types/task';
@@ -14,8 +12,6 @@ import { Quadrant } from '@/types/commonTypes';
 import { eisenhowerService } from '@/services/eisenhowerService';
 import { eisenhowerCategoryService } from '@/services/eisenhowerCategoryService';
 import { useCategoryStore } from '@/store/useCategoryStore.ts';
-import { toast } from 'sonner';
-import PlusIcon from '@/assets/eisenhower/plus.svg';
 import { BG_COLORS } from '@/types/category.ts';
 import { showToast } from '@/components/common/Toast.tsx';
 import {
@@ -26,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/Dialog.tsx';
+import useCreateCategory from '@/hooks/queries/category/useCreateCategory.ts';
 
 type TaskModalProps = {
   isOpen: boolean;
@@ -57,7 +54,6 @@ export function TaskModal({
     task?.categoryId ?? null,
   );
 
-
   useEffect(() => {
     setTitle(task?.title || '');
     setMemo(task?.memo || '');
@@ -68,8 +64,10 @@ export function TaskModal({
 
   const closeHandler = () => {
     setIsEditing(false);
-    onOpenChange()
-  }
+    onOpenChange();
+  };
+
+  const { createCategoryMutation } = useCreateCategory();
 
   const resetForm = () => {
     setTitle('');
@@ -126,10 +124,10 @@ export function TaskModal({
     }
   };
   const handleDelete = async () => {
-    console.log('delete', task)
+    console.log('delete', task);
     if (task) {
       try {
-        console.log(task)
+        console.log(task);
         await eisenhowerService.delete(task.id);
         onDeleteTask?.(task);
         // toast.success('할 일이 삭제되었습니다.');
@@ -142,31 +140,37 @@ export function TaskModal({
 
   const { categories, fetchCategories } = useCategoryStore();
 
-  const handleAddCategory = async (title: string) => {
+  const handleAddCategory = (title: string) => {
     const trimmed = title.trim();
     const exists = categories.some((cat) => cat.title === trimmed);
     if (!trimmed || exists) return;
 
-    try {
-      const bgColor = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
-
-      await eisenhowerCategoryService.create({
-        title: trimmed,
-        color: bgColor,
-      });
-      await fetchCategories();
-      const added = useCategoryStore
-        .getState()
-        .categories.find((c) => c.title === trimmed);
-
-      if (added) {
-        setCategoryId(added.id);
-      } else {
-        console.warn('새 카테고리 추가 후 찾을 수 없음');
-      }
-    } catch (err) {
-      console.error('카테고리 생성 실패:', err);
+    if (categories.length >= 10) {
+      showToast('error', '카테고리는 최대 10개까지만 생성할 수 있어요.');
+      return;
     }
+
+    const bgColor = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
+
+    createCategoryMutation(
+      { title: trimmed, color: bgColor },
+      {
+        onSuccess: (data) => {
+          fetchCategories();
+          const added = useCategoryStore
+            .getState()
+            .categories.find((c) => c.title === trimmed);
+          if (added) {
+            setCategoryId(added.id);
+          }
+          if (data.statusCode === 400) {
+            showToast('error', '카테고리는 10자 이하로 입력해주세요.');
+          } else {
+            showToast('error', '카테고리 생성에 실패했어요.');
+          }
+        },
+      },
+    );
   };
 
   const handleDeleteCategory = async (value: string) => {
