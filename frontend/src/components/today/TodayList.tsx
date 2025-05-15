@@ -55,6 +55,13 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
   const navigate = useNavigate();
 
   const handleMoveToToday = (id: number) => {
+    const isAlreadyInToday = todayTodoList?.some((todo) => todo.id === id);
+
+    if (isAlreadyInToday) {
+      showToast('error', '이미 오늘의 할 일에 추가된 할 일입니다!');
+      return;
+    }
+
     moveTodayMutation(id);
   };
 
@@ -128,8 +135,6 @@ export default function TodayList({ hideCompleted = false }: TodayListProps) {
     if (!categoryName) {
       return null;
     }
-
-    console.log(categoryName, categoryColor);
 
     return (
       <div
