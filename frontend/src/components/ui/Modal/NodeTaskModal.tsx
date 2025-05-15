@@ -62,6 +62,7 @@ export function NodeToTaskModal({
   useEffect(() => {
     if (isOpen && taskData.title) {
       setTitle(taskData.title);
+      setCategoryId(null);
     }
   }, [isOpen, taskData.title]);
 
@@ -173,7 +174,7 @@ export function NodeToTaskModal({
         <DialogHeader>
           <DialogTitle>새로운 일정 추가</DialogTitle>
           <DialogDescription>
-            선택한 노드를 바탕으로 생성된 일정을 매트릭스에 추가해보세요.
+            선택한 버블을 아이젠하워 매트릭스에 일정으로 추가해보세요.
           </DialogDescription>
         </DialogHeader>
 
@@ -274,12 +275,12 @@ export function NodeToTaskModal({
           {/*</div>*/}
         </div>
 
-        <DialogFooter className="mt-6">
-          <div className="w-[180px] flex justify-end">
+        <DialogFooter className="">
+          <div className=" flex justify-end">
             <DialogClose asChild>
               <Button
                 variant={!title.trim() ? 'disabled' : 'blue'}
-                className="flex-1"
+                className=""
                 onClick={handleConfirmCreateTask}
               >
                 생성하기
