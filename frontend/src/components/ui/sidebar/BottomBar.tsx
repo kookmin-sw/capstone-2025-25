@@ -26,29 +26,29 @@ const navItems: NavItem[] = [
     activeIcon: TodayTodoIcon,
     defaultIcon: TodayTodoHWIcon,
     label: '오늘의 할 일',
-    route: '/today',
+    route: '/today/',
   },
   {
     id: 'brainstorming',
     activeIcon: BrainStormingIcon,
     defaultIcon: BrainStormingHWIcon,
     label: '브레인스토밍',
-    route: '/brainstorming',
-    activePatterns: ['/mindmap'],
+    route: '/brainstorming/',
+    activePatterns: ['/mindmap/'],
   },
   {
     id: 'matrix',
     activeIcon: EisenHowerIcon,
     defaultIcon: EisenHowerHWIcon,
     label: '아이젠하워',
-    route: '/matrix',
+    route: '/matrix/',
   },
   {
     id: 'store',
     activeIcon: StoreIcon,
     defaultIcon: StoreHWIcon,
     label: '보관함',
-    route: '/inventory',
+    route: '/inventory/',
     activePatterns: ['/inventory/'],
   },
 ];
@@ -59,6 +59,10 @@ export default function BottomBar() {
 
   const isActive = (item: NavItem): boolean => {
     if (location.pathname === item.route) {
+      return true;
+    }
+
+    if (location.pathname === item.route?.slice(0, -1)) {
       return true;
     }
 
