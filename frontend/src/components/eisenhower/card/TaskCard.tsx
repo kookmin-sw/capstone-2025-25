@@ -49,9 +49,11 @@ export function TaskCard({
 }: TaskCardProps) {
   const { id, title, memo } = task;
   const dueDate = task.dueDate;
-  const category = task.categoryId
-    ? categories.find((cat) => cat.id === task.categoryId)
-    : null;
+  // const category = task.categoryId
+  //   ? categories.find((cat) => cat.id === task.categoryId)
+  //   : null;
+  const category = categories.find((cat) => cat.id === task.categoryId) ?? null;
+  const isCategoryDeleted = task.categoryId !== null && !category;
 
   const {
     attributes,

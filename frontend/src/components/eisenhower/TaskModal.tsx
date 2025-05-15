@@ -235,6 +235,13 @@ export function TaskModal({
     }
   }, [task, mode]);
 
+  useEffect(() => {
+    // 카테고리 목록이 바뀐 후, 현재 선택된 categoryId가 존재하지 않으면 초기화
+    if (categoryId && !categories.find((c) => c.id === categoryId)) {
+      setCategoryId(null);
+    }
+  }, [categories, categoryId]);
+
   return (
     <Dialog open={isOpen} onOpenChange={closeHandler}>
       <DialogContent className="sm:max-w-lg">
