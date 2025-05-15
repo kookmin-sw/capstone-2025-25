@@ -12,6 +12,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import Bubble from '@/assets/bubble-character.svg';
+import NotificationCard from '@/components/ui/header/NotificationCard';
 
 export default function Header() {
   const { token, isTokenValid } = useAuthStore();
@@ -71,9 +72,16 @@ export default function Header() {
 
         {isAuthenticated && (
           <>
-            <button className="cursor-pointer">
-              <Bell size={20} className="text-blue" fill="#7098FF" />
-            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="cursor-pointer">
+                  <Bell size={20} className="text-blue" fill="#7098FF" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="z-100 rounded-xl">
+                <NotificationCard />
+              </PopoverContent>
+            </Popover>
 
             <Popover>
               <PopoverTrigger asChild>

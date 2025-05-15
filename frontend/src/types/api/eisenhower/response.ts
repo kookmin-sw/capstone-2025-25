@@ -1,3 +1,5 @@
+import { Notification } from '@/types/task';
+
 export interface EisenhowerTask {
   id: number;
   title: string;
@@ -27,3 +29,9 @@ export interface GetTaskListRes {
     size: number;
   };
 }
+
+export type GetNotificationRes = {
+  statusCode: number;
+  error: string;
+  content: Notification[];
+};
