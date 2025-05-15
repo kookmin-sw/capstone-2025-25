@@ -29,7 +29,7 @@ export default function ReminderList() {
         </p>
       </div>
 
-      <div className="w-full h-fit overflow-x-auto ">
+      <div className="w-full h-fit overflow-x-scroll">
         <div className="flex gap-4" style={{ width: 'max-content' }}>
           {inventoryRecentList &&
             inventoryRecentList.map((remind) => (
