@@ -104,7 +104,7 @@ export default function MatrixPage() {
         <main className="flex flex-1 min-h-0 flex-col gap-[15px] h-full w-full">
           <div className="flex flex-col justify-between w-full gap-4 ">
             <div className="flex gap-2 w-full justify-between items-start min-h-12 ">
-              <div className="flex flex-col gap-1 md:gap-4  items-start md:items-baseline ">
+              <div className="flex flex-col gap-1 md:gap-2  items-start md:items-baseline ">
                 <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                   <DropdownMenuTrigger
                     asChild
