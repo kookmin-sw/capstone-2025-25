@@ -127,7 +127,7 @@ export function NodeToTaskModal({
   };
 
   const handleConfirmCreateTask = () => {
-    if (!taskData.id || !dueDate) return;
+    if (!taskData.bubbleId ) return;
 
     const currentTasks = useMatrixStore
       .getState()
@@ -136,7 +136,7 @@ export function NodeToTaskModal({
 
     createMatrixMutation(
       {
-        bubbleId: taskData.id,
+        bubbleId: taskData.bubbleId,
         payload: {
           title: title.trim(),
           categoryId,
