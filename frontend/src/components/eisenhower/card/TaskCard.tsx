@@ -7,14 +7,12 @@ import {
   SquareArrowOutUpRight,
 } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
-import { format } from 'date-fns';
 import { MouseEvent } from 'react';
 import { cn } from '@/lib/utils';
 import { EisenhowerBase } from '@/types/commonTypes';
 // import { Task } from '@/types/task.ts';
 import { Category } from '@/types/category.ts';
 import { eisenhowerService } from '@/services/eisenhowerService.ts';
-import { toast } from 'sonner';
 import CheckFillIcon from '@/assets/eisenhower/check_fill.svg';
 import CheckOutlineIcon from '@/assets/eisenhower/check_outline.svg';
 import type { EisenhowerTask } from '@/types/api/eisenhower';
@@ -51,9 +49,11 @@ export function TaskCard({
 }: TaskCardProps) {
   const { id, title, memo } = task;
   const dueDate = task.dueDate;
-  const category = task.categoryId
-    ? categories.find((cat) => cat.id === task.categoryId)
-    : null;
+  // const category = task.categoryId
+  //   ? categories.find((cat) => cat.id === task.categoryId)
+  //   : null;
+  const category = categories.find((cat) => cat.id === task.categoryId) ?? null;
+  const isCategoryDeleted = task.categoryId !== null && !category;
 
   const {
     attributes,
@@ -158,8 +158,11 @@ export function TaskCard({
                       <SquareArrowOutUpRight />
                     </div>
                   }
+                  title="오늘의 할 일을 추가"
                   children={
-                    <div>매트릭스 페이지에서 오늘의 할 일을 추가할까요?</div>
+                    <div className="rounded-[16px] px-6 py-[20px] text-[20px] bg-blue-2 flex gap-2 items-start text-gray-scale-700">
+                      {title}을(를) 오늘의 할 일로 추가할까요?
+                    </div>
                   }
                   footer={
                     <DialogClose asChild>
@@ -210,17 +213,21 @@ export function TaskCard({
           <div className="flex items-center mb-2 flex-grow">
             <div
               className={cn(
-                'text-md font-medium line-clamp-2',
+                'text-md font-medium line-clamp-2 min-w-10 overflow-hidden text-ellipsis whitespace-nowrap',
                 variant === 'done' ? 'text-gray-500' : 'text-black',
               )}
             >
-              {title}
+              <p className="overflow-hidden text-ellipsis">{title}</p>
             </div>
           </div>
 
           {/* 메모 */}
           <div className="text-xs mb-2 line-clamp-2 text-[#858899] ">
-            {memo ? memo : <>비어 있음</>}
+            {memo ? (
+              <p className="overflow-hidden text-ellipsis">{memo}</p>
+            ) : (
+              <>비어 있음</>
+            )}
           </div>
 
           {/* 마감일 */}
@@ -228,7 +235,7 @@ export function TaskCard({
             {dueDate ? (
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-1 text-[#525463] " />
-                <span className="text-center pt-[1px] text-[14px] text-[#525463] ">
+                <span className="text-center pt-[1px] text-[14px] text-[#525463] whitespace-nowrap">
                   {dueDate}
                   {/*{format(new Date(dueDate), 'yyyy.MM.dd')}*/}
                 </span>
@@ -236,7 +243,9 @@ export function TaskCard({
             ) : (
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-1 text-[#525463] " />
-                <span className="text-center pt-[1px] text-[14px] text-[#525463] ">날짜 없음</span>
+                <span className="text-center pt-[1px] text-[14px] text-[#525463]  whitespace-nowrap">
+                  날짜 없음
+                </span>
               </div>
             )}
           </div>

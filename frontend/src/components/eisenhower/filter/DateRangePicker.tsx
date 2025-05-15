@@ -53,7 +53,7 @@ export function DateRangePicker({
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <button className="flex items-center w-full md:w-auto min-w-[200px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer">
+        <button className="flex items-center w-full md:w-auto min-w-[100px] bg-white shadow-none text-black p-0 hover:bg-white cursor-pointer">
           <div className="flex items-center gap-4">
             <div className="w-7 h-7 flex items-center justify-center bg-blue rounded-full">
               {/*<CalendarIcon className="w-4 h-4 text-[#E8EFFF]" />*/}

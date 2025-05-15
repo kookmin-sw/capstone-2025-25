@@ -235,3 +235,9 @@ body {
 .react-flow__attribution {
   display: none !important;
 }
+
+@media (max-width: 1100px) {
+  .flex-xl2-row {
+    flex-direction: row;
+  }
+}
