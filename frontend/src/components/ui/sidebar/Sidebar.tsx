@@ -11,7 +11,7 @@ import EisenHowerIcon from '@/assets/sidebar/color-eisenhower.svg';
 import EisenHowerHWIcon from '@/assets/sidebar/bw-eisenhower.svg';
 import StoreIcon from '@/assets/sidebar/color-store.svg';
 import StoreHWIcon from '@/assets/sidebar/bw-store.svg';
-import WithdrawalModal from '@/components/ui/Modal/WithdrawalModal.tsx';
+import { WithdrawalModal } from '@/components/ui/Modal/WithdrawalModal';
 
 type NavItem = {
   id: string;
@@ -65,13 +65,6 @@ const bottomNavItems: NavItem[] = [
     route: '/service-info/',
     externalLink: 'https://inventive-gift-946388.framer.app/',
   },
-  // {
-  //   id: 'withdrawal',
-  //   activeIcon: <Settings size={24} className="text-blue-500" />,
-  //   defaultIcon: <Settings size={24} className="text-gray-400" />,
-  //   label: '회원탈퇴',
-  //   route: '/withdrawal/', // 가짜 경로, 클릭 시 모달 열 용도
-  // },
 ];
 
 export default function Sidebar() {
@@ -79,7 +72,6 @@ export default function Sidebar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
-  const [isWithdrawalOpen, setIsWithdrawalOpen] = useState(false);
 
   const isActive = (item: NavItem): boolean => {
     if (location.pathname === item.route) {
@@ -269,6 +261,7 @@ export default function Sidebar() {
                       <Settings size={24} className="text-gray-400" />
                     ),
                     label: '회원탈퇴',
+                    route: '',
                   })}
                 />
                 {bottomNavItems.map((item) => renderNavItem(item))}

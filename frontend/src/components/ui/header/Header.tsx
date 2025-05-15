@@ -5,7 +5,6 @@ import Logo from '@/assets/logo.svg';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePomodoroControl from '@/hooks/usePomodoroControl';
 import { authService } from '@/services/authService.ts';
-import WithdrawalModal from '@/components/ui/Modal/WithdrawalModal.tsx';
 import {
   Popover,
   PopoverContent,
@@ -13,6 +12,7 @@ import {
 } from '@/components/ui/popover';
 import Bubble from '@/assets/bubble-character.svg';
 import NotificationCard from '@/components/ui/header/NotificationCard';
+import { WithdrawalModal } from '@/components/ui/Modal/WithdrawalModal';
 
 export default function Header() {
   const { token, isTokenValid } = useAuthStore();
