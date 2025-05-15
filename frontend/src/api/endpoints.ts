@@ -33,6 +33,7 @@ export const ENDPOINTS = {
     UPDATE: (itemId: number) => `/api/v1/eisenhower/${itemId}`, // 아이젠하워 작업 수정
     DELETE: (itemId: number) => `/api/v1/eisenhower/${itemId}`, // 아이젠하워 작업 삭제
     UPDATE_ORDER: '/api/v1/eisenhower/order', // 아이젠하워 작업들 순서 및 사분면 위치 업데이트
+    NOTIFICATION: '/api/v1/eisenhower/notification',
   },
 
   /* 아이젠하워 카테고리 관련 엔드포인트 */

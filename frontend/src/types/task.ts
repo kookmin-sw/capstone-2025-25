@@ -7,3 +7,10 @@ export interface Task extends EisenhowerBase {
 }
 
 export type TaskSections = Record<Quadrant, Task[]>;
+
+export type Notification = {
+  notificationId: number;
+  eisenhowerItemId: number;
+  title: string;
+  dueDate: string;
+};

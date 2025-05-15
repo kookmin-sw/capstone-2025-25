@@ -5,6 +5,7 @@ import type {
   GetTaskListRes,
   EisenhowerAiRecommendationReq,
   EisenhowerAiRecommendationRes,
+  GetNotificationRes,
 } from '@/types/api/eisenhower';
 import { Task } from '@/types/task.ts';
 
@@ -63,5 +64,12 @@ export const eisenhowerService = {
       data,
     );
     return res.data;
+  },
+
+  getNotification: async (): Promise<GetNotificationRes> => {
+    const response = await apiClient.get<GetNotificationRes>(
+      ENDPOINTS.EISENHOWER.NOTIFICATION,
+    );
+    return response.data;
   },
 };
