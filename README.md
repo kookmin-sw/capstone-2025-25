@@ -33,14 +33,4 @@ https://www.bubble-pop.kr
 
 <br/> 
 
-### 5. 사용법
-
-```bash
-git clone https://github.com/kookmin-sw/capstone-2025-25.git
-```
-```bash
-cd frontend
-npm install
-npm run dev
-```
 
