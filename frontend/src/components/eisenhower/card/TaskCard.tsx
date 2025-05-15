@@ -211,17 +211,21 @@ export function TaskCard({
           <div className="flex items-center mb-2 flex-grow">
             <div
               className={cn(
-                'text-md font-medium line-clamp-2',
+                'text-md font-medium line-clamp-2 min-w-10 overflow-hidden text-ellipsis whitespace-nowrap',
                 variant === 'done' ? 'text-gray-500' : 'text-black',
               )}
             >
-              {title}
+              <p className="overflow-hidden text-ellipsis">{title}</p>
             </div>
           </div>
 
           {/* 메모 */}
           <div className="text-xs mb-2 line-clamp-2 text-[#858899] ">
-            {memo ? memo : <>비어 있음</>}
+            {memo ? (
+              <p className="overflow-hidden text-ellipsis">{memo}</p>
+            ) : (
+              <>비어 있음</>
+            )}
           </div>
 
           {/* 마감일 */}
@@ -229,7 +233,7 @@ export function TaskCard({
             {dueDate ? (
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-1 text-[#525463] " />
-                <span className="text-center pt-[1px] text-[14px] text-[#525463] ">
+                <span className="text-center pt-[1px] text-[14px] text-[#525463] whitespace-nowrap">
                   {dueDate}
                   {/*{format(new Date(dueDate), 'yyyy.MM.dd')}*/}
                 </span>
@@ -237,7 +241,7 @@ export function TaskCard({
             ) : (
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-1 text-[#525463] " />
-                <span className="text-center pt-[1px] text-[14px] text-[#525463] ">
+                <span className="text-center pt-[1px] text-[14px] text-[#525463]  whitespace-nowrap">
                   날짜 없음
                 </span>
               </div>
