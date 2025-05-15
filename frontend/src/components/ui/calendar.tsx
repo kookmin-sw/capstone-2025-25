@@ -38,8 +38,8 @@ function Calendar({
             : '[&:has([aria-selected])]:rounded-md',
         ),
         day: cn(
-          buttonVariants({ variant: 'ghost' }),
-          'w-8 h-6 p-0 font-normal aria-selected:opacity-100 text-blue ',
+          buttonVariants(),
+          'w-8 h-6 p-0 font-normal aria-selected:opacity-100 text-blue text-[16px]',
         ),
         day_range_start:
           'day-range-start aria-selected:bg-neon-green aria-selected:text-blue hover:cursor-pointer hover:bg-transparent hover:opacity-100 hover:text-blue',
