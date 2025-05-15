@@ -90,8 +90,8 @@ export default function MatrixPage() {
         {/*<Toaster richColors position="top-center" />*/}
         <main className="flex flex-1 min-h-0 flex-col gap-[15px] h-full w-full">
           <div className="flex flex-col justify-between  w-full gap-4 ">
-            <div className="flex gap-2 w-full justify-between items-start min-h-12">
-              <div className="flex flex-col gap-1 md:gap-4 md:flex-row items-start md:items-baseline">
+            <div className="flex gap-2 w-full justify-between items-start min-h-12 ">
+              <div className="flex flex-col gap-1 md:gap-4 md:flex-row items-start md:items-baseline ">
                 <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                   <DropdownMenuTrigger
                     asChild
@@ -134,7 +134,7 @@ export default function MatrixPage() {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
-                <div className="text-4 text-[#6E726E] h-fit  break-words text-ellipsis overflow-hidden whitespace-nowrap flex-1">
+                <div className="text-4 text-[#6E726E] h-fit break-words overflow-hidden whitespace-normal flex-1 min-w-0">
                   {activeTab === 'completed'
                     ? '완료된 일정을 확인하고, 필요하면 다시 실행할 수 있어요!'
                     : '중요도와 긴급도에 따라 정리하고, 우선순위를 정해 실행해보세요!'}
