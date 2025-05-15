@@ -32,7 +32,7 @@ import {
   KeyboardSensor,
 } from '@dnd-kit/core';
 import MoveToFolderModal from '@/components/inventory/modal/MoveToFolderModal.tsx';
-import PlusIcon from '@/assets/eisenhower/plus.svg';
+import Plus from '@/assets/plus.svg';
 
 const useCustomSensors = () => {
   const pointerSensor = useSensor(PointerSensor, {
@@ -399,7 +399,7 @@ export function PriorityView({
             return (
               <Droppable key={quadrant} id={quadrant}>
                 {isMobile && (
-                  <div className={cn('grid gap-1 md:mb-4 grid-cols-1')}>
+                  <div className={cn('grid gap-2 md:mb-4 grid-cols-1')}>
                     {(['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).map((q) => (
                       <Droppable key={q} id={q}>
                         <button
@@ -424,7 +424,7 @@ export function PriorityView({
                 )}
                 <div
                   className={cn(
-                    'px-4 py-5 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px] w-full',
+                    'px-4 py-5 mt-2 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px] w-full',
                     quadrantColors[quadrant],
                     viewMode === 'board'
                       ? 'h-[calc(100vh-160px)] min-w-[268px]'
@@ -476,17 +476,16 @@ export function PriorityView({
                       <button
                         type="button"
                         onClick={() => handleCreateModal(quadrant)}
-                        className="flex items-center justify-center w-8 h-8 rounded-full bg-white text-blue shrink-0 cursor-pointer"
+                        className="flex items-center justify-center w-10 h-10 rounded-full bg-white text-blue shrink-0 cursor-pointer"
                       >
                         {/*<Plus className="w-5 h-5" />*/}
-                        <img src={PlusIcon} alt="plus" />
+                        <img
+                          src={Plus}
+                          alt="plus"
+                          className="w-[18px] h-[18px]"
+                        />
                       </button>
                     </div>
-                    {/*<TaskModal*/}
-                    {/*  mode="create"*/}
-                    {/*  quadrant={quadrant}*/}
-                    {/*  onCreateTask={handleCreateTask}*/}
-                    {/*/>*/}
                   </div>
                   <SortableContext
                     items={filtered.map((task) => String(task.id))}

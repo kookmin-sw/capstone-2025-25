@@ -154,8 +154,8 @@ export function TaskModal({
     createCategoryMutation(
       { title: trimmed, color: bgColor },
       {
-        onSuccess: (data) => {
-          fetchCategories();
+        onSuccess: async (data) => {
+          await fetchCategories();
           const added = useCategoryStore
             .getState()
             .categories.find((c) => c.title === trimmed);
@@ -164,9 +164,10 @@ export function TaskModal({
           }
           if (data.statusCode === 400) {
             showToast('error', '카테고리는 10자 이하로 입력해주세요.');
-          } else {
-            showToast('error', '카테고리 생성에 실패했어요.');
           }
+        },
+        onError: (err) => {
+          showToast('error', '카테고리 생성에 실패했어요.');
         },
       },
     );

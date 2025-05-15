@@ -90,14 +90,14 @@ export default function MatrixPage() {
         {/*<Toaster richColors position="top-center" />*/}
         <main className="flex flex-1 min-h-0 flex-col gap-[15px] h-full w-full">
           <div className="flex flex-col justify-between  w-full gap-4 ">
-            <div className="flex gap-2 w-full justify-between items-start">
+            <div className="flex gap-2 w-full justify-between items-start min-h-12">
               <div className="flex flex-col gap-1 md:gap-4 md:flex-row items-start md:items-baseline">
                 <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                   <DropdownMenuTrigger
                     asChild
                     className="flex gap-5 cursor-pointer"
                   >
-                    <button className="text-[28px]  h-[42px]  shrink-0 text-[#525463] font-semibold inline-flex items-center gap-[5px] cursor-pointer">
+                    <button className="text-[28px] h-[42px]  shrink-0 text-[#525463] font-semibold inline-flex items-center gap-[5px] cursor-pointer">
                       {activeTab === 'all' ? '미완료 일정' : '완료된 일정'}
                       <ChevronDown
                         className={cn(
@@ -114,7 +114,7 @@ export default function MatrixPage() {
                     <DropdownMenuItem
                       onClick={() => setActiveTab('all')}
                       className={cn(
-                        'cursor-pointer',
+                        'cursor-pointer text-[16px]',
                         activeTab === 'all' ? 'bg-muted font-semibold' : '',
                       )}
                     >
@@ -123,7 +123,7 @@ export default function MatrixPage() {
                     <DropdownMenuItem
                       onClick={() => setActiveTab('completed')}
                       className={cn(
-                        'cursor-pointer',
+                        'cursor-pointer text-[16px]',
                         activeTab === 'completed'
                           ? 'bg-muted font-semibold'
                           : '',

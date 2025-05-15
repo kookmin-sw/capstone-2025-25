@@ -125,7 +125,7 @@ export function TaskCard({
         {...(dragHandle === 'full' && variant === 'default' ? listeners : {})}
         onClick={handleClick}
         className={cn(
-          'rounded-md p-4 flex flex-col relative transition-all duration-200',
+          'rounded-md p-5 flex flex-col relative transition-all duration-200',
           layout === 'board' ? 'w-full' : '',
           variant === 'default' && !isDragging && 'hover:shadow-md',
           variant === 'default'
@@ -137,7 +137,7 @@ export function TaskCard({
         )}
       >
         {/* 상단 도구 아이콘 */}
-        <div className="absolute p-2 top-1 right-1 flex gap-2">
+        <div className="absolute  top-5 right-5 flex gap-4">
           {variant === 'default' && (
             <div className=" transition-opacity flex gap-2 items-center">
               {/*<div onClick={(e) => e.stopPropagation()}>*/}
@@ -154,7 +154,7 @@ export function TaskCard({
               <div onClick={(e) => e.stopPropagation()}>
                 <Modal
                   trigger={
-                    <div className="text-[#6E726E] hover:text-gray-600 transition-colors w-[22px]">
+                    <div className="text-blue hover:text-gray-600 transition-colors w-[22px] ">
                       <SquareArrowOutUpRight />
                     </div>
                   }
@@ -185,7 +185,7 @@ export function TaskCard({
           <div
             onClick={handleTaskComplete}
             className={cn(
-              'check-icon w-[24px] h-[24px] rounded-full mr-2 flex-shrink-0 flex items-center justify-center cursor-pointer',
+              'check-icon w-[24px] h-[24px] rounded-full flex-shrink-0 flex items-center justify-center cursor-pointer',
               // variant === 'done' ? 'bg-blue text-white' : 'border border-blue',
             )}
           >
@@ -224,19 +224,19 @@ export function TaskCard({
           </div>
 
           {/* 마감일 */}
-          <div className="text-xs flex items-center mt-auto text-[#525463] ">
+          <div className="text-[14px] flex items-center mt-auto text-[#525463] ">
             {dueDate ? (
-              <div className="flex">
-                <Calendar className="w-4 h-4 mr-1 text-blue" />
-                <span className="text-center pt-[1px] text-xs">
+              <div className="flex items-center">
+                <Calendar className="w-4 h-4 mr-1 text-[#525463] " />
+                <span className="text-center pt-[1px] text-[14px] text-[#525463] ">
                   {dueDate}
                   {/*{format(new Date(dueDate), 'yyyy.MM.dd')}*/}
                 </span>
               </div>
             ) : (
-              <div className="flex">
-                <Calendar className="w-4 h-4 mr-1 text-blue" />
-                <span className="text-center pt-[1px] text-xs">날짜 없음</span>
+              <div className="flex items-center">
+                <Calendar className="w-4 h-4 mr-1 text-[#525463] " />
+                <span className="text-center pt-[1px] text-[14px] text-[#525463] ">날짜 없음</span>
               </div>
             )}
           </div>
