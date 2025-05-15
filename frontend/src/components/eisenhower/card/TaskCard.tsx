@@ -156,8 +156,11 @@ export function TaskCard({
                       <SquareArrowOutUpRight />
                     </div>
                   }
+                  title="오늘의 할 일을 추가"
                   children={
-                    <div>매트릭스 페이지에서 오늘의 할 일을 추가할까요?</div>
+                    <div className="rounded-[16px] px-6 py-[20px] text-[20px] bg-blue-2 flex gap-2 items-start text-gray-scale-700">
+                      {title}을(를) 오늘의 할 일로 추가할까요?
+                    </div>
                   }
                   footer={
                     <DialogClose asChild>
