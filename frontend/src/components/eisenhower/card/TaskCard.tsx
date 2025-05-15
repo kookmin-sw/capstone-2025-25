@@ -7,14 +7,12 @@ import {
   SquareArrowOutUpRight,
 } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
-import { format } from 'date-fns';
 import { MouseEvent } from 'react';
 import { cn } from '@/lib/utils';
 import { EisenhowerBase } from '@/types/commonTypes';
 // import { Task } from '@/types/task.ts';
 import { Category } from '@/types/category.ts';
 import { eisenhowerService } from '@/services/eisenhowerService.ts';
-import { toast } from 'sonner';
 import CheckFillIcon from '@/assets/eisenhower/check_fill.svg';
 import CheckOutlineIcon from '@/assets/eisenhower/check_outline.svg';
 import type { EisenhowerTask } from '@/types/api/eisenhower';
@@ -236,7 +234,9 @@ export function TaskCard({
             ) : (
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-1 text-[#525463] " />
-                <span className="text-center pt-[1px] text-[14px] text-[#525463] ">날짜 없음</span>
+                <span className="text-center pt-[1px] text-[14px] text-[#525463] ">
+                  날짜 없음
+                </span>
               </div>
             )}
           </div>
