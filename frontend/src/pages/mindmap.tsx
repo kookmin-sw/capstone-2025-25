@@ -45,19 +45,16 @@ export default function MindmapPage() {
 
   useEffect(() => {
     if (blocker?.state === 'blocked') {
-      console.log('Navigation blocked, showing dialog');
       setShowExitDialog(true);
     }
   }, [blocker]);
 
   const handleProceed = useCallback(() => {
-    console.log('Proceeding with navigation');
     setShowExitDialog(false);
     blocker?.proceed();
   }, [blocker]);
 
   const handleCancel = useCallback(() => {
-    console.log('Canceling navigation');
     setShowExitDialog(false);
     blocker?.reset();
   }, [blocker]);

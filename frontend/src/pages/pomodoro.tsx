@@ -35,7 +35,6 @@ export default function Pomodoro() {
         return;
       }
       // 아무것도 없을 때 화면 필요
-      console.log('표시할 뽀모도로가 없습니다.');
     }
   }, [id, data, linkedPomodoros, unlinkedPomodoros, navigate]);
   return (

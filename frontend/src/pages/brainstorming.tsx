@@ -203,7 +203,6 @@ export default function Brainstorming() {
 
             // 기존 + 지금 추가 중인 버블 포함해서 자리 찾기
             const position = getPosition(radius, [...bubbles, ...newBubbles]);
-            console.log(position);
 
             newBubbles.push({
               bubbleId: bubble.bubbleId,

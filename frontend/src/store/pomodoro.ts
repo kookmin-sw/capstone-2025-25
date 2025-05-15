@@ -74,7 +74,6 @@ export const usePomodoroStore = create<Pomodoro>((set, get) => ({
         pausedTime: 0,
       };
       set(state);
-      console.log(state)
       localStorage.setItem('pomodoro-state', JSON.stringify(state));
     }
   },

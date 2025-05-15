@@ -288,7 +288,6 @@ export function PriorityView({
   };
 
   const handleCreateTask = (newTask: Task) => {
-    console.log('newTask', newTask);
     setTasksByQuadrant((prev) => ({
       ...prev,
       [newTask.quadrant]: [...prev[newTask.quadrant], newTask],
@@ -349,7 +348,6 @@ export function PriorityView({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState();
   const handleTaskModal = (task) => {
-    console.log(task);
     setIsModalOpen(true);
     setSelectedTask(task);
     setModalMode('edit');
@@ -550,9 +548,7 @@ export function PriorityView({
                     items={filtered.map((task) => String(task.id))}
                     strategy={verticalListSortingStrategy}
                   >
-                    <div
-                      className="space-y-2 flex-1 overflow-y-auto scrollbar-hide"
-                    >
+                    <div className="space-y-2 flex-1 overflow-y-auto scrollbar-hide">
                       {filtered.map((task) => (
                         <SortableTaskCard
                           task={task}

@@ -89,7 +89,6 @@ export function TaskModal({
       const created = await eisenhowerService.create(payload);
 
       if (created?.content) {
-        console.log(created.content);
         onCreateTask?.(created.content);
       }
 
@@ -123,10 +122,8 @@ export function TaskModal({
     }
   };
   const handleDelete = async () => {
-    console.log('delete', task);
     if (task) {
       try {
-        console.log(task);
         await eisenhowerService.delete(task.id);
         onDeleteTask?.(task);
         // toast.success('할 일이 삭제되었습니다.');

@@ -38,16 +38,13 @@ export const useDebounceMindmapUpdate = (
             data: updateData,
           },
           {
-            onSuccess: (data) => {
-              console.log('data', data);
-            },
+            onSuccess: () => {},
             onError: (error) => {
               console.error('error', error);
             },
           },
         );
 
-        console.log('마인드맵이 자동 저장되었습니다.');
         debounceSaveTimerRef.current = null;
       }, debounceTime);
     },
@@ -56,7 +53,6 @@ export const useDebounceMindmapUpdate = (
 
   const forceSave = useCallback(
     (nodes: MindMapNode[], edges: MindMapEdge[]) => {
-      console.log('forceSave!!!');
       if (debounceSaveTimerRef.current) {
         clearTimeout(debounceSaveTimerRef.current);
         debounceSaveTimerRef.current = null;
@@ -75,9 +71,7 @@ export const useDebounceMindmapUpdate = (
           data: updateData,
         },
         {
-          onSuccess: (data) => {
-            console.log('data', data);
-          },
+          onSuccess: () => {},
           onError: (error) => {
             console.error('error', error);
           },

@@ -70,7 +70,7 @@ export const authService = {
     const { setToken, setTokenValidity } = useAuthStore.getState();
 
     if (accessToken && accessToken.trim() !== '') {
-      console.log('🔵 accessToken 이미 존재함 → refresh 생략');
+      // console.log('🔵 accessToken 이미 존재함 → refresh 생략');
       return;
     }
 
@@ -88,9 +88,8 @@ export const authService = {
       setToken(newAccessToken);
       setTokenValidity(true);
 
-      console.log('accessToken 자동 복구 완료');
+      // console.log('accessToken 자동 복구 완료');
     } catch (error) {
-      console.error('efreshToken 만료 or 실패');
       setToken(null);
       setTokenValidity(false);
 
