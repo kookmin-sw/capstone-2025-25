@@ -10,6 +10,7 @@ const useCreateInventoryItem = () => {
       inventoryItemService.createItem(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bubbleList'] });
+      queryClient.invalidateQueries({ queryKey: ['inventoryFolderList'] });
     },
   });
 

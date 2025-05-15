@@ -10,9 +10,8 @@ import {
 } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/button';
 import useGetInventoryFolderList from '@/hooks/queries/inventory/folder/useGetInventoryFolderList';
-import { toast } from 'sonner';
 import useCreateInventoryItem from '@/hooks/queries/inventory/item/useCreateInventoryItem';
-import {showToast} from "@/components/common/Toast.tsx";
+import { showToast } from '@/components/common/Toast.tsx';
 
 type MoveToInventoryModalProps = {
   isOpen: boolean;
@@ -56,8 +55,10 @@ export default function MoveToInventoryModal({
         onSuccess: () => {
           onOpenChange(false);
           setSelectedFolderId(null);
-          showToast('success',`"${item.title}" 항목이 성공적으로 이동되었습니다.`)
-          // toast.success(`"${item.title}" 항목이 성공적으로 이동되었습니다.`);
+          showToast(
+            'success',
+            `"${item.title}" 항목이 성공적으로 이동되었습니다.`,
+          );
           if (onSuccess) onSuccess();
         },
       },

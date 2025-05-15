@@ -199,45 +199,47 @@ export function TaskCard({
           </div>
         </div>
 
-        {/* 카테고리 */}
-        {category && (
-          <div className="flex mb-2 flex-wrap">
-            <CategoryBadge label={category.title} bgColor={category.color} />
-          </div>
-        )}
-
-        <div className="flex items-center mb-2 flex-grow">
-          <div
-            className={cn(
-              'text-md font-medium line-clamp-2',
-              variant === 'done' ? 'text-gray-500' : 'text-black',
-            )}
-          >
-            {title}
-          </div>
-        </div>
-
-        {/* 메모 */}
-        <div className="text-xs mb-2 line-clamp-2 text-[#858899] ">
-          {memo ? memo : <>비어 있음</>}
-        </div>
-
-        {/* 마감일 */}
-        <div className="text-xs flex items-center mt-auto text-[#525463] ">
-          {dueDate ? (
-            <div className="flex">
-              <Calendar className="w-4 h-4 mr-1 text-blue" />
-              <span className="text-center pt-[1px] text-xs">
-                {dueDate}
-                {/*{format(new Date(dueDate), 'yyyy.MM.dd')}*/}
-              </span>
-            </div>
-          ) : (
-            <div className="flex">
-              <Calendar className="w-4 h-4 mr-1 text-blue" />
-              <span className="text-center pt-[1px] text-xs">날짜 없음</span>
+        <div className="pr-16">
+          {/* 카테고리 */}
+          {category && (
+            <div className="flex mb-2 flex-wrap">
+              <CategoryBadge label={category.title} bgColor={category.color} />
             </div>
           )}
+
+          <div className="flex items-center mb-2 flex-grow">
+            <div
+              className={cn(
+                'text-md font-medium line-clamp-2',
+                variant === 'done' ? 'text-gray-500' : 'text-black',
+              )}
+            >
+              {title}
+            </div>
+          </div>
+
+          {/* 메모 */}
+          <div className="text-xs mb-2 line-clamp-2 text-[#858899] ">
+            {memo ? memo : <>비어 있음</>}
+          </div>
+
+          {/* 마감일 */}
+          <div className="text-xs flex items-center mt-auto text-[#525463] ">
+            {dueDate ? (
+              <div className="flex">
+                <Calendar className="w-4 h-4 mr-1 text-blue" />
+                <span className="text-center pt-[1px] text-xs">
+                  {dueDate}
+                  {/*{format(new Date(dueDate), 'yyyy.MM.dd')}*/}
+                </span>
+              </div>
+            ) : (
+              <div className="flex">
+                <Calendar className="w-4 h-4 mr-1 text-blue" />
+                <span className="text-center pt-[1px] text-xs">날짜 없음</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

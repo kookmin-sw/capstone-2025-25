@@ -97,7 +97,7 @@ export default function MatrixPage() {
                     asChild
                     className="flex gap-5 cursor-pointer"
                   >
-                    <button className="text-[28px]  h-[42px]  shrink-0 text-[#525463] h-8 font-semibold inline-flex items-center gap-[5px] cursor-pointer">
+                    <button className="text-[28px]  h-[42px]  shrink-0 text-[#525463] font-semibold inline-flex items-center gap-[5px] cursor-pointer">
                       {activeTab === 'all' ? '미완료 일정' : '완료된 일정'}
                       <ChevronDown
                         className={cn(
@@ -129,7 +129,7 @@ export default function MatrixPage() {
                           : '',
                       )}
                     >
-                      <h1>미완료 일정</h1>
+                      <h1>완료 일정</h1>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
