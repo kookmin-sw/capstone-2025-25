@@ -1,7 +1,5 @@
-import { Modal } from '@/components/common/Modal';
-import { DialogClose } from '@radix-ui/react-dialog';
 import { Button } from '@/components/ui/button';
-import {Loader2, Settings} from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { useWithdrawAuth } from '@/hooks/useWithdrawAuth.ts';
 import { ReactNode } from 'react';
 import {

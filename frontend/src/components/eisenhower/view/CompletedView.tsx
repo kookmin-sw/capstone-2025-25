@@ -32,7 +32,6 @@ export function CompletedView({
         const apiTasks = res.content.content;
 
         const completedTasks = apiTasks.filter((t) => t.isCompleted);
-        console.log(completedTasks);
 
         setTasks(completedTasks);
       } catch (err) {

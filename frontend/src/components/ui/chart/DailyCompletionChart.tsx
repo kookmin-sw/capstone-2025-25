@@ -82,8 +82,6 @@ export function DailyCompletionChart({ title }: DailyCompletionChartProps) {
     });
   }, [todayTaskAnalysisList]);
 
-  console.log('chartData', chartData);
-
   return (
     <Card className="h-full w-full border-none shadow-none rounded-2xl px-6 py-4">
       <CardHeader className="pb-2 px-0">
