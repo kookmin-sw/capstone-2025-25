@@ -42,13 +42,26 @@ export default function MatrixPage() {
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
   const completedTasks = useMemo(() => {
-    return allTasks.filter(
-      (task) =>
-        task.isCompleted &&
-        (!task.dueDate ||
-          (new Date(task.dueDate) >= startDate &&
-            new Date(task.dueDate) <= endDate)),
-    );
+    return allTasks.filter((task) => {
+      if (!task.isCompleted) return false;
+
+      if (!task.dueDate) return false;
+      const taskDate = new Date(task.dueDate);
+
+      if (startDate && endDate) {
+        return taskDate >= startDate && taskDate <= endDate;
+      }
+
+      if (startDate) {
+        return taskDate >= startDate;
+      }
+
+      if (endDate) {
+        return taskDate <= endDate;
+      }
+
+      return true;
+    });
   }, [allTasks, startDate, endDate]);
 
   const handleTaskClick = (task: Task) => {

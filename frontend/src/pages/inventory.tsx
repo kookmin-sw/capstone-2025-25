@@ -8,8 +8,8 @@ import CreateFolderModal from '@/components/inventory/modal/CreateFolderMoal';
 import DeleteFolderModal from '@/components/inventory/modal/DeleteFolderMoal';
 import useUpdateFolderName from '@/hooks/queries/inventory/folder/useUpdateFolderName';
 import Plus from '@/assets/plus.svg';
-import ArrowRight from '@/assets/arrow_right.svg'
-import {showToast} from "@/components/common/Toast.tsx";
+import ArrowRight from '@/assets/arrow_right.svg';
+import { showToast } from '@/components/common/Toast.tsx';
 
 export default function InventoryPage() {
   const navigate = useNavigate();
@@ -87,7 +87,7 @@ export default function InventoryPage() {
     }
 
     if (trimmedName.length > 10) {
-      showToast('error','폴더 이름은 최대 10글자까지 가능합니다.');
+      showToast('error', '폴더 이름은 최대 10글자까지 가능합니다.');
       return;
     }
 
@@ -112,8 +112,8 @@ export default function InventoryPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-1 md:gap-4 items-baseline md:flex-row ">
-          <p className=" text-[28px] text-[#525463] font-semibold">
+        <div className="flex flex-col  gap-1 md:gap-4 items-baseline ">
+          <p className="text-[28px] text-[#525463] font-semibold">
             나의 보관함
           </p>
           <p className=":text-[16px] text-[#525463]">
@@ -225,7 +225,7 @@ export default function InventoryPage() {
                       </>
                     )}
 
-                    <img src={ArrowRight}  className="text-[#A9ABB8]" />
+                    <img src={ArrowRight} className="text-[#A9ABB8]" />
                   </div>
                 )}
               </div>

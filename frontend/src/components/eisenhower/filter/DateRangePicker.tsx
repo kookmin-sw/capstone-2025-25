@@ -31,8 +31,8 @@ export function DateRangePicker({
   });
 
   useEffect(() => {
-    if (dateRange.from && dateRange.to) {
-      onDateChange(dateRange.from, dateRange.to);
+    if (dateRange.from) {
+      onDateChange(dateRange.from, dateRange.to ?? dateRange.from);
     }
   }, [dateRange, onDateChange]);
 
@@ -80,6 +80,7 @@ export function DateRangePicker({
                 setIsOpen(false);
               } else if (range?.from) {
                 setDateRange({ from: range.from, to: undefined });
+                onDateChange(range.from, range.from);
               }
             }}
             numberOfMonths={2}

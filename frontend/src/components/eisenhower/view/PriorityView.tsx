@@ -368,7 +368,7 @@ export function PriorityView({
 
       <div
         className={cn(
-          `grid ${gridClass} h-full overflow-x-auto`,
+          `grid ${gridClass} h-full overflow-x-auto scrollbar-hide`,
           viewMode == 'board' && 'flex',
         )}
       >
@@ -383,17 +383,29 @@ export function PriorityView({
                 getCategoryNameById(task.categoryId, categories) ===
                   selectedCategory;
 
-              if (!task.dueDate || !startDate || !endDate) {
-                return matchCategory;
-              }
-
               const stripTime = (date: Date) =>
                 new Date(date.getFullYear(), date.getMonth(), date.getDate());
-              const taskDate = stripTime(new Date(task.dueDate));
-              const s = stripTime(new Date(startDate));
-              const e = stripTime(new Date(endDate));
 
-              return matchCategory && taskDate >= s && taskDate <= e;
+              const taskDate = task.dueDate
+                ? stripTime(new Date(task.dueDate))
+                : null;
+              const s = startDate ? stripTime(startDate) : null;
+              const e = endDate ? stripTime(endDate) : null;
+
+              if (!taskDate && (s || e)) return false;
+
+              const matchDate =
+                s && !e
+                  ? taskDate?.getTime() === s.getTime()
+                  : !s && e
+                    ? taskDate?.getTime() === e.getTime()
+                    : s && e
+                      ? taskDate &&
+                        taskDate.getTime() >= s.getTime() &&
+                        taskDate.getTime() <= e.getTime()
+                      : true;
+
+              return matchCategory && matchDate;
             });
 
             return (
@@ -424,7 +436,7 @@ export function PriorityView({
                 )}
                 <div
                   className={cn(
-                    'px-4 py-5 mt-2 overflow-y-scroll scrollbar-hide flex flex-col rounded-[16px] w-full',
+                    'px-4 py-5 mt-2 overflow-y-auto scrollbar-hide flex flex-col rounded-[16px] w-full',
                     quadrantColors[quadrant],
                     viewMode === 'board'
                       ? 'h-[calc(100vh-160px)] min-w-[268px]'
