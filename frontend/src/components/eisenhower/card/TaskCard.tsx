@@ -174,12 +174,14 @@ export function TaskCard({
                   }
                   footer={
                     <DialogClose asChild>
-                      <Button
-                        variant="blue"
-                        onClick={() => handleCreateTodayTask(task.id)}
-                      >
-                        추가하기
-                      </Button>
+                      <div className='flex justify-end'>
+                        <Button
+                            variant="blue"
+                            onClick={() => handleCreateTodayTask(task.id)}
+                        >
+                          추가하기
+                        </Button>
+                      </div>
                     </DialogClose>
                   }
                 ></Modal>
