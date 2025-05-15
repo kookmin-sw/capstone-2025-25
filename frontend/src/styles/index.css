@@ -70,6 +70,32 @@
   --color-blue-2: #e8efff;
 }
 
+@layer components {
+  .custom-scrollbar {
+    padding-bottom: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: var(--color-gray-scale-200);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-gray-scale-500);
+    border-radius: 10px;
+    border: 2px solid var(--color-gray-scale-200);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gray-scale-600);
+  }
+}
+
 @font-face {
   font-family: 'Pretendard';
   font-weight: 900;
@@ -158,10 +184,6 @@
     local('Pretendard Thin'),
     url(/src/assets/fonts/woff2/Pretendard-Thin.woff2) format('woff2'),
     url(/src/assets/fonts/woff/Pretendard-Thin.woff) format('woff');
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
 }
 
 body {
