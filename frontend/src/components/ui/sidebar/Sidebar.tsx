@@ -63,7 +63,7 @@ const bottomNavItems: NavItem[] = [
     defaultIcon: <Info size={24} className="text-gray-400" />,
     label: '서비스 소개',
     route: '/service-info/',
-    externalLink: 'https://cheerful-perspective-141321.framer.app/',
+    externalLink: 'https://inventive-gift-946388.framer.app/',
   },
   // {
   //   id: 'withdrawal',
@@ -269,8 +269,7 @@ export default function Sidebar() {
                       <Settings size={24} className="text-gray-400" />
                     ),
                     label: '회원탈퇴',
-                  })
-                }
+                  })}
                 />
                 {bottomNavItems.map((item) => renderNavItem(item))}
               </div>

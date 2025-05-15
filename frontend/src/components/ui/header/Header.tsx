@@ -5,7 +5,7 @@ import Logo from '@/assets/logo.svg';
 import { usePomodoroStore } from '@/store/pomodoro';
 import usePomodoroControl from '@/hooks/usePomodoroControl';
 import { authService } from '@/services/authService.ts';
-import WithdrawalModal from "@/components/ui/Modal/WithdrawalModal.tsx";
+import WithdrawalModal from '@/components/ui/Modal/WithdrawalModal.tsx';
 import {
   Popover,
   PopoverContent,
@@ -24,7 +24,7 @@ export default function Header() {
     if (isAuthenticated) {
       // setToken(null);
       authService.logout();
-      localStorage.removeItem('pomodoro-state')
+      localStorage.removeItem('pomodoro-state');
     } else {
       navigate('/login');
     }
@@ -36,7 +36,7 @@ export default function Header() {
     }
   };
   const navigateToIntro = () => {
-    window.open('https://cheerful-perspective-141321.framer.app/', '_blank');
+    window.open('https://inventive-gift-946388.framer.app/', '_blank');
   };
 
   const currentId = usePomodoroStore((s) => s.id);
@@ -107,14 +107,14 @@ export default function Header() {
                       </>
                     )}
                   </button>
-                  <WithdrawalModal trigger={
-                    <button
-                        className=" rounded-[8px] w-[150px] flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 outline-none cursor-pointer"
-                    >
-                      <Settings size={16} />
-                      <span>회원 탈퇴</span>
-                    </button>
-                  }/>
+                  <WithdrawalModal
+                    trigger={
+                      <button className=" rounded-[8px] w-[150px] flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 outline-none cursor-pointer">
+                        <Settings size={16} />
+                        <span>회원 탈퇴</span>
+                      </button>
+                    }
+                  />
                 </div>
               </PopoverContent>
             </Popover>
