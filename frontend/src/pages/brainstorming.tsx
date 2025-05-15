@@ -273,7 +273,7 @@ export default function Brainstorming() {
 
   const createMatrix = (bubble: BubbleNodeType) => {
     setTaskData({
-      id: bubble.bubbleId,
+      bubbleId: bubble.bubbleId,
       title: bubble.title,
     });
     setIsDialogOpen(true);

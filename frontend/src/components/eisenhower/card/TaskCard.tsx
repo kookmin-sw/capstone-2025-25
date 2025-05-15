@@ -117,7 +117,15 @@ export function TaskCard({
   };
 
   return (
-    <div className="group w-full">
+    <div
+      className="group w-full select-none"
+      style={{
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        WebkitTouchCallout: 'none',
+        touchAction: 'manipulation',
+      }}
+    >
       <div
         ref={setNodeRef}
         style={style}
