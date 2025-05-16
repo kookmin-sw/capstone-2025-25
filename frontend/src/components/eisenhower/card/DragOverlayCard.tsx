@@ -3,7 +3,6 @@ import type { Category } from '@/types/category';
 import { getCategoryNameById } from '@/utils/category';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { Task } from '@/types/task.ts';
-import { format } from 'date-fns';
 
 export interface DragOverlayCardProps {
   task: Task;

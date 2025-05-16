@@ -163,7 +163,7 @@ export function TaskModal({
             showToast('error', '카테고리는 10자 이하로 입력해주세요.');
           }
         },
-        onError: (err) => {
+        onError: () => {
           showToast('error', '카테고리 생성에 실패했어요.');
         },
       },

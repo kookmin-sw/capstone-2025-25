@@ -1,10 +1,9 @@
 import { create } from 'zustand';
 import { tasks, getTasksByQuadrant } from '@/mock/task';
 import type { Task, TaskSections } from '@/types/task';
-import { toast } from 'sonner';
 import { Quadrant } from '@/types/commonTypes';
 import { generateNumericId } from '@/lib/generateNumericId';
-import {showToast} from "@/components/common/Toast.tsx";
+import { showToast } from '@/components/common/Toast.tsx';
 
 type DeleteTaskResult = {
   mindMapId: number | null;
@@ -120,7 +119,7 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
     };
 
     addTask(newTask);
-    showToast('success','마인드맵에서 작업이 추가되었습니다.')
+    showToast('success', '마인드맵에서 작업이 추가되었습니다.');
     // toast.success('마인드맵에서 작업이 추가되었습니다.');
 
     return newTask;
@@ -148,7 +147,7 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
     });
 
     // toast.success('작업이 삭제되었습니다.');
-    showToast('success', '작업이 삭제되었습니다.')
+    showToast('success', '작업이 삭제되었습니다.');
 
     return {
       mindMapId,
@@ -186,7 +185,7 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
     updateTask(updatedTask.id, updatedTask);
 
     // set({ activeTaskId: null });
-    showToast('success','작업이 저장되었습니다.')
+    showToast('success', '작업이 저장되었습니다.');
     // toast.success('작업이 저장되었습니다.');
   },
 
@@ -196,7 +195,7 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
         task.id === taskId ? { ...task, isCompleted: true } : task,
       );
 
-      showToast('success','작업이 완료되었습니다.')
+      showToast('success', '작업이 완료되었습니다.');
       // toast.success('작업이 완료되었습니다.');
 
       return {
@@ -216,7 +215,10 @@ const useMatrixStore = create<MatrixState>((set, get) => ({
       // toast.success(
       //   newStatus ? '일정을 완료했습니다.' : '일정 완료를 취소했습니다.',
       // );
-      showToast('success', newStatus ? '일정을 완료했습니다.' : '일정 완료를 취소했습니다.')
+      showToast(
+        'success',
+        newStatus ? '일정을 완료했습니다.' : '일정 완료를 취소했습니다.',
+      );
 
       return {
         allTasks: updatedTasks,

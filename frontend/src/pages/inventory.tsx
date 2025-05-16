@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import FolderIcon from '@/assets/folder.png';
-import { ChevronRight, Loader2, Pencil, Trash2, X } from 'lucide-react';
+import { Loader2, Pencil, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import useGetInventoryFolderList from '@/hooks/queries/inventory/folder/useGetInventoryFolderList';
 import useDeleteInventoryFolder from '@/hooks/queries/inventory/folder/useDeleteInventoryFolder';

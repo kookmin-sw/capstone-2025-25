@@ -23,15 +23,7 @@ import { eisenhowerService } from '@/services/eisenhowerService';
 import { cn } from '@/lib/utils.ts';
 import { useResponsive } from '@/hooks/use-mobile.ts';
 import { useSortable } from '@dnd-kit/sortable';
-import {
-  useSensor,
-  useSensors,
-  PointerSensor,
-  MouseSensor,
-  TouchSensor,
-  KeyboardSensor,
-} from '@dnd-kit/core';
-import MoveToFolderModal from '@/components/inventory/modal/MoveToFolderModal.tsx';
+import { useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import Plus from '@/assets/plus.svg';
 
 const useCustomSensors = () => {
@@ -41,10 +33,6 @@ const useCustomSensors = () => {
       delay: 800,
     },
   });
-
-  // const mouseSensor = useSensor(MouseSensor);
-  // const touchSensor = useSensor(TouchSensor);
-  // const keyboardSensor = useSensor(KeyboardSensor);
 
   return useSensors(pointerSensor);
 };
@@ -79,14 +67,7 @@ function SortableTaskCard({
   children: React.ReactNode;
   onClick?: () => void;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { attributes, listeners, setNodeRef } = useSortable({
     id: task.id,
     activationConstraint: {
       distance: 100, // 최소 5px 이상 이동해야 드래그
@@ -115,6 +96,7 @@ function SortableTaskCard({
 
   const handleClick = (e: React.MouseEvent) => {
     if (movedRef.current) {
+      return;
     } else {
       onClick?.();
     }
@@ -365,18 +347,11 @@ export function PriorityView({
     setIsModalOpen(true);
     setModalMode('create');
   };
-  const handleCloseModal = () => {
-    setSelectedTask(undefined);
-  };
 
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={rectIntersection}
-      // autoScroll={{
-      //   acceleration: 0,  // 스크롤 가속도, 기본값은 10, 낮춰서 부드럽게 가능
-      //   activationDistance: 50,  // 포인터가 가장자리에서 얼마나 떨어져야 자동 스크롤 발동되는지 (기본값 50)
-      // }}
       onDragEnd={handleDragEnd}
       onDragStart={({ active }) => {
         const q = findTaskQuadrant(active.id);
@@ -386,31 +361,6 @@ export function PriorityView({
         if (t) setActiveTask(t);
       }}
     >
-      {/*{isMobile && (*/}
-      {/*  <div className={cn('grid gap-1 md:mb-4 grid-cols-1')}>*/}
-      {/*    {(['Q1', 'Q2', 'Q3', 'Q4'] as Quadrant[]).map((q) => (*/}
-      {/*      <Droppable key={q} id={q}>*/}
-      {/*        <button*/}
-      {/*          key={q}*/}
-      {/*          onClick={() => setActiveQuadrant(q)}*/}
-      {/*          className={cn(*/}
-      {/*            'w-full py-2 px-3 rounded-[8px] text-sm font-medium  border cursor-pointer flex items-center gap-2',*/}
-      {/*            quadrantColors[q],*/}
-      {/*            activeQuadrant === q*/}
-      {/*              ? 'text-[#525463] border-[#CDCED6]'*/}
-      {/*              : 'text-[#525463] border-[#CDCED6]',*/}
-      {/*          )}*/}
-      {/*        >*/}
-      {/*          <div className="w-6 h-6 flex items-center justify-center rounded-[8px] text-sm font-semibold leading-none bg-blue text-neon-green shrink-0">*/}
-      {/*            {q.replace('Q', '')}*/}
-      {/*          </div>*/}
-      {/*          {quadrantTitles[q]}*/}
-      {/*        </button>*/}
-      {/*      </Droppable>*/}
-      {/*    ))}*/}
-      {/*  </div>*/}
-      {/*)}*/}
-
       <div
         className={cn(
           `grid ${gridClass} h-full overflow-x-auto scrollbar-hide`,
@@ -488,7 +438,6 @@ export function PriorityView({
                       : 'h-[400px] ',
                   )}
                 >
-                  {/*<div className="flex justify-between pb-[14px] gap-2">*/}
                   <div
                     className={cn(
                       'flex justify-between pb-[14px] w-full',
@@ -506,7 +455,6 @@ export function PriorityView({
                           {quadrant.replace('Q', '')}
                         </div>
 
-                        {/*<div className="flex justify-between gap-2 w-full">*/}
                         <div
                           className={cn(
                             'flex justify-between gap-4 w-full',
@@ -535,7 +483,6 @@ export function PriorityView({
                         onClick={() => handleCreateModal(quadrant)}
                         className="flex items-center justify-center w-10 h-10 rounded-full bg-white text-blue shrink-0 cursor-pointer"
                       >
-                        {/*<Plus className="w-5 h-5" />*/}
                         <img
                           src={Plus}
                           alt="plus"
@@ -557,26 +504,12 @@ export function PriorityView({
                             handleTaskModal(task);
                           }}
                         >
-                          {/*<div className='p-10' onClick={()=>{console.log("clicked")}}>sdfdsf</div>*/}
                           <TaskCard
                             onUpdateTask={handleUpdateTask}
                             task={task}
                             layout={viewMode}
                             categories={categories}
                           />
-                          {/*<TaskModal*/}
-                          {/*    key={task.id}*/}
-                          {/*    mode="edit"*/}
-                          {/*    quadrant={task.quadrant}*/}
-                          {/*    task={task}*/}
-                          {/*    trigger={*/}
-                          {/*        <TaskCard*/}
-                          {/*            task={task}*/}
-                          {/*            layout={viewMode}*/}
-                          {/*            categories={categories}*/}
-                          {/*        />*/}
-                          {/*    }*/}
-                          {/*/>*/}
                         </SortableTaskCard>
                       ))}
                     </div>

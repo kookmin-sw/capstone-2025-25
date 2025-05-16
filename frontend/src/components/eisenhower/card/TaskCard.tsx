@@ -1,16 +1,10 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import {
-  Bot,
-  Calendar,
-  GripVertical,
-  SquareArrowOutUpRight,
-} from 'lucide-react';
+import { Calendar, SquareArrowOutUpRight } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { MouseEvent } from 'react';
 import { cn } from '@/lib/utils';
 import { EisenhowerBase } from '@/types/commonTypes';
-// import { Task } from '@/types/task.ts';
 import { Category } from '@/types/category.ts';
 import { eisenhowerService } from '@/services/eisenhowerService.ts';
 import CheckFillIcon from '@/assets/eisenhower/check_fill.svg';
@@ -19,8 +13,6 @@ import type { EisenhowerTask } from '@/types/api/eisenhower';
 import { Modal } from '@/components/common/Modal.tsx';
 import { Button } from '@/components/ui/button.tsx';
 import { DialogClose } from '@radix-ui/react-dialog';
-import EisenhowerAi from '@/components/ui/Modal/EisenhowerAi.tsx';
-import { todayService } from '@/services/todayService.ts';
 import { showToast } from '@/components/common/Toast.tsx';
 import useCreateTodayTask from '@/hooks/queries/today/useCreateTodayTask';
 
@@ -40,7 +32,6 @@ interface TaskCardProps {
 export function TaskCard({
   task,
   categories,
-  onClick,
   layout = 'matrix',
   dragHandle,
   className,
@@ -53,7 +44,6 @@ export function TaskCard({
   //   ? categories.find((cat) => cat.id === task.categoryId)
   //   : null;
   const category = categories.find((cat) => cat.id === task.categoryId) ?? null;
-  const isCategoryDeleted = task.categoryId !== null && !category;
 
   const {
     attributes,
@@ -67,10 +57,6 @@ export function TaskCard({
   const { createTodoTaskMutation } = useCreateTodayTask();
 
   const style = { transform: CSS.Transform.toString(transform), transition };
-
-  const handleClick = (e: MouseEvent) => {
-    const checkIcon = e.currentTarget.querySelector('.check-icon');
-  };
 
   const handleTaskComplete = async (e: MouseEvent) => {
     e.stopPropagation();
@@ -131,7 +117,6 @@ export function TaskCard({
         style={style}
         {...attributes}
         {...(dragHandle === 'full' && variant === 'default' ? listeners : {})}
-        onClick={handleClick}
         className={cn(
           'rounded-md p-5 flex flex-col relative transition-all duration-200',
           layout === 'board' ? 'w-full' : '',
@@ -174,10 +159,10 @@ export function TaskCard({
                   }
                   footer={
                     <DialogClose asChild>
-                      <div className='flex justify-end'>
+                      <div className="flex justify-end">
                         <Button
-                            variant="blue"
-                            onClick={() => handleCreateTodayTask(task.id)}
+                          variant="blue"
+                          onClick={() => handleCreateTodayTask(task.id)}
                         >
                           추가하기
                         </Button>
