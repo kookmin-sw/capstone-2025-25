@@ -54,11 +54,6 @@ export function NodeToTaskModal({
 
   const { createCategoryMutation } = useCreateCategory();
 
-  const currentTasksInQuadrant = useMatrixStore
-    .getState()
-    .allTasks.filter((t) => t.quadrant === priority);
-  const nextOrder = currentTasksInQuadrant.length + 1;
-
   useEffect(() => {
     if (isOpen && taskData.title) {
       setTitle(taskData.title);
@@ -128,7 +123,7 @@ export function NodeToTaskModal({
   };
 
   const handleConfirmCreateTask = () => {
-    if (!taskData.bubbleId ) return;
+    if (!taskData.bubbleId) return;
 
     const currentTasks = useMatrixStore
       .getState()

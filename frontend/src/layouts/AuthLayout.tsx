@@ -7,7 +7,6 @@ export default function AuthLayout() {
   usePageView();
   return (
     <div>
-      {/*<header>Auth header</header>*/}
       <Outlet />
     </div>
   );

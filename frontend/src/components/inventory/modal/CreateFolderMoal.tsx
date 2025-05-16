@@ -11,8 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 import useCreateInventoryFolder from '@/hooks/queries/inventory/folder/useCreateInventoryFolder';
-import { toast } from 'sonner';
-import {showToast} from "@/components/common/Toast.tsx";
+import { showToast } from '@/components/common/Toast.tsx';
 
 type CreateFolderModalProps = {
   isOpen: boolean;
@@ -36,7 +35,7 @@ export default function CreateFolderModal({
     }
 
     if (trimmedName.length > 10) {
-      showToast('error','폴더 이름은 최대 10글자까지 가능합니다.');
+      showToast('error', '폴더 이름은 최대 10글자까지 가능합니다.');
       return;
     }
 
@@ -65,7 +64,6 @@ export default function CreateFolderModal({
           <DialogTitle>폴더 추가</DialogTitle>
           <DialogDescription>새 폴더의 이름을 입력해주세요.</DialogDescription>
         </DialogHeader>
-        {/*<form onSubmit={handleSubmit}>*/}
         <div>
           <Input
             value={folderName}
@@ -103,7 +101,6 @@ export default function CreateFolderModal({
             </Button>
           </div>
         </DialogFooter>
-        {/*</form>*/}
       </DialogContent>
     </Dialog>
   );

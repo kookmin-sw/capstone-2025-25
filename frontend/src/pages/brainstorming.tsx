@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Arrow from '@/assets/arrow_top.svg';
-import { BubbleType, BubbleNodeType } from '@/types/brainstorming';
+import { BubbleNodeType } from '@/types/brainstorming';
 import { useResponsive } from '@/hooks/use-mobile.ts';
 import clsx from 'clsx';
 import Bubble from '@/components/ui/brainstorming/Bubble';
@@ -20,7 +20,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/Dialog.tsx';

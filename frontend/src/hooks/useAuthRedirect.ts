@@ -32,7 +32,7 @@ export const useAuthRedirect = () => {
       navigate('/today', { replace: true });
     }
 
-    if (!token && !isTokenValid && path !== '/login') {
+    if (!token || (!isTokenValid && path !== '/login')) {
       // console.log('토큰 없음 또는 무효 → 로그인 페이지로 이동');
       navigate('/login', { replace: true });
     }
