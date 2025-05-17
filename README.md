@@ -33,4 +33,6 @@ https://www.bubble-pop.kr
 
 <br/> 
 
+![서비스소개서이미지](https://github.com/user-attachments/assets/56ad1164-0356-4ee3-a364-3b4a4a66b6fb)
+
 
