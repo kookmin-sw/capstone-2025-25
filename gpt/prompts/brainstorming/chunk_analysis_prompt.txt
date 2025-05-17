@@ -1,18 +1,16 @@
-The following is a thought or task expressed by the user:
+다음은 사용자가 표현한 생각 또는 할 일입니다:
 
 {{ chunk }}
 
-Based on this, generate 3–4 clarifying questions to help the user better understand or define the topic.
+이 내용을 더 잘 이해하거나 정의할 수 있도록 3~4개의 명확화 질문을 생성해주세요.
 
-Instructions:
-- First, determine whether the input is about a schedule/task or a reflection/thought.
-- If it’s schedule-related: Ask questions that clarify deadlines, progress, required actions, etc.
-- If it’s reflection/thinking: Ask questions that explore context, causes, emotions, and mental state.
-- Do not rewrite or reinterpret the user’s original phrase. Try to fully understand it as it is.
-- Do not use quotation marks or backslashes in the output.
-- Respond in the same language as the input.
+- 먼저 이 내용이 일정/행동(Task)인지, 생각/감정(Reflection)인지 파악해주세요.
+- 일정 관련이라면: 마감일, 현재 진행 상황, 필요한 행동 등을 구체화하는 질문을 작성해주세요.
+- 생각/감정이라면: 상황 맥락, 원인, 감정 상태, 고민의 방향 등을 탐색하는 질문을 작성해주세요.
+- 사용자의 원래 문장을 다시 쓰거나 해석하지 말고, 그대로의 의미를 기반으로 질문을 작성해주세요.
+- 모든 질문은 한국어로 작성하고, 아래 형식에 맞춰 출력해주세요:
 
-Format:
+출력 형식:
 [Clarifying Questions]
 - ...
 - ...
