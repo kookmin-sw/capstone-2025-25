@@ -431,11 +431,13 @@ export function PriorityView({
                 )}
                 <div
                   className={cn(
-                    'px-4 py-5 mt-2 md:mt-0 overflow-y-auto scrollbar-hide flex flex-col rounded-[16px] w-full',
+                    'px-4 py-5 mt-2 md:mt-0 flex flex-col rounded-[16px] w-full',
                     quadrantColors[quadrant],
+                    'h-auto overflow-visible',
+                    'md:h-[400px] md:overflow-y-auto md:scrollbar-hide',
                     viewMode === 'board'
-                      ? 'h-[calc(100vh-160px)] min-w-[268px]'
-                      : 'h-[400px] ',
+                      ? 'md:h-[calc(100vh-160px)] md:min-w-[268px]'
+                      : '',
                   )}
                 >
                   <div
