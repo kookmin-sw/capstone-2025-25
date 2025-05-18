@@ -5,13 +5,17 @@ interface UseEisenhowerAiParams {
   title: string;
   currentQuadrant: string;
   dueDate: string;
+  isOpen: boolean;
 }
 
 export const useEisenhowerAiRecommendation = ({
   title,
   currentQuadrant,
   dueDate,
+  isOpen,
 }: UseEisenhowerAiParams) => {
+  console.log(currentQuadrant, isOpen);
+
   const { data, isLoading, error, isPending } = useQuery({
     queryKey: ['eisenhowerAi', title, currentQuadrant, dueDate],
     queryFn: () =>
@@ -20,7 +24,7 @@ export const useEisenhowerAiRecommendation = ({
         currentQuadrant,
         dueDate,
       }),
-    enabled: !!title && !!dueDate && !!currentQuadrant,
+    enabled: isOpen,
     refetchOnWindowFocus: false,
     retry: 1,
   });
