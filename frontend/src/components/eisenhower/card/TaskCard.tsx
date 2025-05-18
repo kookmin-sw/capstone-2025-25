@@ -137,7 +137,7 @@ export function TaskCard({
               <div onClick={(e) => e.stopPropagation()}>
                 <EisenhowerAi
                   trigger={
-                    <div className="text-[#6E726E] hover:text-gray-600 transition-colors">
+                    <div className="text-blue hover:text-gray-600 transition-colors w-[22px] ">
                       <Bot />
                     </div>
                   }
