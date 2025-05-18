@@ -131,9 +131,9 @@ export function TaskCard({
         )}
       >
         {/* 상단 도구 아이콘 */}
-        <div className="absolute  top-5 right-5 flex gap-4">
+        <div className="absolute top-5 right-5 flex gap-4">
           {variant === 'default' && (
-            <div className=" transition-opacity flex gap-2 items-center">
+            <div className=" transition-opacity flex gap-4 items-center">
               <div onClick={(e) => e.stopPropagation()}>
                 <EisenhowerAi
                   trigger={
@@ -198,7 +198,7 @@ export function TaskCard({
           </div>
         </div>
 
-        <div className="pr-16">
+        <div className="pr-24">
           {/* 카테고리 */}
           {category && (
             <div className="flex mb-2 flex-wrap">
