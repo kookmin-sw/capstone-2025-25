@@ -142,6 +142,9 @@ export function TaskCard({
                     </div>
                   }
                   linkedEisenhower={task}
+                  onApply={(updatedTask) => {
+                    onUpdateTask?.(updatedTask as EisenhowerTask);
+                  }}
                 />
               </div>
 
