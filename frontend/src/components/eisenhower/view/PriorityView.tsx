@@ -29,8 +29,8 @@ import Plus from '@/assets/plus.svg';
 const useCustomSensors = () => {
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
-      // distance: 0,        // 거리 조건 없이
-      delay: 800,
+      distance: 2, // 거리 조건 없이
+      // delay: 800,
     },
   });
 
