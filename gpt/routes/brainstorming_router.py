@@ -16,17 +16,12 @@ gpt_service = GPTService(api_key=OPENAI_API_KEY)
 @router.post("/extract/chunks", response_model=BrainStormingResponse)
 @safe_gpt_handler
 async def extract_chucks(request: BrainStormingRequest):
-    user_prompt = load_prompt_template("prompts/brainstorming/extract_chunks_prompt.txt", {
+    user_prompt = load_prompt_template("prompts/brainstorming/extract_chunks_user_prompt.txt", {
         "text": request.text
     })
 
-    system_prompt = (
-        "당신은 현대인의 복잡하고 산만한 생각을 정리해주는 조력자입니다. "
-        "사용자가 입력한 텍스트에는 다양한 생각, 감정, 해야 할 일, 고민 등이 뒤섞여 있습니다. "
-        "이 텍스트를 의미 단위로 분리하여 항목별로 정리해 주세요. "
-        "새로운 내용을 만들지 말고, 사용자의 표현과 맥락을 그대로 반영해 주세요. "
-        "각 항목은 간결하게 작성해 주세요."
-    )
+    system_prompt = load_prompt_template("prompts/brainstorming/extract_chunks_system_prompt.txt")
+
     gpt_output = await gpt_service.ask(system_prompt, user_prompt)
 
     refined_questions = clean_question_lines(gpt_output)
@@ -37,15 +32,11 @@ async def extract_chucks(request: BrainStormingRequest):
 @router.post("/analyze/chunk", response_model=ChunkAnalysisResponse)
 @safe_gpt_handler
 async def analyze_chunk(request: BrainStormingChunkRequest):
-    user_prompt = load_prompt_template("prompts/brainstorming/chunk_analysis_prompt.txt", {
+    user_prompt = load_prompt_template("prompts/brainstorming/chunk_analysis_user_prompt.txt", {
         "chunk": request.chunk
     })
 
-    system_prompt = (
-        "당신은 사용자의 생각을 명확하게 정리할 수 있도록 도와주는 사고 정리 코치입니다."
-        "당신의 역할은 사용자가 표현한 생각이나 할 일을 더 잘 이해하고 구체화할 수 있도록,"
-        "모호한 지점을 찾아주고 도움이 되는 질문을 던지는 것입니다."
-    )
+    system_prompt = load_prompt_template("prompts/brainstorming/chunk_analysis_system_prompt.txt")
 
     gpt_output = await gpt_service.ask(system_prompt, user_prompt)
 
@@ -60,16 +51,12 @@ async def analyze_chunk(request: BrainStormingChunkRequest):
 @router.post("/rewrite/chunk", response_model=MindmapToChunkResponse)
 @safe_gpt_handler
 async def rewrite_chunk(request: RewriteChunkRequest):
-    user_prompt = load_prompt_template("prompts/brainstorming/mindmap_to_chunk_prompt.txt", {
+    user_prompt = load_prompt_template("prompts/brainstorming/mindmap_to_chunk_user_prompt.txt", {
         "existing_chunk": request.existing_chunk,
         "mindmap_data": [node.context for node in request.mindmap_data]
     })
 
-    system_prompt = (
-        "당신은 생각 정리를 도와주는 사고 정제 코치입니다. "
-        "사용자가 작성한 기존 문장을 기반으로, 관련된 마인드맵 데이터를 참고하여 "
-        "보다 구체적이고 명확한 한 문장으로 다듬는 역할을 합니다."
-    )
+    system_prompt = load_prompt_template("prompts/brainstorming/mindmap_to_chunk_system_prompt.txt")
 
     gpt_output = await gpt_service.ask(system_prompt, user_prompt)
 
