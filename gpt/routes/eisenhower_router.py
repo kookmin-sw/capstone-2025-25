@@ -23,7 +23,7 @@ async def eisenhower_order_recommendation(request: EisenhowerTaskRequest):
         "today": datetime.now().strftime("%Y-%m-%d")
     })
 
-    system_prompt = load_prompt_template("prompts/brainstorming/eisenhower_order_system_prompt.txt")
+    system_prompt = load_prompt_template("prompts/eisenhower/eisenhower_order_system_prompt.txt")
 
     gpt_output = await gpt_service.ask(system_prompt, user_prompt)
 
