@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Bot, Calendar, SquareArrowOutUpRight } from 'lucide-react';
+import { Calendar, SquareArrowOutUpRight } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { MouseEvent } from 'react';
 import { cn } from '@/lib/utils';
@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/button.tsx';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { showToast } from '@/components/common/Toast.tsx';
 import useCreateTodayTask from '@/hooks/queries/today/useCreateTodayTask';
-import EisenhowerAi from '@/components/ui/Modal/EisenhowerAi.tsx';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -134,16 +133,16 @@ export function TaskCard({
         <div className="absolute  top-5 right-5 flex gap-4">
           {variant === 'default' && (
             <div className=" transition-opacity flex gap-2 items-center">
-              <div onClick={(e) => e.stopPropagation()}>
-                <EisenhowerAi
-                  trigger={
-                    <div className="text-[#6E726E] hover:text-gray-600 transition-colors">
-                      <Bot />
-                    </div>
-                  }
-                  linkedEisenhower={task}
-                />
-              </div>
+              {/*<div onClick={(e) => e.stopPropagation()}>*/}
+              {/*  <EisenhowerAi*/}
+              {/*    trigger={*/}
+              {/*      <div className="text-[#6E726E] hover:text-gray-600 transition-colors">*/}
+              {/*        <Bot />*/}
+              {/*      </div>*/}
+              {/*    }*/}
+              {/*    linkedEisenhower={task}*/}
+              {/*  />*/}
+              {/*</div>*/}
 
               <div onClick={(e) => e.stopPropagation()}>
                 <Modal
