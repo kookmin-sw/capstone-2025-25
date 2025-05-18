@@ -22,7 +22,7 @@ export const useEisenhowerAiRecommendation = ({
       eisenhowerService.getAiRecommendation({
         title,
         currentQuadrant,
-        dueDate,
+        dueDate: dueDate || null,
       }),
     enabled: isOpen,
     refetchOnWindowFocus: false,

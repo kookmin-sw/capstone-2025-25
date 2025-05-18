@@ -13,6 +13,10 @@ import { useCategoryStore } from '@/store/useCategoryStore.ts';
 import { Task } from '@/types/task.ts';
 import { eisenhowerService } from '@/services/eisenhowerService.ts';
 import * as Dialog from '@radix-ui/react-dialog';
+import q1Image from '@/assets/q1.svg';
+import q2Image from '@/assets/q2.svg';
+import q3Image from '@/assets/q3.svg';
+import q4Image from '@/assets/q4.svg';
 
 interface Props {
   trigger: ReactNode;
@@ -28,12 +32,11 @@ export default function EisenhowerAi({
   onClose,
   onApply,
 }: Props) {
-  // 이제 내부에서 onClose, onApply 사용 가능
   const { title, quadrant, dueDate, categoryId } = linkedEisenhower;
   const [isOpen, setIsOpen] = useState(false);
   const formattedDueDate = useMemo(() => {
-    const base = dueDate ? new Date(dueDate) : new Date();
-    return base.toISOString().split('T')[0];
+    if (!dueDate) return '';
+    return new Date(dueDate).toISOString().split('T')[0];
   }, [dueDate]);
 
   const { recommendation, isLoading } = useEisenhowerAiRecommendation({
@@ -80,6 +83,13 @@ export default function EisenhowerAi({
     }
   };
 
+  const quadrantIconMap: Record<Quadrant, string> = {
+    Q1: q1Image,
+    Q2: q2Image,
+    Q3: q3Image,
+    Q4: q4Image,
+  };
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
@@ -94,11 +104,23 @@ export default function EisenhowerAi({
           </div>
 
           <div className="flex flex-col gap-4">
-            {/* 추천 메시지 */}
             <div className="flex items-center gap-3 p-4 bg-[#EDF3FF] rounded-lg text-sm text-[#2F3A4B]">
-              <div className="w-6 h-6 bg-blue-200 rounded grid place-items-center text-blue-600">
-                <div className="w-2 h-2 bg-blue-600 rounded-full" />
+              <div className="w-12 h-12 rounded grid place-items-center text-blue-600">
+                {recommendation?.recommendedQuadrant ? (
+                  <img
+                    src={
+                      quadrantIconMap[
+                        recommendation.recommendedQuadrant as Quadrant
+                      ]
+                    }
+                    alt={recommendation.recommendedQuadrant}
+                    className="w-12 h-12"
+                  />
+                ) : (
+                  <div className="w-2 h-2 bg-blue-600 rounded-full" />
+                )}
               </div>
+
               <span>
                 {isLoading ? (
                   '추천 로딩 중...'
