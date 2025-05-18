@@ -92,13 +92,34 @@ export default function MatrixPage() {
 
   const { isMobile } = useResponsive();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (!isMobile) return;
+
+    if (isDragging) {
+      document.body.style.overflow = 'hidden'; // 브라우저 스크롤 막기
+    } else {
+      document.body.style.overflow = ''; // 원래대로 복구
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isDragging, isMobile]);
 
   return (
     <div className="flex min-h-0 flex-1  overflow-auto ">
       <DndContext
         sensors={sensors}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
+        onDragStart={(e) => {
+          handleDragStart(e);
+          setIsDragging(true);
+        }}
+        onDragEnd={(e) => {
+          handleDragEnd(e);
+          setIsDragging(false);
+        }}
       >
         {/*<Toaster richColors position="top-center" />*/}
         <main className="flex flex-1 min-h-0 flex-col gap-[15px] h-full w-full">
