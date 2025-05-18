@@ -1,4 +1,4 @@
-package capstone.backend.domain.auth.schema;
+package capstone.backend.domain.auth.entity;
 
 import java.util.concurrent.TimeUnit;
 

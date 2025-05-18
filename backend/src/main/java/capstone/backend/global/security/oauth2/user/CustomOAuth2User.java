@@ -1,7 +1,7 @@
 package capstone.backend.global.security.oauth2.user;
 
-import capstone.backend.domain.member.scheme.Member;
-import capstone.backend.domain.member.scheme.Role;
+import capstone.backend.domain.member.entity.Member;
+import capstone.backend.domain.member.entity.Role;
 import io.jsonwebtoken.Claims;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

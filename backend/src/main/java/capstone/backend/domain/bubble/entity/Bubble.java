@@ -1,7 +1,7 @@
 package capstone.backend.domain.bubble.entity;
 
 
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,7 +1,7 @@
-package capstone.backend.domain.pomodoro.schema;
+package capstone.backend.domain.pomodoro.entity;
 
 
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 

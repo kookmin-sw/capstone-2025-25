@@ -2,7 +2,7 @@ package capstone.backend.domain.eisenhower.entity;
 
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryCreateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryUpdateRequest;
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 

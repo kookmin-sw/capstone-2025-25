@@ -1,6 +1,6 @@
 package capstone.backend.domain.pomodoro.util;
 
-import capstone.backend.domain.pomodoro.schema.PomodoroCycle;
+import capstone.backend.domain.pomodoro.entity.PomodoroCycle;
 
 import java.time.LocalTime;
 import java.util.List;

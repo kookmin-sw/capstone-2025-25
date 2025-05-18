@@ -1,6 +1,6 @@
 package capstone.backend.domain.pomodoro.repository;
 
-import capstone.backend.domain.pomodoro.schema.DailyPomodoroSummary;
+import capstone.backend.domain.pomodoro.entity.DailyPomodoroSummary;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

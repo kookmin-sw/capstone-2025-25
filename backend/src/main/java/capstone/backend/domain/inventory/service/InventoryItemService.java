@@ -11,7 +11,7 @@ import capstone.backend.domain.inventory.dto.request.InventoryItemUpdateRequest;
 import capstone.backend.domain.inventory.dto.response.InventoryItemResponse;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

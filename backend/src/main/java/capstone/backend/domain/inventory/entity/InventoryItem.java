@@ -1,7 +1,7 @@
 package capstone.backend.domain.inventory.entity;
 
 import capstone.backend.domain.inventory.dto.request.InventoryItemCreateRequest;
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;

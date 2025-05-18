@@ -1,6 +1,6 @@
 package capstone.backend.domain.pomodoro.dto.request;
 
-import capstone.backend.domain.pomodoro.schema.PomodoroCycle;
+import capstone.backend.domain.pomodoro.entity.PomodoroCycle;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;

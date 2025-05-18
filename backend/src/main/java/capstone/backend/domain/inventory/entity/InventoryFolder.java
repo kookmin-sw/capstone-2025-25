@@ -4,7 +4,7 @@ package capstone.backend.domain.inventory.entity;
 import static lombok.AccessLevel.*;
 
 import capstone.backend.domain.inventory.dto.request.InventoryFolderRequest;
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package capstone.backend.domain.todayTask.entity;
 
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import lombok.*;
