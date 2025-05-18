@@ -1,8 +1,10 @@
 from fastapi import APIRouter
 
 from config import OPENAI_API_KEY
-from models.brainstorming_request import BrainStormingRequest, BrainStormingChunkRequest, RewriteChunkRequest
-from models.brainstorming_response import BrainStormingResponse, ChunkAnalysisResponse, MindmapToChunkResponse
+from models.brainstorming_request import BrainStormingRequest, BrainStormingChunkRequest, RewriteChunkRequest, \
+    MergeChunksRequest
+from models.brainstorming_response import BrainStormingResponse, ChunkAnalysisResponse, MindmapToChunkResponse, \
+    MergeChunksResponse
 from services.gpt_service import GPTService
 from utils.brainstorming import parse_chunk_analysis
 from utils.exception_handler import safe_gpt_handler
@@ -63,3 +65,17 @@ async def rewrite_chunk(request: RewriteChunkRequest):
     return MindmapToChunkResponse(
         new_chunk=gpt_output.strip()
     )
+
+
+@router.post("/merge/chunks", response_model=MergeChunksResponse)
+@safe_gpt_handler
+async def merge_chunks(request: MergeChunksRequest):
+    user_prompt = load_prompt_template("prompts/brainstorming/merge_chunks_user_prompt.txt", {
+        "chunks": request.chunks
+    })
+
+    system_prompt = load_prompt_template("prompts/brainstorming/merge_chunks_system_prompt.txt")
+
+    gpt_output = await gpt_service.ask(system_prompt, user_prompt)
+
+    return MergeChunksResponse(merged_chunk=gpt_output.strip())
