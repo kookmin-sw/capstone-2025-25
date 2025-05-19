@@ -60,6 +60,7 @@ export const ENDPOINTS = {
     BRAINSTORMING: {
       ANALYZE: '/api/brainstorming/analyze/chunk',
       REWRITE: '/api/brainstorming/rewrite/chunk',
+      MERGE: '/api/brainstorming/merge/chunks',
     },
     EISENHOWER: {
       RECOMMEND: '/api/eisenhower/order-recommendation',

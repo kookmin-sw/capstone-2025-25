@@ -5,6 +5,8 @@ import {
   BrainStormingAnalyzeRes,
   BrainStormingRewriteReq,
   BrainStormingRewriteRes,
+  MergeBubbleReq,
+  MergeBubbleRes,
 } from '@/types/api/gpt';
 
 export const gptService = {
@@ -23,6 +25,13 @@ export const gptService = {
   ): Promise<BrainStormingRewriteRes> => {
     const response = await gptClient.post<BrainStormingRewriteRes>(
       ENDPOINTS.GPT.BRAINSTORMING.REWRITE,
+      data,
+    );
+    return response.data;
+  },
+  mergeBubble: async (data: MergeBubbleReq): Promise<MergeBubbleRes> => {
+    const response = await gptClient.post<MergeBubbleRes>(
+      ENDPOINTS.GPT.BRAINSTORMING.MERGE,
       data,
     );
     return response.data;
