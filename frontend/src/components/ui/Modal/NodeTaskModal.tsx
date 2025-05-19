@@ -38,7 +38,8 @@ type NodeToTaskModalProps = {
     title: string;
     id: number | null;
   };
-  task?: Task;
+  task?: Task
+  onSuccess: () => void;
 };
 
 export function NodeToTaskModal({
@@ -46,6 +47,7 @@ export function NodeToTaskModal({
   onOpenChange,
   taskData,
   task,
+    onSuccess
 }: NodeToTaskModalProps) {
   const [priority, setPriority] = useState<Quadrant>('Q1');
   const [title, setTitle] = useState(task?.title ?? taskData.title);
@@ -145,7 +147,9 @@ export function NodeToTaskModal({
       {
         onSuccess: () => {
           onOpenChange(false);
-          navigate('/matrix');
+          showToast('success', '일정을 생성했습니다.')
+          onSuccess()
+          // navigate('/matrix');
         },
         onError: (err) => {
           console.error('생성 실패:', err);
