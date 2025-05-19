@@ -1,30 +1,28 @@
 package capstone.backend.global.security.oauth2.service;
 
 import capstone.backend.domain.inventory.service.InventoryFolderService;
-import capstone.backend.domain.member.repository.MemberRepository;
 import capstone.backend.domain.member.scheme.Member;
-import capstone.backend.domain.member.scheme.Role;
-import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
-import capstone.backend.global.security.oauth2.user.OAuth2UserInfoFactory;
-import capstone.backend.global.security.oauth2.user.OAuth2UserInfo;
+import capstone.backend.domain.member.service.MemberService;
 import capstone.backend.global.security.oauth2.exception.OAuth2AuthenticationProcessingException;
+import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
+import capstone.backend.global.security.oauth2.user.OAuth2UserInfo;
+import capstone.backend.global.security.oauth2.user.OAuth2UserInfoFactory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.stereotype.Service;
 
-
+@Service
 @Slf4j
 @RequiredArgsConstructor
-@Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final InventoryFolderService inventoryFolderService;
 
     @Override
@@ -48,31 +46,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(provider, oAuth2User.getAttributes());
 
             // 필수 정보 검증
-            if (userInfo.getEmail() == null) {
-                log.error("[OAuth2] 사용자 정보 검증 실패 - 이메일이 없습니다.");
+            if (userInfo.getEmail() == null || userInfo.getProvider() == null) {
                 throw new OAuth2AuthenticationProcessingException("OAuth2 사용자 정보가 유효하지 않습니다.");
             }
 
-            if (userInfo.getProvider() == null) {
-                log.error("[OAuth2] 사용자 정보 검증 실패 - Provider 정보가 없습니다.");
-                throw new OAuth2AuthenticationProcessingException("OAuth2 제공자 정보가 유효하지 않습니다.");
-            }
-
-            Member member = memberRepository.findByEmail(userInfo.getEmail())
-                    .orElseGet(() -> {
-                        Member newMember = Member.create(
-                                userInfo.getEmail(),
-                                userInfo.getName(),
-                                Role.USER,
-                                provider);
-
-                        memberRepository.save(newMember);
-
-                        //기본 폴더 생성
-                        inventoryFolderService.createDefaultFolder(newMember);
-
-                        return newMember;
-                    });
+            Member member = findOrCreateMember(userInfo, provider);
 
             // 사용자 객체 반환
             return new CustomOAuth2User(member, userInfo);
@@ -82,6 +60,23 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         } catch (Exception ex) {
             log.error("[OAuth2] 알 수 없는 예외 발생 - {}", ex.getMessage(), ex);
             throw new InternalAuthenticationServiceException("OAuth2 사용자 정보 처리 중 오류 발생", ex);
+        }
+    }
+
+    private Member findOrCreateMember(OAuth2UserInfo userInfo, String provider) {
+        Member member = memberService.findByEmail(userInfo.getEmail());
+        if (member != null) {
+            log.info("[OAuth2] 재로그인 유저: {}", member.getEmail());
+            return memberService.updateLoginStatus(member);
+        } else {
+            Member newMember = memberService.registerNewMember(
+                    userInfo.getEmail(),
+                    userInfo.getName(),
+                    provider
+            );
+            inventoryFolderService.createDefaultFolder(newMember);
+            log.info("[OAuth2] 최초 로그인 유저 - 신규 계정 생성 및 기본 폴더 설정");
+            return newMember;
         }
     }
 }
