@@ -7,7 +7,7 @@ import {
   DialogPortal,
   DialogTrigger,
 } from '@radix-ui/react-dialog';
-import { Calendar } from 'lucide-react';
+import { Calendar, Loader2 } from 'lucide-react';
 import { ReactNode } from 'react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import CheckOutlineIcon from '@/assets/eisenhower/check_outline.svg';
@@ -118,8 +118,8 @@ export default function EisenhowerAi({
 
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3 p-4 bg-[#EDF3FF] rounded-lg text-sm text-[#2F3A4B]">
-              <div className="w-12 h-12 rounded grid place-items-center text-blue-600">
-                {recommendation?.recommendedQuadrant ? (
+              {recommendation?.recommendedQuadrant ? (
+                <div className="w-12 h-12 rounded grid place-items-center text-blue-600">
                   <img
                     src={
                       quadrantIconMap[
@@ -129,23 +129,24 @@ export default function EisenhowerAi({
                     alt={recommendation.recommendedQuadrant}
                     className="w-12 h-12"
                   />
-                ) : (
-                  <div className="w-2 h-2 bg-blue-600 rounded-full" />
-                )}
-              </div>
+                </div>
+              ) : (
+                // <div className="w-2 h-2 bg-blue-600 rounded-full" />
+                <div></div>
+              )}
 
-              <span>
-                {isLoading ? (
-                  '추천 로딩 중...'
-                ) : (
-                  <>
-                    <p>
-                      <strong>‘{recommendation?.recommendedQuadrant}’</strong>로
-                      추천되었어요! 이 일정은 {recommendation?.reason}
-                    </p>
-                  </>
-                )}
-              </span>
+              {isLoading ? (
+                <div className="flex items-center justify-center w-full">
+                  <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+                </div>
+              ) : (
+                <>
+                  <p>
+                    <strong>‘{recommendation?.recommendedQuadrant}’</strong>로
+                    추천되었어요! 이 일정은 {recommendation?.reason}
+                  </p>
+                </>
+              )}
             </div>
 
             {/* 카드 요약 정보 */}
