@@ -201,7 +201,7 @@ export function TaskCard({
           </div>
         </div>
 
-        <div className="pr-24">
+        <div className="pr-26">
           {/* 카테고리 */}
           {category && (
             <div className="flex mb-2 flex-wrap">
