@@ -90,6 +90,7 @@ function SortableTaskCard({
 
     // 필수: DnD 작동하도록 설정
     listeners.onPointerDown?.(e);
+    console.log('[pointer down]', e.clientX, e.clientY);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -99,6 +100,7 @@ function SortableTaskCard({
     if (dx > 4 || dy > 4) {
       movedRef.current = true;
     }
+    console.log('[pointer move]', e.clientX, e.clientY);
   };
 
   const handleClick = (e: React.MouseEvent) => {
@@ -109,20 +111,16 @@ function SortableTaskCard({
     }
   };
 
-  // return (
-  //   <div
-  //     ref={setNodeRef}
-  //     {...attributes}
-  //     onPointerDown={handlePointerDown}
-  //     onPointerMove={handlePointerMove}
-  //     onClick={handleClick}
-  //   >
-  //     <div {...listeners}>{children}</div>
-  //   </div>
-  // );
   return (
-    <div ref={setNodeRef} {...attributes} {...listeners}>
-      <div onClick={onClick}>{children}</div>
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onClick={handleClick}
+      style={{ touchAction: 'none' }}
+    >
+      <div {...listeners}>{children}</div>
     </div>
   );
 }
@@ -144,52 +142,7 @@ export function PriorityView({
   const [tasksByQuadrant, setTasksByQuadrant] = useState<
     Record<Quadrant, Task[]>
   >({
-    Q1: [
-      {
-        id: 1,
-        title: 'string',
-        memo: 'string',
-        dueDate: null,
-        quadrant: 'Q1',
-        order: 1,
-        isCompleted: false,
-        createdAt: 'string',
-        categoryId: null,
-      },
-      {
-        id: 2,
-        title: 'string2',
-        memo: 'string',
-        dueDate: null,
-        quadrant: 'Q1',
-        order: 2,
-        isCompleted: false,
-        createdAt: 'string',
-        categoryId: null,
-      },
-      {
-        id: 3,
-        title: 'string3',
-        memo: 'string',
-        dueDate: null,
-        quadrant: 'Q1',
-        order: 3,
-        isCompleted: false,
-        createdAt: 'string',
-        categoryId: null,
-      },
-      {
-        id: 4,
-        title: 'string4',
-        memo: 'string',
-        dueDate: null,
-        quadrant: 'Q1',
-        order: 4,
-        isCompleted: false,
-        createdAt: 'string',
-        categoryId: null,
-      },
-    ],
+    Q1: [],
     Q2: [],
     Q3: [],
     Q4: [],
@@ -375,7 +328,7 @@ export function PriorityView({
     >
       <div
         className={cn(
-          `grid ${gridClass} h-full overflow-x-auto scrollbar-hide touch-none`,
+          `grid ${gridClass} h-full overflow-x-auto scrollbar-hide touch-action-none`,
           viewMode == 'board' && 'flex',
         )}
       >
