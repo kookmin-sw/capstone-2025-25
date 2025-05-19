@@ -5,6 +5,7 @@ import {
   DragEndEvent,
   useDroppable,
   DragOverlay,
+  TouchSensor,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -29,12 +30,18 @@ import Plus from '@/assets/plus.svg';
 const useCustomSensors = () => {
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
-      distance: 2, // 거리 조건 없이
-      // delay: 800,
+      distance: 0,
+      // delay: 100,
+    },
+  });
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 0,
+      tolerance: 3,
     },
   });
 
-  return useSensors(pointerSensor);
+  return useSensors(pointerSensor, touchSensor);
 };
 
 function Droppable({
@@ -70,7 +77,7 @@ function SortableTaskCard({
   const { attributes, listeners, setNodeRef } = useSortable({
     id: task.id,
     activationConstraint: {
-      distance: 100, // 최소 5px 이상 이동해야 드래그
+      distance: 5, // 최소 5px 이상 이동해야 드래그
     },
   });
 
@@ -83,6 +90,7 @@ function SortableTaskCard({
 
     // 필수: DnD 작동하도록 설정
     listeners.onPointerDown?.(e);
+    console.log('[pointer down]', e.clientX, e.clientY);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -92,14 +100,19 @@ function SortableTaskCard({
     if (dx > 4 || dy > 4) {
       movedRef.current = true;
     }
+    console.log('[pointer move]', e.clientX, e.clientY);
   };
 
+  // const handleClick = (e: React.MouseEvent) => {
+  //   if (movedRef.current) {
+  //     return;
+  //   } else {
+  //     onClick?.();
+  //   }
+  // };
+
   const handleClick = (e: React.MouseEvent) => {
-    if (movedRef.current) {
-      return;
-    } else {
-      onClick?.();
-    }
+    onClick?.();
   };
 
   return (
@@ -109,6 +122,7 @@ function SortableTaskCard({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onClick={handleClick}
+      style={{ touchAction: 'none' }}
     >
       <div {...listeners}>{children}</div>
     </div>
@@ -132,52 +146,7 @@ export function PriorityView({
   const [tasksByQuadrant, setTasksByQuadrant] = useState<
     Record<Quadrant, Task[]>
   >({
-    Q1: [
-      {
-        id: 1,
-        title: 'string',
-        memo: 'string',
-        dueDate: null,
-        quadrant: 'Q1',
-        order: 1,
-        isCompleted: false,
-        createdAt: 'string',
-        categoryId: null,
-      },
-      {
-        id: 2,
-        title: 'string2',
-        memo: 'string',
-        dueDate: null,
-        quadrant: 'Q1',
-        order: 2,
-        isCompleted: false,
-        createdAt: 'string',
-        categoryId: null,
-      },
-      {
-        id: 3,
-        title: 'string3',
-        memo: 'string',
-        dueDate: null,
-        quadrant: 'Q1',
-        order: 3,
-        isCompleted: false,
-        createdAt: 'string',
-        categoryId: null,
-      },
-      {
-        id: 4,
-        title: 'string4',
-        memo: 'string',
-        dueDate: null,
-        quadrant: 'Q1',
-        order: 4,
-        isCompleted: false,
-        createdAt: 'string',
-        categoryId: null,
-      },
-    ],
+    Q1: [],
     Q2: [],
     Q3: [],
     Q4: [],
@@ -363,7 +332,7 @@ export function PriorityView({
     >
       <div
         className={cn(
-          `grid ${gridClass} h-full overflow-x-auto scrollbar-hide`,
+          `grid ${gridClass} h-full overflow-x-auto scrollbar-hide touch-action-none`,
           viewMode == 'board' && 'flex',
         )}
       >

@@ -23,12 +23,12 @@ export default function LoginPage() {
       >
         <div>
           <img
-              src={Bubble}
-              width={isMobile ? 'auto' : 450}
-              alt="bubble"
-              style={{
-                filter: 'drop-shadow(0px 9.29px 250px #7098FF)'
-              }}
+            src={Bubble}
+            width={isMobile ? 'auto' : 450}
+            alt="bubble"
+            style={{
+              filter: 'drop-shadow(0px 9.29px 250px #7098FF)',
+            }}
           />
         </div>
 
@@ -36,10 +36,10 @@ export default function LoginPage() {
           <>
             <div className="text-2xl font-bold mb-6">
               <div className="text-center">
-                <p className="block md:hidden text-[24px]">
+                <div className="block md:hidden text-[24px]">
                   <p className="text-[24px]">머릿속을 맑게,</p>
                   <p className="text-[24px]">오늘을 명확하게!</p>
-                </p>
+                </div>
               </div>
 
               <div className="hidden md:block">

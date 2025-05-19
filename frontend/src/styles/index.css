@@ -241,3 +241,8 @@ body {
     flex-direction: row;
   }
 }
+
+html, body {
+  touch-action: none
+}
+
