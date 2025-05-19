@@ -30,14 +30,14 @@ import Plus from '@/assets/plus.svg';
 const useCustomSensors = () => {
   const pointerSensor = useSensor(PointerSensor, {
     activationConstraint: {
-      distance: 2, // 거리 조건 없이
-      // delay: 800,
+      distance: 0,
+      // delay: 100,
     },
   });
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
-      delay: 100,
-      tolerance: 5,
+      delay: 0,
+      tolerance: 3,
     },
   });
 
@@ -103,12 +103,16 @@ function SortableTaskCard({
     console.log('[pointer move]', e.clientX, e.clientY);
   };
 
+  // const handleClick = (e: React.MouseEvent) => {
+  //   if (movedRef.current) {
+  //     return;
+  //   } else {
+  //     onClick?.();
+  //   }
+  // };
+
   const handleClick = (e: React.MouseEvent) => {
-    if (movedRef.current) {
-      return;
-    } else {
-      onClick?.();
-    }
+    onClick?.();
   };
 
   return (
