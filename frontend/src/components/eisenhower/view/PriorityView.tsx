@@ -5,6 +5,7 @@ import {
   DragEndEvent,
   useDroppable,
   DragOverlay,
+  TouchSensor,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -33,8 +34,14 @@ const useCustomSensors = () => {
       // delay: 800,
     },
   });
+  const touchSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 100,
+      tolerance: 5,
+    },
+  });
 
-  return useSensors(pointerSensor);
+  return useSensors(pointerSensor, touchSensor);
 };
 
 function Droppable({
@@ -70,7 +77,7 @@ function SortableTaskCard({
   const { attributes, listeners, setNodeRef } = useSortable({
     id: task.id,
     activationConstraint: {
-      distance: 100, // 최소 5px 이상 이동해야 드래그
+      distance: 5, // 최소 5px 이상 이동해야 드래그
     },
   });
 
@@ -102,15 +109,20 @@ function SortableTaskCard({
     }
   };
 
+  // return (
+  //   <div
+  //     ref={setNodeRef}
+  //     {...attributes}
+  //     onPointerDown={handlePointerDown}
+  //     onPointerMove={handlePointerMove}
+  //     onClick={handleClick}
+  //   >
+  //     <div {...listeners}>{children}</div>
+  //   </div>
+  // );
   return (
-    <div
-      ref={setNodeRef}
-      {...attributes}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onClick={handleClick}
-    >
-      <div {...listeners}>{children}</div>
+    <div ref={setNodeRef} {...attributes} {...listeners}>
+      <div onClick={onClick}>{children}</div>
     </div>
   );
 }
@@ -363,7 +375,7 @@ export function PriorityView({
     >
       <div
         className={cn(
-          `grid ${gridClass} h-full overflow-x-auto scrollbar-hide`,
+          `grid ${gridClass} h-full overflow-x-auto scrollbar-hide touch-none`,
           viewMode == 'board' && 'flex',
         )}
       >

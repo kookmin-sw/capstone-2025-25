@@ -235,7 +235,9 @@ export default function MatrixPage() {
           )}
           <DragOverlay>
             {activeTask && (
-              <DragOverlayCard task={activeTask} categories={categories} />
+              <div style={{ pointerEvents: 'none' }}>
+                <DragOverlayCard task={activeTask} categories={categories} />
+              </div>
             )}
           </DragOverlay>
         </main>

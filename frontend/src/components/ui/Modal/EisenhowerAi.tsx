@@ -1,12 +1,16 @@
 import { useMemo, useState } from 'react';
 // import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
-import { DialogClose } from '@radix-ui/react-dialog';
+import {
+  DialogClose,
+  DialogOverlay,
+  DialogPortal,
+  DialogTrigger,
+} from '@radix-ui/react-dialog';
 import { Calendar } from 'lucide-react';
 import { ReactNode } from 'react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import CheckOutlineIcon from '@/assets/eisenhower/check_outline.svg';
-
 import { EisenhowerBase, Quadrant } from '@/types/commonTypes';
 import { useEisenhowerAiRecommendation } from '@/hooks/queries/eisenhower/useEisenhowerAiRecommendation';
 import { useCategoryStore } from '@/store/useCategoryStore.ts';
@@ -17,6 +21,11 @@ import q1Image from '@/assets/q1.svg';
 import q2Image from '@/assets/q2.svg';
 import q3Image from '@/assets/q3.svg';
 import q4Image from '@/assets/q4.svg';
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogContent,
+} from '@/components/ui/Dialog.tsx';
 
 interface Props {
   trigger: ReactNode;
@@ -92,16 +101,20 @@ export default function EisenhowerAi({
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
-      <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 z-50" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 w-[90vw] max-w-md -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl p-6 z-50">
-          <div className="flex gap-1 flex-col mb-2">
-            <p className="text-xl font-semibold">AI 추천 결과</p>
-            <p className="text-[#525463]">
-              AI가 추천한 최적의 우선순위를 참고하여 작업을 배치해 보세요
-            </p>
-          </div>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogPortal>
+        <DialogOverlay className="fixed inset-0 bg-black/50 z-50" />
+        <DialogContent className="fixed top-1/2 left-1/2 w-[90vw] max-w-md -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl p-6 z-50">
+          <DialogHeader>
+            <div className="flex gap-1 flex-col mb-2">
+              <p className="text-xl font-semibold">AI 추천 결과</p>
+              <DialogDescription>
+                <p className="text-[#525463]">
+                  AI가 추천한 최적의 우선순위를 참고하여 작업을 배치해 보세요
+                </p>
+              </DialogDescription>
+            </div>
+          </DialogHeader>
 
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3 p-4 bg-[#EDF3FF] rounded-lg text-sm text-[#2F3A4B]">
@@ -180,8 +193,8 @@ export default function EisenhowerAi({
               </Button>
             </DialogClose>
           </div>
-        </Dialog.Content>
-      </Dialog.Portal>
+        </DialogContent>
+      </DialogPortal>
     </Dialog.Root>
   );
 }

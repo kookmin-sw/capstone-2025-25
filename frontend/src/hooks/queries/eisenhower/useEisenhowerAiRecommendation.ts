@@ -14,7 +14,7 @@ export const useEisenhowerAiRecommendation = ({
   dueDate,
   isOpen,
 }: UseEisenhowerAiParams) => {
-  console.log(currentQuadrant, isOpen);
+  // console.log(currentQuadrant, isOpen);
 
   const { data, isLoading, error, isPending } = useQuery({
     queryKey: ['eisenhowerAi', title, currentQuadrant, dueDate],
