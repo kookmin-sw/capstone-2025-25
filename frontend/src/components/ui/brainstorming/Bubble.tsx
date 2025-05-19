@@ -4,6 +4,7 @@ import BubblePop from '@/assets/bubble_pop.gif';
 import clsx from 'clsx';
 
 interface BubbleProps {
+  isSelected?: boolean;
   x: number;
   y: number;
   radius: number;
@@ -19,6 +20,7 @@ interface BubbleProps {
 const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
   (
     {
+      isSelected,
       x,
       y,
       radius,
@@ -32,6 +34,7 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
     }: BubbleProps,
     ref,
   ) => {
+      console.log(isSelected)
     const [position, setPosition] = useState<{ x: number; y: number }>({
       x,
       y,
@@ -67,6 +70,8 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
     };
 
     const backgroundStyle: React.CSSProperties = {
+        width: `${radius * 2  }px`,
+        height: `${radius * 2 }px`,
       backgroundImage: `url(${BubbleImg})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
@@ -101,12 +106,13 @@ const Bubble = forwardRef<HTMLButtonElement, BubbleProps>(
         }}
       >
         <div
-          className="absolute inset-0 rounded-full"
+            className={clsx(
+                "absolute inset-0 rounded-full",
+                isSelected && 'border border-blue-500 [box-shadow:0_0_20px_rgba(112,152,255,0.82)]'
+            )}
           style={backgroundStyle}
         />
-        <p className="z-10 p-5">
-          {title}
-        </p>
+        <p className="z-10 p-5">{title}{isSelected}</p>
       </button>
     );
   },
