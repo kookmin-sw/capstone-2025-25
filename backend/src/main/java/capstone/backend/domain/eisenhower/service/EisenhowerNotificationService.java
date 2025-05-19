@@ -28,9 +28,9 @@ public class EisenhowerNotificationService {
 
     @Transactional
     public void generateDailyNotifications() {
-        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
 
-        List<EisenhowerItem> dueTodayItems = eisenhowerItemRepository.findAllByDueDateAndIsCompleted(today, false);
+        List<EisenhowerItem> dueTodayItems = eisenhowerItemRepository.findAllByDueDateAndIsCompleted(tomorrow, false);
 
         for (EisenhowerItem item : dueTodayItems) {
             eisenhowerNotificationRepository.deleteByEisenhowerItemId(item.getId());
