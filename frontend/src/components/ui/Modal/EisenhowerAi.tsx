@@ -26,6 +26,7 @@ import {
   DialogHeader,
   DialogContent,
 } from '@/components/ui/Dialog.tsx';
+import { SECTION_TITLES } from '@/constants/eisenhower.ts';
 
 interface Props {
   trigger: ReactNode;
@@ -142,8 +143,15 @@ export default function EisenhowerAi({
               ) : (
                 <>
                   <p>
-                    <strong>‘{recommendation?.recommendedQuadrant}’</strong>로
-                    추천되었어요! 이 일정은 {recommendation?.reason}
+                    <strong>
+                      ‘
+                      {recommendation?.recommendedQuadrant &&
+                        SECTION_TITLES[
+                          recommendation.recommendedQuadrant as Quadrant
+                        ]}
+                      ’
+                    </strong>
+                    로 추천되었어요! 이 일정은 {recommendation?.reason}
                   </p>
                 </>
               )}
