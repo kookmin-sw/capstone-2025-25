@@ -242,6 +242,7 @@ export default function Brainstorming() {
         },
 
         onError: (error) => {
+          showToast('error', '의미 있는 텍스트가 없어 버블을 생성할 수 없어요')
           console.error('버블 생성 중 오류가 발생했습니다: ', error);
         },
         onSettled: () => {
