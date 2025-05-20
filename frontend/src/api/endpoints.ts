@@ -12,6 +12,7 @@ export const ENDPOINTS = {
     ACCESS_TOKEN: '/api/auth/token',
     REFRESH_TOKEN: '/api/auth/reissue',
     WITHDRAW: '/api/auth',
+    REGISTERED: '/api/user/me/registered',
   },
 
   /* 아이젠하워 작업 관련 엔드포인트 */

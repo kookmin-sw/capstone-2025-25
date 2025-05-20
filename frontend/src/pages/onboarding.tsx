@@ -20,29 +20,35 @@ import slideImage5Mobile from '@/assets/onboarding/onboarding-mobile-5.png';
 
 import OnboardingSlide from '@/components/\bonboarding/OnboardingSlide';
 import { useResponsive } from '@/hooks/use-mobile';
+import usePatchRegister from '@/hooks/queries/auth/usePatchRegister';
 
 const paginationStyle = {
   position: 'absolute',
-  top: '50px', // 상단에 위치
-  bottom: 'auto', // 기본 하단 위치 제거
-  left: '0', // 왼쪽 경계 설정
-  right: '0', // 오른쪽 경계 설정
-  width: '100%', // 너비 100%로 설정
-  display: 'flex', // flex 레이아웃 사용
-  justifyContent: 'center', // 수평 중앙 정렬
+  top: '50px',
+  bottom: 'auto',
+  left: '0',
+  right: '0',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
   zIndex: 20,
 };
 const OnboardingPage = () => {
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
   const { isMobile } = useResponsive();
+  const { patchUserRegisterMutation } = usePatchRegister();
 
   const handleSlideChange = (swiper) => {
     setActiveIndex(swiper.activeIndex);
   };
 
   const goToToday = () => {
-    navigate('/today');
+    patchUserRegisterMutation(undefined, {
+      onSuccess: () => {
+        navigate('/today');
+      },
+    });
   };
 
   const slides = [
