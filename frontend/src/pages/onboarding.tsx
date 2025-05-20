@@ -94,7 +94,7 @@ const OnboardingPage = () => {
   const isLastSlide = (index) => index === slides.length - 1;
 
   return (
-    <div className="w-full h-screen bg-[#F0F0F5] relative">
+    <div className="w-full h-[100dvh] bg-[#F0F0F5] relative overflow-hidden">
       {!isLastSlide(activeIndex) && (
         <button
           onClick={goToToday}

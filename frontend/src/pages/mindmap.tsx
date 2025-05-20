@@ -116,10 +116,12 @@ export default function MindmapPage() {
       <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>마인드맵 작성을 취소하시겠습니까?</DialogTitle>
+            <DialogTitle className="text-[18px] md:text-[24px]">
+              마인드맵 작성을 취소하시겠습니까?
+            </DialogTitle>
           </DialogHeader>
           <div>
-            <div className="rounded-[16px] px-6 py-[20px] text-[20px] font-semibold bg-blue-2 text-gray-scale-700">
+            <div className="rounded-[16px] px-6 py-[20px] text-[16px] md:text-[20px] font-semibold bg-blue-2 text-gray-scale-700">
               마인드맵 내용은 저장되지 않으며, 다시 확인할 수 없습니다.
             </div>
           </div>
