@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 // import { Modal } from '@/components/common/Modal';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +26,7 @@ import {
   DialogHeader,
   DialogContent,
 } from '@/components/ui/Dialog.tsx';
+import { SECTION_TITLES } from '@/constants/eisenhower.ts';
 
 interface Props {
   trigger: ReactNode;
@@ -48,12 +49,22 @@ export default function EisenhowerAi({
     return new Date(dueDate).toISOString().split('T')[0];
   }, [dueDate]);
 
+  const [cachedRecommendation, setCachedRecommendation] = useState<
+    typeof recommendation | null
+  >(null);
+
   const { recommendation, isLoading } = useEisenhowerAiRecommendation({
     title,
     currentQuadrant: quadrant,
     dueDate: formattedDueDate,
-    isOpen,
+    isOpen: isOpen && !cachedRecommendation,
   });
+
+  useEffect(() => {
+    if (recommendation && !cachedRecommendation) {
+      setCachedRecommendation(recommendation);
+    }
+  }, [recommendation, cachedRecommendation]);
 
   const { categories } = useCategoryStore();
   const category = categoryId
@@ -142,8 +153,15 @@ export default function EisenhowerAi({
               ) : (
                 <>
                   <p>
-                    <strong>‘{recommendation?.recommendedQuadrant}’</strong>로
-                    추천되었어요! 이 일정은 {recommendation?.reason}
+                    <strong>
+                      ‘
+                      {recommendation?.recommendedQuadrant &&
+                        SECTION_TITLES[
+                          recommendation.recommendedQuadrant as Quadrant
+                        ]}
+                      ’
+                    </strong>
+                    로 추천되었어요! {recommendation?.reason}
                   </p>
                 </>
               )}

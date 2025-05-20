@@ -1,9 +1,11 @@
 package capstone.backend.global.api.webflux;
 
+import capstone.backend.domain.bubble.dto.response.GPTErrorResponse;
 import capstone.backend.global.api.exception.ApiException;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +16,6 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.util.retry.Retry;
 
-import java.time.Duration;
-
 @Configuration
 public class WebFluxConfig {
 
@@ -25,14 +25,13 @@ public class WebFluxConfig {
     @Bean
     public WebClient webClient() {
         HttpClient httpClient = HttpClient.create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000) // 5초 동안 연결 안 되면 실패
-                .responseTimeout(Duration.ofMinutes(1))             // 1분 동안 응답 안올 시 에러
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                .responseTimeout(Duration.ofMinutes(1))
                 .doOnConnected(conn ->
-                        conn.addHandlerLast(new ReadTimeoutHandler(5))  // 읽기 타임아웃 5초
-                                .addHandlerLast(new WriteTimeoutHandler(5)) // 쓰기 타임아웃 5초
+                        conn.addHandlerLast(new ReadTimeoutHandler(5))
+                                .addHandlerLast(new WriteTimeoutHandler(5))
                 );
 
-        // API 요청 결과 에러 핸들링
         return WebClient.builder()
                 .baseUrl(gptServerDomain)
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
@@ -40,17 +39,15 @@ public class WebFluxConfig {
                         .flatMap(response -> {
                             if (response.statusCode().isError()) {
                                 HttpStatus status = (HttpStatus) response.statusCode();
-                                return response.bodyToMono(String.class)
-                                        .flatMap(body -> Mono.error(new ApiException(status, "API Error: " + body)));
+                                return response.bodyToMono(GPTErrorResponse.class)
+                                        .map(GPTErrorResponse::detail)
+                                        .defaultIfEmpty("알 수 없는 오류가 발생했습니다.")
+                                        .flatMap(detail -> Mono.error(new ApiException(status, detail)));
                             }
                             return Mono.just(response);
                         })
-                        .retryWhen(
-                                Retry.fixedDelay(1, Duration.ofSeconds(2)) // 실패하면 2초 간격으로 한 번 더 재시도
-                                        .filter(throwable ->
-                                                throwable instanceof ApiException ||
-                                                throwable instanceof java.util.concurrent.TimeoutException
-                                        )
+                        .retryWhen(Retry.fixedDelay(1, Duration.ofMillis(100))
+                                .filter(e -> !(e instanceof ApiException))  // ApiException이면 재시도하지 않음
                         )
                 ).build();
     }

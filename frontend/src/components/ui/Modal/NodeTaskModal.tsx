@@ -37,6 +37,7 @@ type NodeToTaskModalProps = {
   taskData: {
     title: string;
     id: number | null;
+    bubbleId?: number | null;
   };
   task?: Task
   onSuccess: () => void;
@@ -153,7 +154,8 @@ export function NodeToTaskModal({
         },
         onError: (err) => {
           console.error('생성 실패:', err);
-          alert('일정 생성에 실패했습니다.');
+          // alert('일정 생성에 실패했습니다.');
+          showToast('error', '일정 생성에 실패했습니다.');
         },
       },
     );

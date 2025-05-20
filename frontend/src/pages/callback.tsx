@@ -16,7 +16,15 @@ export default function OAuthCallbackPage() {
     }
 
     exchangeCodeForTokenMutation(code, {
-      onSuccess: () => navigate('/matrix'),
+      onSuccess: (data) => {
+        const isRegistered = data?.content?.isRegistered;
+
+        if (isRegistered === false) {
+          navigate('/onboarding');
+        } else {
+          navigate('/today');
+        }
+      },
       onError: (error) => {
         console.error('토큰 발급 실패:', error);
         navigate('/login');

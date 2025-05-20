@@ -33,6 +33,7 @@ export const authService = {
 
   /** code로 로그인 → 토큰 저장 및 상태 업데이트 */
   exchangeCodeForToken: async (code: string) => {
+    console.log('code', code);
     const form = new URLSearchParams();
     form.append('code', code);
 
@@ -51,7 +52,7 @@ export const authService = {
     if (!token) throw new Error('accessToken 없음');
 
     authService.login(token);
-    return token;
+    return res.data;
   },
 
   /** 회원 탈퇴 API (accessToken 사용) */
@@ -98,5 +99,10 @@ export const authService = {
 
       window.location.href = '/login';
     }
+  },
+
+  patchRegister: async (): Promise<void> => {
+    const response = await apiClient.patch(ENDPOINTS.AUTH.REGISTERED);
+    return response.data;
   },
 };

@@ -289,8 +289,17 @@ export default function Brainstorming() {
       bubbleId: bubble.bubbleId,
       title: bubble.title,
     });
-    setIsDialogOpen(true);
-    setOpenPopoverId(null);
+
+    setBubbles((prev) =>
+      prev.map((b) =>
+        b.bubbleId === bubble.bubbleId ? { ...b, isDeleting: true } : b,
+      ),
+    );
+
+    setTimeout(() => {
+      setIsDialogOpen(true);
+      setOpenPopoverId(null);
+    }, 250);
   };
 
   const handleSaveBubble = (bubble) => {

@@ -59,7 +59,7 @@ public class AuthController {
         response.addHeader("Set-Cookie", cookieValue);
 
         // AT는 body에 담아 응답
-        return ApiResponse.ok(new AccessTokenResponse(tokenResponse.accessToken()));
+        return ApiResponse.ok(new AccessTokenResponse(tokenResponse.accessToken(), tokenResponse.isFirstLogin()));
     }
 
     @PostMapping("/logout")

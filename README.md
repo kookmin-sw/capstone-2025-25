@@ -73,6 +73,6 @@ cd capstone-2025-25
 
 <br/> 
 
-![서비스소개서이미지](https://github.com/user-attachments/assets/56ad1164-0356-4ee3-a364-3b4a4a66b6fb)
+![서비스 소개서 최종](https://github.com/user-attachments/assets/8c9d0cd1-5f7a-4428-8cba-b3433bc5e56d)
 
 

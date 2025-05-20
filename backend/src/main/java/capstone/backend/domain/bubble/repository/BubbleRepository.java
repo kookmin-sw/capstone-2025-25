@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface BubbleRepository extends JpaRepository<Bubble, Long> {
     List<Bubble> findAllByMemberId(Long memberId);
     Optional<Bubble> findByMemberIdAndId(Long memberId, Long id);
+    List<Bubble> findAllByMemberIdAndIdIn(Long memberId, List<Long> ids);
 }

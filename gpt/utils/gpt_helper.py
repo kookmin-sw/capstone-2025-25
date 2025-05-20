@@ -19,14 +19,15 @@ def clean_question_lines(text: str) -> list[str]:
     GPT 응답에서 리스트 형태의 질문들을 정제
     - 숫자/기호 접두어 제거
     - 따옴표, 이스케이프 문자 제거
+    - 의미 없는 항목 ("[]", "-") 제거
     - 공백 정리
     """
     cleaned_lines = []
 
     for line in text.split("\n"):
         line = line.strip()
-        if not line:
-            continue
+        if not line or line in {"[]", "-"}:
+            continue  # 빈 줄, 무의미 항목 제외
 
         # 접두어 숫자/기호 제거
         line = line.lstrip("0123456789.- ")
@@ -40,9 +41,11 @@ def clean_question_lines(text: str) -> list[str]:
         # 공백 정리
         line = re.sub(r"\s+", " ", line)
 
-        cleaned_lines.append(line)
+        if line and line not in {"[]", "-"}:
+            cleaned_lines.append(line)
 
     return cleaned_lines
+
 def clean_single_line(text: str) -> str:
     """
     GPT 응답이 한 줄일 때의 정제
