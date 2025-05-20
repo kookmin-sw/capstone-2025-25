@@ -99,4 +99,9 @@ export const authService = {
       window.location.href = '/login';
     }
   },
+
+  patchRegister: async (): Promise<void> => {
+    const response = await apiClient.patch(ENDPOINTS.AUTH.REGISTERED);
+    return response.data;
+  },
 };
