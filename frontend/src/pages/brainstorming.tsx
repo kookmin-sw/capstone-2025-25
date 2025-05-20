@@ -162,7 +162,7 @@ export default function Brainstorming() {
     }
     // 각 x 좌표에 대해 가능한 y 위치 계산
     for (const x of candidateX) {
-      let y = 10;
+      let y = 20;
 
       for (const bubble of currentBubbles) {
         const dx = x - (bubble.x * scrollWidth) / 100;
