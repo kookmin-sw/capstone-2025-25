@@ -27,6 +27,10 @@ export const useAuthRedirect = () => {
   useEffect(() => {
     const path = location.pathname;
 
+    if (path === '/onboarding') {
+      return;
+    }
+
     if (token && isTokenValid && path === '/login') {
       // console.log('유효한 로그인 상태 → today로 이동');
       navigate('/today', { replace: true });
