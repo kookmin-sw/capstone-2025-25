@@ -32,7 +32,7 @@ const OnboardingSlide = ({
         className={cn(
           'w-[307px] h-[559px] md:w-[940px] md:h-[612px] rounded-t-3xl overflow-hidden mt-auto',
           hideBorder
-            ? 'overflow-visible w-[366px] h-[600px] md:w-[959px] md:h-[612px]'
+            ? 'overflow-visible w-[307px] h-[600px] md:w-[959px] md:h-[612px]'
             : 'border border-gray-scale-400 overflow-hidden',
         )}
       >
