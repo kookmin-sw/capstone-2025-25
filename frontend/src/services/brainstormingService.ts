@@ -5,6 +5,8 @@ import {
   CreatedBubblesRes,
   PatchBubbleReq,
   CreateMatrixReq,
+  MergeBubbleReq,
+  MergeBubbleRes
 } from '@/types/api/brainstorming';
 
 export const brainstormingService = {
@@ -39,6 +41,13 @@ export const brainstormingService = {
   createMatrix: async (id: number, data: CreateMatrixReq): Promise<void> => {
     const response = await apiClient.post(
       `/api/v2/bubble/confirm-eisenhower/${id}`,
+      data,
+    );
+    return response.data;
+  },
+  mergeBubble: async (data: MergeBubbleReq): Promise<void> => {
+    const response = await apiClient.post(
+        ENDPOINTS.BRAINSTORMING.MERGE_BUBBLE,
       data,
     );
     return response.data;

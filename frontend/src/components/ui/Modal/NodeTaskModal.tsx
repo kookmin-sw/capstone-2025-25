@@ -39,8 +39,8 @@ type NodeToTaskModalProps = {
     id: number | null;
     bubbleId?: number | null;
   };
-  task?: Task;
-  onSuccess?: (bubbleId: number) => void;
+  task?: Task
+  onSuccess: () => void;
 };
 
 export function NodeToTaskModal({
@@ -48,7 +48,7 @@ export function NodeToTaskModal({
   onOpenChange,
   taskData,
   task,
-  onSuccess,
+    onSuccess
 }: NodeToTaskModalProps) {
   const [priority, setPriority] = useState<Quadrant>('Q1');
   const [title, setTitle] = useState(task?.title ?? taskData.title);
@@ -148,12 +148,9 @@ export function NodeToTaskModal({
       {
         onSuccess: () => {
           onOpenChange(false);
+          showToast('success', '일정을 생성했습니다.')
+          onSuccess()
           // navigate('/matrix');
-          showToast('success', '일정 생성을 완료하였습니다.');
-
-          if (taskData.bubbleId && onSuccess) {
-            onSuccess(taskData.bubbleId);
-          }
         },
         onError: (err) => {
           console.error('생성 실패:', err);

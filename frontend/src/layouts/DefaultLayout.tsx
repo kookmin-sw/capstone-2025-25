@@ -18,7 +18,7 @@ export default function DefaultLayout() {
   useAuthRedirect();
 
   return (
-    <div className="min-h-screen bg-[#F0F0F5] flex flex-col">
+    <div className=" bg-[#F0F0F5] flex flex-col" style={{ height: '100dvh' }}>
       <Header />
 
       <div className="flex flex-1 px-4 py-6 md:p-12 gap-9">

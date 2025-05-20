@@ -5,3 +5,7 @@ export type BrainStormingAnalyzeRes = {
 export type BrainStormingRewriteRes = {
   new_chunk: string;
 };
+
+export type MergeBubbleRes = {
+  merged_chunk: string
+}
