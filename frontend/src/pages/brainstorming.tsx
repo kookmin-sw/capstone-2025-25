@@ -274,8 +274,17 @@ export default function Brainstorming() {
       bubbleId: bubble.bubbleId,
       title: bubble.title,
     });
-    setIsDialogOpen(true);
-    setOpenPopoverId(null);
+
+    setBubbles((prev) =>
+      prev.map((b) =>
+        b.bubbleId === bubble.bubbleId ? { ...b, isDeleting: true } : b,
+      ),
+    );
+
+    setTimeout(() => {
+      setIsDialogOpen(true);
+      setOpenPopoverId(null);
+    }, 250);
   };
 
   const handleSaveBubble = (bubble) => {
@@ -302,12 +311,22 @@ export default function Brainstorming() {
 
       // 애니메이션이 끝난 후 버블 제거
       setTimeout(() => {
-        setBubbles((prev) =>
-          prev.filter((bubble) => bubble.bubbleId !== toBeSavedBubbleId),
-        );
+        setBubbles((prev) => {
+          const updated = prev.filter(
+            (bubble) => bubble.bubbleId !== toBeSavedBubbleId,
+          );
+          if (updated.length === 0) {
+            setIsBubbleDialogOpen(true);
+          }
+          return updated;
+        });
         setToBeSavedBubbleId(null); // 상태 초기화
       }, 250);
     }
+  };
+
+  const handleMatrixSuccess = (bubbleId: number) => {
+    setBubbles((prev) => prev.filter((bubble) => bubble.bubbleId !== bubbleId));
   };
 
   return (
@@ -490,6 +509,7 @@ export default function Brainstorming() {
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         taskData={taskData}
+        onSuccess={handleMatrixSuccess}
       />
     </div>
   );
