@@ -26,8 +26,10 @@ public class Member {
     @Column(nullable = false)
     private String provider; // OAuth2 로그인 제공자 (google, github, naver 등)
 
+    private Boolean isRegistered; // 최초 로그인, 재로그인 여부
+
     // private 생성자: 직접 객체 생성을 막고, 필수 필드 검증
-    private Member(String email, String username, Role role, String provider) {
+    private Member(String email, String username, Role role, String provider, boolean isRegistered) {
         if (email == null || email.isBlank()) throw new IllegalArgumentException("Email은 필수값입니다.");
         if (role == null) throw new IllegalArgumentException("Role은 필수값입니다.");
         if (provider == null || provider.isBlank()) throw new IllegalArgumentException("Provider는 필수값입니다.");
@@ -36,10 +38,15 @@ public class Member {
         this.username = username;
         this.role = role;
         this.provider = provider;
+        this.isRegistered = isRegistered;
     }
 
     // 정적 팩토리 메서드
-    public static Member create(String email, String username, Role role, String provider) {
-        return new Member(email, username, role, provider);
+    public static Member create(String email, String username, Role role, String provider, boolean isRegistered) {
+        return new Member(email, username, role, provider, isRegistered);
+    }
+
+    public void updateRegistered() {
+        this.isRegistered = true;
     }
 }
