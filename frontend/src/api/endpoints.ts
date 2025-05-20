@@ -5,6 +5,7 @@ export const ENDPOINTS = {
     GET_BUBBLES: '/api/v2/bubble',
     CREATE_BUBBLE: '/api/v2/bubble/create',
     PATCH_BUBBLE: (id: number) => `/api/v2/bubble/${id}`,
+    MERGE_BUBBLE: '/api/v2/bubble/merge',
   },
 
   /* 인증 관련 엔드포인트 */
@@ -12,6 +13,7 @@ export const ENDPOINTS = {
     ACCESS_TOKEN: '/api/auth/token',
     REFRESH_TOKEN: '/api/auth/reissue',
     WITHDRAW: '/api/auth',
+    REGISTERED: '/api/user/me/registered',
   },
 
   /* 아이젠하워 작업 관련 엔드포인트 */
@@ -60,6 +62,7 @@ export const ENDPOINTS = {
     BRAINSTORMING: {
       ANALYZE: '/api/brainstorming/analyze/chunk',
       REWRITE: '/api/brainstorming/rewrite/chunk',
+      MERGE: '/api/brainstorming/merge/chunks',
     },
     EISENHOWER: {
       RECOMMEND: '/api/eisenhower/order-recommendation',

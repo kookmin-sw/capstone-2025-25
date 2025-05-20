@@ -10,6 +10,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button.tsx';
+import { ArrowRight, X } from 'lucide-react';
 import useGetBubbles from '@/hooks/queries/brainstorming/useGetBubbles.ts';
 import useDeleteBubble from '@/hooks/queries/brainstorming/useDeleteBubble.ts';
 import useCreateBubble from '@/hooks/queries/brainstorming/useCreateBubble.ts';
@@ -20,11 +22,16 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/Dialog.tsx';
 import { NodeToTaskModal } from '@/components/ui/Modal/NodeTaskModal.tsx';
 import { showToast } from '@/components/common/Toast.tsx';
+import bubble from '@/components/ui/brainstorming/Bubble';
+import { MergeBubbleDialog } from '@/components/brainstorming/MergeBubbleDialog.tsx';
+import useMergeBubble from '@/hooks/queries/gpt/useMergeBubble.ts';
+import useApplyMergedBubble from '@/hooks/queries/brainstorming/useApplyMergedBubble.ts';
 
 export default function Brainstorming() {
   const isMobile = useResponsive();
@@ -47,7 +54,10 @@ export default function Brainstorming() {
   const [toBeSavedBubbleId, setToBeSavedBubbleId] = useState<number | null>(
     null,
   );
-
+  const [mergeTargetBubbles, setMergeTargetBubbles] = useState<
+    BubbleNodeType[]
+  >([]);
+  const [mergeMode, setMergeMode] = useState(false);
   const [isMoveToInventoryDialogOpen, setIsMoveToInventoryDialogOpen] =
     useState(false);
 
@@ -55,8 +65,12 @@ export default function Brainstorming() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [taskData, setTaskData] = useState({ id: null, title: '' });
+  const { mergeBubbleMutation, isPending: isMerging } = useMergeBubble();
+  const { applyMergedBubbleMutation } = useApplyMergedBubble();
 
-  // bubbleList가 변경되면 bubbles 상태를 업데이트
+  const [isMergeDialogOpen, setIsMergeDialogOpen] = useState(false);
+  const [mergedText, setMergedText] = useState('');
+
   useEffect(() => {
     if (bubbleList && Array.isArray(bubbleList) && bubbleList.length > 0) {
       placeBubbles(bubbleList);
@@ -151,7 +165,7 @@ export default function Brainstorming() {
     }
     // 각 x 좌표에 대해 가능한 y 위치 계산
     for (const x of candidateX) {
-      let y = 10;
+      let y = 20;
 
       for (const bubble of currentBubbles) {
         const dx = x - (bubble.x * scrollWidth) / 100;
@@ -231,6 +245,7 @@ export default function Brainstorming() {
         },
 
         onError: (error) => {
+          showToast('error', '의미 있는 텍스트가 없어 버블을 생성할 수 없어요');
           console.error('버블 생성 중 오류가 발생했습니다: ', error);
         },
         onSettled: () => {
@@ -274,8 +289,17 @@ export default function Brainstorming() {
       bubbleId: bubble.bubbleId,
       title: bubble.title,
     });
-    setIsDialogOpen(true);
-    setOpenPopoverId(null);
+
+    setBubbles((prev) =>
+      prev.map((b) =>
+        b.bubbleId === bubble.bubbleId ? { ...b, isDeleting: true } : b,
+      ),
+    );
+
+    setTimeout(() => {
+      setIsDialogOpen(true);
+      setOpenPopoverId(null);
+    }, 250);
   };
 
   const handleSaveBubble = (bubble) => {
@@ -286,6 +310,88 @@ export default function Brainstorming() {
     setOpenPopoverId(null);
     setToBeSavedBubbleId(bubble.bubbleId); // 보관할 버블 ID 저장
     setIsMoveToInventoryDialogOpen(true);
+  };
+
+  const handleMergeMode = (bubble: BubbleNodeType) => {
+    setMergeMode(true);
+    setMergeTargetBubbles([bubble]);
+    setOpenPopoverId(null);
+  };
+  const handleMergeBubble = (bubble: BubbleNodeType) => {
+    if (!isMerging) {
+      const exist = mergeTargetBubbles?.some(
+        (b) => b.bubbleId === bubble.bubbleId,
+      );
+      if (exist) {
+        setMergeTargetBubbles((prev) => {
+          const next = prev.filter((b) => b.bubbleId !== bubble.bubbleId);
+
+          // if (next.length === 0) {
+          //   setMergeMode(false);
+          // }
+
+          return next;
+        });
+      } else {
+        setMergeTargetBubbles((prev) => [...prev, bubble]);
+      }
+    }
+  };
+
+  const mergeBubble = () => {
+    const chunks = mergeTargetBubbles.map((bubble) => bubble.title);
+    const payload = {
+      chunks,
+    };
+    mergeBubbleMutation(payload, {
+      onSuccess: (data) => {
+        setIsMergeDialogOpen(true);
+        setMergedText(data.merged_chunk);
+      },
+    });
+  };
+
+  const applyMergedBubble = () => {
+    const deleteBubble = mergeTargetBubbles.map((bubble) => bubble.bubbleId);
+    const payload = {
+      bubbleList: deleteBubble,
+      mergedTitle: mergedText,
+    };
+    applyMergedBubbleMutation(payload, {
+      onSuccess: (data) => {
+        setBubbles((prev) => {
+          const filtered = prev.filter(
+            (bubble) =>
+              !mergeTargetBubbles.some(
+                (target) => target.bubbleId === bubble.bubbleId,
+              ),
+          );
+
+          const scroll = scrollRef.current;
+          const scrollWidth = scroll.offsetWidth;
+          let scrollHeight = scroll.offsetHeight;
+
+          const newBubbles: BubbleNodeType[] = [];
+
+          const radius = getRadiusForText(data.content.title);
+          const position = getPosition(radius, [...filtered, ...newBubbles]);
+
+          newBubbles.push({
+            bubbleId: data.content.bubbleId,
+            title: data.content.title,
+            x: (position.x / scrollWidth) * 100,
+            y: (position.y / scrollHeight) * 100,
+            radius,
+            isNew: true,
+          });
+
+          return [...filtered, ...newBubbles];
+        });
+
+        setIsMergeDialogOpen(false);
+        setMergeMode(false);
+      },
+    });
   };
 
   // 보관 성공 시 실행할 함수
@@ -300,14 +406,47 @@ export default function Brainstorming() {
         ),
       );
 
-      // 애니메이션이 끝난 후 버블 제거
       setTimeout(() => {
-        setBubbles((prev) =>
-          prev.filter((bubble) => bubble.bubbleId !== toBeSavedBubbleId),
-        );
-        setToBeSavedBubbleId(null); // 상태 초기화
+        setBubbles((prev) => {
+          const updated = prev.filter(
+            (bubble) => bubble.bubbleId !== toBeSavedBubbleId,
+          );
+
+          if (updated.length === 0) {
+            setIsBubbleDialogOpen(true);
+          }
+
+          return updated;
+        });
+
+        setToBeSavedBubbleId(null);
       }, 250);
     }
+  };
+
+  const checkCleanBubble = () => {
+    setBubbles((prev) =>
+      prev.map((bubble) =>
+        bubble.bubbleId === taskData.bubbleId
+          ? { ...bubble, isDeleting: true }
+          : bubble,
+      ),
+    );
+
+    setTimeout(() => {
+      setBubbles((prev) => {
+        const updated = prev.filter(
+          (bubble) => bubble.bubbleId !== taskData.bubbleId,
+        );
+        if (updated.length === 0) {
+          setIsBubbleDialogOpen(true);
+        }
+
+        return updated;
+      });
+
+      setToBeSavedBubbleId(null);
+    }, 250);
   };
 
   return (
@@ -339,11 +478,20 @@ export default function Brainstorming() {
               key={bubble.bubbleId}
               open={openPopoverId === bubble.bubbleId}
               onOpenChange={(open) => {
-                setOpenPopoverId(open ? bubble.bubbleId : null);
+                if (mergeMode) {
+                  handleMergeBubble(bubble);
+                } else {
+                  setOpenPopoverId(open ? bubble.bubbleId : null);
+                }
               }}
             >
               <PopoverTrigger asChild>
                 <Bubble
+                  isSelected={
+                    mergeTargetBubbles?.some(
+                      (b) => b.bubbleId === bubble.bubbleId,
+                    ) && mergeMode
+                  }
                   x={bubble.x}
                   y={bubble.y}
                   radius={bubble.radius}
@@ -363,8 +511,8 @@ export default function Brainstorming() {
                   )}
                 />
               </PopoverTrigger>
-              <PopoverContent className="w-[112px] h-[180px] z-50 p-0">
-                <div className="w-[112px] h-[180px] flex flex-col gap-[3px] justify-center items-center">
+              <PopoverContent className="w-[112px] h-[224px] z-50 p-0">
+                <div className="w-[112px] h-[224px] flex flex-col gap-[3px] justify-center items-center">
                   <button
                     onClick={() => {
                       deleteBubble(bubble.bubbleId);
@@ -415,6 +563,18 @@ export default function Brainstorming() {
                   >
                     보관
                   </button>
+                  <div className="w-[80px] h-[1px] bg-gray-200"></div>
+                  <button
+                    className={clsx(
+                      'w-[89px] h-[33px] pl-[9px] rounded-[8px] text-[16px] text-start text-gray-900 hover:bg-gray-200 cursor-pointer',
+                      isMobile ? 'text-[14px]' : 'text-[16px]',
+                    )}
+                    onClick={() => {
+                      handleMergeMode(bubble);
+                    }}
+                  >
+                    버블 합치기
+                  </button>
                 </div>
               </PopoverContent>
             </Popover>
@@ -423,9 +583,11 @@ export default function Brainstorming() {
         <div
           className={clsx(
             'absolute bottom-[0px] left-1/2 transform -translate-x-1/2 bg-white/60 rounded-[48px] flex w-10/12 max-w-[704px] justify-center h-fit items-center gap-4 px-3 py-3  ',
+            mergeMode && 'grayscale opacity-60',
           )}
         >
           <textarea
+            disabled={mergeMode}
             ref={textareaRef}
             value={inputText}
             rows={1}
@@ -439,7 +601,7 @@ export default function Brainstorming() {
           {/*<Toast message="안녕" type="success" />*/}
           {/*<Toast message='안녕' type='error'/>*/}
           <button
-            disabled={isPending}
+            disabled={isPending || mergeMode}
             onClick={addBubble}
             className="md:hidden rounded-[48px] w-[30px] h-[30px] bg-blue text-white font-semibold text-[16px] font-pretendard flex justify-center items-center cursor-pointer"
           >
@@ -453,7 +615,7 @@ export default function Brainstorming() {
           </button>
 
           <button
-            disabled={isPending}
+            disabled={isPending || mergeMode}
             onClick={addBubble}
             className="hidden md:block rounded-[48px] p-2 h-[40px] bg-blue text-white font-semibold text-[16px] font-pretendard w-[140px] cursor-pointer items-center justify-center"
           >
@@ -464,7 +626,50 @@ export default function Brainstorming() {
             )}
           </button>
         </div>
+
+        <div
+          className={clsx(
+            'absolute top-0 right-0 hidden flex gap-1',
+            mergeMode && 'inline-flex',
+          )}
+        >
+          <Button
+            variant="outline"
+            className="w-10 h-10"
+            onClick={() => {
+              setMergeMode(false);
+            }}
+          >
+            <X />
+          </Button>
+          <Button
+            variant="blue"
+            disabled={isMerging || mergeTargetBubbles.length <= 1}
+            onClick={mergeBubble}
+          >
+            {isMerging ? (
+              <>
+                <Loader2 className=" animate-spin" />
+              </>
+            ) : (
+              <>
+                버블 합치기
+                <ArrowRight
+                  className="w-5 h-5"
+                  size={20}
+                  style={{ width: '20px', height: '20px' }}
+                />
+              </>
+            )}
+          </Button>
+        </div>
       </div>
+      <MergeBubbleDialog
+        isOpen={isMergeDialogOpen}
+        text={mergedText}
+        onOpenChange={setIsMergeDialogOpen}
+        applyMergedBubble={applyMergedBubble}
+      />
 
       {selectedBubble.bubbleId && (
         <MoveToInventoryModal
@@ -485,11 +690,11 @@ export default function Brainstorming() {
           onSuccess={handleSaveSuccess}
         />
       )}
-
       <NodeToTaskModal
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         taskData={taskData}
+        onSuccess={checkCleanBubble}
       />
     </div>
   );

@@ -29,4 +29,19 @@ public class MemberService {
     public void deleteMember(Long memberId) {
         memberRepository.deleteById(memberId);
     }
+
+    public boolean isMemberRegistered(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return member.getIsRegistered();  // true: 재 로그인
+    }
+
+    @Transactional
+    public void updateLoginStatus(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        member.updateRegistered();
+    }
 }

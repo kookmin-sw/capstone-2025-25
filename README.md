@@ -15,11 +15,6 @@ https://kookmin-sw.github.io/capstone-2025-25/
 ### 3. 서비스 URL
 https://www.bubble-pop.kr
 
-
-<!--### 2. 소개 영상
-
-프로젝트 소개하는 영상을 추가하세요-->
-
 ### 4. 팀원 소개
 
 <div>
@@ -31,8 +26,53 @@ https://www.bubble-pop.kr
 | ****3038 | ****2000 | ****3139 | ****3103 | ****3027 | ****2208 |
 </div>
 
+### 5. 개발 환경 설정법
+1. **프로젝트 클론**
+```
+git clone https://github.com/kookmin-sw/capstone-2025-25.git
+cd capstone-2025-25
+```
+
+2. **백엔드 개발 환경 설정 (Spring Boot, Java)**
+   1. 필수 소프트웨어
+      - JDK 17
+      - Gradle 7.x 이상
+      - PostgreSQL (로컬 개발 시)
+      - Docker (선택, DB 등 컨테이너 실행용)
+        
+    2. 설정 파일 준비
+     ```
+     # backend/src/main/resources/application-*.yml 파일을 복사 후 값 입력
+     cp backend/src/main/resources/application-*.yml backend/src/main/resources/application-*.yml
+    ```
+     
+    3. 서버 실행
+     ```
+     cd backend
+     ./gradlew bootRun
+     ```
+
+3. **프론트엔드 개발 환경 설정 (React)**
+   1. 필수 소프트웨어
+      - Node.js 18.x 이상
+      - npm
+        
+    2. 패키지 설치
+     ```
+     cd ../frontend
+     npm install
+     ```
+     
+    3. 환경 변수 파일(.env) 작성
+      .env 파일을 생성하고, API 서버 주소 등 환경 변수 입력
+
+    4. 개발 서버 실행
+      ```
+       npm start
+      ```
+
 <br/> 
 
-![서비스소개서이미지](https://github.com/user-attachments/assets/56ad1164-0356-4ee3-a364-3b4a4a66b6fb)
+![서비스 소개서 최종](https://github.com/user-attachments/assets/8c9d0cd1-5f7a-4428-8cba-b3433bc5e56d)
 
 

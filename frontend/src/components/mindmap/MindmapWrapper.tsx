@@ -138,9 +138,7 @@ function FlowContent({ onCompletedSuccessfully }: FlowContentProps) {
       nodesDraggable={false}
       deleteKeyCode={null}
     >
-      <Controls />
-
-      <Panel position="bottom-center">
+      <Panel position="bottom-center" className="!m-0">
         <div className="z-10 bg-[rgba(255,255,255,0.6)] rounded-4xl px-6 py-4 w-auto">
           <div className="flex items-center gap-3">
             <Button

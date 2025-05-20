@@ -16,14 +16,14 @@ gpt_service = GPTService(api_key=OPENAI_API_KEY)
 @router.post("/order-recommendation", response_model=EisenhowerRecommendationResponse)
 @safe_gpt_handler
 async def eisenhower_order_recommendation(request: EisenhowerTaskRequest):
-    user_prompt = load_prompt_template("prompts/eisenhower/eisenhower_order_prompt.txt", {
+    user_prompt = load_prompt_template("prompts/eisenhower/eisenhower_order_user_prompt.txt", {
         "title": request.title,
         "currentQuadrant": request.currentQuadrant,
         "dueDate": request.dueDate.strftime("%Y-%m-%d") if request.dueDate else None,
         "today": datetime.now().strftime("%Y-%m-%d")
     })
 
-    system_prompt = "당신은 아이젠하워 매트릭스를 기준으로 작업을 사분면에 분류해주는 도우미입니다."
+    system_prompt = load_prompt_template("prompts/eisenhower/eisenhower_order_system_prompt.txt")
 
     gpt_output = await gpt_service.ask(system_prompt, user_prompt)
 

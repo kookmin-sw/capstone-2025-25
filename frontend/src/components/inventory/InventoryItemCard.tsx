@@ -20,6 +20,8 @@ import {
 import { Button } from '@/components/ui/button';
 import useDeleteInventoryItem from '@/hooks/queries/inventory/item/useDeleteInventoryItem';
 import MoveToFolderModal from '@/components/inventory/modal/MoveToFolderModal';
+import { FileText, Folder, ChevronUp } from 'lucide-react';
+import { useResponsive } from '@/hooks/use-mobile'; // 이미 사용 중이라면 OK
 
 type InventoryItemCardProps = {
   item: {
@@ -127,7 +129,8 @@ export default function InventoryItemCard({
       <li className="px-6 py-4 bg-white rounded-xl">
         <Collapsible open={isOpen} onOpenChange={handleToggle}>
           <div className="flex items-center justify-between gap-6">
-            <div className="w-1/2 overflow-hidden flex flex-col gap-2">
+            <div className="overflow-hidden flex flex-col gap-2">
+              {/*<div className="w-1/2 overflow-hidden flex flex-col gap-2">*/}
               {isOpen ? (
                 <div>
                   {isEditable ? (
@@ -136,16 +139,16 @@ export default function InventoryItemCard({
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="제목을 입력하세요"
-                      className="!text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                      className="text-[16px] md:text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
                     />
                   ) : (
-                    <h3 className="text-[20px] text-gray-700 font-semibold truncate">
+                    <h3 className="text-[16px] md:text-[20px] text-gray-700 font-semibold truncate">
                       {title}
                     </h3>
                   )}
                 </div>
               ) : (
-                <h3 className="text-[20px] text-gray-700 font-semibold truncate">
+                <h3 className="text-[16px] md:text-[20px] text-gray-700 font-semibold truncate">
                   {title}
                 </h3>
               )}
@@ -155,14 +158,30 @@ export default function InventoryItemCard({
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
+              {/* 모바일: 아이콘 버튼 */}
               <CollapsibleTrigger asChild>
-                <button className="px-4 py-2 bg-blue-2 text-blue text-[14px] sm:text-[16px] rounded-full font-semibold flex items-center gap-1 cursor-pointer">
+                <button className="md:hidden px-4 py-2 bg-blue-2 text-blue text-[14px] rounded-full font-semibold flex items-center gap-1 cursor-pointer">
+                  {isOpen ? <ChevronUp size={18} /> : <FileText size={18} />}
+                </button>
+              </CollapsibleTrigger>
+
+              <button
+                onClick={() => setIsMoveDialogOpen(true)}
+                className="md:hidden px-4 py-[7px] text-blue text-[14px] rounded-full font-semibold flex items-center gap-1 cursor-pointer border-blue border-[1px]"
+              >
+                <Folder size={18} />
+              </button>
+
+              {/* PC: 텍스트 버튼 */}
+              <CollapsibleTrigger asChild>
+                <button className="hidden md:flex px-4 py-2 bg-blue-2 text-blue text-[16px] rounded-full font-semibold items-center gap-1 cursor-pointer">
                   {buttonText}
                 </button>
               </CollapsibleTrigger>
+
               <button
                 onClick={() => setIsMoveDialogOpen(true)}
-                className="px-4 py-[7px] text-blue text-[14px] sm:text-[16px] rounded-full font-semibold flex items-center gap-1 cursor-pointer border-blue border-[1px]"
+                className="hidden md:flex px-4 py-[7px] text-blue text-[16px] rounded-full font-semibold items-center gap-1 cursor-pointer border-blue border-[1px]"
               >
                 폴더이동
               </button>

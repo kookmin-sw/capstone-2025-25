@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Calendar, SquareArrowOutUpRight } from 'lucide-react';
+import { Bot, Calendar, SquareArrowOutUpRight } from 'lucide-react';
 import { CategoryBadge } from '@/components/eisenhower/filter/CategoryBadge';
 import { MouseEvent } from 'react';
 import { cn } from '@/lib/utils';
@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button.tsx';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { showToast } from '@/components/common/Toast.tsx';
 import useCreateTodayTask from '@/hooks/queries/today/useCreateTodayTask';
+import EisenhowerAi from '@/components/ui/Modal/EisenhowerAi.tsx';
 
 type TaskCardVariant = 'default' | 'inactive' | 'done';
 
@@ -130,19 +131,22 @@ export function TaskCard({
         )}
       >
         {/* 상단 도구 아이콘 */}
-        <div className="absolute  top-5 right-5 flex gap-4">
+        <div className="absolute top-5 right-5 flex gap-4">
           {variant === 'default' && (
-            <div className=" transition-opacity flex gap-2 items-center">
-              {/*<div onClick={(e) => e.stopPropagation()}>*/}
-              {/*  <EisenhowerAi*/}
-              {/*    trigger={*/}
-              {/*      <div className="text-[#6E726E] hover:text-gray-600 transition-colors">*/}
-              {/*        <Bot />*/}
-              {/*      </div>*/}
-              {/*    }*/}
-              {/*    linkedEisenhower={task}*/}
-              {/*  />*/}
-              {/*</div>*/}
+            <div className=" transition-opacity flex gap-4 items-center">
+              <div onClick={(e) => e.stopPropagation()}>
+                <EisenhowerAi
+                  trigger={
+                    <div className="text-blue hover:text-gray-600 transition-colors w-[22px] ">
+                      <Bot />
+                    </div>
+                  }
+                  linkedEisenhower={task}
+                  onApply={(updatedTask) => {
+                    onUpdateTask?.(updatedTask as EisenhowerTask);
+                  }}
+                />
+              </div>
 
               <div onClick={(e) => e.stopPropagation()}>
                 <Modal
@@ -197,7 +201,7 @@ export function TaskCard({
           </div>
         </div>
 
-        <div className="pr-16">
+        <div className="pr-26">
           {/* 카테고리 */}
           {category && (
             <div className="flex mb-2 flex-wrap">

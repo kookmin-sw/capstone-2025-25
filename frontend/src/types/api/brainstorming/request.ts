@@ -14,3 +14,9 @@ export type CreateMatrixReq = {
   order: number;
   memo: string;
 };
+
+
+export type MergeBubbleReq = {
+  bubbleList: number[];
+  mergedTitle:string
+};

@@ -10,6 +10,7 @@ export default [
     route('login', 'pages/login.tsx'),
     route('register', 'pages/register.tsx'),
     route('auth/login/callback', 'pages/callback.tsx'),
+    route('onboarding', 'pages/onboarding.tsx'),
   ]),
 
   layout('layouts/DefaultLayout.tsx', [

@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import Calendar from '@/assets/eisenhower/calander_fill.svg';
+import { showToast } from '@/components/common/Toast.tsx';
 
 type DateRangePickerProps = {
   startDate: Date;
@@ -39,15 +40,23 @@ export function DateRangePicker({
   const formatDateRange = () => {
     if (!dateRange.from) return '날짜 선택';
 
-    if (!dateRange.to) {
-      return format(dateRange.from, 'yyyy년 MM월 dd일', { locale: ko });
+    const from = dateRange.from;
+    const to = dateRange.to ?? from;
+
+    const isSameDay = from.getTime() === to.getTime();
+    const isSameMonth =
+      format(from, 'yyyy-MM', { locale: ko }) ===
+      format(to, 'yyyy-MM', { locale: ko });
+
+    if (isSameDay) {
+      return format(from, 'yyyy년 MM월 dd일', { locale: ko });
     }
 
-    if (format(dateRange.from, 'yyyy-MM') === format(dateRange.to, 'yyyy-MM')) {
-      return `${format(dateRange.from, 'yyyy년 MM월 dd일', { locale: ko })} - ${format(dateRange.to, 'dd일', { locale: ko })}`;
+    if (isSameMonth) {
+      return `${format(from, 'yyyy년 MM월 dd일', { locale: ko })} - ${format(to, 'dd일', { locale: ko })}`;
     }
 
-    return `${format(dateRange.from, 'yyyy년 MM월 dd일', { locale: ko })} - ${format(dateRange.to, 'yyyy년 MM월 dd일', { locale: ko })}`;
+    return `${format(from, 'yyyy년 MM월 dd일', { locale: ko })} - ${format(to, 'yyyy년 MM월 dd일', { locale: ko })}`;
   };
 
   return (
@@ -76,8 +85,17 @@ export function DateRangePicker({
             }}
             onSelect={(range) => {
               if (range?.from && range?.to) {
-                setDateRange({ from: range.from, to: range.to });
-                setIsOpen(false);
+                const isSameDay = range.from.getTime() === range.to.getTime();
+
+                if (isSameDay) {
+                  setDateRange({ from: null as any, to: undefined });
+                  onDateChange(null, null);
+                  setIsOpen(false);
+                } else {
+                  setDateRange({ from: range.from, to: range.to });
+                  onDateChange(range.from, range.to);
+                  setIsOpen(false);
+                }
               } else if (range?.from) {
                 setDateRange({ from: range.from, to: undefined });
                 onDateChange(range.from, range.from);

@@ -74,8 +74,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     public ApiResponse<?> apiException(ApiException e) {
-
-        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        return ApiResponse.error(e.getHttpStatus(), e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

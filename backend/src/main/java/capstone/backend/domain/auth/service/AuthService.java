@@ -11,6 +11,7 @@ import capstone.backend.domain.auth.repository.RefreshTokenRedisRepository;
 import capstone.backend.domain.auth.entity.BlacklistToken;
 import capstone.backend.domain.auth.entity.OauthCode;
 import capstone.backend.domain.auth.entity.RefreshToken;
+import capstone.backend.domain.member.service.MemberService;
 import capstone.backend.global.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class AuthService {
     private final RefreshTokenRedisRepository refreshTokenRedisRepository;
     private final BlacklistTokenRedisRepository blacklistTokenRedisRepository;
     private final JwtProvider jwtProvider;
+    private final MemberService memberService;
 
     public void saveRefreshToken(Long memberId, String token) {
         RefreshToken refreshToken = new RefreshToken(memberId, token, memberId, jwtProvider.getRefreshTokenExpiration());
@@ -69,7 +71,10 @@ public class AuthService {
 
         saveRefreshToken(memberId, refreshToken);  // Redis에 RT 저장
 
-        return new TokenResponse(accessToken, refreshToken);
+        // 핵심 로직: 최초 로그인 여부 판단
+        boolean isFirstLogin = memberService.isMemberRegistered(memberId);
+
+        return new TokenResponse(accessToken, refreshToken, isFirstLogin);
     }
 
     // 로그아웃 로직

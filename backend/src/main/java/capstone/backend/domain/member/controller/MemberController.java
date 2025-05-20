@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +28,14 @@ public class MemberController {
             @AuthenticationPrincipal CustomOAuth2User user
     ) {
         return ApiResponse.ok(memberService.findMember(user.getMemberId()));
+    }
+
+    @PatchMapping("/me/registered")
+    @Operation(summary = "재로그인 처리 API", description = "튜토리얼 페이지 이후 최초 로그인 설정 해제")
+    public ApiResponse<Void> reLogin(
+            @AuthenticationPrincipal CustomOAuth2User user
+    ) {
+        memberService.updateLoginStatus(user.getMemberId());
+        return ApiResponse.ok();
     }
 }

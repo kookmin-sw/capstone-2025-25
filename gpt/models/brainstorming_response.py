@@ -19,3 +19,6 @@ class MindmapToChunkResponse(BaseModel):
     new_chunk: str = Field(
         ..., description="마인드맵 데이터를 청크로 변환한 결과"
     )
+
+class MergeChunksResponse(BaseModel):
+    merged_chunk: str

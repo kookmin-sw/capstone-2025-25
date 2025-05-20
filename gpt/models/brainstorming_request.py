@@ -44,3 +44,6 @@ class RewriteChunkRequest(BaseModel):
         if not self.existing_chunk.strip():
             raise ValueError("existing_chunk는 공백일 수 없습니다.")
         return self
+
+class MergeChunksRequest(BaseModel):
+    chunks: List[str] = Field(..., description="합칠 텍스트 청크 목록")

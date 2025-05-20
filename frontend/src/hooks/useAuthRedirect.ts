@@ -27,12 +27,16 @@ export const useAuthRedirect = () => {
   useEffect(() => {
     const path = location.pathname;
 
+    if (path === '/onboarding') {
+      return;
+    }
+
     if (token && isTokenValid && path === '/login') {
       // console.log('유효한 로그인 상태 → today로 이동');
       navigate('/today', { replace: true });
     }
 
-    if (!token || (!isTokenValid && path !== '/login')) {
+    if (!token && !isTokenValid && path !== '/login') {
       // console.log('토큰 없음 또는 무효 → 로그인 페이지로 이동');
       navigate('/login', { replace: true });
     }
