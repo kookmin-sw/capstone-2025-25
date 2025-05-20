@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi import HTTPException
 
 from config import OPENAI_API_KEY
 from models.brainstorming_request import BrainStormingRequest, BrainStormingChunkRequest, RewriteChunkRequest, \
@@ -27,6 +28,9 @@ async def extract_chucks(request: BrainStormingRequest):
     gpt_output = await gpt_service.ask(system_prompt, user_prompt)
 
     refined_questions = clean_question_lines(gpt_output)
+
+    if not refined_questions:
+        raise HTTPException(status_code=422, detail="의미 있는 텍스트가 없어 생각을 추출할 수 없습니다.")
 
     return BrainStormingResponse(extracted_chunks=refined_questions)
 
