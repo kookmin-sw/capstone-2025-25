@@ -17,7 +17,9 @@ export default function OAuthCallbackPage() {
 
     exchangeCodeForTokenMutation(code, {
       onSuccess: (data) => {
-        if (data.content.isRegistered === false) {
+        const isRegistered = data?.content?.isRegistered;
+
+        if (isRegistered === false) {
           navigate('/onboarding');
         } else {
           navigate('/today');
