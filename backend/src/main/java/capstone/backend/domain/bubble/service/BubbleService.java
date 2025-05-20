@@ -2,6 +2,7 @@ package capstone.backend.domain.bubble.service;
 
 
 import capstone.backend.domain.bubble.dto.request.BubbleUpdateRequest;
+import capstone.backend.domain.bubble.dto.request.MergeBubbleRequest;
 import capstone.backend.domain.bubble.dto.response.BubbleDTO;
 import capstone.backend.domain.bubble.entity.Bubble;
 import capstone.backend.domain.bubble.exception.BubbleNotFoundException;
@@ -67,5 +68,23 @@ public class BubbleService {
         Bubble bubble = bubbleRepository.findByMemberIdAndId(memberId, id)
                 .orElseThrow(BubbleNotFoundException::new);
         bubble.update(request.title());
+    }
+
+    //버블 병합
+    @Transactional
+    public BubbleDTO mergeBubbles(Long memberId, MergeBubbleRequest request) {
+        //버블 삭제
+        List<Bubble> bubblesToDelete = bubbleRepository.findAllByMemberIdAndIdIn(memberId, request.bubbleList());
+
+        if (bubblesToDelete.size() != request.bubbleList().size()) {
+            throw new BubbleNotFoundException();
+        }
+
+        bubbleRepository.deleteAll(bubblesToDelete);
+
+        //버블 생성
+        Bubble newBubble = Bubble.create(request.mergedTitle(), bubblesToDelete.get(0).getMember());
+
+        return new BubbleDTO(bubbleRepository.save(newBubble));
     }
 }
