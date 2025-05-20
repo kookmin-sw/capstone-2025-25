@@ -310,6 +310,10 @@ export default function Brainstorming() {
     }
   };
 
+  const handleMatrixSuccess = (bubbleId: number) => {
+    setBubbles((prev) => prev.filter((bubble) => bubble.bubbleId !== bubbleId));
+  };
+
   return (
     <div ref={containerRef} className={clsx('w-full h-full ')}>
       <div
@@ -490,6 +494,7 @@ export default function Brainstorming() {
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         taskData={taskData}
+        onSuccess={handleMatrixSuccess}
       />
     </div>
   );

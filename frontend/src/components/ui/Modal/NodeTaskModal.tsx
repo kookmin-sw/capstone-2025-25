@@ -37,8 +37,10 @@ type NodeToTaskModalProps = {
   taskData: {
     title: string;
     id: number | null;
+    bubbleId?: number | null;
   };
   task?: Task;
+  onSuccess?: (bubbleId: number) => void;
 };
 
 export function NodeToTaskModal({
@@ -46,6 +48,7 @@ export function NodeToTaskModal({
   onOpenChange,
   taskData,
   task,
+  onSuccess,
 }: NodeToTaskModalProps) {
   const [priority, setPriority] = useState<Quadrant>('Q1');
   const [title, setTitle] = useState(task?.title ?? taskData.title);
@@ -145,11 +148,17 @@ export function NodeToTaskModal({
       {
         onSuccess: () => {
           onOpenChange(false);
-          navigate('/matrix');
+          // navigate('/matrix');
+          showToast('success', '일정 생성을 완료하였습니다.');
+
+          if (taskData.bubbleId && onSuccess) {
+            onSuccess(taskData.bubbleId);
+          }
         },
         onError: (err) => {
           console.error('생성 실패:', err);
-          alert('일정 생성에 실패했습니다.');
+          // alert('일정 생성에 실패했습니다.');
+          showToast('error', '일정 생성에 실패했습니다.');
         },
       },
     );
