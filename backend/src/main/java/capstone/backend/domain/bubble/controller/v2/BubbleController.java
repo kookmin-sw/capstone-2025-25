@@ -2,6 +2,7 @@ package capstone.backend.domain.bubble.controller.v2;
 
 
 import capstone.backend.domain.bubble.dto.request.BubbleUpdateRequest;
+import capstone.backend.domain.bubble.dto.request.MergeBubbleRequest;
 import capstone.backend.domain.bubble.dto.request.PromptRequest;
 import capstone.backend.domain.bubble.dto.response.BubbleDTO;
 import capstone.backend.domain.bubble.service.BubbleService;
@@ -96,5 +97,15 @@ public class BubbleController {
     ) {
         bubbleService.deleteBubble(user.getMemberId(), id);
         return ApiResponse.ok();
+    }
+
+    @PostMapping("/merge")
+    @Operation(summary = "버블 병합", description = "버블을 병합합니다.")
+    public ApiResponse<BubbleDTO> mergeBubbles(
+        @AuthenticationPrincipal CustomOAuth2User user,
+        @Valid @RequestBody MergeBubbleRequest request
+    ){
+        BubbleDTO mergedBubble = bubbleService.mergeBubbles(user.getMemberId(), request);
+        return ApiResponse.ok(mergedBubble);
     }
 }
