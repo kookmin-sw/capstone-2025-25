@@ -1,4 +1,4 @@
-package capstone.backend.domain.pomodoro.schema;
+package capstone.backend.domain.pomodoro.entity;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;

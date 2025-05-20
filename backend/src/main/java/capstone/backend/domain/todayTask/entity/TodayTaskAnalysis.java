@@ -1,9 +1,11 @@
 package capstone.backend.domain.todayTask.entity;
 
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -18,6 +20,7 @@ public class TodayTaskAnalysis {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @Column(nullable = false)

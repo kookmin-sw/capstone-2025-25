@@ -1,6 +1,6 @@
 package capstone.backend.domain.pomodoro.dto.response;
 
-import capstone.backend.domain.pomodoro.schema.DailyPomodoroSummary;
+import capstone.backend.domain.pomodoro.entity.DailyPomodoroSummary;
 
 import java.time.LocalDate;
 

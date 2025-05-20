@@ -1,6 +1,6 @@
 package capstone.backend.domain.auth.repository;
 
-import capstone.backend.domain.auth.schema.RefreshToken;
+import capstone.backend.domain.auth.entity.RefreshToken;
 import org.springframework.data.keyvalue.repository.KeyValueRepository;
 
 import java.util.Optional;

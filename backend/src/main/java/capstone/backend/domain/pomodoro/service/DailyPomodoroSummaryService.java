@@ -3,10 +3,10 @@ package capstone.backend.domain.pomodoro.service;
 
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import capstone.backend.domain.pomodoro.dto.response.DailyPomodoroDTO;
 import capstone.backend.domain.pomodoro.repository.DailyPomodoroSummaryRepository;
-import capstone.backend.domain.pomodoro.schema.DailyPomodoroSummary;
+import capstone.backend.domain.pomodoro.entity.DailyPomodoroSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

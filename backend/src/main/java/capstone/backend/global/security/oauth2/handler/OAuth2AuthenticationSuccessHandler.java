@@ -3,7 +3,7 @@ package capstone.backend.global.security.oauth2.handler;
 import capstone.backend.domain.auth.service.AuthService;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

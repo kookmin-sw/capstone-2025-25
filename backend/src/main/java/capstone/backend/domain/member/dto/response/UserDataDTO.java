@@ -1,6 +1,6 @@
 package capstone.backend.domain.member.dto.response;
 
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 
 public record UserDataDTO(
         String email,

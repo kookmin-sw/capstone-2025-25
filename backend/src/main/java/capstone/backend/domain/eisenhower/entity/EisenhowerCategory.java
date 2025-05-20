@@ -2,9 +2,11 @@ package capstone.backend.domain.eisenhower.entity;
 
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryCreateRequest;
 import capstone.backend.domain.eisenhower.dto.request.EisenhowerCategoryUpdateRequest;
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -20,6 +22,7 @@ public class EisenhowerCategory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @Column(nullable = false, length = 10)

@@ -6,7 +6,7 @@ import capstone.backend.domain.bubble.dto.response.BubbleDTO;
 import capstone.backend.domain.bubble.dto.response.PromptResponse;
 import capstone.backend.domain.bubble.entity.Bubble;
 import capstone.backend.domain.bubble.repository.BubbleRepository;
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

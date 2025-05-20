@@ -2,7 +2,7 @@ package capstone.backend.domain.pomodoro.dto.response;
 
 import capstone.backend.domain.eisenhower.entity.EisenhowerItem;
 import capstone.backend.domain.eisenhower.entity.EisenhowerQuadrant;
-import capstone.backend.domain.pomodoro.schema.Pomodoro;
+import capstone.backend.domain.pomodoro.entity.Pomodoro;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

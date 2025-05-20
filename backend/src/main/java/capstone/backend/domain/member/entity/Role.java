@@ -1,4 +1,4 @@
-package capstone.backend.domain.member.scheme;
+package capstone.backend.domain.member.entity;
 
 import lombok.Getter;
 

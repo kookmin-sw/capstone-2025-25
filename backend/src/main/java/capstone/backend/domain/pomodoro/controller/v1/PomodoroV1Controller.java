@@ -4,7 +4,7 @@ package capstone.backend.domain.pomodoro.controller.v1;
 import capstone.backend.domain.pomodoro.dto.request.CreatePomodoroRequest;
 import capstone.backend.domain.pomodoro.dto.response.PomodoroDTO;
 import capstone.backend.domain.pomodoro.dto.response.SidebarResponse;
-import capstone.backend.domain.pomodoro.schema.Pomodoro;
+import capstone.backend.domain.pomodoro.entity.Pomodoro;
 import capstone.backend.domain.pomodoro.service.PomodoroService;
 import capstone.backend.global.api.dto.ApiResponse;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;

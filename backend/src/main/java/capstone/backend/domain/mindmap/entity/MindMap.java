@@ -1,6 +1,6 @@
 package capstone.backend.domain.mindmap.entity;
 
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import capstone.backend.domain.common.entity.TaskType;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapRequest;
@@ -10,6 +10,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.SqlTypes;
 import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -32,6 +34,7 @@ public class MindMap {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     @JsonIgnore
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @Column(nullable = false, name="title")
