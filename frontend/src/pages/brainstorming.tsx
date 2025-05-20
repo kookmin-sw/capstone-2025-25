@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button.tsx';
-import { ArrowRight,X } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import useGetBubbles from '@/hooks/queries/brainstorming/useGetBubbles.ts';
 import useDeleteBubble from '@/hooks/queries/brainstorming/useDeleteBubble.ts';
 import useCreateBubble from '@/hooks/queries/brainstorming/useCreateBubble.ts';
@@ -31,6 +31,7 @@ import { showToast } from '@/components/common/Toast.tsx';
 import bubble from '@/components/ui/brainstorming/Bubble';
 import { MergeBubbleDialog } from '@/components/brainstorming/MergeBubbleDialog.tsx';
 import useMergeBubble from '@/hooks/queries/gpt/useMergeBubble.ts';
+import useApplyMergedBubble from '@/hooks/queries/brainstorming/useApplyMergedBubble.ts';
 
 export default function Brainstorming() {
   const isMobile = useResponsive();
@@ -65,6 +66,8 @@ export default function Brainstorming() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [taskData, setTaskData] = useState({ id: null, title: '' });
   const { mergeBubbleMutation, isPending: isMerging } = useMergeBubble();
+  const { applyMergedBubbleMutation } = useApplyMergedBubble();
+
   const [isMergeDialogOpen, setIsMergeDialogOpen] = useState(false);
   const [mergedText, setMergedText] = useState('');
 
@@ -242,7 +245,7 @@ export default function Brainstorming() {
         },
 
         onError: (error) => {
-          showToast('error', '의미 있는 텍스트가 없어 버블을 생성할 수 없어요')
+          showToast('error', '의미 있는 텍스트가 없어 버블을 생성할 수 없어요');
           console.error('버블 생성 중 오류가 발생했습니다: ', error);
         },
         onSettled: () => {
@@ -340,26 +343,46 @@ export default function Brainstorming() {
   };
 
   const applyMergedBubble = () => {
-    const [targetBubble, ...bubblesToDelete] = mergeTargetBubbles;
-
-    setBubbles((prev) =>
-      prev
-        .filter((bubble) => {
-          return !mergeTargetBubbles.some(
-            (b) =>
-              b.bubbleId === bubble.bubbleId &&
-              b.bubbleId !== targetBubble.bubbleId,
+    const deleteBubble = mergeTargetBubbles.map((bubble) => bubble.bubbleId);
+    const payload = {
+      bubbleList: deleteBubble,
+      mergedTitle: mergedText,
+    };
+    applyMergedBubbleMutation(payload, {
+      onSuccess: (data) => {
+        setBubbles((prev) => {
+          const filtered = prev.filter(
+            (bubble) =>
+              !mergeTargetBubbles.some(
+                (target) => target.bubbleId === bubble.bubbleId,
+              ),
           );
-        })
-        .map((bubble) => {
-          if (bubble.bubbleId === targetBubble.bubbleId) {
-            return { ...bubble, title: mergedText };
-          }
-          return bubble;
-        }),
-    );
-    setIsMergeDialogOpen(false)
-setMergeMode(false);
+
+          const scroll = scrollRef.current;
+          const scrollWidth = scroll.offsetWidth;
+          let scrollHeight = scroll.offsetHeight;
+
+          const newBubbles: BubbleNodeType[] = [];
+
+          const radius = getRadiusForText(data.content.title);
+          const position = getPosition(radius, [...filtered, ...newBubbles]);
+
+          newBubbles.push({
+            bubbleId: data.content.bubbleId,
+            title: data.content.title,
+            x: (position.x / scrollWidth) * 100,
+            y: (position.y / scrollHeight) * 100,
+            radius,
+            isNew: true,
+          });
+
+          return [...filtered, ...newBubbles];
+        });
+
+        setIsMergeDialogOpen(false);
+        setMergeMode(false);
+      },
+    });
   };
 
   // 보관 성공 시 실행할 함수
@@ -393,7 +416,6 @@ setMergeMode(false);
   };
 
   const checkCleanBubble = () => {
-
     setBubbles((prev) =>
       prev.map((bubble) =>
         bubble.bubbleId === taskData.bubbleId
@@ -609,7 +631,7 @@ setMergeMode(false);
               setMergeMode(false);
             }}
           >
-            <X/>
+            <X />
           </Button>
           <Button
             variant="blue"
