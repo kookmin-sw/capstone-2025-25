@@ -33,7 +33,6 @@ export const authService = {
 
   /** code로 로그인 → 토큰 저장 및 상태 업데이트 */
   exchangeCodeForToken: async (code: string) => {
-    console.log('code', code);
     const form = new URLSearchParams();
     form.append('code', code);
 
