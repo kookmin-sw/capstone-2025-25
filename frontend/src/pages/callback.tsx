@@ -19,7 +19,7 @@ export default function OAuthCallbackPage() {
       onSuccess: (data) => {
         const isRegistered = data?.content?.isRegistered;
 
-        if (isRegistered === false) {
+        if (!isRegistered) {
           navigate('/onboarding');
         } else {
           navigate('/today');
