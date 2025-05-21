@@ -2,7 +2,7 @@ package capstone.backend.domain.todayTask.service;
 
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import capstone.backend.domain.todayTask.dto.response.TodayTaskAnalysisResponse;
 import capstone.backend.domain.todayTask.entity.DayOfWeekEnum;
 import capstone.backend.domain.todayTask.entity.TodayTaskAnalysis;

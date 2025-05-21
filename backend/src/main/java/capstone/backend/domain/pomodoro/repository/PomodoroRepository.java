@@ -1,6 +1,6 @@
 package capstone.backend.domain.pomodoro.repository;
 
-import capstone.backend.domain.pomodoro.schema.Pomodoro;
+import capstone.backend.domain.pomodoro.entity.Pomodoro;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

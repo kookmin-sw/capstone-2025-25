@@ -5,15 +5,14 @@ import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundExcept
 import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
-import capstone.backend.domain.member.scheme.Member;
-import capstone.backend.domain.todayTask.dto.request.TodayTaskItemCreateRequest;
+import capstone.backend.domain.member.entity.Member;
 import capstone.backend.domain.todayTask.dto.response.TodayTaskItemResponse;
 import capstone.backend.domain.todayTask.entity.TodayTaskItem;
 import capstone.backend.domain.todayTask.exception.TodayTaskNotFoundException;
 import capstone.backend.domain.todayTask.exception.DuplicateTaskException;
 import capstone.backend.domain.todayTask.repository.TodayTaskItemRepository;
 import java.time.LocalDate;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

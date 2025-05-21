@@ -104,8 +104,9 @@ export default function Brainstorming() {
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
+      console.log(textarea.scrollHeight);
       textarea.style.height = 'auto';
-      textarea.style.height = `${textarea.scrollHeight}px`;
+      textarea.style.height = `${Math.min(textarea.scrollHeight +2, 114)}px`;
     }
   }, [inputText, isMobile]);
 
@@ -290,16 +291,8 @@ export default function Brainstorming() {
       title: bubble.title,
     });
 
-    setBubbles((prev) =>
-      prev.map((b) =>
-        b.bubbleId === bubble.bubbleId ? { ...b, isDeleting: true } : b,
-      ),
-    );
-
-    setTimeout(() => {
-      setIsDialogOpen(true);
-      setOpenPopoverId(null);
-    }, 250);
+    setOpenPopoverId(null);
+    setIsDialogOpen(true);
   };
 
   const handleSaveBubble = (bubble) => {
@@ -369,7 +362,7 @@ export default function Brainstorming() {
 
           const scroll = scrollRef.current;
           const scrollWidth = scroll.offsetWidth;
-          let scrollHeight = scroll.offsetHeight;
+          const scrollHeight = scroll.offsetHeight;
 
           const newBubbles: BubbleNodeType[] = [];
 
@@ -595,8 +588,11 @@ export default function Brainstorming() {
             onChange={(e) => setInputText(e.target.value)}
             placeholder="지금 머릿속에 떠오르는 생각을 적어보세요!"
             className={clsx(
-              'md:text-[16px] border py-[8px] overflow-hidden resize-none border-blue rounded-[48px] px-6 font-semibold font-pretendard flex-1 outline-none placeholder:text-gray-400 break-words whitespace-pre-wrap h-auto w-full truncate placeholder:whitespace-nowrap placeholder:overflow-hidden placeholder:text-ellipsis',
+              'md:text-[16px] border py-[8px] overflow-y-auto resize-none border-blue rounded-[48px] px-6 font-semibold font-pretendard flex-1 outline-none placeholder:text-gray-400 break-words whitespace-pre-wrap h-auto w-full  placeholder:whitespace-nowrap placeholder:overflow-hidden placeholder:text-ellipsis',
             )}
+            style={{
+              maxHeight: '114px',
+            }}
           />
           {/*<Toast message="안녕" type="success" />*/}
           {/*<Toast message='안녕' type='error'/>*/}

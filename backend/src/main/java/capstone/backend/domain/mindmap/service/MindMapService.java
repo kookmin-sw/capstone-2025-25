@@ -5,7 +5,7 @@ import capstone.backend.domain.eisenhower.exception.EisenhowerItemNotFoundExcept
 import capstone.backend.domain.eisenhower.repository.EisenhowerItemRepository;
 import capstone.backend.domain.member.exception.MemberNotFoundException;
 import capstone.backend.domain.member.repository.MemberRepository;
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import capstone.backend.domain.mindmap.dto.request.MindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapRequest;
 import capstone.backend.domain.mindmap.dto.request.UpdateMindMapTitleRequest;

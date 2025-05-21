@@ -2,8 +2,8 @@ package capstone.backend.global.security.oauth2.service;
 
 import capstone.backend.domain.inventory.service.InventoryFolderService;
 import capstone.backend.domain.member.repository.MemberRepository;
-import capstone.backend.domain.member.scheme.Member;
-import capstone.backend.domain.member.scheme.Role;
+import capstone.backend.domain.member.entity.Member;
+import capstone.backend.domain.member.entity.Role;
 import capstone.backend.global.security.oauth2.exception.OAuth2AuthenticationProcessingException;
 import capstone.backend.global.security.oauth2.user.CustomOAuth2User;
 import capstone.backend.global.security.oauth2.user.OAuth2UserInfo;

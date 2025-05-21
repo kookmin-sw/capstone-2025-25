@@ -1,9 +1,11 @@
-package capstone.backend.domain.pomodoro.schema;
+package capstone.backend.domain.pomodoro.entity;
 
 
-import capstone.backend.domain.member.scheme.Member;
+import capstone.backend.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -21,6 +23,7 @@ public class DailyPomodoroSummary {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @Column(updatable = false)
