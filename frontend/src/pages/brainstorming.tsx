@@ -290,16 +290,8 @@ export default function Brainstorming() {
       title: bubble.title,
     });
 
-    setBubbles((prev) =>
-      prev.map((b) =>
-        b.bubbleId === bubble.bubbleId ? { ...b, isDeleting: true } : b,
-      ),
-    );
-
-    setTimeout(() => {
-      setIsDialogOpen(true);
-      setOpenPopoverId(null);
-    }, 250);
+    setOpenPopoverId(null);
+    setIsDialogOpen(true);
   };
 
   const handleSaveBubble = (bubble) => {
@@ -369,7 +361,7 @@ export default function Brainstorming() {
 
           const scroll = scrollRef.current;
           const scrollWidth = scroll.offsetWidth;
-          let scrollHeight = scroll.offsetHeight;
+          const scrollHeight = scroll.offsetHeight;
 
           const newBubbles: BubbleNodeType[] = [];
 
