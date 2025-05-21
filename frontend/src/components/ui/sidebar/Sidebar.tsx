@@ -94,9 +94,14 @@ export default function Sidebar() {
   const handleItemClick = (item: NavItem): void => {
     if (item.externalLink) {
       window.open(item.externalLink, '_blank');
-    } else {
-      navigate(item.route);
+      return;
     }
+
+    if (item.id === 'withdrawal') {
+      return;
+    }
+
+    navigate(item.route);
   };
 
   const findActiveItem = (): NavItem => {
