@@ -18,9 +18,9 @@ import slideImage3Mobile from '@/assets/onboarding/onboarding-mobile-3.png';
 import slideImage4Mobile from '@/assets/onboarding/onboarding-mobile-4.png';
 import slideImage5Mobile from '@/assets/onboarding/onboarding-mobile-5.png';
 
-import OnboardingSlide from '@/components/\bonboarding/OnboardingSlide';
 import { useResponsive } from '@/hooks/use-mobile';
 import usePatchRegister from '@/hooks/queries/auth/usePatchRegister';
+import OnboardingSlide from '@/components/\bonboarding/OnboardingSlide';
 
 const paginationStyle = {
   position: 'absolute',
@@ -33,6 +33,7 @@ const paginationStyle = {
   justifyContent: 'center',
   zIndex: 20,
 };
+
 const OnboardingPage = () => {
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -112,6 +113,10 @@ const OnboardingPage = () => {
           clickable: true,
           el: '.swiper-custom-pagination',
         }}
+        navigation={{
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        }}
         onSlideChange={handleSlideChange}
         className="w-full h-full"
       >
@@ -129,6 +134,9 @@ const OnboardingPage = () => {
         ))}
 
         <div className="swiper-custom-pagination" style={paginationStyle}></div>
+
+        <div className="swiper-button-prev !text-gray-600 !w-10 !h-10 !mt-0 !top-1/2 !left-4 !bg-white !rounded-full !shadow-lg hover:!bg-gray-50 !z-10 after:!text-lg after:!font-bold"></div>
+        <div className="swiper-button-next !text-gray-600 !w-10 !h-10 !mt-0 !top-1/2 !right-4 !bg-white !rounded-full !shadow-lg hover:!bg-gray-50 !z-10 after:!text-lg after:!font-bold"></div>
       </Swiper>
     </div>
   );
