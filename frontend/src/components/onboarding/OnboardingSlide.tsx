@@ -31,6 +31,7 @@ const OnboardingSlide = ({
       <div
         className={cn(
           'w-[307px] h-[559px] md:w-[940px] md:h-[612px] rounded-t-3xl overflow-hidden mt-auto',
+          'md:max-w-[calc(100vw-500px)] md:max-h-[calc(100vh-280px)]',
           hideBorder
             ? 'overflow-visible w-[307px] h-[600px] md:w-[959px] md:h-[612px]'
             : 'border border-gray-scale-400 overflow-hidden',
