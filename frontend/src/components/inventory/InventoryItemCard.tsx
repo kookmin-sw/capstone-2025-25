@@ -129,17 +129,16 @@ export default function InventoryItemCard({
       <li className="px-6 py-4 bg-white rounded-xl">
         <Collapsible open={isOpen} onOpenChange={handleToggle}>
           <div className="flex items-center justify-between gap-6">
-            <div className="overflow-hidden flex flex-col gap-2">
-              {/*<div className="w-1/2 overflow-hidden flex flex-col gap-2">*/}
+            <div className="overflow-hidden flex flex-col gap-2 flex-1 min-w-0">
               {isOpen ? (
-                <div>
+                <div className="w-full">
                   {isEditable ? (
-                    <Input
+                    <input
                       autoFocus
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="제목을 입력하세요"
-                      className="text-[16px] md:text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+                      className="text-[16px] md:text-[20px] text-gray-700 font-semibold px-0 py-0 h-auto border-none bg-transparent focus:outline-none w-full"
                     />
                   ) : (
                     <h3 className="text-[16px] md:text-[20px] text-gray-700 font-semibold truncate">
