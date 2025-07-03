@@ -18,7 +18,7 @@ const OnboardingSlide = ({
   hideBorder = false,
 }: OnboardingSlideProps) => {
   return (
-    <div className="flex flex-col items-center w-full h-full px-[50px] md:px-[250px] pt-[100px] md:pt-[130px]">
+    <div className="flex flex-col items-center w-full h-full pt-[100px] md:pt-[130px]">
       <div className="flex flex-col items-center text-center gap-[10px] mb-10">
         <h2 className="text-[24px] md:text-[32px] text-gray-scale-700 font-semibold">
           {title}
@@ -31,6 +31,8 @@ const OnboardingSlide = ({
       <div
         className={cn(
           'w-[307px] h-[559px] md:w-[940px] md:h-[612px] rounded-t-3xl overflow-hidden mt-auto',
+          'md:max-w-[calc(100vw-500px)] md:max-h-[calc(100vh-280px)]',
+          'aspect-[307/559] md:aspect-[940/612]',
           hideBorder
             ? 'overflow-visible w-[307px] h-[600px] md:w-[959px] md:h-[612px]'
             : 'border border-gray-scale-400 overflow-hidden',
