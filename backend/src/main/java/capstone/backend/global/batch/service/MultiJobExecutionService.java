@@ -1,5 +1,7 @@
 package capstone.backend.global.batch.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,22 +19,22 @@ public class MultiJobExecutionService {
     private final JobLauncher jobLauncher;
     private final Map<String, Job> jobMap;
 
-    public void execute(String jobName){
-        try{
+    public void execute(String jobName) {
+        try {
             Job job = jobMap.get(jobName);
-            if(job == null){
+            if (job == null) {
                 log.warn("Job {} not found", jobName);
                 return;
             }
-
+            String runDate = LocalDate.now(ZoneId.of("Asia/Seoul")).toString();
             JobParameters jobParameters = new JobParametersBuilder()
-                .addLong("timestamp", System.currentTimeMillis())
-                .toJobParameters();
+                    .addString("runDate", runDate)
+                    .toJobParameters();
 
             JobExecution jobExecution = jobLauncher.run(job, jobParameters);
             log.info("Job {} started with status: {}", jobName, jobExecution.getStatus());
 
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error("Job {} failed", jobName, e);
         }
     }
