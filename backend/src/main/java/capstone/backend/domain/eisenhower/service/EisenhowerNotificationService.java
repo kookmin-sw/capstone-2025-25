@@ -8,6 +8,7 @@ import capstone.backend.domain.eisenhower.repository.EisenhowerNotificationRepos
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +28,25 @@ public class EisenhowerNotificationService {
     }
 
     @Transactional
-    public void generateDailyNotifications() {
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
+    public void generateDailyNotifications(LocalDate runDate) {
+        LocalDate tomorrow = runDate.plusDays(1);
 
         List<EisenhowerItem> dueTodayItems = eisenhowerItemRepository.findAllByDueDateAndIsCompleted(tomorrow, false);
 
         for (EisenhowerItem item : dueTodayItems) {
-            eisenhowerNotificationRepository.deleteByEisenhowerItemId(item.getId());
-            eisenhowerNotificationRepository.save(EisenhowerNotification.of(item));
+            boolean exists = eisenhowerNotificationRepository.existsByMemberIdAndEisenhowerItemIdAndNotificationDate(
+                    item.getMember().getId(),
+                    item.getId(),
+                    runDate
+            );
+
+            if (!exists) {
+                try {
+                    eisenhowerNotificationRepository.save(EisenhowerNotification.of(item, runDate));
+                } catch (DataIntegrityViolationException ignore) {
+                    // 중복 알림이 이미 존재하는 경우 무시
+                }
+            }
         }
     }
 }
