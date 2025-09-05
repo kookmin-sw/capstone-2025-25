@@ -18,8 +18,10 @@ public class DeleteOldNotificationsTasklet implements Tasklet {
 
     @Override
     public RepeatStatus execute(@NonNull StepContribution contribution, @NonNull ChunkContext chunkContext) {
-        LocalDate today = LocalDate.now();
-        eisenhowerNotificationRepository.deleteAllByDueDateBefore(today.minusDays(7));
+        String runDateStr = (String) chunkContext.getStepContext().getJobParameters().get("runDate");
+        LocalDate runDate = LocalDate.parse(runDateStr);
+
+        eisenhowerNotificationRepository.deleteAllByNotificationDateBefore(runDate.minusDays(7));
         return RepeatStatus.FINISHED;
     }
 }
