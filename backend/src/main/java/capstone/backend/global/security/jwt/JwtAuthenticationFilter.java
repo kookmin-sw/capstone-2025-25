@@ -20,9 +20,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -54,7 +54,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Claims claimsByToken = jwtProvider.getClaimsByToken(accessToken);
 
                 Authentication authentication = getAuthentication(claimsByToken);
-                authentication.setAuthenticated(true);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
@@ -75,14 +74,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Member member = memberRepository.findById(Long.parseLong(claims.get("id", String.class)))
                 .orElseThrow(MemberNotFoundException::new);
         CustomOAuth2User user = new CustomOAuth2User(member, claims);
-        return new OAuth2AuthenticationToken(user, user.getAuthorities(), user.getProvider());
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
 
     private void handleException(HttpServletResponse response, ApiException e) throws IOException {
         ApiResponse<?> apiResponse = ApiResponse.error(e.getHttpStatus(), e.getMessage());
         String content = new ObjectMapper().writeValueAsString(apiResponse);
-        response.addHeader("Content-Type", "application/json");
-        response.setStatus(e.getHttpStatus().value()); // 에러 상태 추가
+        response.setStatus(e.getHttpStatus().value());
+        response.setContentType("application/json");
         response.getWriter().write(content);
         response.getWriter().flush();
     }

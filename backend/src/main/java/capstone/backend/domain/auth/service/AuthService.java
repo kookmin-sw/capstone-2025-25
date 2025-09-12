@@ -13,6 +13,7 @@ import capstone.backend.domain.auth.entity.OauthCode;
 import capstone.backend.domain.auth.entity.RefreshToken;
 import capstone.backend.domain.member.service.MemberService;
 import capstone.backend.global.security.jwt.JwtProvider;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -78,7 +79,7 @@ public class AuthService {
     }
 
     // 로그아웃 로직
-    public void logout(Long memberId, String accessToken) {
+    public void logout(Long memberId, String accessToken, HttpServletResponse response) {
         // 1. RT 삭제
         refreshTokenRedisRepository.findById(memberId)
                 .ifPresent(refreshTokenRedisRepository::delete);
@@ -92,6 +93,8 @@ public class AuthService {
                     .build();
             blacklistTokenRedisRepository.save(blacklistToken);
         }
+
+        response.addHeader("Set-Cookie", "refreshToken=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=None");
 
         log.info("로그아웃 처리 완료 - memberId={}, AT 블랙리스트 등록", memberId);
     }

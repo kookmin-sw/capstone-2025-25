@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "인증/인가", description = "JWT 관련 API")
@@ -69,9 +70,11 @@ public class AuthController {
     )
     public ApiResponse<Void> logout(
             @AuthenticationPrincipal CustomOAuth2User user,
-            @RequestBody @Valid AccessTokenRequest request
+            @RequestBody @Valid AccessTokenRequest request,
+            HttpServletResponse response
     ) {
-        authService.logout(user.getMemberId(), request.accessToken());
+        authService.logout(user.getMemberId(), request.accessToken(), response);
+        SecurityContextHolder.clearContext();
         return ApiResponse.ok();
     }
 
@@ -82,10 +85,13 @@ public class AuthController {
     )
     public ApiResponse<Void> delete(
             @AuthenticationPrincipal CustomOAuth2User user,
-            @RequestBody @Valid AccessTokenRequest request
+            @RequestBody @Valid AccessTokenRequest request,
+            HttpServletResponse response
     ) {
-        authService.logout(user.getMemberId(), request.accessToken());
+        authService.logout(user.getMemberId(), request.accessToken(), response);
         memberService.deleteMember(user.getMemberId());
+
+        SecurityContextHolder.clearContext();
         return ApiResponse.ok();
     }
 }
